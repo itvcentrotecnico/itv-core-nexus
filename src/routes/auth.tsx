@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-auth";
+import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -112,12 +113,10 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground">
-            ITV
-          </span>
-          <h1 className="mt-4 font-display text-2xl font-bold text-foreground">GESTÃO ITV</h1>
+          <img src={logoColor.url} alt="ITV Centro Técnico" className="mx-auto h-16 w-auto" />
+          <h1 className="mt-5 font-display text-xl font-bold text-foreground">GESTÃO ITV</h1>
           <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Centro Técnico
+            Sistema interno de gestão
           </p>
         </div>
 

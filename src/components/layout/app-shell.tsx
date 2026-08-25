@@ -7,21 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { NAV_SECTIONS } from "@/lib/navigation";
 import { useAccess, formatRole } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import logoColor from "@/assets/itv-logo-color.png.asset.json";
+import logoMark from "@/assets/itv-logo-mark.png.asset.json";
 
 function Brand() {
   return (
-    <Link to="/dashboard" className="flex items-center gap-3 px-2">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
-        ITV
-      </span>
-      <span className="leading-tight">
-        <span className="block font-display text-sm font-bold tracking-wide text-sidebar-foreground">
-          GESTÃO ITV
-        </span>
-        <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-muted">
-          Centro Técnico
-        </span>
-      </span>
+    <Link to="/dashboard" className="flex items-center px-2" aria-label="GESTÃO ITV — Dashboard">
+      <img src={logoColor.url} alt="ITV Centro Técnico" className="h-10 w-auto" />
     </Link>
   );
 }
@@ -167,9 +159,7 @@ export function AppShell() {
             <Menu className="h-5 w-5" aria-hidden="true" />
           </button>
           <div className="flex items-center gap-2 lg:hidden">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
-              ITV
-            </span>
+            <img src={logoMark.url} alt="ITV Centro Técnico" className="h-6 w-auto" />
             <span className="font-display text-sm font-bold text-foreground">GESTÃO ITV</span>
           </div>
           <div className="ml-auto flex items-center gap-2">
