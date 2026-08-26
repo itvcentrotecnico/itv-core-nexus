@@ -343,6 +343,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
         toast.error(result.message ?? "Operação não concluída.");
         return;
       }
+      const lancamentoId = (result.id as string | undefined) ?? editing?.id;
+      if (lancamentoId) await salvarComissaoEntrega(lancamentoId);
       toast.success(editing ? "Lançamento atualizado." : "Lançamento registrado no caixa.");
       onSaved();
       onOpenChange(false);
