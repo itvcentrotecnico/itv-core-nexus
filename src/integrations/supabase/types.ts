@@ -624,6 +624,7 @@ export type Database = {
           nome: string
           nome_exibicao: string | null
           observacao: string | null
+          recebe_comissao_entrega: boolean
           setor_id: string | null
           status: Database["public"]["Enums"]["colaborador_status"]
           telefone: string | null
@@ -645,6 +646,7 @@ export type Database = {
           nome: string
           nome_exibicao?: string | null
           observacao?: string | null
+          recebe_comissao_entrega?: boolean
           setor_id?: string | null
           status?: Database["public"]["Enums"]["colaborador_status"]
           telefone?: string | null
@@ -666,6 +668,7 @@ export type Database = {
           nome?: string
           nome_exibicao?: string | null
           observacao?: string | null
+          recebe_comissao_entrega?: boolean
           setor_id?: string | null
           status?: Database["public"]["Enums"]["colaborador_status"]
           telefone?: string | null
@@ -1013,6 +1016,119 @@ export type Database = {
           {
             foreignKeyName: "comissoes_updated_by_fkey"
             columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comissoes_entrega: {
+        Row: {
+          avaliacao_confirmada: boolean
+          avaliacao_observacao: string | null
+          caixa_lancamento_id: string
+          created_at: string
+          created_by: string | null
+          entregador_id: string
+          id: string
+          motivo_status: string | null
+          os: string | null
+          pago_em: string | null
+          pago_por: string | null
+          status: Database["public"]["Enums"]["comissao_entrega_status"]
+          tipo: Database["public"]["Enums"]["comissao_entrega_tipo"]
+          updated_at: string
+          updated_by: string | null
+          validado_em: string | null
+          validado_por: string | null
+          valor: number
+        }
+        Insert: {
+          avaliacao_confirmada?: boolean
+          avaliacao_observacao?: string | null
+          caixa_lancamento_id: string
+          created_at?: string
+          created_by?: string | null
+          entregador_id: string
+          id?: string
+          motivo_status?: string | null
+          os?: string | null
+          pago_em?: string | null
+          pago_por?: string | null
+          status?: Database["public"]["Enums"]["comissao_entrega_status"]
+          tipo: Database["public"]["Enums"]["comissao_entrega_tipo"]
+          updated_at?: string
+          updated_by?: string | null
+          validado_em?: string | null
+          validado_por?: string | null
+          valor: number
+        }
+        Update: {
+          avaliacao_confirmada?: boolean
+          avaliacao_observacao?: string | null
+          caixa_lancamento_id?: string
+          created_at?: string
+          created_by?: string | null
+          entregador_id?: string
+          id?: string
+          motivo_status?: string | null
+          os?: string | null
+          pago_em?: string | null
+          pago_por?: string | null
+          status?: Database["public"]["Enums"]["comissao_entrega_status"]
+          tipo?: Database["public"]["Enums"]["comissao_entrega_tipo"]
+          updated_at?: string
+          updated_by?: string | null
+          validado_em?: string | null
+          validado_por?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissoes_entrega_caixa_lancamento_id_fkey"
+            columns: ["caixa_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_entregador_id_fkey"
+            columns: ["entregador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_entregador_id_fkey"
+            columns: ["entregador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_pago_por_fkey"
+            columns: ["pago_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_entrega_validado_por_fkey"
+            columns: ["validado_por"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3430,6 +3546,48 @@ export type Database = {
         }
         Returns: Json
       }
+      comissao_entrega_config: { Args: never; Returns: Json }
+      comissao_entrega_entregadores: { Args: never; Returns: Json }
+      comissao_entrega_listar: {
+        Args: {
+          p_entregador_id?: string
+          p_fim?: string
+          p_inicio?: string
+          p_os?: string
+          p_status?: Database["public"]["Enums"]["comissao_entrega_status"]
+          p_tipo?: Database["public"]["Enums"]["comissao_entrega_tipo"]
+        }
+        Returns: Json
+      }
+      comissao_entrega_relatorio: {
+        Args: {
+          p_entregador_id?: string
+          p_fim?: string
+          p_inicio?: string
+          p_status?: Database["public"]["Enums"]["comissao_entrega_status"]
+          p_tipo?: Database["public"]["Enums"]["comissao_entrega_tipo"]
+        }
+        Returns: Json
+      }
+      comissao_entrega_remover: {
+        Args: { p_lancamento_id: string; p_motivo?: string }
+        Returns: Json
+      }
+      comissao_entrega_salvar: {
+        Args: {
+          p_avaliacao_confirmada?: boolean
+          p_avaliacao_observacao?: string
+          p_confirmar_duplicidade?: boolean
+          p_entregador_id: string
+          p_lancamento_id: string
+          p_tipo: Database["public"]["Enums"]["comissao_entrega_tipo"]
+        }
+        Returns: Json
+      }
+      comissao_entrega_status_alterar: {
+        Args: { p_acao: string; p_id: string; p_motivo?: string }
+        Returns: Json
+      }
       comissoes_ajustar: {
         Args: {
           p_id: string
@@ -3983,6 +4141,13 @@ export type Database = {
         | "desconto"
         | "correcao"
         | "compensacao"
+      comissao_entrega_status:
+        | "gerada"
+        | "pendente_validacao"
+        | "validada"
+        | "paga"
+        | "cancelada"
+      comissao_entrega_tipo: "entrega" | "entrega_avaliacao"
       comissao_status:
         | "gerada"
         | "pendente_conferencia"
@@ -4196,6 +4361,14 @@ export const Constants = {
         "correcao",
         "compensacao",
       ],
+      comissao_entrega_status: [
+        "gerada",
+        "pendente_validacao",
+        "validada",
+        "paga",
+        "cancelada",
+      ],
+      comissao_entrega_tipo: ["entrega", "entrega_avaliacao"],
       comissao_status: [
         "gerada",
         "pendente_conferencia",
