@@ -58,7 +58,7 @@ export function SecaoRel({
   children,
 }: {
   titulo: string;
-  descricao?: string;
+  descricao?: string | undefined;
   acao?: React.ReactNode;
   children: React.ReactNode;
 }) {
