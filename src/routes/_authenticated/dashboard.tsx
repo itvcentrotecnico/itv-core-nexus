@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowDownCircle,
+import { ArrowDownCircle,
   ArrowUpCircle,
   ClipboardList,
   Landmark,
@@ -15,10 +14,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { Link } from "@tanstack/react-router";
+import { ClipboardCheck } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
+import { useAccess } from "@/hooks/use-auth";
 import { round2, type CaixaIndicadores } from "@/lib/caixa";
 import type { CustosIndicadores } from "@/lib/custos";
 import type { ComissoesIndicadores } from "@/lib/comissoes";
+import type { ProducaoFilaIndicadores } from "@/lib/producao";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
@@ -171,6 +175,7 @@ function kpiValue(
 }
 
 function DashboardPage() {
+  const { isAdmin, can } = useAccess();
   const [period, setPeriod] = useState<Period>("mes");
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
@@ -216,9 +221,22 @@ function DashboardPage() {
     },
   });
 
+  const ehGerencia = isAdmin || can("producao", "validar");
+
+  const filaProducaoQuery = useQuery({
+    queryKey: ["dashboard-producao-fila"],
+    enabled: ehGerencia,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("producao_fila_indicadores");
+      if (error) throw error;
+      return data as unknown as ProducaoFilaIndicadores;
+    },
+  });
+
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
   const comissoes = comissoesQuery.data;
+  const filaProducao = filaProducaoQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -279,6 +297,26 @@ function DashboardPage() {
             />
           </div>
         </div>
+      )}
+
+      {ehGerencia && filaProducao && filaProducao.aguardando_validacao > 0 && (
+        <Link
+          to="/tecnicos"
+          className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/5 p-4 transition-colors hover:bg-amber-500/10"
+        >
+          <div className="flex items-center gap-3">
+            <ClipboardCheck className="h-5 w-5 text-amber-600" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {filaProducao.aguardando_validacao}{" "}
+                {filaProducao.aguardando_validacao === 1 ? "serviço aguarda" : "serviços aguardam"} validação técnica
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Tempo médio em fila: {filaProducao.tempo_medio_fila_horas.toFixed(1)}h — clique para abrir a fila
+              </p>
+            </div>
+          </div>
+        </Link>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
