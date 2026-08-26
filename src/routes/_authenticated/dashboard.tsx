@@ -15,10 +15,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { Link } from "@tanstack/react-router";
+import { ClipboardCheck } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
+import { useAccess } from "@/hooks/use-auth";
 import { round2, type CaixaIndicadores } from "@/lib/caixa";
 import type { CustosIndicadores } from "@/lib/custos";
 import type { ComissoesIndicadores } from "@/lib/comissoes";
+import type { ProducaoFilaIndicadores } from "@/lib/producao";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
