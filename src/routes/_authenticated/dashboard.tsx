@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { round2, type CaixaIndicadores } from "@/lib/caixa";
 import type { CustosIndicadores } from "@/lib/custos";
+import type { ComissoesIndicadores } from "@/lib/comissoes";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
@@ -189,6 +190,19 @@ function DashboardPage() {
     },
   });
 
+  const comissoesQuery = useQuery({
+    queryKey: ["dashboard-comissoes", range?.from, range?.to],
+    enabled: !!range,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("comissoes_indicadores", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      return data as unknown as ComissoesIndicadores;
+    },
+  });
+
   const custosQuery = useQuery({
     queryKey: ["dashboard-custos", range?.from, range?.to],
     enabled: !!range,
@@ -204,6 +218,7 @@ function DashboardPage() {
 
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
+  const comissoes = comissoesQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -268,7 +283,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind, custos);
+          const { value, sub } = kpiValue(kpi, ind, custos, comissoes);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">
