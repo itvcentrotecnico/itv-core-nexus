@@ -74,18 +74,20 @@ function CaixaPage() {
   const podeAdministrar = can("caixa", "administrar");
 
   const lancamentosQuery = useQuery({
-    queryKey: ["caixa", "lancamentos", date],
+    queryKey: ["caixa", "lancamentos", periodo.inicio, periodo.fim],
     enabled: podeVer,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("caixa_lancamentos")
         .select(
-          "*, tipo:tipos_receita(nome), tecnico:profiles!caixa_lancamentos_tecnico_id_fkey(full_name), responsavel:profiles!caixa_lancamentos_responsavel_id_fkey(full_name), pagamentos:caixa_pagamentos(*, forma:formas_pagamento(nome, eh_dinheiro))",
+          "*, tipo:tipos_receita(nome), tecnico:profiles!caixa_lancamentos_tecnico_id_fkey(full_name), responsavel:profiles!caixa_lancamentos_responsavel_id_fkey(full_name), pagamentos:caixa_pagamentos(*, forma:formas_pagamento(nome, eh_dinheiro)), entregas:comissoes_entrega(id, tipo, valor, status, entregador:colaboradores(nome, nome_exibicao))",
         )
-        .eq("data_lancamento", date)
-        .order("created_at", { ascending: false });
+        .gte("data_lancamento", periodo.inicio)
+        .lte("data_lancamento", periodo.fim)
+        .order("created_at", { ascending: false })
+        .limit(2000);
       if (error) throw error;
-      return data as unknown as CaixaLancamento[];
+      return data as unknown as LancamentoComEntrega[];
     },
   });
 
@@ -106,7 +108,11 @@ function CaixaPage() {
   });
 
   const lancamentos = useMemo(() => lancamentosQuery.data ?? [], [lancamentosQuery.data]);
-  const ativos = useMemo(() => lancamentos.filter((l) => l.status === "ativo"), [lancamentos]);
+  /** Totais do dia selecionado — usados no fechamento (regra financeira inalterada). */
+  const ativos = useMemo(
+    () => lancamentos.filter((l) => l.status === "ativo" && l.data_lancamento === date),
+    [lancamentos, date],
+  );
 
   const fechamentoAtual = useMemo(
     () =>
@@ -120,25 +126,9 @@ function CaixaPage() {
 
   const totais = useMemo(() => {
     const faturamento = round2(ativos.reduce((acc, l) => acc + l.valor_final, 0));
-    const descontos = round2(ativos.reduce((acc, l) => acc + l.desconto, 0));
     const taxas = round2(ativos.reduce((acc, l) => acc + l.taxas_total, 0));
     const liquida = round2(ativos.reduce((acc, l) => acc + l.receita_liquida, 0));
-    const ticket = ativos.length > 0 ? round2(faturamento / ativos.length) : 0;
-    return { faturamento, descontos, taxas, liquida, ticket, quantidade: ativos.length };
-  }, [ativos]);
-
-  const resumoFormas = useMemo(() => {
-    const mapa = new Map<string, { total: number; taxas: number }>();
-    for (const l of ativos) {
-      for (const p of l.pagamentos ?? []) {
-        const nome = p.forma?.nome ?? "Outros";
-        const atual = mapa.get(nome) ?? { total: 0, taxas: 0 };
-        atual.total = round2(atual.total + p.valor);
-        atual.taxas = round2(atual.taxas + p.taxa_valor);
-        mapa.set(nome, atual);
-      }
-    }
-    return [...mapa.entries()].map(([forma, v]) => ({ forma, ...v }));
+    return { faturamento, taxas, liquida };
   }, [ativos]);
 
   const dinheiroEsperado = useMemo(
@@ -152,6 +142,7 @@ function CaixaPage() {
       ),
     [ativos],
   );
+
 
   if (!accessLoading && !podeVer) {
     return (
