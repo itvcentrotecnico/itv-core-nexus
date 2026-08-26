@@ -61,10 +61,22 @@ export function MetaFormDialog({ open, onOpenChange, meta }: Props) {
 
   async function salvar() {
     const valor = Number(String(form.valor_alvo).replace(",", "."));
-    if (!form.nome.trim()) return toast.error("Informe o nome da meta.");
-    if (!form.data_inicio || !form.data_fim) return toast.error("Informe o período.");
-    if (form.data_fim < form.data_inicio) return toast.error("Data final anterior à inicial.");
-    if (!(valor > 0)) return toast.error("Informe um valor alvo maior que zero.");
+    if (!form.nome.trim()) {
+      toast.error("Informe o nome da meta.");
+      return;
+    }
+    if (!form.data_inicio || !form.data_fim) {
+      toast.error("Informe o período.");
+      return;
+    }
+    if (form.data_fim < form.data_inicio) {
+      toast.error("Data final anterior à inicial.");
+      return;
+    }
+    if (!(valor > 0)) {
+      toast.error("Informe um valor alvo maior que zero.");
+      return;
+    }
 
     setSalvando(true);
     try {

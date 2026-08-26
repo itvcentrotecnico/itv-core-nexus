@@ -23,7 +23,7 @@ export function VisaoGeralTab({
     enabled: !!principal,
     queryFn: async () => {
       const r = await rpcMetas<MetasEvolucao>("metas_evolucao", { p_from: range.from, p_to: range.to });
-      if (!r.ok) return { meta_principal: null, dias: [] } as MetasEvolucao;
+      if (!r.ok) return { ok: false, meta_principal: null, dias: [] } as MetasEvolucao;
       return r;
     },
   });
