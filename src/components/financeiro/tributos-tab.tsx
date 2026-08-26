@@ -309,7 +309,7 @@ function TributoForm({
     setSaving(true);
     try {
       const { data, error } = await supabase.rpc("tributos_salvar", {
-        p_id: editing?.id ?? null,
+        p_id: editing?.id as string,
         p_competencia: competenciaFromMonth(mes)!,
         p_tipo: tipo,
         p_metodo: metodo,
