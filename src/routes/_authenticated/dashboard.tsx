@@ -83,7 +83,7 @@ function periodRange(
   customTo: string,
 ): { from: string; to: string } | null {
   const todayIso = todayManausISO();
-  const [y, m, d] = todayIso.split("-").map(Number);
+  const [y = 0, m = 1, d = 1] = todayIso.split("-").map(Number);
   const today = new Date(y, m - 1, d);
 
   switch (period) {
@@ -149,7 +149,7 @@ function DashboardPage() {
         p_to: range!.to,
       });
       if (error) throw error;
-      return data as CaixaIndicadores;
+      return data as unknown as CaixaIndicadores;
     },
   });
 
