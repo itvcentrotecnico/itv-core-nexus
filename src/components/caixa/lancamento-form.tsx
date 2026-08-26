@@ -41,6 +41,14 @@ import {
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import {
+  COMISSAO_ENTREGA_VAZIA,
+  ComissaoEntregaSection,
+  useComissaoEntregaConfig,
+  useEntregadores,
+  type ComissaoEntregaEstado,
+} from "@/components/caixa/comissao-entrega-section";
+import type { ComissaoEntrega } from "@/lib/comissao-entrega";
 
 const NONE = "__none__";
 
@@ -87,6 +95,29 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   const [rows, setRows] = useState<PagRow[]>([emptyRow()]);
   const [saving, setSaving] = useState(false);
   const [dupInfo, setDupInfo] = useState<NonNullable<CaixaRpcResult["existente"]> | null>(null);
+  const [comissaoEntrega, setComissaoEntrega] = useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
+
+  const configCeQuery = useComissaoEntregaConfig(open);
+  const entregadoresQuery = useEntregadores(open);
+
+  /** Comissão de entrega vigente do lançamento em edição. */
+  const comissaoAtualQuery = useQuery({
+    queryKey: ["comissao-entrega", "do-lancamento", editing?.id ?? null],
+    enabled: open && !!editing,
+    queryFn: async (): Promise<ComissaoEntrega | null> => {
+      const { data, error } = await supabase.rpc("comissao_entrega_listar", {});
+      if (error) return null;
+      const res = data as unknown as { ok: boolean; itens?: ComissaoEntrega[] };
+      if (!res?.ok) return null;
+      return (
+        (res.itens ?? []).find(
+          (i) => i.caixa_lancamento_id === editing?.id && i.status !== "cancelada",
+        ) ?? null
+      );
+    },
+  });
+
+
 
   const tiposQuery = useQuery({
     queryKey: ["caixa", "tipos-receita"],
@@ -164,8 +195,27 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       setDesconto(null);
       setObservacao("");
       setRows([emptyRow()]);
+      setComissaoEntrega(COMISSAO_ENTREGA_VAZIA);
     }
   }, [open, editing, defaultDate]);
+
+  // Carrega a comissão de entrega vigente ao editar um lançamento
+  useEffect(() => {
+    if (!open || !editing) return;
+    const atual = comissaoAtualQuery.data;
+    setComissaoEntrega(
+      atual
+        ? {
+            ativa: true,
+            entregadorId: atual.entregador_id,
+            tipo: atual.tipo,
+            avaliacaoConfirmada: atual.avaliacao_confirmada,
+            observacao: atual.avaliacao_observacao ?? "",
+          }
+        : COMISSAO_ENTREGA_VAZIA,
+    );
+  }, [open, editing, comissaoAtualQuery.data]);
+
 
   const valorFinal = useMemo(
     () => round2((valorBruto ?? 0) - (desconto ?? 0)),
@@ -206,8 +256,50 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     if (somaPagamentos !== valorFinal) {
       return `A soma dos pagamentos (${formatCurrencyBRL(somaPagamentos)}) não corresponde ao valor final (${formatCurrencyBRL(valorFinal)}). Diferença: ${formatCurrencyBRL(diferenca)}.`;
     }
+    if (comissaoEntrega.ativa) {
+      if (!comissaoEntrega.entregadorId) return "Selecione o entregador da comissão de entrega.";
+      if (
+        comissaoEntrega.tipo === "entrega_avaliacao" &&
+        configCeQuery.data?.valor_taxa_com_avaliacao == null
+      ) {
+        return "O valor de entrega + avaliação ainda não foi configurado pelo administrador.";
+      }
+    }
     return null;
   }
+
+  /** Persiste a comissão de entrega vinculada ao lançamento (nunca afeta o faturamento). */
+  async function salvarComissaoEntrega(lancamentoId: string) {
+    if (!comissaoEntrega.ativa) {
+      if (editing && comissaoAtualQuery.data) {
+        const { data: res } = await supabase.rpc("comissao_entrega_remover", {
+          p_lancamento_id: lancamentoId,
+          p_motivo: "Comissão removida na edição do lançamento.",
+        });
+        const r = res as unknown as { ok: boolean; message?: string };
+        if (r && !r.ok) toast.error(r.message ?? "Não foi possível remover a comissão de entrega.");
+      }
+      return;
+    }
+    const { data: res, error } = await supabase.rpc("comissao_entrega_salvar", {
+      p_lancamento_id: lancamentoId,
+      p_entregador_id: comissaoEntrega.entregadorId,
+      p_tipo: comissaoEntrega.tipo,
+      p_avaliacao_confirmada: comissaoEntrega.avaliacaoConfirmada,
+      ...(comissaoEntrega.observacao.trim()
+        ? { p_avaliacao_observacao: comissaoEntrega.observacao.trim() }
+        : {}),
+    });
+    if (error) {
+      toast.error("Lançamento salvo, mas a comissão de entrega não pôde ser registrada.");
+      return;
+    }
+    const r = res as unknown as { ok: boolean; message?: string };
+    if (r && !r.ok) {
+      toast.error(r.message ?? "Comissão de entrega não registrada.");
+    }
+  }
+
 
   async function submit(confirmarDuplicidade: boolean) {
     // Campos opcionais são omitidos quando vazios (o banco aplica NULL/coalesce).
@@ -251,6 +343,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
         toast.error(result.message ?? "Operação não concluída.");
         return;
       }
+      const lancamentoId = (result.id as string | undefined) ?? editing?.id;
+      if (lancamentoId) await salvarComissaoEntrega(lancamentoId);
       toast.success(editing ? "Lançamento atualizado." : "Lançamento registrado no caixa.");
       onSaved();
       onOpenChange(false);
@@ -530,6 +624,15 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
               )}
             </div>
           </div>
+
+          <ComissaoEntregaSection
+            valor={comissaoEntrega}
+            onChange={(patch) => setComissaoEntrega((prev) => ({ ...prev, ...patch }))}
+            config={configCeQuery.data}
+            entregadores={entregadoresQuery.data ?? []}
+          />
+
+
 
           <div className="mt-4">
             <label htmlFor="cx-obs" className={labelClass}>

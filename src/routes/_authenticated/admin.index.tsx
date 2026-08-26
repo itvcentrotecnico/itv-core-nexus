@@ -9,6 +9,7 @@ import { AdminPerfis } from "@/components/admin/perfis";
 import { AdminTecnicos } from "@/components/admin/tecnicos";
 import { AdminCadastros } from "@/components/admin/cadastros";
 import { AdminRegrasComissao } from "@/components/admin/regras-comissao";
+import { AdminComissaoEntrega } from "@/components/admin/comissao-entrega";
 import { AdminParametros } from "@/components/admin/parametros";
 import { AdminFechamentos } from "@/components/admin/fechamentos";
 import { AdminAuditoria } from "@/components/admin/auditoria";
@@ -91,6 +92,7 @@ function AdminPage() {
       {aba === "tecnicos" ? <AdminTecnicos /> : null}
       {aba === "cadastros" ? <AdminCadastros /> : null}
       {aba === "comissoes" ? <AdminRegrasComissao /> : null}
+      {aba === "comissao-entrega" ? <AdminComissaoEntrega /> : null}
       {aba === "parametros" ? <AdminParametros /> : null}
       {aba === "fechamentos" ? <AdminFechamentos /> : null}
       {aba === "auditoria" ? <AdminAuditoria /> : null}

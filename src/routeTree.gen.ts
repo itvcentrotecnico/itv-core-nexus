@@ -16,6 +16,7 @@ import { Route as ModoTvRouteImport } from './routes/modo-tv'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated/caixa'
 import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authenticated/colaboradores'
+import { Route as AuthenticatedComissaoEntregaRouteImport } from './routes/_authenticated/comissao-entrega'
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -61,6 +62,12 @@ const AuthenticatedColaboradoresRoute =
   AuthenticatedColaboradoresRouteImport.update({
     id: '/colaboradores',
     path: '/colaboradores',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedComissaoEntregaRoute =
+  AuthenticatedComissaoEntregaRouteImport.update({
+    id: '/comissao-entrega',
+    path: '/comissao-entrega',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedComissoesRoute = AuthenticatedComissoesRouteImport.update({
@@ -128,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -168,6 +177,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/_authenticated/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
+    | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
     | '/financeiro'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
+    | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
     | '/financeiro'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/caixa'
     | '/_authenticated/colaboradores'
+    | '/_authenticated/comissao-entrega'
     | '/_authenticated/comissoes'
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/colaboradores'
       fullPath: '/colaboradores'
       preLoaderRoute: typeof AuthenticatedColaboradoresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/comissao-entrega': {
+      id: '/_authenticated/comissao-entrega'
+      path: '/comissao-entrega'
+      fullPath: '/comissao-entrega'
+      preLoaderRoute: typeof AuthenticatedComissaoEntregaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/comissoes': {
@@ -383,6 +403,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
   AuthenticatedColaboradoresRoute: typeof AuthenticatedColaboradoresRoute
+  AuthenticatedComissaoEntregaRoute: typeof AuthenticatedComissaoEntregaRoute
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -399,6 +420,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
   AuthenticatedColaboradoresRoute: AuthenticatedColaboradoresRoute,
+  AuthenticatedComissaoEntregaRoute: AuthenticatedComissaoEntregaRoute,
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
