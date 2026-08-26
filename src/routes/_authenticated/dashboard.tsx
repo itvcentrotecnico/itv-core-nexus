@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import type { CaixaIndicadores } from "@/lib/caixa";
+import { round2, type CaixaIndicadores } from "@/lib/caixa";
+import type { CustosIndicadores } from "@/lib/custos";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
@@ -48,20 +49,29 @@ const PERIODS: { key: Period; label: string }[] = [
   { key: "personalizado", label: "Personalizado" },
 ];
 
-type KpiKey = "faturamento" | "liquida" | "ticket" | "os";
+type KpiKey =
+  | "faturamento"
+  | "liquida"
+  | "ticket"
+  | "os"
+  | "custo-pecas"
+  | "custos-diretos"
+  | "margem-parcial";
 
 interface KpiDef {
   label: string;
   icon: LucideIcon;
   format: "currency" | "count";
-  /** Indicadores alimentados pelo Caixa Diário; os demais aguardam os próximos módulos. */
+  /** Indicadores alimentados pelo Caixa e por Peças e Custos; os demais aguardam os próximos módulos. */
   key?: KpiKey;
 }
 
 const KPIS: KpiDef[] = [
   { label: "Faturamento", icon: Wallet, format: "currency", key: "faturamento" },
   { label: "Receita Líquida", icon: TrendingUp, format: "currency", key: "liquida" },
-  { label: "Custo de Peças", icon: Package, format: "currency" },
+  { label: "Custo de Peças", icon: Package, format: "currency", key: "custo-pecas" },
+  { label: "Custos Diretos", icon: ArrowDownCircle, format: "currency", key: "custos-diretos" },
+  { label: "Margem Parcial", icon: TrendingUp, format: "currency", key: "margem-parcial" },
   { label: "Comissões", icon: Percent, format: "currency" },
   { label: "Despesas", icon: Receipt, format: "currency" },
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
@@ -107,26 +117,42 @@ function periodRange(
 function kpiValue(
   kpi: KpiDef,
   ind: CaixaIndicadores | undefined,
+  custos: CustosIndicadores | undefined,
 ): { value: string; sub: string } {
-  if (!kpi.key) {
+  const vazio = {
+    value: kpi.format === "currency" ? "R$ 0,00" : "0",
+    sub: "Sem dados no período",
+  };
+  if (!kpi.key) return vazio;
+
+  const deCustos = kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
+  if (deCustos) {
+    if (!custos?.ok) return vazio;
+    const receita = custos.receita_liquida_relacionada;
+    const mapCustos: Record<string, number> = {
+      "custo-pecas": custos.custo_pecas,
+      "custos-diretos": custos.custo_total,
+      "margem-parcial": round2(receita - custos.custo_total),
+    };
     return {
-      value: kpi.format === "currency" ? "R$ 0,00" : "0",
-      sub: "Sem dados no período",
+      value: formatCurrencyBRL(mapCustos[kpi.key] ?? 0),
+      sub:
+        custos.os_com_custos === 0
+          ? "Sem custos no período"
+          : kpi.key === "margem-parcial"
+            ? "Antes das comissões (parcial)"
+            : "Fonte: Peças e Custos",
     };
   }
-  if (!ind || !ind.ok) {
-    return {
-      value: kpi.format === "currency" ? "R$ 0,00" : "0",
-      sub: "Sem dados no período",
-    };
-  }
-  const map: Record<KpiKey, number> = {
+
+  if (!ind || !ind.ok) return vazio;
+  const map: Record<string, number> = {
     faturamento: ind.faturamento_final,
     liquida: ind.receita_liquida,
     ticket: ind.ticket_medio,
     os: ind.os_faturadas,
   };
-  const v = map[kpi.key];
+  const v = map[kpi.key] ?? 0;
   return {
     value: kpi.format === "currency" ? formatCurrencyBRL(v) : String(v),
     sub: ind.quantidade === 0 ? "Sem lançamentos no período" : "Fonte: Caixa Diário",
@@ -153,7 +179,21 @@ function DashboardPage() {
     },
   });
 
+  const custosQuery = useQuery({
+    queryKey: ["dashboard-custos", range?.from, range?.to],
+    enabled: !!range,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("custos_indicadores", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      return data as unknown as CustosIndicadores;
+    },
+  });
+
   const ind = indicadoresQuery.data;
+  const custos = custosQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -218,7 +258,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind);
+          const { value, sub } = kpiValue(kpi, ind, custos);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">
@@ -234,8 +274,8 @@ function DashboardPage() {
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Custo de Peças, Comissões, Despesas, Resultado Operacional e Meta serão ativados
-          automaticamente quando os próximos módulos forem implementados.
+          Comissões, Despesas, Resultado Operacional e Meta serão ativados automaticamente
+          quando os próximos módulos forem implementados. A Margem Parcial ainda não desconta comissões.
         </p>
         <ArrowDownCircle className="mx-auto mt-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
       </div>

@@ -336,6 +336,206 @@ export type Database = {
           },
         ]
       }
+      categorias_pecas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      custos_estornos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          custo_os_id: string
+          id: string
+          motivo: string
+          quantidade: number
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          custo_os_id: string
+          id?: string
+          motivo: string
+          quantidade: number
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          custo_os_id?: string
+          id?: string
+          motivo?: string
+          quantidade?: number
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custos_estornos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_estornos_custo_os_id_fkey"
+            columns: ["custo_os_id"]
+            isOneToOne: false
+            referencedRelation: "custos_os"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custos_os: {
+        Row: {
+          cancelado_em: string | null
+          cancelado_por: string | null
+          categoria_id: string | null
+          compatibilidade: string | null
+          created_at: string
+          created_by: string | null
+          custo_total: number
+          custo_unitario: number
+          data_lancamento: string
+          descricao: string
+          devolvido_total: number
+          fornecedor_id: string | null
+          id: string
+          marca: string | null
+          modelo: string | null
+          motivo_cancelamento: string | null
+          observacao: string | null
+          os: string
+          quantidade: number
+          status: Database["public"]["Enums"]["custo_os_status"]
+          tecnico_id: string | null
+          tipo_custo_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          compatibilidade?: string | null
+          created_at?: string
+          created_by?: string | null
+          custo_total: number
+          custo_unitario: number
+          data_lancamento?: string
+          descricao: string
+          devolvido_total?: number
+          fornecedor_id?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os: string
+          quantidade?: number
+          status?: Database["public"]["Enums"]["custo_os_status"]
+          tecnico_id?: string | null
+          tipo_custo_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          compatibilidade?: string | null
+          created_at?: string
+          created_by?: string | null
+          custo_total?: number
+          custo_unitario?: number
+          data_lancamento?: string
+          descricao?: string
+          devolvido_total?: number
+          fornecedor_id?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os?: string
+          quantidade?: number
+          status?: Database["public"]["Enums"]["custo_os_status"]
+          tecnico_id?: string | null
+          tipo_custo_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custos_os_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_pecas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_tipo_custo_id_fkey"
+            columns: ["tipo_custo_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_os_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       formas_pagamento: {
         Row: {
           ativo: boolean
@@ -363,6 +563,36 @@ export type Database = {
           nome?: string
           ordem?: number
           taxa_padrao_percentual?: number
+        }
+        Relationships: []
+      }
+      fornecedores: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          observacao: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          telefone?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -458,6 +688,33 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      tipos_custo: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          eh_peca: boolean
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          eh_peca?: boolean
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          eh_peca?: boolean
+          id?: string
+          nome?: string
+          ordem?: number
         }
         Relationships: []
       }
@@ -609,6 +866,62 @@ export type Database = {
         }
         Returns: Json
       }
+      custos_atualizar: {
+        Args: {
+          p_categoria_id?: string
+          p_compatibilidade?: string
+          p_custo_unitario?: number
+          p_data: string
+          p_descricao: string
+          p_fornecedor_id?: string
+          p_id: string
+          p_marca?: string
+          p_modelo?: string
+          p_observacao?: string
+          p_os: string
+          p_quantidade?: number
+          p_tecnico_id?: string
+          p_tipo_custo_id: string
+        }
+        Returns: Json
+      }
+      custos_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      custos_confirmar: { Args: { p_id: string }; Returns: Json }
+      custos_devolver: {
+        Args: {
+          p_id: string
+          p_motivo: string
+          p_quantidade: number
+          p_valor: number
+        }
+        Returns: Json
+      }
+      custos_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      custos_por_os: { Args: { p_from: string; p_to: string }; Returns: Json }
+      custos_registrar: {
+        Args: {
+          p_categoria_id?: string
+          p_compatibilidade?: string
+          p_custo_unitario?: number
+          p_data: string
+          p_descricao: string
+          p_fornecedor_id?: string
+          p_marca?: string
+          p_modelo?: string
+          p_observacao?: string
+          p_os: string
+          p_quantidade?: number
+          p_tecnico_id?: string
+          p_tipo_custo_id: string
+        }
+        Returns: Json
+      }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -642,6 +955,7 @@ export type Database = {
       app_role: "administrador" | "gerente" | "vendas" | "tecnico"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
+      custo_os_status: "registrado" | "confirmado" | "cancelado" | "estornado"
       permission_action:
         | "visualizar"
         | "criar"
@@ -784,6 +1098,7 @@ export const Constants = {
       app_role: ["administrador", "gerente", "vendas", "tecnico"],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
+      custo_os_status: ["registrado", "confirmado", "cancelado", "estornado"],
       permission_action: [
         "visualizar",
         "criar",
