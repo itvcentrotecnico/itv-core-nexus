@@ -44,6 +44,47 @@ export type Database = {
         }
         Relationships: []
       }
+      backup_registros: {
+        Row: {
+          created_at: string
+          data_backup: string
+          id: string
+          local_armazenamento: string
+          observacao: string | null
+          responsavel_id: string
+          status: string
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          data_backup: string
+          id?: string
+          local_armazenamento: string
+          observacao?: string | null
+          responsavel_id: string
+          status?: string
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          data_backup?: string
+          id?: string
+          local_armazenamento?: string
+          observacao?: string | null
+          responsavel_id?: string
+          status?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backup_registros_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       caixa_estornos: {
         Row: {
           created_at: string
@@ -98,9 +139,11 @@ export type Database = {
           diferenca: number | null
           dinheiro_esperado: number
           dinheiro_informado: number
+          entradas_dinheiro: number
           faturamento_total: number
           fechado_em: string
           id: string
+          motivo_diferenca: string | null
           motivo_reabertura: string | null
           observacao: string | null
           reaberto_em: string | null
@@ -108,7 +151,10 @@ export type Database = {
           receita_liquida: number
           responsavel_id: string
           resumo_pagamentos: Json
+          saldo_inicial: number
+          sangrias: number
           status: Database["public"]["Enums"]["caixa_fechamento_status"]
+          suprimentos: number
           taxas_total: number
         }
         Insert: {
@@ -116,9 +162,11 @@ export type Database = {
           diferenca?: number | null
           dinheiro_esperado?: number
           dinheiro_informado?: number
+          entradas_dinheiro?: number
           faturamento_total?: number
           fechado_em?: string
           id?: string
+          motivo_diferenca?: string | null
           motivo_reabertura?: string | null
           observacao?: string | null
           reaberto_em?: string | null
@@ -126,7 +174,10 @@ export type Database = {
           receita_liquida?: number
           responsavel_id: string
           resumo_pagamentos?: Json
+          saldo_inicial?: number
+          sangrias?: number
           status?: Database["public"]["Enums"]["caixa_fechamento_status"]
+          suprimentos?: number
           taxas_total?: number
         }
         Update: {
@@ -134,9 +185,11 @@ export type Database = {
           diferenca?: number | null
           dinheiro_esperado?: number
           dinheiro_informado?: number
+          entradas_dinheiro?: number
           faturamento_total?: number
           fechado_em?: string
           id?: string
+          motivo_diferenca?: string | null
           motivo_reabertura?: string | null
           observacao?: string | null
           reaberto_em?: string | null
@@ -144,7 +197,10 @@ export type Database = {
           receita_liquida?: number
           responsavel_id?: string
           resumo_pagamentos?: Json
+          saldo_inicial?: number
+          sangrias?: number
           status?: Database["public"]["Enums"]["caixa_fechamento_status"]
+          suprimentos?: number
           taxas_total?: number
         }
         Relationships: [
@@ -174,6 +230,7 @@ export type Database = {
           created_by: string | null
           data_lancamento: string
           desconto: number
+          desconto_autorizacao_id: string | null
           descricao: string | null
           id: string
           motivo_cancelamento: string | null
@@ -199,6 +256,7 @@ export type Database = {
           created_by?: string | null
           data_lancamento?: string
           desconto?: number
+          desconto_autorizacao_id?: string | null
           descricao?: string | null
           id?: string
           motivo_cancelamento?: string | null
@@ -224,6 +282,7 @@ export type Database = {
           created_by?: string | null
           data_lancamento?: string
           desconto?: number
+          desconto_autorizacao_id?: string | null
           descricao?: string | null
           id?: string
           motivo_cancelamento?: string | null
@@ -256,6 +315,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "caixa_lancamentos_desconto_autorizacao_id_fkey"
+            columns: ["desconto_autorizacao_id"]
+            isOneToOne: false
+            referencedRelation: "descontos_autorizacoes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "caixa_lancamentos_responsavel_id_fkey"
             columns: ["responsavel_id"]
             isOneToOne: false
@@ -279,6 +345,50 @@ export type Database = {
           {
             foreignKeyName: "caixa_lancamentos_updated_by_fkey"
             columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caixa_movimentos: {
+        Row: {
+          created_at: string
+          data_movimento: string
+          id: string
+          motivo: string
+          observacao: string | null
+          ocorrido_em: string
+          responsavel_id: string
+          tipo: Database["public"]["Enums"]["caixa_movimento_tipo"]
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          data_movimento: string
+          id?: string
+          motivo: string
+          observacao?: string | null
+          ocorrido_em?: string
+          responsavel_id: string
+          tipo: Database["public"]["Enums"]["caixa_movimento_tipo"]
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          data_movimento?: string
+          id?: string
+          motivo?: string
+          observacao?: string | null
+          ocorrido_em?: string
+          responsavel_id?: string
+          tipo?: Database["public"]["Enums"]["caixa_movimento_tipo"]
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_movimentos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1739,6 +1849,88 @@ export type Database = {
           },
         ]
       }
+      descontos_autorizacoes: {
+        Row: {
+          cliente: string | null
+          comentario: string | null
+          created_at: string
+          decidido_em: string | null
+          decidido_por: string | null
+          id: string
+          lancamento_id: string | null
+          limite_perfil: number | null
+          motivo: string
+          os: string | null
+          percentual: number
+          solicitado_em: string
+          solicitado_por: string
+          status: Database["public"]["Enums"]["desconto_autorizacao_status"]
+          utilizado_em: string | null
+          valor_desconto: number
+          valor_original: number
+        }
+        Insert: {
+          cliente?: string | null
+          comentario?: string | null
+          created_at?: string
+          decidido_em?: string | null
+          decidido_por?: string | null
+          id?: string
+          lancamento_id?: string | null
+          limite_perfil?: number | null
+          motivo: string
+          os?: string | null
+          percentual: number
+          solicitado_em?: string
+          solicitado_por: string
+          status?: Database["public"]["Enums"]["desconto_autorizacao_status"]
+          utilizado_em?: string | null
+          valor_desconto: number
+          valor_original: number
+        }
+        Update: {
+          cliente?: string | null
+          comentario?: string | null
+          created_at?: string
+          decidido_em?: string | null
+          decidido_por?: string | null
+          id?: string
+          lancamento_id?: string | null
+          limite_perfil?: number | null
+          motivo?: string
+          os?: string | null
+          percentual?: number
+          solicitado_em?: string
+          solicitado_por?: string
+          status?: Database["public"]["Enums"]["desconto_autorizacao_status"]
+          utilizado_em?: string | null
+          valor_desconto?: number
+          valor_original?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "descontos_autorizacoes_decidido_por_fkey"
+            columns: ["decidido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "descontos_autorizacoes_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "descontos_autorizacoes_solicitado_por_fkey"
+            columns: ["solicitado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       despesas: {
         Row: {
           cancelado_em: string | null
@@ -3079,6 +3271,91 @@ export type Database = {
         }
         Relationships: []
       }
+      tributos: {
+        Row: {
+          base_calculo: number
+          cancelado_em: string | null
+          competencia: string
+          confirmado_em: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          metodo: Database["public"]["Enums"]["tributo_metodo"]
+          motivo_cancelamento: string | null
+          observacao: string | null
+          pago_em: string | null
+          percentual: number | null
+          responsavel_id: string | null
+          status: Database["public"]["Enums"]["tributo_status"]
+          tipo: string
+          updated_at: string
+          updated_by: string | null
+          valor: number
+        }
+        Insert: {
+          base_calculo?: number
+          cancelado_em?: string | null
+          competencia: string
+          confirmado_em?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metodo?: Database["public"]["Enums"]["tributo_metodo"]
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          pago_em?: string | null
+          percentual?: number | null
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["tributo_status"]
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor?: number
+        }
+        Update: {
+          base_calculo?: number
+          cancelado_em?: string | null
+          competencia?: string
+          confirmado_em?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metodo?: Database["public"]["Enums"]["tributo_metodo"]
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          pago_em?: string | null
+          percentual?: number | null
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["tributo_status"]
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tributos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tributos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tributos_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
@@ -3370,6 +3647,7 @@ export type Database = {
       }
       admin_auditoria_filtros: { Args: never; Returns: Json }
       admin_backup_info: { Args: never; Returns: Json }
+      admin_backup_status: { Args: never; Returns: Json }
       admin_cadastro_ativo: {
         Args: {
           p_ativo: boolean
@@ -3453,6 +3731,16 @@ export type Database = {
         Returns: Json
       }
       admin_usuarios_listar: { Args: never; Returns: Json }
+      backup_registrar: {
+        Args: {
+          p_data: string
+          p_local: string
+          p_observacao?: string
+          p_status: string
+          p_tipo: string
+        }
+        Returns: Json
+      }
       caixa_atualizar_lancamento: {
         Args: {
           p_cliente?: string
@@ -3491,8 +3779,19 @@ export type Database = {
         }
         Returns: Json
       }
+      caixa_fisico_resumo: { Args: { p_data: string }; Returns: Json }
       caixa_indicadores: {
         Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      caixa_movimento_registrar: {
+        Args: {
+          p_data: string
+          p_motivo: string
+          p_observacao?: string
+          p_tipo: Database["public"]["Enums"]["caixa_movimento_tipo"]
+          p_valor: number
+        }
         Returns: Json
       }
       caixa_periodo_fechado: { Args: { p_data: string }; Returns: boolean }
@@ -3506,6 +3805,7 @@ export type Database = {
           p_confirmar_duplicidade?: boolean
           p_data: string
           p_desconto?: number
+          p_desconto_autorizacao_id?: string
           p_descricao?: string
           p_observacao?: string
           p_os?: string
@@ -3818,6 +4118,25 @@ export type Database = {
         }
         Returns: Json
       }
+      desconto_decidir: {
+        Args: { p_aprovar: boolean; p_comentario?: string; p_id: string }
+        Returns: Json
+      }
+      desconto_limite: { Args: { _user_id: string }; Returns: number }
+      desconto_solicitar: {
+        Args: {
+          p_cliente: string
+          p_motivo: string
+          p_os: string
+          p_valor_desconto: number
+          p_valor_original: number
+        }
+        Returns: Json
+      }
+      descontos_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       despesas_atualizar: {
         Args: {
           p_categoria_id?: string
@@ -3859,6 +4178,7 @@ export type Database = {
         }
         Returns: Json
       }
+      dre_gerencial: { Args: { p_from: string; p_to: string }; Returns: Json }
       financeiro_fluxo: {
         Args: { p_from: string; p_to: string }
         Returns: Json
@@ -3940,6 +4260,7 @@ export type Database = {
       }
       folha_reimportar: { Args: { p_competencia_id: string }; Returns: Json }
       folha_resumo: { Args: { p_competencia_id: string }; Returns: Json }
+      governanca_config: { Args: never; Returns: Json }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -4141,6 +4462,27 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      tributos_salvar: {
+        Args: {
+          p_base: number
+          p_competencia: string
+          p_id: string
+          p_metodo: Database["public"]["Enums"]["tributo_metodo"]
+          p_observacao: string
+          p_percentual: number
+          p_tipo: string
+          p_valor: number
+        }
+        Returns: Json
+      }
+      tributos_status: {
+        Args: {
+          p_id: string
+          p_motivo?: string
+          p_status: Database["public"]["Enums"]["tributo_status"]
+        }
+        Returns: Json
+      }
       usuario_ativo: { Args: { _user_id: string }; Returns: boolean }
       usuarios_basicos: {
         Args: never
@@ -4163,6 +4505,7 @@ export type Database = {
         | "adm_operacional"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
+      caixa_movimento_tipo: "saldo_inicial" | "suprimento" | "sangria"
       colaborador_status: "ativo" | "ferias" | "afastado" | "desligado"
       comissao_ajuste_tipo:
         | "bonus"
@@ -4202,6 +4545,7 @@ export type Database = {
         | "recebido"
         | "cancelado"
       custo_os_status: "registrado" | "confirmado" | "cancelado" | "estornado"
+      desconto_autorizacao_status: "pendente" | "aprovado" | "rejeitado"
       despesa_status: "pendente" | "paga" | "cancelada"
       folha_competencia_status:
         | "aberta"
@@ -4250,6 +4594,8 @@ export type Database = {
         | "rejeitado"
         | "correcao_solicitada"
         | "cancelado"
+      tributo_metodo: "manual" | "percentual"
+      tributo_status: "previsto" | "confirmado" | "pago" | "cancelado"
       usuario_status: "ativo" | "inativo" | "bloqueado"
     }
     CompositeTypes: {
@@ -4389,6 +4735,7 @@ export const Constants = {
       ],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
+      caixa_movimento_tipo: ["saldo_inicial", "suprimento", "sangria"],
       colaborador_status: ["ativo", "ferias", "afastado", "desligado"],
       comissao_ajuste_tipo: [
         "bonus",
@@ -4434,6 +4781,7 @@ export const Constants = {
         "cancelado",
       ],
       custo_os_status: ["registrado", "confirmado", "cancelado", "estornado"],
+      desconto_autorizacao_status: ["pendente", "aprovado", "rejeitado"],
       despesa_status: ["pendente", "paga", "cancelada"],
       folha_competencia_status: [
         "aberta",
@@ -4486,6 +4834,8 @@ export const Constants = {
         "correcao_solicitada",
         "cancelado",
       ],
+      tributo_metodo: ["manual", "percentual"],
+      tributo_status: ["previsto", "confirmado", "pago", "cancelado"],
       usuario_status: ["ativo", "inativo", "bloqueado"],
     },
   },
