@@ -165,7 +165,7 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
 
   const statusQuery = useQuery({
     queryKey: ["admin", "backup-status"],
-    queryFn: () => rpcAdmin<BackupStatus>("admin_backup_status"),
+    queryFn: () => rpcAdmin<BackupStatus & { [k: string]: unknown }>("admin_backup_status"),
   });
 
   const registrosQuery = useQuery({
