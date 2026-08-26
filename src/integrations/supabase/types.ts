@@ -336,6 +336,41 @@ export type Database = {
           },
         ]
       }
+      cargos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          setor_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          setor_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          setor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cargos_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categorias_financeiras: {
         Row: {
           ativo: boolean
@@ -410,6 +445,262 @@ export type Database = {
           ordem?: number
         }
         Relationships: []
+      }
+      colaborador_adiantamentos: {
+        Row: {
+          colaborador_id: string
+          competencia_desconto: string
+          created_at: string
+          created_by: string | null
+          data: string
+          id: string
+          motivo: string
+          status: Database["public"]["Enums"]["adiantamento_status"]
+          valor: number
+        }
+        Insert: {
+          colaborador_id: string
+          competencia_desconto: string
+          created_at?: string
+          created_by?: string | null
+          data: string
+          id?: string
+          motivo: string
+          status?: Database["public"]["Enums"]["adiantamento_status"]
+          valor: number
+        }
+        Update: {
+          colaborador_id?: string
+          competencia_desconto?: string
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          id?: string
+          motivo?: string
+          status?: Database["public"]["Enums"]["adiantamento_status"]
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colaborador_adiantamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaborador_adiantamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaborador_adiantamentos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      colaborador_beneficios: {
+        Row: {
+          ativo: boolean
+          colaborador_id: string
+          created_at: string
+          descricao: string | null
+          fim_vigencia: string | null
+          id: string
+          inicio_vigencia: string
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          ativo?: boolean
+          colaborador_id: string
+          created_at?: string
+          descricao?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia: string
+          tipo: string
+          valor: number
+        }
+        Update: {
+          ativo?: boolean
+          colaborador_id?: string
+          created_at?: string
+          descricao?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia?: string
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colaborador_beneficios_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaborador_beneficios_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      colaborador_salarios: {
+        Row: {
+          colaborador_id: string
+          created_at: string
+          created_by: string | null
+          fim_vigencia: string | null
+          id: string
+          inicio_vigencia: string
+          motivo: string | null
+          valor: number
+        }
+        Insert: {
+          colaborador_id: string
+          created_at?: string
+          created_by?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia: string
+          motivo?: string | null
+          valor: number
+        }
+        Update: {
+          colaborador_id?: string
+          created_at?: string
+          created_by?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia?: string
+          motivo?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colaborador_salarios_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaborador_salarios_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaborador_salarios_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      colaboradores: {
+        Row: {
+          cargo_id: string | null
+          created_at: string
+          created_by: string | null
+          data_admissao: string | null
+          desligado_em: string | null
+          email: string | null
+          id: string
+          motivo_desligamento: string | null
+          nome: string
+          nome_exibicao: string | null
+          observacao: string | null
+          setor_id: string | null
+          status: Database["public"]["Enums"]["colaborador_status"]
+          telefone: string | null
+          tipo_vinculo: string | null
+          updated_at: string
+          updated_by: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cargo_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_admissao?: string | null
+          desligado_em?: string | null
+          email?: string | null
+          id?: string
+          motivo_desligamento?: string | null
+          nome: string
+          nome_exibicao?: string | null
+          observacao?: string | null
+          setor_id?: string | null
+          status?: Database["public"]["Enums"]["colaborador_status"]
+          telefone?: string | null
+          tipo_vinculo?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cargo_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_admissao?: string | null
+          desligado_em?: string | null
+          email?: string | null
+          id?: string
+          motivo_desligamento?: string | null
+          nome?: string
+          nome_exibicao?: string | null
+          observacao?: string | null
+          setor_id?: string | null
+          status?: Database["public"]["Enums"]["colaborador_status"]
+          telefone?: string | null
+          tipo_vinculo?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colaboradores_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       comissao_ajustes: {
         Row: {
@@ -1478,6 +1769,360 @@ export type Database = {
           },
         ]
       }
+      folha_colaboradores: {
+        Row: {
+          colaborador_id: string
+          competencia_id: string
+          conferida_em: string | null
+          conferida_por: string | null
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["folha_item_status"]
+        }
+        Insert: {
+          colaborador_id: string
+          competencia_id: string
+          conferida_em?: string | null
+          conferida_por?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["folha_item_status"]
+        }
+        Update: {
+          colaborador_id?: string
+          competencia_id?: string
+          conferida_em?: string | null
+          conferida_por?: string | null
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["folha_item_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_colaboradores_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_colaboradores_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_colaboradores_competencia_id_fkey"
+            columns: ["competencia_id"]
+            isOneToOne: false
+            referencedRelation: "folha_competencias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_colaboradores_conferida_por_fkey"
+            columns: ["conferida_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_competencias: {
+        Row: {
+          aprovada_em: string | null
+          aprovada_por: string | null
+          competencia: string
+          created_at: string
+          created_by: string | null
+          fechada_em: string | null
+          fechada_por: string | null
+          id: string
+          motivo_reabertura: string | null
+          observacao: string | null
+          reaberta_em: string | null
+          reaberta_por: string | null
+          status: Database["public"]["Enums"]["folha_competencia_status"]
+          updated_at: string
+        }
+        Insert: {
+          aprovada_em?: string | null
+          aprovada_por?: string | null
+          competencia: string
+          created_at?: string
+          created_by?: string | null
+          fechada_em?: string | null
+          fechada_por?: string | null
+          id?: string
+          motivo_reabertura?: string | null
+          observacao?: string | null
+          reaberta_em?: string | null
+          reaberta_por?: string | null
+          status?: Database["public"]["Enums"]["folha_competencia_status"]
+          updated_at?: string
+        }
+        Update: {
+          aprovada_em?: string | null
+          aprovada_por?: string | null
+          competencia?: string
+          created_at?: string
+          created_by?: string | null
+          fechada_em?: string | null
+          fechada_por?: string | null
+          id?: string
+          motivo_reabertura?: string | null
+          observacao?: string | null
+          reaberta_em?: string | null
+          reaberta_por?: string | null
+          status?: Database["public"]["Enums"]["folha_competencia_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_competencias_aprovada_por_fkey"
+            columns: ["aprovada_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_competencias_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_competencias_fechada_por_fkey"
+            columns: ["fechada_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_competencias_reaberta_por_fkey"
+            columns: ["reaberta_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_lancamentos: {
+        Row: {
+          cancelado_em: string | null
+          cancelado_por: string | null
+          colaborador_id: string
+          competencia_id: string
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          motivo_cancelamento: string | null
+          natureza: Database["public"]["Enums"]["folha_natureza"]
+          observacao: string | null
+          origem: string
+          referencia_id: string | null
+          tipo_lancamento_id: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          colaborador_id: string
+          competencia_id: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          natureza: Database["public"]["Enums"]["folha_natureza"]
+          observacao?: string | null
+          origem?: string
+          referencia_id?: string | null
+          tipo_lancamento_id: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          colaborador_id?: string
+          competencia_id?: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          natureza?: Database["public"]["Enums"]["folha_natureza"]
+          observacao?: string | null
+          origem?: string
+          referencia_id?: string | null
+          tipo_lancamento_id?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_lancamentos_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_lancamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_lancamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_lancamentos_competencia_id_fkey"
+            columns: ["competencia_id"]
+            isOneToOne: false
+            referencedRelation: "folha_competencias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_lancamentos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_lancamentos_tipo_lancamento_id_fkey"
+            columns: ["tipo_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "folha_tipos_lancamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_pagamentos: {
+        Row: {
+          colaborador_id: string
+          competencia_id: string
+          comprovante_path: string | null
+          created_at: string
+          created_by: string | null
+          data_pagamento: string
+          estorno_de_id: string | null
+          forma_pagamento_id: string | null
+          id: string
+          motivo_estorno: string | null
+          observacao: string | null
+          valor: number
+        }
+        Insert: {
+          colaborador_id: string
+          competencia_id: string
+          comprovante_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_pagamento: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          valor: number
+        }
+        Update: {
+          colaborador_id?: string
+          competencia_id?: string
+          comprovante_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_pagamento?: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_pagamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamentos_competencia_id_fkey"
+            columns: ["competencia_id"]
+            isOneToOne: false
+            referencedRelation: "folha_competencias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamentos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamentos_estorno_de_id_fkey"
+            columns: ["estorno_de_id"]
+            isOneToOne: false
+            referencedRelation: "folha_pagamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamentos_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_tipos_lancamento: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          natureza: Database["public"]["Enums"]["folha_natureza"]
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          natureza: Database["public"]["Enums"]["folha_natureza"]
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          natureza?: Database["public"]["Enums"]["folha_natureza"]
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
       formas_pagamento: {
         Row: {
           ativo: boolean
@@ -1688,6 +2333,30 @@ export type Database = {
           },
         ]
       }
+      setores: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           key: string
@@ -1850,6 +2519,61 @@ export type Database = {
       }
     }
     Views: {
+      colaboradores_view: {
+        Row: {
+          cargo_id: string | null
+          cargo_nome: string | null
+          created_at: string | null
+          created_by: string | null
+          data_admissao: string | null
+          desligado_em: string | null
+          email: string | null
+          id: string | null
+          motivo_desligamento: string | null
+          nome: string | null
+          nome_exibicao: string | null
+          observacao: string | null
+          salario_atual: number | null
+          setor_id: string | null
+          setor_nome: string | null
+          status: Database["public"]["Enums"]["colaborador_status"] | null
+          telefone: string | null
+          tipo_vinculo: string | null
+          updated_at: string | null
+          updated_by: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colaboradores_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colaboradores_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contas_pagar_saldos: {
         Row: {
           cancelado_em: string | null
@@ -1969,6 +2693,48 @@ export type Database = {
           },
         ]
       }
+      folha_resumo_colaborador: {
+        Row: {
+          cargo_nome: string | null
+          colaborador_id: string | null
+          colaborador_nome: string | null
+          competencia: string | null
+          competencia_id: string | null
+          competencia_status:
+            | Database["public"]["Enums"]["folha_competencia_status"]
+            | null
+          descontos: number | null
+          folha_colaborador_id: string | null
+          pago: number | null
+          proventos: number | null
+          setor_nome: string | null
+          status: Database["public"]["Enums"]["folha_item_status"] | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_colaboradores_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_colaboradores_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_colaboradores_competencia_id_fkey"
+            columns: ["competencia_id"]
+            isOneToOne: false
+            referencedRelation: "folha_competencias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       caixa_atualizar_lancamento: {
@@ -2031,6 +2797,57 @@ export type Database = {
           p_tecnico_id?: string
           p_tipo_receita_id?: string
           p_valor_bruto?: number
+        }
+        Returns: Json
+      }
+      colaboradores_alterar_salario: {
+        Args: {
+          p_colaborador_id: string
+          p_inicio_vigencia: string
+          p_motivo: string
+          p_valor: number
+        }
+        Returns: Json
+      }
+      colaboradores_alterar_status: {
+        Args: {
+          p_id: string
+          p_motivo: string
+          p_status: Database["public"]["Enums"]["colaborador_status"]
+        }
+        Returns: Json
+      }
+      colaboradores_atualizar: {
+        Args: {
+          p_cargo_id: string
+          p_data_admissao: string
+          p_email: string
+          p_id: string
+          p_nome: string
+          p_nome_exibicao: string
+          p_observacao: string
+          p_setor_id: string
+          p_telefone: string
+          p_tipo_vinculo: string
+        }
+        Returns: Json
+      }
+      colaboradores_desligar: {
+        Args: { p_data_desligamento: string; p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      colaboradores_registrar: {
+        Args: {
+          p_cargo_id: string
+          p_data_admissao: string
+          p_email: string
+          p_nome: string
+          p_nome_exibicao: string
+          p_observacao: string
+          p_salario_base: number
+          p_setor_id: string
+          p_telefone: string
+          p_tipo_vinculo: string
         }
         Returns: Json
       }
@@ -2287,6 +3104,79 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      folha_abrir_competencia: {
+        Args: { p_competencia: string; p_observacao: string }
+        Returns: Json
+      }
+      folha_aprovar: { Args: { p_competencia_id: string }; Returns: Json }
+      folha_cancelar_lancamento: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      folha_competencia_total: {
+        Args: { p_competencia_id: string }
+        Returns: number
+      }
+      folha_conferir_item: {
+        Args: { p_colaborador_id: string; p_competencia_id: string }
+        Returns: Json
+      }
+      folha_estornar_pagamento: {
+        Args: { p_motivo: string; p_pagamento_id: string }
+        Returns: Json
+      }
+      folha_fechar: { Args: { p_competencia_id: string }; Returns: Json }
+      folha_historico_colaborador: {
+        Args: { p_colaborador_id: string }
+        Returns: Json
+      }
+      folha_importar_automaticos: {
+        Args: { p_competencia_id: string }
+        Returns: Json
+      }
+      folha_item_total: {
+        Args: { p_colaborador_id: string; p_competencia_id: string }
+        Returns: number
+      }
+      folha_lancar: {
+        Args: {
+          p_colaborador_id: string
+          p_competencia_id: string
+          p_descricao: string
+          p_observacao: string
+          p_tipo_lancamento_id: string
+          p_valor: number
+        }
+        Returns: Json
+      }
+      folha_pagar_lote: {
+        Args: {
+          p_colaborador_ids: string[]
+          p_competencia_id: string
+          p_data_pagamento: string
+          p_forma_pagamento_id: string
+          p_observacao: string
+        }
+        Returns: Json
+      }
+      folha_reabrir: {
+        Args: { p_competencia_id: string; p_motivo: string }
+        Returns: Json
+      }
+      folha_registrar_pagamento: {
+        Args: {
+          p_colaborador_id: string
+          p_competencia_id: string
+          p_comprovante_path: string
+          p_data_pagamento: string
+          p_forma_pagamento_id: string
+          p_observacao: string
+          p_valor: number
+        }
+        Returns: Json
+      }
+      folha_reimportar: { Args: { p_competencia_id: string }; Returns: Json }
+      folha_resumo: { Args: { p_competencia_id: string }; Returns: Json }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -2317,9 +3207,11 @@ export type Database = {
       }
     }
     Enums: {
+      adiantamento_status: "pendente" | "descontado" | "cancelado"
       app_role: "administrador" | "gerente" | "vendas" | "tecnico"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
+      colaborador_status: "ativo" | "ferias" | "afastado" | "desligado"
       comissao_ajuste_tipo:
         | "bonus"
         | "acrescimo"
@@ -2352,6 +3244,19 @@ export type Database = {
         | "cancelado"
       custo_os_status: "registrado" | "confirmado" | "cancelado" | "estornado"
       despesa_status: "pendente" | "paga" | "cancelada"
+      folha_competencia_status:
+        | "aberta"
+        | "em_conferencia"
+        | "aprovada"
+        | "paga"
+        | "fechada"
+      folha_item_status:
+        | "pendente"
+        | "conferido"
+        | "aprovado"
+        | "parcialmente_pago"
+        | "pago"
+      folha_natureza: "provento" | "desconto"
       permission_action:
         | "visualizar"
         | "criar"
@@ -2494,9 +3399,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      adiantamento_status: ["pendente", "descontado", "cancelado"],
       app_role: ["administrador", "gerente", "vendas", "tecnico"],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
+      colaborador_status: ["ativo", "ferias", "afastado", "desligado"],
       comissao_ajuste_tipo: [
         "bonus",
         "acrescimo",
@@ -2534,6 +3441,21 @@ export const Constants = {
       ],
       custo_os_status: ["registrado", "confirmado", "cancelado", "estornado"],
       despesa_status: ["pendente", "paga", "cancelada"],
+      folha_competencia_status: [
+        "aberta",
+        "em_conferencia",
+        "aprovada",
+        "paga",
+        "fechada",
+      ],
+      folha_item_status: [
+        "pendente",
+        "conferido",
+        "aprovado",
+        "parcialmente_pago",
+        "pago",
+      ],
+      folha_natureza: ["provento", "desconto"],
       permission_action: [
         "visualizar",
         "criar",
