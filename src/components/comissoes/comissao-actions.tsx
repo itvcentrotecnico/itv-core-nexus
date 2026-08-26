@@ -270,13 +270,14 @@ export function CancelarComissaoDialog({ comissao, open, onOpenChange }: { comis
 export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: Comissao | null; open: boolean; onOpenChange: (o: boolean) => void }) {
   const queryClient = useQueryClient();
   const [simulacao, setSimulacao] = useState<ComissaoSimulacao | null>(null);
+  const [motivo, setMotivo] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function simular() {
     if (!comissao) return;
     setLoading(true);
     try {
-      const r = await rpc<ComissaoSimulacao & ComissaoRpcResult>("comissoes_recalcular", { p_id: comissao.id, p_simular: true });
+      const r = await rpc<ComissaoSimulacao & ComissaoRpcResult>("comissoes_simular_recalculo", { p_id: comissao.id });
       setSimulacao(r);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Não foi possível simular.");
@@ -285,15 +286,20 @@ export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: C
     }
   }
 
-  async function confirmar() {
+  async function confirmar(): Promise<void> {
     if (!comissao) return;
+    if (!motivo.trim()) {
+      toast.error("Informe o motivo do recálculo.");
+      return;
+    }
     setLoading(true);
     try {
-      await rpc("comissoes_recalcular", { p_id: comissao.id, p_simular: false });
+      await rpc("comissoes_recalcular", { p_id: comissao.id, p_motivo: motivo.trim() });
       toast.success("Comissão recalculada pela regra vigente.");
       invalidateComissoes(queryClient);
       onOpenChange(false);
       setSimulacao(null);
+      setMotivo("");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Não foi possível recalcular.");
     } finally {
@@ -302,7 +308,7 @@ export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: C
   }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) setSimulacao(null); }}>
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) { setSimulacao(null); setMotivo(""); } }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Recalcular — OS {comissao?.os}</DialogTitle>
@@ -330,6 +336,10 @@ export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: C
                 </div>
               </>
             )}
+            <div>
+              <label className={labelClass}>Motivo do recálculo *</label>
+              <Input value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ex.: regra alterada" />
+            </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setSimulacao(null)} disabled={loading}>Voltar</Button>
               {simulacao.regra_encontrada && (
