@@ -46,7 +46,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 function AdminPage() {
   const { aba } = Route.useSearch();
-  const navigate = useNavigate({ from: "/admin" });
+  const navigate = useNavigate({ from: "/admin/" });
   const { isAdmin, can, isLoading } = useAccess();
 
   if (isLoading) return <Carregando />;

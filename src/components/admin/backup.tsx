@@ -11,6 +11,7 @@ import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/adm
 import { Button } from "@/components/ui/button";
 
 interface BackupInfo {
+  [k: string]: unknown;
   volumes: Record<string, number>;
   ultima_exportacao: string | null;
   ultimo_registro: string | null;
@@ -39,7 +40,7 @@ export function AdminBackup() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "backup-info"],
-    queryFn: () => rpcAdmin<{ ok: true } & BackupInfo>("admin_backup_info"),
+    queryFn: () => rpcAdmin<BackupInfo & { ok: boolean }>("admin_backup_info"),
   });
 
   async function exportar() {
