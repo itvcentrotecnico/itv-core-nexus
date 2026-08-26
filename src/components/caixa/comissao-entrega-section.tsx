@@ -72,7 +72,7 @@ interface Props {
 }
 
 /** Seção "Comissão de Entrega" do lançamento do caixa (incentivo operacional). */
-export function ComissaoEntregaSection({ valor, onChange, config, entregadores, bloqueado }: Props) {
+export function ComissaoEntregaSection({ valor, onChange, config, entregadores, bloqueado = false }: Props) {
   const cfg = config ?? CONFIG_PADRAO;
   if (!cfg.ativo) return null;
 
