@@ -179,7 +179,21 @@ function DashboardPage() {
     },
   });
 
+  const custosQuery = useQuery({
+    queryKey: ["dashboard-custos", range?.from, range?.to],
+    enabled: !!range,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("custos_indicadores", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      return data as unknown as CustosIndicadores;
+    },
+  });
+
   const ind = indicadoresQuery.data;
+  const custos = custosQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -244,7 +258,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind);
+          const { value, sub } = kpiValue(kpi, ind, custos);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">
