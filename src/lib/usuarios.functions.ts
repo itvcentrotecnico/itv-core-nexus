@@ -81,14 +81,15 @@ export const convidarUsuario = createServerFn({ method: "POST" })
     }
 
     // 3) Provisiona perfil, vínculo com colaborador, perfil de acesso e auditoria.
-    const { data: prov, error: erroProv } = await context.supabase.rpc("admin_usuario_provisionar", {
+    const argsProv = {
       p_user_id: userId!,
       p_nome: data.nome,
       p_email: email,
-      p_colaborador_id: data.colaboradorId ?? undefined,
       p_role: data.role,
       p_acao: jaExistia ? "usuario_vinculado" : "convite_enviado",
-    });
+      ...(data.colaboradorId ? { p_colaborador_id: data.colaboradorId } : {}),
+    };
+    const { data: prov, error: erroProv } = await context.supabase.rpc("admin_usuario_provisionar", argsProv);
     if (erroProv) return { ok: false as const, message: erroProv.message };
     const res = prov as unknown as RpcOk;
     if (!res?.ok) {
@@ -139,8 +140,6 @@ export const reenviarConvite = createServerFn({ method: "POST" })
       p_user_id: data.userId,
       p_nome: "",
       p_email: data.email.toLowerCase(),
-      p_colaborador_id: undefined,
-      p_role: undefined,
       p_acao: "convite_reenviado",
     });
 
