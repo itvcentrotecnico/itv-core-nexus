@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
