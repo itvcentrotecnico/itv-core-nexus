@@ -3730,6 +3730,8 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      modo_tv_config_salvar: { Args: { p_config: Json }; Returns: Json }
+      modo_tv_indicadores: { Args: { p_ref?: string }; Returns: Json }
       producao_atualizar: {
         Args: {
           p_cliente: string
@@ -3845,7 +3847,12 @@ export type Database = {
     }
     Enums: {
       adiantamento_status: "pendente" | "descontado" | "cancelado"
-      app_role: "administrador" | "gerente" | "vendas" | "tecnico"
+      app_role:
+        | "administrador"
+        | "gerente"
+        | "vendas"
+        | "tecnico"
+        | "tv_display"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
       colaborador_status: "ativo" | "ferias" | "afastado" | "desligado"
@@ -4056,7 +4063,7 @@ export const Constants = {
   public: {
     Enums: {
       adiantamento_status: ["pendente", "descontado", "cancelado"],
-      app_role: ["administrador", "gerente", "vendas", "tecnico"],
+      app_role: ["administrador", "gerente", "vendas", "tecnico", "tv_display"],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
       colaborador_status: ["ativo", "ferias", "afastado", "desligado"],
