@@ -2183,6 +2183,85 @@ export type Database = {
         }
         Relationships: []
       }
+      metas_empresa: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_fim: string
+          data_inicio: string
+          id: string
+          nome: string
+          observacao: string | null
+          periodo_tipo: string
+          principal: boolean
+          responsavel_id: string | null
+          status: Database["public"]["Enums"]["meta_status"]
+          tipo: string
+          unidade: string
+          updated_at: string
+          updated_by: string | null
+          valor_alvo: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_fim: string
+          data_inicio: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          periodo_tipo?: string
+          principal?: boolean
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["meta_status"]
+          tipo: string
+          unidade?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_alvo: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_fim?: string
+          data_inicio?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          periodo_tipo?: string
+          principal?: boolean
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["meta_status"]
+          tipo?: string
+          unidade?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_alvo?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_empresa_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_empresa_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_empresa_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metas_tecnicos: {
         Row: {
           ativo: boolean
@@ -2193,8 +2272,11 @@ export type Database = {
           inicio: string
           periodo_tipo: string
           quantidade_meta: number | null
+          status: Database["public"]["Enums"]["meta_status"]
           tecnico_id: string
           tipo_meta: string
+          updated_at: string
+          updated_by: string | null
           valor_meta: number | null
         }
         Insert: {
@@ -2206,8 +2288,11 @@ export type Database = {
           inicio: string
           periodo_tipo: string
           quantidade_meta?: number | null
+          status?: Database["public"]["Enums"]["meta_status"]
           tecnico_id: string
           tipo_meta: string
+          updated_at?: string
+          updated_by?: string | null
           valor_meta?: number | null
         }
         Update: {
@@ -2219,8 +2304,11 @@ export type Database = {
           inicio?: string
           periodo_tipo?: string
           quantidade_meta?: number | null
+          status?: Database["public"]["Enums"]["meta_status"]
           tecnico_id?: string
           tipo_meta?: string
+          updated_at?: string
+          updated_by?: string | null
           valor_meta?: number | null
         }
         Relationships: [
@@ -2234,6 +2322,13 @@ export type Database = {
           {
             foreignKeyName: "metas_tecnicos_tecnico_id_fkey"
             columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_tecnicos_updated_by_fkey"
+            columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3490,6 +3585,86 @@ export type Database = {
         }
         Returns: boolean
       }
+      metas_classificar_projecao: {
+        Args: { p_percentual: number }
+        Returns: string
+      }
+      metas_config_atualizar: {
+        Args: { p_acima: number; p_atencao: number; p_no_ritmo: number }
+        Returns: Json
+      }
+      metas_empresa_alterar_status: {
+        Args: { p_id: string; p_motivo?: string; p_status: string }
+        Returns: Json
+      }
+      metas_empresa_atualizar: {
+        Args: {
+          p_data_fim: string
+          p_data_inicio: string
+          p_id: string
+          p_nome: string
+          p_observacao?: string
+          p_periodo_tipo: string
+          p_principal: boolean
+          p_tipo: string
+          p_valor_alvo: number
+        }
+        Returns: Json
+      }
+      metas_empresa_detalhe: {
+        Args: { m: Database["public"]["Tables"]["metas_empresa"]["Row"] }
+        Returns: Json
+      }
+      metas_empresa_registrar: {
+        Args: {
+          p_data_fim: string
+          p_data_inicio: string
+          p_nome: string
+          p_observacao?: string
+          p_periodo_tipo: string
+          p_principal?: boolean
+          p_tipo: string
+          p_valor_alvo: number
+        }
+        Returns: Json
+      }
+      metas_evolucao: { Args: { p_from: string; p_to: string }; Returns: Json }
+      metas_historico: { Args: never; Returns: Json }
+      metas_indicadores_periodo: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      metas_painel: { Args: { p_from: string; p_to: string }; Returns: Json }
+      metas_principal_resumo: { Args: never; Returns: Json }
+      metas_realizado: {
+        Args: { p_fim: string; p_inicio: string; p_tipo: string }
+        Returns: number
+      }
+      metas_tecnico_alterar_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: Json
+      }
+      metas_tecnico_painel: {
+        Args: { p_from: string; p_tecnico_id: string; p_to: string }
+        Returns: Json
+      }
+      metas_tecnico_salvar: {
+        Args: {
+          p_fim: string
+          p_id: string
+          p_inicio: string
+          p_periodo_tipo: string
+          p_quantidade_meta?: number
+          p_tecnico_id: string
+          p_tipo_meta: string
+          p_valor_meta?: number
+        }
+        Returns: Json
+      }
+      metas_tecnicos_desempenho: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       producao_atualizar: {
         Args: {
           p_cliente: string
@@ -3626,6 +3801,7 @@ export type Database = {
         | "parcialmente_pago"
         | "pago"
       folha_natureza: "provento" | "desconto"
+      meta_status: "planejada" | "ativa" | "concluida" | "cancelada"
       permission_action:
         | "visualizar"
         | "criar"
@@ -3843,6 +4019,7 @@ export const Constants = {
         "pago",
       ],
       folha_natureza: ["provento", "desconto"],
+      meta_status: ["planejada", "ativa", "concluida", "cancelada"],
       permission_action: [
         "visualizar",
         "criar",
