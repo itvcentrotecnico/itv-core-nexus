@@ -19,7 +19,15 @@ export type PermissionAction =
   | "fechar"
   | "reabrir"
   | "desativar"
-  | "configurar";
+  | "configurar"
+  | "visualizar_propria"
+  | "editar_propria"
+  | "enviar_validacao"
+  | "validar"
+  | "rejeitar"
+  | "visualizar_todos"
+  | "relatorios"
+  | "configurar_metas";
 
 export interface UserProfile {
   id: string;
