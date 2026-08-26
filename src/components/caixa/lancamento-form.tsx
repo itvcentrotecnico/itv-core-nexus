@@ -210,16 +210,12 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   }
 
   async function submit(confirmarDuplicidade: boolean) {
+    // Campos opcionais são omitidos quando vazios (o banco aplica NULL/coalesce).
     const payload = {
       p_data: data,
-      p_os: os.trim() || undefined,
-      p_cliente: cliente.trim() || undefined,
       p_tipo_receita_id: tipoId,
-      p_descricao: descricao.trim() || undefined,
-      p_tecnico_id: tecnicoId || undefined,
       p_valor_bruto: valorBruto ?? 0,
       p_desconto: desconto ?? 0,
-      p_observacao: observacao.trim() || undefined,
       p_pagamentos: rows
         .filter((r) => r.forma_pagamento_id && (r.valor ?? 0) > 0)
         .map((r) => ({
@@ -230,6 +226,11 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           taxa_valor: round2(r.taxa_valor ?? 0),
         })) as unknown as Json,
       p_confirmar_duplicidade: confirmarDuplicidade,
+      ...(os.trim() ? { p_os: os.trim() } : {}),
+      ...(cliente.trim() ? { p_cliente: cliente.trim() } : {}),
+      ...(descricao.trim() ? { p_descricao: descricao.trim() } : {}),
+      ...(tecnicoId ? { p_tecnico_id: tecnicoId } : {}),
+      ...(observacao.trim() ? { p_observacao: observacao.trim() } : {}),
     };
 
     setSaving(true);
