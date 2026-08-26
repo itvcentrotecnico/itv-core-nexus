@@ -146,11 +146,26 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     queryFn: async () => {
       const { data, error } = await supabase
         .from("formas_pagamento")
-        .select("id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual")
+        .select(
+          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias",
+        )
         .eq("ativo", true)
         .order("ordem");
       if (error) throw error;
       return data as FormaPagamento[];
+    },
+  });
+
+  const taxasQuery = useQuery({
+    queryKey: ["caixa", "formas-pagamento-taxas"],
+    enabled: open,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("formas_pagamento_taxas")
+        .select("id, forma_pagamento_id, parcelas, taxa_percentual");
+      if (error) throw error;
+      return data as FormaPagamentoTaxa[];
     },
   });
 
