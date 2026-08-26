@@ -41,6 +41,14 @@ import {
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import {
+  COMISSAO_ENTREGA_VAZIA,
+  ComissaoEntregaSection,
+  useComissaoEntregaConfig,
+  useEntregadores,
+  type ComissaoEntregaEstado,
+} from "@/components/caixa/comissao-entrega-section";
+import type { ComissaoEntrega } from "@/lib/comissao-entrega";
 
 const NONE = "__none__";
 
