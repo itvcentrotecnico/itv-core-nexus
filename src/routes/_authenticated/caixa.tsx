@@ -231,36 +231,6 @@ function CaixaPage() {
         </div>
       )}
 
-      {/* Indicadores do dia */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiCard label="Faturamento" value={formatCurrencyBRL(totais.faturamento)} />
-        <KpiCard label="Receita líquida" value={formatCurrencyBRL(totais.liquida)} highlight />
-        <KpiCard label="Ticket médio" value={formatCurrencyBRL(totais.ticket)} />
-        <KpiCard
-          label="Lançamentos"
-          value={String(totais.quantidade)}
-          sub={`Descontos ${formatCurrencyBRL(totais.descontos)} · Taxas ${formatCurrencyBRL(totais.taxas)}`}
-        />
-      </div>
-
-      {/* Resumo por forma de pagamento */}
-      {resumoFormas.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {resumoFormas.map((r) => (
-            <span
-              key={r.forma}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground"
-            >
-              <Banknote className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              {r.forma}: <strong>{formatCurrencyBRL(r.total)}</strong>
-              {r.taxas > 0 && (
-                <span className="text-muted-foreground">(taxas {formatCurrencyBRL(r.taxas)})</span>
-              )}
-            </span>
-          ))}
-        </div>
-      )}
-
       {/* Abas */}
       <div role="tablist" aria-label="Seções do caixa" className="flex gap-1 rounded-lg border border-border bg-card p-1">
         {(
@@ -287,13 +257,15 @@ function CaixaPage() {
       </div>
 
       {tab === "lancamentos" && (
-        <LancamentosSection
+        <LancamentosView
           lancamentos={lancamentos}
           loading={lancamentosQuery.isLoading}
           diaBloqueado={diaBloqueado}
           podeEditar={podeEditar}
           podeCancelar={podeCancelar}
           podeEstornar={podeEstornar}
+          periodo={periodo}
+          onPeriodoChange={setPeriodo}
           onEdit={(l) => {
             setEditing(l);
             setFormOpen(true);
@@ -302,6 +274,7 @@ function CaixaPage() {
           onEstornar={setEstornoTarget}
         />
       )}
+
 
       {tab === "fechamentos" && (
         <FechamentosSection
