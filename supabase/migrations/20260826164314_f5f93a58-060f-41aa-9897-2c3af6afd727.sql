@@ -1,0 +1,15 @@
+revoke execute on function public.comissao_entrega_config() from public, anon;
+revoke execute on function public.comissao_entrega_entregadores() from public, anon;
+revoke execute on function public.comissao_entrega_salvar(uuid, uuid, public.comissao_entrega_tipo, boolean, text, boolean) from public, anon;
+revoke execute on function public.comissao_entrega_remover(uuid, text) from public, anon;
+revoke execute on function public.comissao_entrega_status_alterar(uuid, text, text) from public, anon;
+revoke execute on function public.comissao_entrega_listar(date, date, uuid, public.comissao_entrega_status, public.comissao_entrega_tipo, text) from public, anon;
+revoke execute on function public.comissao_entrega_relatorio(date, date, uuid, public.comissao_entrega_status, public.comissao_entrega_tipo) from public, anon;
+revoke execute on function public.comissao_entrega_sync_lancamento() from public, anon;
+grant execute on function public.comissao_entrega_config() to authenticated;
+grant execute on function public.comissao_entrega_entregadores() to authenticated;
+grant execute on function public.comissao_entrega_salvar(uuid, uuid, public.comissao_entrega_tipo, boolean, text, boolean) to authenticated;
+grant execute on function public.comissao_entrega_remover(uuid, text) to authenticated;
+grant execute on function public.comissao_entrega_status_alterar(uuid, text, text) to authenticated;
+grant execute on function public.comissao_entrega_listar(date, date, uuid, public.comissao_entrega_status, public.comissao_entrega_tipo, text) to authenticated;
+grant execute on function public.comissao_entrega_relatorio(date, date, uuid, public.comissao_entrega_status, public.comissao_entrega_tipo) to authenticated;
