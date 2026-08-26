@@ -3546,8 +3546,13 @@ export type Database = {
         }
         Returns: Json
       }
+      comissao_entrega_colaboradores: { Args: never; Returns: Json }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }
+      comissao_entrega_flag_colaborador: {
+        Args: { p_colaborador_id: string; p_habilitado: boolean }
+        Returns: Json
+      }
       comissao_entrega_listar: {
         Args: {
           p_entregador_id?: string
