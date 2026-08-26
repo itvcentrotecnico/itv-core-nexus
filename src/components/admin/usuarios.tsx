@@ -37,12 +37,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-const PERFIS: AppRole[] = ["administrador", "gerente", "vendas", "tecnico", "tv_display"];
+const PERFIS: AppRole[] = [
+  "administrador",
+  "adm_financeiro",
+  "adm_operacional",
+  "vendedor",
+  "tecnico",
+  "tv_display",
+];
 
 const PERFIL_RESUMO: Record<AppRole, string> = {
-  administrador: "Acesso total, incluindo administração e permissões.",
-  gerente: "Operação completa, financeiro, validações e relatórios.",
-  vendas: "Caixa, peças, contas a receber e consultas operacionais.",
+  administrador: "Acesso total, incluindo administração, perfis e permissões.",
+  adm_financeiro: "Caixa, financeiro, contas, folha, comissões e relatórios financeiros.",
+  adm_operacional: "Produção técnica, validações, técnicos, metas e relatórios operacionais.",
+  vendedor: "Caixa Diário: lançamentos, formas de pagamento e comissão de entrega.",
   tecnico: "Apenas a própria produção, comissões e metas.",
   tv_display: "Somente o painel Modo TV.",
 };
