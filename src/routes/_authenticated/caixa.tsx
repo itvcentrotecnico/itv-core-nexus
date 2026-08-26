@@ -367,7 +367,7 @@ function CaixaPage() {
   );
 }
 
-function KpiCard({
+export function KpiCard({
   label,
   value,
   sub,
