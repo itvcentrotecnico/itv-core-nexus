@@ -208,15 +208,14 @@ function ComissoesPage() {
 
       {podeGerenciar && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
-          <KpiCard title="Comissão Gerada" value={ind ? formatCurrencyBRL(ind.comissao_gerada) : "—"} icon={Percent} />
-          <KpiCard title="Pendente" value={ind ? formatCurrencyBRL(ind.comissao_pendente) : "—"} icon={ClipboardList} />
-          <KpiCard title="Aprovada" value={ind ? formatCurrencyBRL(ind.comissao_aprovada) : "—"} icon={TrendingUp} />
-          <KpiCard title="Paga" value={ind ? formatCurrencyBRL(ind.comissao_paga) : "—"} icon={Wallet} />
-          <KpiCard title="Técnicos" value={ind ? String(ind.tecnicos_com_comissao) : "—"} icon={Users} />
+          <KpiCard label="Comissão Gerada" value={ind ? formatCurrencyBRL(ind.comissao_gerada) : "—"} />
+          <KpiCard label="Pendente" value={ind ? formatCurrencyBRL(ind.comissao_pendente) : "—"} />
+          <KpiCard label="Aprovada" value={ind ? formatCurrencyBRL(ind.comissao_aprovada) : "—"} />
+          <KpiCard label="Paga" value={ind ? formatCurrencyBRL(ind.comissao_paga) : "—"} />
+          <KpiCard label="Técnicos" value={ind ? String(ind.tecnicos_com_comissao) : "—"} />
           <KpiCard
-            title="% sobre Receita"
+            label="% sobre Receita"
             value={ind?.comissao_receita_pct != null ? `${ind.comissao_receita_pct.toLocaleString("pt-BR")}%` : "—"}
-            icon={Banknote}
           />
         </div>
       )}
