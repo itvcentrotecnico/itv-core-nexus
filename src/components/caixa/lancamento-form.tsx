@@ -625,6 +625,15 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
             </div>
           </div>
 
+          <ComissaoEntregaSection
+            valor={comissaoEntrega}
+            onChange={(patch) => setComissaoEntrega((prev) => ({ ...prev, ...patch }))}
+            config={configCeQuery.data}
+            entregadores={entregadoresQuery.data ?? []}
+          />
+
+
+
           <div className="mt-4">
             <label htmlFor="cx-obs" className={labelClass}>
               Observação <span className="font-normal text-muted-foreground">(opcional)</span>
