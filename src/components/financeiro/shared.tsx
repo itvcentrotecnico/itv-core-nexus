@@ -46,7 +46,7 @@ export function useFinanceiroRefs(enabled: boolean) {
 type RpcResponse = { data: unknown; error: { message: string } | null };
 
 /** Chama RPCs do financeiro com nome dinâmico e padroniza erro. */
-export async function rpcFin<T extends FinanceiroRpcResult>(
+export async function rpcFin<T extends { ok: boolean; message?: string } = FinanceiroRpcResult>(
   fn: string,
   args: Record<string, unknown>,
 ): Promise<T> {

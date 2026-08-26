@@ -47,7 +47,7 @@ export const Route = createFileRoute("/_authenticated/financeiro")({
   component: FinanceiroPage,
 });
 
-function KpiCard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: "good" | "bad" }) {
+function KpiCard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: "good" | "bad" | undefined }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -132,8 +132,8 @@ function VisaoGeralTab() {
   const [mes, setMes] = useState(monthFromDateISO(todayManausISO()));
   const from = `${mes}-01`;
   const to = useMemo(() => {
-    const [y, m] = mes.split("-").map(Number);
-    return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
+    const parts = mes.split("-").map(Number);
+    return new Date(Date.UTC(parts[0] ?? 2026, parts[1] ?? 1, 0)).toISOString().slice(0, 10);
   }, [mes]);
 
   const indQuery = useQuery({
