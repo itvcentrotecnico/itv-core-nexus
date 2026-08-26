@@ -632,11 +632,10 @@ function FluxoTab() {
   if (!fluxo || !projecao) return <p className="text-sm text-muted-foreground">Sem dados de projeção.</p>;
 
   const { pontos, primeiroNegativo, d7, d15, d30 } = projecao;
-  const maxAbs = Math.max(1, ...pontos.map((p) => Math.abs(p.saldo)));
   const W = 600;
   const H = 160;
-  const zeroY = (max: number) => (max / (max + Math.min(0, ...pontos.map((p) => p.saldo)) * -1 || max)) * H;
   const minVal = Math.min(0, ...pontos.map((p) => p.saldo));
+  const maxAbs = Math.max(1, ...pontos.map((p) => Math.abs(p.saldo)));
   const range = maxAbs - minVal || 1;
   const yOf = (v: number) => H - ((v - minVal) / range) * H;
   const line = pontos.map((p, i) => `${(i / Math.max(1, pontos.length - 1)) * W},${yOf(p.saldo)}`).join(" ");
@@ -699,7 +698,6 @@ function FluxoTab() {
           </tbody>
         </table>
       </div>
-      {void zeroY /* lint helper unused */}
     </div>
   );
 }
