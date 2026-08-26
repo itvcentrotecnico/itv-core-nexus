@@ -143,12 +143,64 @@ function ContaBloqueada() {
   );
 }
 
+/** Usuário autenticado mas sem perfil/role configurado pelo ADM. */
+function SemPerfilConfigurado() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function sair() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 text-center shadow-sm">
+        <img src={logoColor.url} alt="ITV Centro Técnico" className="mx-auto mb-6 h-10 w-auto" />
+        <h1 className="font-display text-lg font-bold text-foreground">Acesso não configurado</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Seu usuário ainda não possui perfil de acesso configurado. Procure o administrador.
+        </p>
+        <button
+          type="button"
+          onClick={sair}
+          className="mt-6 w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Sair
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Bloqueio por URL direta: módulo sem permissão de visualização. */
+function ModuloBloqueado() {
+  return (
+    <div className="flex flex-col items-center gap-3 py-24 text-center">
+      <ShieldAlert className="size-10 text-muted-foreground/40" aria-hidden="true" />
+      <h1 className="font-display text-xl font-bold text-foreground">Acesso restrito</h1>
+      <p className="max-w-sm text-sm text-muted-foreground">
+        Você não tem permissão para acessar este módulo. Solicite a liberação ao administrador.
+      </p>
+      <Link
+        to="/dashboard"
+        className="mt-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+      >
+        Voltar ao Dashboard
+      </Link>
+    </div>
+  );
+}
+
 /** Estrutura principal autenticada: sidebar fixa no desktop, drawer no mobile. */
 export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
-  const { bloqueado, roles, isLoading } = useAccess();
+  const { bloqueado, roles, isLoading, isAdmin, can } = useAccess();
   const somenteTv = roles.length > 0 && roles.every((r) => r === "tv_display");
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     if (somenteTv) navigate({ to: "/modo-tv", replace: true });
@@ -156,6 +208,18 @@ export function AppShell() {
 
   if (bloqueado) return <ContaBloqueada />;
   if (somenteTv && !isLoading) return null;
+  if (!isLoading && roles.length === 0) return <SemPerfilConfigurado />;
+
+  const moduloAtual = moduloDaRota(pathname);
+  const podeVerModulo =
+    isLoading ||
+    !moduloAtual ||
+    isAdmin ||
+    can(moduloAtual, "visualizar") ||
+    can(moduloAtual, "visualizar_propria") ||
+    can(moduloAtual, "administrar");
+
+
 
 
   return (
