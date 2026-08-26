@@ -4,12 +4,10 @@ import {
   LayoutDashboard,
   Package,
   Percent,
-  ScrollText,
   Settings,
   ShieldCheck,
   Target,
   Tv,
-  UserCog,
   Users,
   Wallet,
   Wrench,
@@ -49,8 +47,6 @@ export const NAV_SECTIONS: NavSection[] = [
     title: "Administração",
     items: [
       { moduleKey: "admin", label: "Administração", to: "/admin", icon: Settings },
-      { moduleKey: "admin-usuarios", label: "Usuários", to: "/admin", icon: UserCog },
-      { moduleKey: "admin-auditoria", label: "Auditoria", to: "/admin", icon: ScrollText },
     ],
   },
 ];
