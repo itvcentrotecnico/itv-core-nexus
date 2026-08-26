@@ -34,6 +34,8 @@ import { rpcFin } from "@/components/financeiro/shared";
 import { ContaPagarForm, ContaReceberForm, DespesaForm } from "@/components/financeiro/forms";
 import { CancelarFinanceiroDialog, MovimentosContaList, PagarDialog, ReceberDialog } from "@/components/financeiro/movimentos";
 import { CategoriasTab } from "@/components/financeiro/categorias-tab";
+import { DreTab } from "@/components/financeiro/dre-tab";
+import { TributosTab } from "@/components/financeiro/tributos-tab";
 
 export const Route = createFileRoute("/_authenticated/financeiro")({
   head: () => ({
@@ -73,13 +75,15 @@ function Badge({ label, className }: { label: string; className: string }) {
 
 const money = (n: number | null | undefined) => formatCurrencyBRL(n ?? 0);
 
-type TabKey = "visao" | "despesas" | "pagar" | "receber" | "fluxo" | "categorias";
+type TabKey = "visao" | "dre" | "despesas" | "pagar" | "receber" | "tributos" | "fluxo" | "categorias";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "visao", label: "Visão Geral" },
+  { key: "dre", label: "DRE Gerencial" },
   { key: "despesas", label: "Despesas" },
   { key: "pagar", label: "Contas a Pagar" },
   { key: "receber", label: "Contas a Receber" },
+  { key: "tributos", label: "Tributos" },
   { key: "fluxo", label: "Fluxo de Caixa" },
   { key: "categorias", label: "Categorias" },
 ];
@@ -117,6 +121,8 @@ function FinanceiroPage() {
       </div>
 
       {tab === "visao" && <VisaoGeralTab />}
+      {tab === "dre" && <DreTab />}
+      {tab === "tributos" && <TributosTab />}
       {tab === "despesas" && <DespesasTab can={can} />}
       {tab === "pagar" && <ContasPagarTab can={can} />}
       {tab === "receber" && <ContasReceberTab can={can} />}
