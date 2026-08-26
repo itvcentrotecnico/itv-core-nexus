@@ -157,8 +157,12 @@ export interface FinanceiroIndicadores {
   custos_diretos: number;
   comissoes: number;
   despesas_operacionais: number;
+  folha_gerencial: number;
+  folha_pendente: number;
   margem_contribuicao: number;
   resultado_antes_folha: number;
+  resultado_operacional: number;
+  margem_operacional: number;
   contas_pagar_pendente: number;
   contas_receber_pendente: number;
   contas_pagar_vencido: number;
