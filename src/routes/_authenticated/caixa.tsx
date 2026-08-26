@@ -1,18 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  Banknote,
-  Lock,
-  LockOpen,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-  RotateCcw,
-  Wallet,
-  XCircle,
-} from "lucide-react";
+import { Lock, LockOpen, Plus } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
@@ -20,17 +9,10 @@ import { LancamentoForm } from "@/components/caixa/lancamento-form";
 import { CancelarLancamentoDialog, EstornarLancamentoDialog } from "@/components/caixa/lancamento-actions";
 import { FecharCaixaDialog, ReabrirCaixaDialog } from "@/components/caixa/fechamento";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  STATUS_LANCAMENTO,
-  round2,
-  type CaixaFechamento,
-  type CaixaLancamento,
-} from "@/lib/caixa";
+  LancamentosView,
+  type LancamentoComEntrega,
+} from "@/components/caixa/lancamentos-view";
+import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV, todayManausISO } from "@/lib/format";
 
@@ -51,6 +33,7 @@ function CaixaPage() {
   const queryClient = useQueryClient();
 
   const [date, setDate] = useState(todayManausISO());
+  const [periodo, setPeriodo] = useState({ inicio: todayManausISO(), fim: todayManausISO() });
   const [tab, setTab] = useState<"lancamentos" | "fechamentos">("lancamentos");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<CaixaLancamento | null>(null);
@@ -58,6 +41,12 @@ function CaixaPage() {
   const [estornoTarget, setEstornoTarget] = useState<CaixaLancamento | null>(null);
   const [fecharOpen, setFecharOpen] = useState(false);
   const [reabrirTarget, setReabrirTarget] = useState<CaixaFechamento | null>(null);
+
+  const mudarData = (d: string) => {
+    setDate(d);
+    setPeriodo({ inicio: d, fim: d });
+  };
+
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["caixa"] });
