@@ -321,7 +321,7 @@ function FotosExistentes({ producaoId }: { producaoId: string }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("producao_fotos")
-        .select("id, producao_id, storage_path, tipo, descricao, created_at")
+        .select("id, producao_id, storage_path, tipo, descricao, uploaded_by, created_at")
         .eq("producao_id", producaoId)
         .order("created_at");
       if (error) throw error;
