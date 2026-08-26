@@ -8,6 +8,7 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { AdminTaxasPagamento } from "@/components/admin/taxas-pagamento";
 import { GOVERNANCA_PADRAO, type GovernancaConfig } from "@/lib/governanca";
 import { formatRole, type AppRole } from "@/hooks/use-auth";
 
@@ -455,6 +456,7 @@ export function AdminParametros() {
           ))}
         </div>
       </SecaoAdmin>
+      <AdminTaxasPagamento />
     </div>
   );
 }

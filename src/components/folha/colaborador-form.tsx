@@ -57,6 +57,17 @@ export function ColaboradorForm({
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [observacao, setObservacao] = useState("");
+  const [status, setStatus] = useState<ColaboradorStatus>("ativo");
+  const [entrega, setEntrega] = useState(false);
+  const [entregaTocado, setEntregaTocado] = useState(false);
+
+  const cargoSelecionado = (refs.data?.cargos ?? []).find((c) => c.id === cargoId);
+
+  // Cargo de entrega já sugere a habilitação da comissão de entrega.
+  useEffect(() => {
+    if (entregaTocado || !cargoSelecionado) return;
+    setEntrega(!!cargoSelecionado.funcao_entrega);
+  }, [cargoSelecionado, entregaTocado]);
 
   useEffect(() => {
     if (!open) return;
@@ -70,6 +81,9 @@ export function ColaboradorForm({
     setTelefone(editing?.telefone ?? "");
     setEmail(editing?.email ?? "");
     setObservacao(editing?.observacao ?? "");
+    setStatus(editing?.status ?? "ativo");
+    setEntrega(!!editing?.recebe_comissao_entrega);
+    setEntregaTocado(!!editing);
   }, [open, editing]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -86,18 +100,30 @@ export function ColaboradorForm({
         p_telefone: telefone || null,
         p_email: email || null,
         p_observacao: observacao || null,
+        p_recebe_comissao_entrega: entrega,
       };
       if (editing) {
         await rpcFin<FolhaRpcResult>("colaboradores_atualizar", { p_id: editing.id, ...args });
         toast.success("Colaborador atualizado.");
       } else {
-        await rpcFin<FolhaRpcResult>("colaboradores_registrar", { ...args, p_salario_base: salario });
-        toast.success("Colaborador cadastrado com salário inicial registrado.");
+        await rpcFin<FolhaRpcResult>("colaboradores_registrar", {
+          ...args,
+          p_salario_base: salario ?? 0,
+          p_status: status,
+        });
+        toast.success(
+          salario && salario > 0
+            ? "Colaborador cadastrado com salário inicial registrado."
+            : "Colaborador cadastrado. O salário pode ser definido depois em \"Salário\".",
+        );
       }
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar colaborador.");
+      const msg = err instanceof Error ? err.message : "";
+      toast.error(msg || "Não foi possível salvar o colaborador. Verifique os campos obrigatórios e tente novamente.", {
+        description: msg ? "Corrija a informação indicada e tente novamente." : undefined,
+      });
     } finally {
       setSaving(false);
     }
@@ -111,7 +137,7 @@ export function ColaboradorForm({
           <DialogDescription>
             {editing
               ? "Dados cadastrais. Para alterar o salário, use \"Alterar Salário\" (preserva o histórico)."
-              : "O salário informado será registrado como salário inicial de admissão."}
+              : "Obrigatórios: nome, cargo e status. O colaborador não precisa ter login no sistema; o salário é opcional e pode ser definido depois."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -132,7 +158,7 @@ export function ColaboradorForm({
             </select>
           </div>
           <div>
-            <label htmlFor="c-cargo" className={labelClass}>Cargo</label>
+            <label htmlFor="c-cargo" className={labelClass}>Cargo / Função *</label>
             <select id="c-cargo" value={cargoId} onChange={(e) => setCargoId(e.target.value)} className={inputClass}>
               <option value="">—</option>
               {(refs.data?.cargos ?? []).filter((c) => c.ativo).map((c) => (
@@ -155,10 +181,34 @@ export function ColaboradorForm({
           </div>
           {!editing && (
             <div>
-              <label htmlFor="c-sal" className={labelClass}>Salário Base *</label>
+              <label htmlFor="c-sal" className={labelClass}>Salário Base (opcional)</label>
               <MoneyInput id="c-sal" value={salario} onChange={setSalario} />
             </div>
           )}
+          {!editing && (
+            <div>
+              <label htmlFor="c-status" className={labelClass}>Status *</label>
+              <select id="c-status" value={status} onChange={(e) => setStatus(e.target.value as ColaboradorStatus)} className={inputClass}>
+                {(Object.keys(STATUS_COLABORADOR) as ColaboradorStatus[])
+                  .filter((s) => s !== "desligado")
+                  .map((s) => (
+                    <option key={s} value={s}>{STATUS_COLABORADOR[s].label}</option>
+                  ))}
+              </select>
+            </div>
+          )}
+          <div className="sm:col-span-2 flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-3 py-2">
+            <input
+              id="c-entrega"
+              type="checkbox"
+              checked={entrega}
+              onChange={(e) => { setEntrega(e.target.checked); setEntregaTocado(true); }}
+              className="h-4 w-4 accent-primary"
+            />
+            <label htmlFor="c-entrega" className="text-sm">
+              Habilitado para <strong>comissão de entrega</strong> (entregador / motorista)
+            </label>
+          </div>
           <div>
             <label htmlFor="c-tel" className={labelClass}>Telefone</label>
             <input id="c-tel" value={telefone} onChange={(e) => setTelefone(e.target.value)} className={inputClass} />
@@ -173,7 +223,7 @@ export function ColaboradorForm({
           </div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
-            <Button type="submit" disabled={saving || !nome.trim() || (!editing && salario == null)}>
+            <Button type="submit" disabled={saving || !nome.trim() || !cargoId}>
               {saving ? "Salvando…" : editing ? "Salvar alterações" : "Cadastrar"}
             </Button>
           </DialogFooter>

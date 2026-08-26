@@ -17,6 +17,19 @@ export interface FormaPagamento {
   ordem: number;
   eh_dinheiro: boolean;
   taxa_padrao_percentual: number;
+  permite_parcelamento?: boolean;
+  max_parcelas?: number;
+  /** false = valor faturado que ainda será recebido (Boleto/Bemol). */
+  liquidacao_imediata?: boolean;
+  prazo_liquidacao_dias?: number;
+}
+
+/** Taxa configurada pelo ADM por quantidade de parcelas. */
+export interface FormaPagamentoTaxa {
+  id: string;
+  forma_pagamento_id: string;
+  parcelas: number;
+  taxa_percentual: number;
 }
 
 export interface CaixaPagamento {

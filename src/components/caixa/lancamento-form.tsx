@@ -37,6 +37,7 @@ import {
   type CaixaLancamento,
   type CaixaRpcResult,
   type FormaPagamento,
+  type FormaPagamentoTaxa,
   type TipoReceita,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
@@ -146,11 +147,26 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     queryFn: async () => {
       const { data, error } = await supabase
         .from("formas_pagamento")
-        .select("id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual")
+        .select(
+          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias",
+        )
         .eq("ativo", true)
         .order("ordem");
       if (error) throw error;
       return data as FormaPagamento[];
+    },
+  });
+
+  const taxasQuery = useQuery({
+    queryKey: ["caixa", "formas-pagamento-taxas"],
+    enabled: open,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("formas_pagamento_taxas")
+        .select("id, forma_pagamento_id, parcelas, taxa_percentual");
+      if (error) throw error;
+      return data as FormaPagamentoTaxa[];
     },
   });
 
@@ -236,6 +252,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
 
   function updateRow(key: number, patch: Partial<PagRow>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)));
+  }
+
+  /** Taxa configurada para a forma no parcelamento escolhido (fallback: taxa padrão). */
+  function taxaConfigurada(formaId: string, parcelas: number): number {
+    const especifica = (taxasQuery.data ?? []).find(
+      (t) => t.forma_pagamento_id === formaId && t.parcelas === Math.max(1, parcelas),
+    );
+    if (especifica) return Number(especifica.taxa_percentual);
+    const forma = (formasQuery.data ?? []).find((f) => f.id === formaId);
+    return Number(forma?.taxa_padrao_percentual ?? 0);
   }
 
   function recalcTaxa(r: PagRow, valor = r.valor, taxa = r.taxa_percentual): number | null {
@@ -565,9 +591,11 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                       value={r.forma_pagamento_id}
                       onValueChange={(v) => {
                         const forma = formas.find((f) => f.id === v);
-                        const taxa = forma?.taxa_padrao_percentual ?? 0;
+                        const parcelas = forma?.permite_parcelamento ? Math.min(r.parcelas, forma.max_parcelas ?? 1) : 1;
+                        const taxa = taxaConfigurada(v, parcelas);
                         updateRow(r.key, {
                           forma_pagamento_id: v,
+                          parcelas,
                           taxa_percentual: taxa || null,
                           taxa_valor: recalcTaxa(r, r.valor, taxa),
                         });
@@ -599,17 +627,33 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">
                       Parc.
                     </label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={24}
-                      value={r.parcelas}
-                      aria-label={`Parcelas do pagamento ${i + 1}`}
-                      onChange={(e) =>
-                        updateRow(r.key, { parcelas: Math.max(1, Number(e.target.value) || 1) })
-                      }
-                      className={inputClass}
-                    />
+                    {(() => {
+                      const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+                      const max = forma?.permite_parcelamento ? Math.max(1, forma.max_parcelas ?? 1) : 1;
+                      return (
+                        <select
+                          value={r.parcelas}
+                          disabled={max === 1}
+                          aria-label={`Parcelas do pagamento ${i + 1}`}
+                          onChange={(e) => {
+                            const parcelas = Math.max(1, Number(e.target.value) || 1);
+                            const taxa = r.forma_pagamento_id
+                              ? taxaConfigurada(r.forma_pagamento_id, parcelas)
+                              : (r.taxa_percentual ?? 0);
+                            updateRow(r.key, {
+                              parcelas,
+                              taxa_percentual: taxa || null,
+                              taxa_valor: recalcTaxa(r, r.valor, taxa),
+                            });
+                          }}
+                          className={inputClass}
+                        >
+                          {Array.from({ length: max }, (_, n) => n + 1).map((n) => (
+                            <option key={n} value={n}>{n}x</option>
+                          ))}
+                        </select>
+                      );
+                    })()}
                   </div>
                   <div className="sm:col-span-1">
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">
@@ -650,6 +694,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </button>
                   </div>
                 </div>
+                {(() => {
+                  const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+                  if (!forma || forma.liquidacao_imediata !== false) return null;
+                  return (
+                    <p className="mt-2 rounded-md bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-700">
+                      {forma.nome} não entra como dinheiro recebido hoje: será gerada uma conta a receber
+                      com vencimento em {forma.prazo_liquidacao_dias ?? 0} dia(s).
+                    </p>
+                  );
+                })()}
               </div>
             ))}
 
