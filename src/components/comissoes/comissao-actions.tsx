@@ -28,8 +28,8 @@ type RpcResponse = { data: unknown; error: { message: string } | null };
 
 async function rpc<T extends ComissaoRpcResult>(fn: string, args: Record<string, unknown>): Promise<T> {
   // RPCs tipados no generated types; aqui aceitamos nome dinâmico para reutilizar o helper.
-  const dynRpc = supabase.rpc as unknown as (n: string, a: Record<string, unknown>) => Promise<RpcResponse>;
-  const { data, error } = await dynRpc(fn, args);
+  const dynRpc = supabase.rpc as unknown as (this: typeof supabase, n: string, a: Record<string, unknown>) => Promise<RpcResponse>;
+  const { data, error } = await dynRpc.call(supabase, fn, args);
   if (error) throw new Error(error.message);
   const r = data as T;
   if (!r.ok) throw new Error(r.message ?? "Operação não concluída.");

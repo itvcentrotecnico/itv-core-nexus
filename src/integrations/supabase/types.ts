@@ -450,6 +450,7 @@ export type Database = {
         Row: {
           ativo: boolean
           created_at: string
+          funcao_entrega: boolean
           id: string
           nome: string
           ordem: number
@@ -458,6 +459,7 @@ export type Database = {
         Insert: {
           ativo?: boolean
           created_at?: string
+          funcao_entrega?: boolean
           id?: string
           nome: string
           ordem?: number
@@ -466,6 +468,7 @@ export type Database = {
         Update: {
           ativo?: boolean
           created_at?: string
+          funcao_entrega?: boolean
           id?: string
           nome?: string
           ordem?: number
@@ -1483,6 +1486,7 @@ export type Database = {
       }
       contas_receber: {
         Row: {
+          caixa_lancamento_id: string | null
           cancelado_em: string | null
           cancelado_por: string | null
           cliente: string
@@ -1507,6 +1511,7 @@ export type Database = {
           vencimento: string
         }
         Insert: {
+          caixa_lancamento_id?: string | null
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente: string
@@ -1531,6 +1536,7 @@ export type Database = {
           vencimento: string
         }
         Update: {
+          caixa_lancamento_id?: string | null
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente?: string
@@ -1555,6 +1561,13 @@ export type Database = {
           vencimento?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "contas_receber_caixa_lancamento_id_fkey"
+            columns: ["caixa_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "contas_receber_cancelado_por_fkey"
             columns: ["cancelado_por"]
@@ -2440,10 +2453,13 @@ export type Database = {
           created_at: string
           eh_dinheiro: boolean
           id: string
+          liquidacao_imediata: boolean
           max_parcelas: number
           nome: string
+          observacao: string | null
           ordem: number
           permite_parcelamento: boolean
+          prazo_liquidacao_dias: number
           taxa_padrao_percentual: number
           tipo: string
         }
@@ -2452,10 +2468,13 @@ export type Database = {
           created_at?: string
           eh_dinheiro?: boolean
           id?: string
+          liquidacao_imediata?: boolean
           max_parcelas?: number
           nome: string
+          observacao?: string | null
           ordem?: number
           permite_parcelamento?: boolean
+          prazo_liquidacao_dias?: number
           taxa_padrao_percentual?: number
           tipo?: string
         }
@@ -2464,14 +2483,52 @@ export type Database = {
           created_at?: string
           eh_dinheiro?: boolean
           id?: string
+          liquidacao_imediata?: boolean
           max_parcelas?: number
           nome?: string
+          observacao?: string | null
           ordem?: number
           permite_parcelamento?: boolean
+          prazo_liquidacao_dias?: number
           taxa_padrao_percentual?: number
           tipo?: string
         }
         Relationships: []
+      }
+      formas_pagamento_taxas: {
+        Row: {
+          created_at: string
+          forma_pagamento_id: string
+          id: string
+          parcelas: number
+          taxa_percentual: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          forma_pagamento_id: string
+          id?: string
+          parcelas: number
+          taxa_percentual?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          forma_pagamento_id?: string
+          id?: string
+          parcelas?: number
+          taxa_percentual?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "formas_pagamento_taxas_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fornecedores: {
         Row: {
@@ -3416,6 +3473,7 @@ export type Database = {
     Views: {
       colaboradores_view: {
         Row: {
+          cargo_funcao_entrega: boolean | null
           cargo_id: string | null
           cargo_nome: string | null
           created_at: string | null
@@ -3428,6 +3486,7 @@ export type Database = {
           nome: string | null
           nome_exibicao: string | null
           observacao: string | null
+          recebe_comissao_entrega: boolean | null
           salario_atual: number | null
           setor_id: string | null
           setor_nome: string | null
@@ -3835,16 +3894,17 @@ export type Database = {
       }
       colaboradores_atualizar: {
         Args: {
-          p_cargo_id: string
-          p_data_admissao: string
-          p_email: string
+          p_cargo_id?: string
+          p_data_admissao?: string
+          p_email?: string
           p_id: string
           p_nome: string
-          p_nome_exibicao: string
-          p_observacao: string
-          p_setor_id: string
-          p_telefone: string
-          p_tipo_vinculo: string
+          p_nome_exibicao?: string
+          p_observacao?: string
+          p_recebe_comissao_entrega?: boolean
+          p_setor_id?: string
+          p_telefone?: string
+          p_tipo_vinculo?: string
         }
         Returns: Json
       }
@@ -3854,16 +3914,18 @@ export type Database = {
       }
       colaboradores_registrar: {
         Args: {
-          p_cargo_id: string
-          p_data_admissao: string
-          p_email: string
+          p_cargo_id?: string
+          p_data_admissao?: string
+          p_email?: string
           p_nome: string
-          p_nome_exibicao: string
-          p_observacao: string
-          p_salario_base: number
-          p_setor_id: string
-          p_telefone: string
-          p_tipo_vinculo: string
+          p_nome_exibicao?: string
+          p_observacao?: string
+          p_recebe_comissao_entrega?: boolean
+          p_salario_base?: number
+          p_setor_id?: string
+          p_status?: Database["public"]["Enums"]["colaborador_status"]
+          p_telefone?: string
+          p_tipo_vinculo?: string
         }
         Returns: Json
       }
@@ -4260,6 +4322,10 @@ export type Database = {
       }
       folha_reimportar: { Args: { p_competencia_id: string }; Returns: Json }
       folha_resumo: { Args: { p_competencia_id: string }; Returns: Json }
+      forma_pagamento_taxa: {
+        Args: { p_forma_id: string; p_parcelas?: number }
+        Returns: number
+      }
       governanca_config: { Args: never; Returns: Json }
       has_permission: {
         Args: {

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Trash2 } from "lucide-react";
+import { Camera, ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +42,7 @@ export function RegistroProducaoDialog({
   const { profile } = useAccess();
   const { tipos } = useProducaoRefs();
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   const editando = !!registro;
   const [saving, setSaving] = useState(false);
@@ -62,6 +63,18 @@ export function RegistroProducaoDialog({
   const [pecas, setPecas] = useState("");
   const [observacao, setObservacao] = useState("");
   const [fotosNovas, setFotosNovas] = useState<File[]>([]);
+
+  /** Pré-visualização local das fotos selecionadas (câmera ou galeria). */
+  const previews = useMemo(() => fotosNovas.map((f) => URL.createObjectURL(f)), [fotosNovas]);
+  useEffect(() => () => previews.forEach((url) => URL.revokeObjectURL(url)), [previews]);
+
+  function adicionarFotos(list: FileList | null) {
+    const novos = Array.from(list ?? []).filter((f) => f.type.startsWith("image/"));
+    if (novos.length === 0) return;
+    setFotosNovas((prev) => [...prev, ...novos]);
+  }
+
+
 
   useEffect(() => {
     if (open) {
@@ -261,30 +274,80 @@ export function RegistroProducaoDialog({
 
           <div>
             <span className={labelClass}>Fotos (evidências)</span>
+            {/* Câmera traseira direta no celular; galeria como alternativa/fallback. */}
+            <input
+              ref={cameraRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                adicionarFotos(e.target.files);
+                e.target.value = "";
+              }}
+            />
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
               multiple
               className="hidden"
-              onChange={(e) => setFotosNovas((prev) => [...prev, ...Array.from(e.target.files ?? [])])}
+              onChange={(e) => {
+                adicionarFotos(e.target.files);
+                e.target.value = "";
+              }}
             />
             <div className="flex flex-wrap items-center gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-                <ImagePlus className="mr-1.5 h-4 w-4" /> Adicionar fotos
+              <Button type="button" size="sm" onClick={() => cameraRef.current?.click()}>
+                <Camera className="mr-1.5 h-4 w-4" /> Tirar foto
               </Button>
-              {fotosNovas.map((f, i) => (
-                <span key={`${f.name}-${i}`} className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-1 text-[11px]">
-                  {f.name}
-                  <button type="button" onClick={() => setFotosNovas((prev) => prev.filter((_, j) => j !== i))}
-                    className="text-muted-foreground hover:text-destructive" aria-label="Remover foto">
-                    <Trash2 className="h-3 w-3" />
-                  </button>
+              <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+                <ImagePlus className="mr-1.5 h-4 w-4" /> Escolher da galeria
+              </Button>
+              {fotosNovas.length > 0 && (
+                <span className="text-[11px] text-muted-foreground">
+                  {fotosNovas.length} foto(s) prontas para envio
                 </span>
-              ))}
+              )}
             </div>
+            {fotosNovas.length > 0 && (
+              <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {fotosNovas.map((f, i) => (
+                  <figure key={`${f.name}-${i}`} className="relative overflow-hidden rounded-lg border bg-muted">
+                    <img
+                      src={previews[i]}
+                      alt={`Pré-visualização da foto ${i + 1}`}
+                      className="h-24 w-full object-cover"
+                    />
+                    <div className="absolute right-1 top-1 flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFotosNovas((prev) => prev.filter((_, j) => j !== i));
+                          cameraRef.current?.click();
+                        }}
+                        className="rounded-full bg-background/90 p-1 text-muted-foreground hover:text-foreground"
+                        aria-label="Tirar novamente"
+                      >
+                        <Camera className="h-3 w-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFotosNovas((prev) => prev.filter((_, j) => j !== i))}
+                        className="rounded-full bg-background/90 p-1 text-muted-foreground hover:text-destructive"
+                        aria-label="Remover foto"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </figure>
+                ))}
+              </div>
+            )}
             {editando && <FotosExistentes producaoId={registro.id} />}
           </div>
+
 
           {duplicidade && (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700">
