@@ -95,6 +95,29 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   const [rows, setRows] = useState<PagRow[]>([emptyRow()]);
   const [saving, setSaving] = useState(false);
   const [dupInfo, setDupInfo] = useState<NonNullable<CaixaRpcResult["existente"]> | null>(null);
+  const [comissaoEntrega, setComissaoEntrega] = useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
+
+  const configCeQuery = useComissaoEntregaConfig(open);
+  const entregadoresQuery = useEntregadores(open);
+
+  /** Comissão de entrega vigente do lançamento em edição. */
+  const comissaoAtualQuery = useQuery({
+    queryKey: ["comissao-entrega", "do-lancamento", editing?.id ?? null],
+    enabled: open && !!editing,
+    queryFn: async (): Promise<ComissaoEntrega | null> => {
+      const { data, error } = await supabase.rpc("comissao_entrega_listar", {});
+      if (error) return null;
+      const res = data as unknown as { ok: boolean; itens?: ComissaoEntrega[] };
+      if (!res?.ok) return null;
+      return (
+        (res.itens ?? []).find(
+          (i) => i.caixa_lancamento_id === editing?.id && i.status !== "cancelada",
+        ) ?? null
+      );
+    },
+  });
+
+
 
   const tiposQuery = useQuery({
     queryKey: ["caixa", "tipos-receita"],
