@@ -121,9 +121,9 @@ function MetaRow({ meta, podeConfigurar }: { meta: MetaTecnico; podeConfigurar: 
   return (
     <tr className="border-b border-border last:border-0">
       <td className="px-3 py-2 font-medium text-foreground">{meta.tecnico?.full_name ?? "—"}</td>
-      <td className="px-3 py-2 text-muted-foreground">{TIPO_META_LABEL[meta.tipo_meta]}</td>
+      <td className="px-3 py-2 text-muted-foreground">{TIPO_META_LABEL[meta.tipo_meta] ?? meta.tipo_meta}</td>
       <td className="px-3 py-2 text-muted-foreground">
-        {PERIODO_META_LABEL[meta.periodo_tipo]} · {formatDateOnlyISO(meta.inicio)} → {formatDateOnlyISO(meta.fim)}
+        {PERIODO_META_LABEL[meta.periodo_tipo] ?? meta.periodo_tipo} · {formatDateOnlyISO(meta.inicio)} → {formatDateOnlyISO(meta.fim)}
       </td>
       <td className="px-3 py-2 text-foreground">
         {meta.tipo_meta !== "quantidade" && meta.valor_meta != null && <span>{formatCurrencyBRL(meta.valor_meta)}</span>}
