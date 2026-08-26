@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ModoTvRouteImport } from './routes/modo-tv'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated/caixa'
 import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authenticated/colaboradores'
@@ -25,6 +26,7 @@ import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedTecnicosRouteImport } from './routes/_authenticated/tecnicos'
 import { Route as AuthenticatedAdminAuditoriaRouteImport } from './routes/_authenticated/admin.auditoria'
+import { Route as AuthenticatedAdminModoTvRouteImport } from './routes/_authenticated/admin.modo-tv'
 import { Route as AuthenticatedAdminPermissoesRouteImport } from './routes/_authenticated/admin.permissoes'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 
@@ -40,6 +42,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModoTvRoute = ModoTvRouteImport.update({
+  id: '/modo-tv',
+  path: '/modo-tv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -110,6 +117,12 @@ const AuthenticatedAdminAuditoriaRoute =
     path: '/admin/auditoria',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminModoTvRoute =
+  AuthenticatedAdminModoTvRouteImport.update({
+    id: '/admin/modo-tv',
+    path: '/admin/modo-tv',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminPermissoesRoute =
   AuthenticatedAdminPermissoesRouteImport.update({
     id: '/admin/permissoes',
@@ -126,6 +139,7 @@ const AuthenticatedAdminUsuariosRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
@@ -139,12 +153,14 @@ export interface FileRoutesByFullPath {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
   '/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
+  '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
@@ -158,6 +174,7 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
   '/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
+  '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
 }
@@ -166,6 +183,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/colaboradores': typeof AuthenticatedColaboradoresRoute
@@ -179,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/tecnicos': typeof AuthenticatedTecnicosRoute
   '/_authenticated/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
+  '/_authenticated/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/_authenticated/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
 }
@@ -187,6 +206,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/modo-tv'
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
@@ -200,12 +220,14 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/tecnicos'
     | '/admin/auditoria'
+    | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin/usuarios'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/modo-tv'
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
@@ -219,6 +241,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/tecnicos'
     | '/admin/auditoria'
+    | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin/usuarios'
   id:
@@ -226,6 +249,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/modo-tv'
     | '/reset-password'
     | '/_authenticated/caixa'
     | '/_authenticated/colaboradores'
@@ -239,6 +263,7 @@ export interface FileRouteTypes {
     | '/_authenticated/relatorios'
     | '/_authenticated/tecnicos'
     | '/_authenticated/admin/auditoria'
+    | '/_authenticated/admin/modo-tv'
     | '/_authenticated/admin/permissoes'
     | '/_authenticated/admin/usuarios'
   fileRoutesById: FileRoutesById
@@ -247,6 +272,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ModoTvRoute: typeof ModoTvRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -271,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modo-tv': {
+      id: '/modo-tv'
+      path: '/modo-tv'
+      fullPath: '/modo-tv'
+      preLoaderRoute: typeof ModoTvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -364,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditoriaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/modo-tv': {
+      id: '/_authenticated/admin/modo-tv'
+      path: '/admin/modo-tv'
+      fullPath: '/admin/modo-tv'
+      preLoaderRoute: typeof AuthenticatedAdminModoTvRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/permissoes': {
       id: '/_authenticated/admin/permissoes'
       path: '/admin/permissoes'
@@ -394,6 +434,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedTecnicosRoute: typeof AuthenticatedTecnicosRoute
   AuthenticatedAdminAuditoriaRoute: typeof AuthenticatedAdminAuditoriaRoute
+  AuthenticatedAdminModoTvRoute: typeof AuthenticatedAdminModoTvRoute
   AuthenticatedAdminPermissoesRoute: typeof AuthenticatedAdminPermissoesRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
 }
@@ -411,6 +452,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedTecnicosRoute: AuthenticatedTecnicosRoute,
   AuthenticatedAdminAuditoriaRoute: AuthenticatedAdminAuditoriaRoute,
+  AuthenticatedAdminModoTvRoute: AuthenticatedAdminModoTvRoute,
   AuthenticatedAdminPermissoesRoute: AuthenticatedAdminPermissoesRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
 }
@@ -422,6 +464,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ModoTvRoute: ModoTvRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport

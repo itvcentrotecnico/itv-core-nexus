@@ -46,7 +46,7 @@ function ModoTvPage() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["modo-tv"],
     queryFn: async (): Promise<ModoTvIndicadores> => {
-      const { data: rpc, error: rpcError } = await supabase.rpc("modo_tv_indicadores", { p_ref: null });
+      const { data: rpc, error: rpcError } = await supabase.rpc("modo_tv_indicadores", {});
       if (rpcError) throw rpcError;
       return rpc as unknown as ModoTvIndicadores;
     },

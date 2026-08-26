@@ -66,7 +66,7 @@ function ModoTvConfigPage() {
   async function salvar() {
     setSalvando(true);
     const { data: res, error } = await supabase.rpc("modo_tv_config_salvar", {
-      p_config: form as unknown as Record<string, unknown>,
+      p_config: form as unknown as never,
     });
     setSalvando(false);
     const ok = (res as { ok?: boolean } | null)?.ok;
