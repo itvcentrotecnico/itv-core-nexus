@@ -62,7 +62,8 @@ type KpiKey =
   | "custo-pecas"
   | "custos-diretos"
   | "margem-parcial"
-  | "comissoes";
+  | "comissoes"
+  | "meta";
 
 interface KpiDef {
   label: string;
@@ -83,7 +84,7 @@ const KPIS: KpiDef[] = [
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
   { label: "Ticket Médio", icon: ArrowUpCircle, format: "currency", key: "ticket" },
   { label: "OS Faturadas", icon: ClipboardList, format: "count", key: "os" },
-  { label: "Meta", icon: Target, format: "currency" },
+  { label: "Meta", icon: Target, format: "currency", key: "meta" },
 ];
 
 function toISO(dt: Date): string {
@@ -125,12 +126,21 @@ function kpiValue(
   ind: CaixaIndicadores | undefined,
   custos: CustosIndicadores | undefined,
   comissoes?: ComissoesIndicadores,
+  metaPrincipal?: { nome: string; realizado: number; valor_alvo: number; percentual: number } | null,
 ): { value: string; sub: string } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
     sub: "Sem dados no período",
   };
   if (!kpi.key) return vazio;
+
+  if (kpi.key === "meta") {
+    if (!metaPrincipal) return { value: "—", sub: "Nenhuma meta principal ativa" };
+    return {
+      value: formatCurrencyBRL(metaPrincipal.realizado),
+      sub: `${metaPrincipal.percentual.toFixed(1).replace(".", ",")}% de ${formatCurrencyBRL(metaPrincipal.valor_alvo)} — ${metaPrincipal.nome}`,
+    };
+  }
 
   if (kpi.key === "comissoes") {
     if (!comissoes?.ok) return vazio;
