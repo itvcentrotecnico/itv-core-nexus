@@ -20,15 +20,20 @@ function Brand() {
 }
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
-  const { can, roles, isLoading } = useAccess();
-  const ehTecnico = roles.includes("tecnico");
+  const { can, isLoading } = useAccess();
+
+  // Menu dinâmico: um item aparece quando o perfil (ou uma exceção individual)
+  // permite alguma forma de visualização daquele módulo.
+  const podeVer = (moduleKey: string) =>
+    can(moduleKey, "visualizar") ||
+    can(moduleKey, "visualizar_propria") ||
+    can(moduleKey, "visualizar_todos") ||
+    can(moduleKey, "administrar");
 
   return (
     <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="Navegação principal">
       {NAV_SECTIONS.map((section, i) => {
-        const items = section.items.filter(
-          (item) => can(item.moduleKey, "visualizar") || (item.moduleKey === "comissoes" && ehTecnico),
-        );
+        const items = section.items.filter((item) => podeVer(item.moduleKey));
         if (items.length === 0 && !isLoading) return null;
         return (
           <div key={section.title ?? i}>
