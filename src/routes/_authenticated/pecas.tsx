@@ -548,9 +548,9 @@ function PorOsView({ data, loading }: { data: CustosPorOs | undefined; loading: 
             </p>
             <p className="text-muted-foreground">
               Margem Parcial:{" "}
-              {g.margem_parcial != null ? (
-                <strong className={g.margem_parcial >= 0 ? "text-primary" : "text-destructive"}>
-                  {formatCurrencyBRL(g.margem_parcial)}
+              {(g.margem_contribuicao ?? g.margem_parcial) != null ? (
+                <strong className={(g.margem_contribuicao ?? g.margem_parcial)! >= 0 ? "text-primary" : "text-destructive"}>
+                  {formatCurrencyBRL((g.margem_contribuicao ?? g.margem_parcial)!)}
                   {g.margem_pct != null && (
                     <span className="ml-1 text-xs font-normal">({g.margem_pct.toLocaleString("pt-BR")}%)</span>
                   )}

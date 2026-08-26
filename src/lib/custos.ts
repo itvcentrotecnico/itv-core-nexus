@@ -85,6 +85,8 @@ export interface CustoOsGrupo {
   tecnico: string | null;
   faturado_em: string | null;
   margem_parcial: number | null;
+  comissao?: number;
+  margem_contribuicao?: number | null;
   margem_pct: number | null;
   alerta_custo_elevado: boolean;
   alerta_margem_baixa: boolean;
