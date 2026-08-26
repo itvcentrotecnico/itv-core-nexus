@@ -32,7 +32,7 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
   const [tecnicoId, setTecnicoId] = useState(regra?.tecnico_id ?? "");
   const [tipo, setTipo] = useState<ComissaoTipoRegra>(regra?.tipo_regra ?? "percentual_mao_obra");
   const [percentual, setPercentual] = useState(regra?.percentual != null ? String(regra.percentual).replace(".", ",") : "");
-  const [valorFixo, setValorFixo] = useState(regra?.valor_fixo ?? 0);
+  const [valorFixo, setValorFixo] = useState<number | null>(regra?.valor_fixo ?? null);
   const [servico, setServico] = useState(regra?.servico_descricao ?? "");
   const [inicio, setInicio] = useState(regra?.inicio_vigencia ?? "");
   const [fim, setFim] = useState(regra?.fim_vigencia ?? "");
