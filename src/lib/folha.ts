@@ -18,6 +18,8 @@ export interface Cargo {
   setor_id: string | null;
   ativo: boolean;
   ordem: number;
+  /** Cargo de entrega/motorista: habilita comissão de entrega por padrão. */
+  funcao_entrega?: boolean;
 }
 
 export interface Colaborador {
@@ -39,6 +41,8 @@ export interface Colaborador {
   cargo_nome?: string | null;
   setor_nome?: string | null;
   salario_atual?: number | null;
+  recebe_comissao_entrega?: boolean;
+  cargo_funcao_entrega?: boolean;
 }
 
 export interface SalarioHistorico {
