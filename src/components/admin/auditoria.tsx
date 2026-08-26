@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronRight, Download } from "lucide-react";
 
@@ -210,8 +210,8 @@ export function AdminAuditoria() {
         <>
           <TabelaAdmin cabecalho={["Data/hora", "Usuário", "Módulo", "Ação", "Detalhes"]}>
             {registros.map((r) => (
-              <>
-                <tr key={r.id}>
+              <Fragment key={r.id}>
+                <tr>
                   <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTimeITV(r.created_at)}</td>
                   <td className="px-3 py-2 text-foreground">{r.usuario}</td>
                   <td className="px-3 py-2 text-muted-foreground">{r.modulo}</td>
@@ -228,7 +228,7 @@ export function AdminAuditoria() {
                   </td>
                 </tr>
                 {aberto === r.id ? (
-                  <tr key={`${r.id}-detalhe`}>
+                  <tr>
                     <td colSpan={5} className="bg-muted/40 px-3 py-3">
                       <div className="grid gap-3 md:grid-cols-2">
                         <div>
@@ -247,7 +247,7 @@ export function AdminAuditoria() {
                     </td>
                   </tr>
                 ) : null}
-              </>
+              </Fragment>
             ))}
           </TabelaAdmin>
 
