@@ -336,7 +336,58 @@ export type Database = {
           },
         ]
       }
+      categorias_financeiras: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          tipo: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          tipo?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          tipo?: string
+        }
+        Relationships: []
+      }
       categorias_pecas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      centros_custo: {
         Row: {
           ativo: boolean
           created_at: string
@@ -674,6 +725,434 @@ export type Database = {
           },
         ]
       }
+      contas_pagar: {
+        Row: {
+          cancelado_em: string | null
+          cancelado_por: string | null
+          categoria_id: string | null
+          centro_custo_id: string | null
+          competencia: string | null
+          created_at: string
+          created_by: string | null
+          data_emissao: string
+          descricao: string
+          despesa_id: string | null
+          forma_pagamento_id: string | null
+          fornecedor_id: string | null
+          grupo_parcela: string | null
+          id: string
+          motivo_cancelamento: string | null
+          observacao: string | null
+          parcela_atual: number | null
+          parcela_total: number | null
+          recorrente: boolean
+          responsavel_id: string
+          status: Database["public"]["Enums"]["conta_pagar_status"]
+          subcategoria_id: string | null
+          updated_at: string
+          updated_by: string | null
+          valor_original: number
+          vencimento: string
+        }
+        Insert: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          competencia?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_emissao: string
+          descricao: string
+          despesa_id?: string | null
+          forma_pagamento_id?: string | null
+          fornecedor_id?: string | null
+          grupo_parcela?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          recorrente?: boolean
+          responsavel_id: string
+          status?: Database["public"]["Enums"]["conta_pagar_status"]
+          subcategoria_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valor_original: number
+          vencimento: string
+        }
+        Update: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          competencia?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_emissao?: string
+          descricao?: string
+          despesa_id?: string | null
+          forma_pagamento_id?: string | null
+          fornecedor_id?: string | null
+          grupo_parcela?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          recorrente?: boolean
+          responsavel_id?: string
+          status?: Database["public"]["Enums"]["conta_pagar_status"]
+          subcategoria_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valor_original?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_pagar_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_financeiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_despesa_id_fkey"
+            columns: ["despesa_id"]
+            isOneToOne: false
+            referencedRelation: "despesas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias_financeiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_pagar_pagamentos: {
+        Row: {
+          comprovante_path: string | null
+          conta_pagar_id: string
+          created_at: string
+          data_pagamento: string
+          estorno_de_id: string | null
+          forma_pagamento_id: string | null
+          id: string
+          motivo_estorno: string | null
+          observacao: string | null
+          pago_por: string
+          valor: number
+        }
+        Insert: {
+          comprovante_path?: string | null
+          conta_pagar_id: string
+          created_at?: string
+          data_pagamento: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          pago_por: string
+          valor: number
+        }
+        Update: {
+          comprovante_path?: string | null
+          conta_pagar_id?: string
+          created_at?: string
+          data_pagamento?: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          pago_por?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_pagar_pagamentos_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_pagamentos_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar_saldos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_pagamentos_estorno_de_id_fkey"
+            columns: ["estorno_de_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar_pagamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_pagamentos_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_pagamentos_pago_por_fkey"
+            columns: ["pago_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_receber: {
+        Row: {
+          cancelado_em: string | null
+          cancelado_por: string | null
+          cliente: string
+          competencia: string | null
+          created_at: string
+          created_by: string | null
+          data_emissao: string
+          descricao: string
+          grupo_parcela: string | null
+          id: string
+          motivo_cancelamento: string | null
+          observacao: string | null
+          origem: string | null
+          os: string | null
+          parcela_atual: number | null
+          parcela_total: number | null
+          responsavel_id: string
+          status: Database["public"]["Enums"]["conta_receber_status"]
+          updated_at: string
+          updated_by: string | null
+          valor_original: number
+          vencimento: string
+        }
+        Insert: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cliente: string
+          competencia?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_emissao: string
+          descricao: string
+          grupo_parcela?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          origem?: string | null
+          os?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          responsavel_id: string
+          status?: Database["public"]["Enums"]["conta_receber_status"]
+          updated_at?: string
+          updated_by?: string | null
+          valor_original: number
+          vencimento: string
+        }
+        Update: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cliente?: string
+          competencia?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_emissao?: string
+          descricao?: string
+          grupo_parcela?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          origem?: string | null
+          os?: string | null
+          parcela_atual?: number | null
+          parcela_total?: number | null
+          responsavel_id?: string
+          status?: Database["public"]["Enums"]["conta_receber_status"]
+          updated_at?: string
+          updated_by?: string | null
+          valor_original?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_receber_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_receber_recebimentos: {
+        Row: {
+          caixa_lancamento_id: string | null
+          conta_receber_id: string
+          created_at: string
+          data_recebimento: string
+          estorno_de_id: string | null
+          forma_pagamento_id: string | null
+          id: string
+          motivo_estorno: string | null
+          observacao: string | null
+          recebido_por: string
+          referencia: string | null
+          valor: number
+        }
+        Insert: {
+          caixa_lancamento_id?: string | null
+          conta_receber_id: string
+          created_at?: string
+          data_recebimento: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          recebido_por: string
+          referencia?: string | null
+          valor: number
+        }
+        Update: {
+          caixa_lancamento_id?: string | null
+          conta_receber_id?: string
+          created_at?: string
+          data_recebimento?: string
+          estorno_de_id?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          motivo_estorno?: string | null
+          observacao?: string | null
+          recebido_por?: string
+          referencia?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_receber_recebimentos_caixa_lancamento_id_fkey"
+            columns: ["caixa_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_recebimentos_conta_receber_id_fkey"
+            columns: ["conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_recebimentos_conta_receber_id_fkey"
+            columns: ["conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber_saldos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_recebimentos_estorno_de_id_fkey"
+            columns: ["estorno_de_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber_recebimentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_recebimentos_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_recebimentos_recebido_por_fkey"
+            columns: ["recebido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custos_estornos: {
         Row: {
           created_at: string
@@ -843,6 +1322,155 @@ export type Database = {
           },
           {
             foreignKeyName: "custos_os_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      despesas: {
+        Row: {
+          cancelado_em: string | null
+          cancelado_por: string | null
+          categoria_id: string | null
+          centro_custo_id: string | null
+          competencia: string
+          comprovante_path: string | null
+          conta_pagar_id: string | null
+          created_at: string
+          created_by: string | null
+          data_lancamento: string
+          descricao: string
+          fornecedor_id: string | null
+          id: string
+          motivo_cancelamento: string | null
+          observacao: string | null
+          recorrente: boolean
+          responsavel_id: string
+          status: Database["public"]["Enums"]["despesa_status"]
+          subcategoria_id: string | null
+          updated_at: string
+          updated_by: string | null
+          valor: number
+          vencimento: string | null
+        }
+        Insert: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          competencia: string
+          comprovante_path?: string | null
+          conta_pagar_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_lancamento: string
+          descricao: string
+          fornecedor_id?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          recorrente?: boolean
+          responsavel_id: string
+          status?: Database["public"]["Enums"]["despesa_status"]
+          subcategoria_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valor: number
+          vencimento?: string | null
+        }
+        Update: {
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          competencia?: string
+          comprovante_path?: string | null
+          conta_pagar_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_lancamento?: string
+          descricao?: string
+          fornecedor_id?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          recorrente?: boolean
+          responsavel_id?: string
+          status?: Database["public"]["Enums"]["despesa_status"]
+          subcategoria_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valor?: number
+          vencimento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "despesas_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_financeiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar_saldos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias_financeiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -1078,6 +1706,41 @@ export type Database = {
         }
         Relationships: []
       }
+      subcategorias_financeiras: {
+        Row: {
+          ativo: boolean
+          categoria_id: string
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          categoria_id: string
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          categoria_id?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategorias_financeiras_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_financeiras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tipos_custo: {
         Row: {
           ativo: boolean
@@ -1187,7 +1850,125 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      contas_pagar_saldos: {
+        Row: {
+          cancelado_em: string | null
+          categoria_id: string | null
+          centro_custo_id: string | null
+          competencia: string | null
+          created_at: string | null
+          data_emissao: string | null
+          descricao: string | null
+          despesa_id: string | null
+          dias_atraso: number | null
+          forma_pagamento_id: string | null
+          fornecedor_id: string | null
+          fornecedor_nome: string | null
+          grupo_parcela: string | null
+          id: string | null
+          motivo_cancelamento: string | null
+          observacao: string | null
+          parcela_atual: number | null
+          parcela_total: number | null
+          recorrente: boolean | null
+          responsavel_id: string | null
+          responsavel_nome: string | null
+          saldo: number | null
+          status: Database["public"]["Enums"]["conta_pagar_status"] | null
+          subcategoria_id: string | null
+          valor_original: number | null
+          valor_pago: number | null
+          vencido: boolean | null
+          vencimento: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_pagar_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias_financeiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_despesa_id_fkey"
+            columns: ["despesa_id"]
+            isOneToOne: false
+            referencedRelation: "despesas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_pagar_subcategoria_id_fkey"
+            columns: ["subcategoria_id"]
+            isOneToOne: false
+            referencedRelation: "subcategorias_financeiras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_receber_saldos: {
+        Row: {
+          cancelado_em: string | null
+          cliente: string | null
+          competencia: string | null
+          created_at: string | null
+          data_emissao: string | null
+          descricao: string | null
+          dias_atraso: number | null
+          grupo_parcela: string | null
+          id: string | null
+          motivo_cancelamento: string | null
+          observacao: string | null
+          origem: string | null
+          os: string | null
+          parcela_atual: number | null
+          parcela_total: number | null
+          responsavel_id: string | null
+          responsavel_nome: string | null
+          saldo: number | null
+          status: Database["public"]["Enums"]["conta_receber_status"] | null
+          valor_original: number | null
+          valor_recebido: number | null
+          vencido: boolean | null
+          vencimento: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_receber_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       caixa_atualizar_lancamento: {
@@ -1296,6 +2077,111 @@ export type Database = {
         Returns: Json
       }
       comissoes_simular_recalculo: { Args: { p_id: string }; Returns: Json }
+      contas_pagar_atualizar: {
+        Args: {
+          p_categoria_id?: string
+          p_centro_custo_id?: string
+          p_competencia?: string
+          p_descricao?: string
+          p_forma_pagamento_id?: string
+          p_fornecedor_id?: string
+          p_id: string
+          p_justificativa?: string
+          p_observacao?: string
+          p_subcategoria_id?: string
+          p_valor_original?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
+      contas_pagar_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      contas_pagar_estornar_pagamento: {
+        Args: { p_motivo: string; p_pagamento_id: string }
+        Returns: Json
+      }
+      contas_pagar_pagar: {
+        Args: {
+          p_comprovante_path?: string
+          p_conta_id: string
+          p_data_pagamento?: string
+          p_forma_pagamento_id?: string
+          p_observacao?: string
+          p_valor?: number
+        }
+        Returns: Json
+      }
+      contas_pagar_registrar: {
+        Args: {
+          p_categoria_id?: string
+          p_centro_custo_id?: string
+          p_competencia?: string
+          p_data_emissao?: string
+          p_descricao: string
+          p_forma_pagamento_id?: string
+          p_fornecedor_id?: string
+          p_intervalo_dias?: number
+          p_observacao?: string
+          p_parcelas?: number
+          p_recorrente?: boolean
+          p_subcategoria_id?: string
+          p_valor?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
+      contas_receber_atualizar: {
+        Args: {
+          p_cliente?: string
+          p_competencia?: string
+          p_descricao?: string
+          p_id: string
+          p_justificativa?: string
+          p_observacao?: string
+          p_origem?: string
+          p_os?: string
+          p_valor_original?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
+      contas_receber_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      contas_receber_estornar_recebimento: {
+        Args: { p_motivo: string; p_recebimento_id: string }
+        Returns: Json
+      }
+      contas_receber_receber: {
+        Args: {
+          p_conta_id: string
+          p_data_recebimento?: string
+          p_forma_pagamento_id?: string
+          p_observacao?: string
+          p_referencia?: string
+          p_valor?: number
+        }
+        Returns: Json
+      }
+      contas_receber_registrar: {
+        Args: {
+          p_cliente: string
+          p_competencia?: string
+          p_data_emissao?: string
+          p_descricao: string
+          p_intervalo_dias?: number
+          p_observacao?: string
+          p_origem?: string
+          p_os?: string
+          p_parcelas?: number
+          p_valor?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
       custos_atualizar: {
         Args: {
           p_categoria_id?: string
@@ -1352,6 +2238,55 @@ export type Database = {
         }
         Returns: Json
       }
+      despesas_atualizar: {
+        Args: {
+          p_categoria_id?: string
+          p_centro_custo_id?: string
+          p_competencia?: string
+          p_descricao?: string
+          p_fornecedor_id?: string
+          p_id: string
+          p_justificativa?: string
+          p_observacao?: string
+          p_recorrente?: boolean
+          p_subcategoria_id?: string
+          p_valor?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
+      despesas_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      despesas_registrar: {
+        Args: {
+          p_categoria_id?: string
+          p_centro_custo_id?: string
+          p_competencia?: string
+          p_comprovante_path?: string
+          p_data_lancamento?: string
+          p_data_pagamento?: string
+          p_descricao: string
+          p_forma_pagamento_id?: string
+          p_fornecedor_id?: string
+          p_observacao?: string
+          p_paga?: boolean
+          p_recorrente?: boolean
+          p_subcategoria_id?: string
+          p_valor?: number
+          p_vencimento?: string
+        }
+        Returns: Json
+      }
+      financeiro_fluxo: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      financeiro_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -1405,7 +2340,18 @@ export type Database = {
         | "fixo_os"
         | "fixo_servico"
         | "personalizada"
+      conta_pagar_status:
+        | "pendente"
+        | "parcialmente_pago"
+        | "pago"
+        | "cancelado"
+      conta_receber_status:
+        | "pendente"
+        | "parcialmente_recebido"
+        | "recebido"
+        | "cancelado"
       custo_os_status: "registrado" | "confirmado" | "cancelado" | "estornado"
+      despesa_status: "pendente" | "paga" | "cancelada"
       permission_action:
         | "visualizar"
         | "criar"
@@ -1573,7 +2519,20 @@ export const Constants = {
         "fixo_servico",
         "personalizada",
       ],
+      conta_pagar_status: [
+        "pendente",
+        "parcialmente_pago",
+        "pago",
+        "cancelado",
+      ],
+      conta_receber_status: [
+        "pendente",
+        "parcialmente_recebido",
+        "recebido",
+        "cancelado",
+      ],
       custo_os_status: ["registrado", "confirmado", "cancelado", "estornado"],
+      despesa_status: ["pendente", "paga", "cancelada"],
       permission_action: [
         "visualizar",
         "criar",
