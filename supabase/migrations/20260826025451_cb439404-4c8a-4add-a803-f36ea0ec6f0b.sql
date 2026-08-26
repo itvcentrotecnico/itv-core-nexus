@@ -1,0 +1,18 @@
+revoke execute on function public.colaboradores_registrar(text, text, uuid, uuid, date, numeric, text, text, text, text) from public, anon;
+revoke execute on function public.colaboradores_atualizar(uuid, text, text, uuid, uuid, date, text, text, text, text) from public, anon;
+revoke execute on function public.colaboradores_alterar_salario(uuid, numeric, date, text) from public, anon;
+revoke execute on function public.colaboradores_alterar_status(uuid, public.colaborador_status, text) from public, anon;
+revoke execute on function public.colaboradores_desligar(uuid, date, text) from public, anon;
+revoke execute on function public.folha_abrir_competencia(date, text) from public, anon;
+revoke execute on function public.folha_reimportar(uuid) from public, anon;
+revoke execute on function public.folha_lancar(uuid, uuid, uuid, text, numeric, text) from public, anon;
+revoke execute on function public.folha_cancelar_lancamento(uuid, text) from public, anon;
+revoke execute on function public.folha_conferir_item(uuid, uuid) from public, anon;
+revoke execute on function public.folha_aprovar(uuid) from public, anon;
+revoke execute on function public.folha_registrar_pagamento(uuid, uuid, date, numeric, uuid, text, text) from public, anon;
+revoke execute on function public.folha_pagar_lote(uuid, uuid[], uuid, date, text) from public, anon;
+revoke execute on function public.folha_estornar_pagamento(uuid, text) from public, anon;
+revoke execute on function public.folha_fechar(uuid) from public, anon;
+revoke execute on function public.folha_reabrir(uuid, text) from public, anon;
+revoke execute on function public.folha_resumo(uuid) from public, anon;
+revoke execute on function public.folha_historico_colaborador(uuid) from public, anon;
