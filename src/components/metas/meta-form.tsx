@@ -8,14 +8,24 @@ import type { FaixasProjecao, MetaEmpresaDetalhe, MetaTipo, MetasRpcResult } fro
 import { TIPO_META_EMPRESA_LABEL, TIPO_META_FONTE } from "@/lib/metas";
 import { rpcMetas } from "@/components/metas/shared";
 
+export interface MetaPrefill {
+  valor_alvo: number;
+  periodo_tipo: "mensal";
+  data_inicio: string;
+  data_fim: string;
+  observacao: string;
+}
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   meta: MetaEmpresaDetalhe | null;
+  /** Pré-preenchimento para criação a partir do módulo de Planejamento. */
+  prefill?: MetaPrefill | null;
 }
 
 /** Dialog de criação/edição de meta da empresa. */
-export function MetaFormDialog({ open, onOpenChange, meta }: Props) {
+export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
   const qc = useQueryClient();
   const [salvando, setSalvando] = useState(false);
   const [form, setForm] = useState({
@@ -49,15 +59,15 @@ export function MetaFormDialog({ open, onOpenChange, meta }: Props) {
       setForm({
         nome: "",
         tipo: "faturamento",
-        periodo_tipo: "mensal",
-        data_inicio: `${mes}-01`,
-        data_fim: `${mes}-${String(last).padStart(2, "0")}`,
-        valor_alvo: "",
+        periodo_tipo: prefill?.periodo_tipo ?? "mensal",
+        data_inicio: prefill?.data_inicio ?? `${mes}-01`,
+        data_fim: prefill?.data_fim ?? `${mes}-${String(last).padStart(2, "0")}`,
+        valor_alvo: prefill ? String(prefill.valor_alvo).replace(".", ",") : "",
         principal: false,
-        observacao: "",
+        observacao: prefill?.observacao ?? "",
       });
     }
-  }, [open, meta]);
+  }, [open, meta, prefill]);
 
   async function salvar() {
     const valor = Number(String(form.valor_alvo).replace(",", "."));
