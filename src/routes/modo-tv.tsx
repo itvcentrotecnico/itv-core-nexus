@@ -13,7 +13,7 @@ import {
   TelaProducao,
   TelaServicos,
 } from "@/components/modo-tv/paineis";
-import logoColor from "@/assets/itv-logo-color.png.asset.json";
+import logoWhite from "@/assets/itv-logo-white.png.asset.json";
 
 export const Route = createFileRoute("/modo-tv")({
   // Sessão do Supabase vive no localStorage: sem SSR para evitar loop de redirect.
@@ -105,7 +105,7 @@ function ModoTvPage() {
         <div className="flex-1 px-[2vw] py-[1.2vw]">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <img src={logoColor.url} alt="Carregando painel ITV" className="h-[6vw] w-auto animate-pulse" />
+              <img src={logoWhite.url} alt="Carregando painel ITV" className="h-[6vw] w-auto animate-pulse" />
             </div>
           ) : error || !data?.ok ? (
             <div className="flex h-full flex-col items-center justify-center gap-[1vw] text-center">

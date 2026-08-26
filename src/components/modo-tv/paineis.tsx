@@ -4,7 +4,7 @@ import { formatCurrencyBRL, ITV_TIMEZONE } from "@/lib/format";
 import type { ModoTvConfig, ModoTvIndicadores } from "@/lib/modo-tv";
 import { STATUS_RITMO_LABEL, nomeCurto, percentualTecnico } from "@/lib/modo-tv";
 import { cn } from "@/lib/utils";
-import logoColor from "@/assets/itv-logo-color.png.asset.json";
+import logoWhite from "@/assets/itv-logo-white.png.asset.json";
 
 /* ---------- Blocos base, dimensionados para leitura de 3 a 8 metros ---------- */
 
@@ -79,7 +79,7 @@ export function CabecalhoTv({ referencia }: { referencia: string }) {
   return (
     <header className="flex items-center justify-between px-[2vw] pt-[1.6vw]">
       <div className="flex items-center gap-[1.2vw]">
-        <img src={logoColor.url} alt="ITV Centro Técnico" className="h-[3.2vw] w-auto" />
+        <img src={logoWhite.url} alt="ITV Centro Técnico" className="h-[3.2vw] w-auto" />
         <div className="border-l border-white/15 pl-[1.2vw]">
           <p className="text-[1.1vw] font-semibold uppercase tracking-[0.2em] text-white/80">Painel de Desempenho</p>
           <p className="text-[0.85vw] uppercase tracking-[0.18em] text-white/40">Gestão ITV Centro Técnico</p>
