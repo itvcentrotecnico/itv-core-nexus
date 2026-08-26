@@ -53,7 +53,7 @@ export function AdminRegrasComissao() {
               <tr key={r.id}>
                 <td className="px-3 py-2 font-medium text-foreground">{r.tecnico?.full_name ?? "—"}</td>
                 <td className="px-3 py-2 text-muted-foreground">
-                  {TIPO_REGRA[r.tipo_regra]?.label ?? r.tipo_regra}
+                  {TIPO_REGRA[r.tipo_regra] ?? r.tipo_regra}
                   {r.servico_descricao ? <span className="block text-xs">{r.servico_descricao}</span> : null}
                 </td>
                 <td className="px-3 py-2 text-foreground">
