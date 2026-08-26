@@ -11,12 +11,14 @@ export type PermissionAction =
   | "editar"
   | "aprovar"
   | "pagar"
+  | "receber"
   | "cancelar"
   | "exportar"
   | "administrar"
   | "estornar"
   | "fechar"
-  | "reabrir";
+  | "reabrir"
+  | "configurar";
 
 export interface UserProfile {
   id: string;
