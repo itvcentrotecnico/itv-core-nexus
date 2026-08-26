@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-import { useSession } from "@/hooks/use-auth";
+import { useAccess, useSession } from "@/hooks/use-auth";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -28,11 +28,18 @@ export const Route = createFileRoute("/")({
 function Index() {
   const navigate = useNavigate();
   const { isAuthenticated, loading } = useSession();
+  const { roles, isLoading: rolesLoading } = useAccess();
 
   useEffect(() => {
-    if (loading) return;
-    navigate({ to: isAuthenticated ? "/dashboard" : "/auth", replace: true });
-  }, [isAuthenticated, loading, navigate]);
+    if (loading || (isAuthenticated && rolesLoading)) return;
+    if (!isAuthenticated) {
+      navigate({ to: "/auth", replace: true });
+      return;
+    }
+    // Perfil exclusivo de TV vai direto para o painel de desempenho.
+    const somenteTv = roles.includes("tv_display") && !roles.some((r) => r !== "tv_display");
+    navigate({ to: somenteTv ? "/modo-tv" : "/dashboard", replace: true });
+  }, [isAuthenticated, loading, roles, rolesLoading, navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">

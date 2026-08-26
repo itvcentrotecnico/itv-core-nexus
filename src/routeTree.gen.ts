@@ -18,9 +18,7 @@ import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authen
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedEntregasRouteImport } from './routes/_authenticated/entregas'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
-import { Route as AuthenticatedLogisticaRouteImport } from './routes/_authenticated/logistica'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
 import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/pecas'
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
@@ -76,19 +74,9 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedEntregasRoute = AuthenticatedEntregasRouteImport.update({
-  id: '/entregas',
-  path: '/entregas',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
   id: '/financeiro',
   path: '/financeiro',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedLogisticaRoute = AuthenticatedLogisticaRouteImport.update({
-  id: '/logistica',
-  path: '/logistica',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMetasRoute = AuthenticatedMetasRouteImport.update({
@@ -144,9 +132,7 @@ export interface FileRoutesByFullPath {
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/entregas': typeof AuthenticatedEntregasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/logistica': typeof AuthenticatedLogisticaRoute
   '/metas': typeof AuthenticatedMetasRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
@@ -165,9 +151,7 @@ export interface FileRoutesByTo {
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/entregas': typeof AuthenticatedEntregasRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/logistica': typeof AuthenticatedLogisticaRoute
   '/metas': typeof AuthenticatedMetasRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
@@ -188,9 +172,7 @@ export interface FileRoutesById {
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/entregas': typeof AuthenticatedEntregasRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/_authenticated/logistica': typeof AuthenticatedLogisticaRoute
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
   '/_authenticated/pecas': typeof AuthenticatedPecasRoute
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
@@ -211,9 +193,7 @@ export interface FileRouteTypes {
     | '/comissoes'
     | '/configuracoes'
     | '/dashboard'
-    | '/entregas'
     | '/financeiro'
-    | '/logistica'
     | '/metas'
     | '/pecas'
     | '/producao'
@@ -232,9 +212,7 @@ export interface FileRouteTypes {
     | '/comissoes'
     | '/configuracoes'
     | '/dashboard'
-    | '/entregas'
     | '/financeiro'
-    | '/logistica'
     | '/metas'
     | '/pecas'
     | '/producao'
@@ -254,9 +232,7 @@ export interface FileRouteTypes {
     | '/_authenticated/comissoes'
     | '/_authenticated/configuracoes'
     | '/_authenticated/dashboard'
-    | '/_authenticated/entregas'
     | '/_authenticated/financeiro'
-    | '/_authenticated/logistica'
     | '/_authenticated/metas'
     | '/_authenticated/pecas'
     | '/_authenticated/producao'
@@ -339,25 +315,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/entregas': {
-      id: '/_authenticated/entregas'
-      path: '/entregas'
-      fullPath: '/entregas'
-      preLoaderRoute: typeof AuthenticatedEntregasRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/financeiro': {
       id: '/_authenticated/financeiro'
       path: '/financeiro'
       fullPath: '/financeiro'
       preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/logistica': {
-      id: '/_authenticated/logistica'
-      path: '/logistica'
-      fullPath: '/logistica'
-      preLoaderRoute: typeof AuthenticatedLogisticaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/metas': {
@@ -425,9 +387,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedEntregasRoute: typeof AuthenticatedEntregasRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
-  AuthenticatedLogisticaRoute: typeof AuthenticatedLogisticaRoute
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
   AuthenticatedPecasRoute: typeof AuthenticatedPecasRoute
   AuthenticatedProducaoRoute: typeof AuthenticatedProducaoRoute
@@ -444,9 +404,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedEntregasRoute: AuthenticatedEntregasRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
-  AuthenticatedLogisticaRoute: AuthenticatedLogisticaRoute,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
   AuthenticatedPecasRoute: AuthenticatedPecasRoute,
   AuthenticatedProducaoRoute: AuthenticatedProducaoRoute,
