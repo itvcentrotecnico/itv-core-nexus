@@ -176,6 +176,7 @@ function kpiValue(
 }
 
 function DashboardPage() {
+  const { isAdmin, can } = useAccess();
   const [period, setPeriod] = useState<Period>("mes");
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
