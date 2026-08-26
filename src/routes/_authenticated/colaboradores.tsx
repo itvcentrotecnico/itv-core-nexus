@@ -17,7 +17,7 @@ import { useAccess } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { KpiCard } from "@/components/kpi-card";
+import { KpiCard } from "./caixa";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -208,10 +208,10 @@ function ColaboradoresTab() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiCard title="Colaboradores Ativos" value={String(ativos)} icon={Users} />
-        <KpiCard title="Folha Base Mensal" value={formatCurrencyBRL(folhaMensal)} icon={CircleDollarSign} />
-        <KpiCard title="Em Férias/Afastados" value={String(colaboradores.filter((c) => c.status === "ferias" || c.status === "afastado").length)} icon={Briefcase} />
-        <KpiCard title="Desligados (histórico)" value={String(colaboradores.filter((c) => c.status === "desligado").length)} icon={UserMinus} />
+        <KpiCard label="Colaboradores Ativos" value={String(ativos)} />
+        <KpiCard label="Folha Base Mensal" value={formatCurrencyBRL(folhaMensal)} />
+        <KpiCard label="Em Férias/Afastados" value={String(colaboradores.filter((c) => c.status === "ferias" || c.status === "afastado").length)} />
+        <KpiCard label="Desligados (histórico)" value={String(colaboradores.filter((c) => c.status === "desligado").length)} />
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
@@ -376,10 +376,10 @@ function FolhaTab() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <KpiCard title="Proventos" value={formatCurrencyBRL(resumo.total_proventos)} icon={CircleDollarSign} />
-            <KpiCard title="Descontos" value={formatCurrencyBRL(resumo.total_descontos)} icon={CircleDollarSign} />
-            <KpiCard title="Total da Folha" value={formatCurrencyBRL(resumo.total_folha)} icon={CircleDollarSign} />
-            <KpiCard title="Total Pago" value={formatCurrencyBRL(resumo.total_pago)} icon={CircleDollarSign} />
+            <KpiCard label="Proventos" value={formatCurrencyBRL(resumo.total_proventos)} />
+            <KpiCard label="Descontos" value={formatCurrencyBRL(resumo.total_descontos)} />
+            <KpiCard label="Total da Folha" value={formatCurrencyBRL(resumo.total_folha)} />
+            <KpiCard label="Total Pago" value={formatCurrencyBRL(resumo.total_pago)} />
           </div>
 
           <div className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -610,10 +610,10 @@ function ResumoTab() {
       {resumo && competencia && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <KpiCard title="Proventos" value={formatCurrencyBRL(resumo.total_proventos)} icon={CircleDollarSign} />
-            <KpiCard title="Descontos" value={formatCurrencyBRL(resumo.total_descontos)} icon={CircleDollarSign} />
-            <KpiCard title="Total da Folha" value={formatCurrencyBRL(resumo.total_folha)} icon={CircleDollarSign} />
-            <KpiCard title="Total Pago" value={formatCurrencyBRL(resumo.total_pago)} icon={CircleDollarSign} />
+            <KpiCard label="Proventos" value={formatCurrencyBRL(resumo.total_proventos)} />
+            <KpiCard label="Descontos" value={formatCurrencyBRL(resumo.total_descontos)} />
+            <KpiCard label="Total da Folha" value={formatCurrencyBRL(resumo.total_folha)} />
+            <KpiCard label="Total Pago" value={formatCurrencyBRL(resumo.total_pago)} />
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
@@ -720,10 +720,10 @@ function HistoricoTab() {
       {competenciaId && resumoQuery.data && (
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <KpiCard title="Total da Folha" value={formatCurrencyBRL(resumoQuery.data.total_folha)} icon={CircleDollarSign} />
-            <KpiCard title="Total Pago" value={formatCurrencyBRL(resumoQuery.data.total_pago)} icon={CircleDollarSign} />
-            <KpiCard title="Proventos" value={formatCurrencyBRL(resumoQuery.data.total_proventos)} icon={CircleDollarSign} />
-            <KpiCard title="Descontos" value={formatCurrencyBRL(resumoQuery.data.total_descontos)} icon={CircleDollarSign} />
+            <KpiCard label="Total da Folha" value={formatCurrencyBRL(resumoQuery.data.total_folha)} />
+            <KpiCard label="Total Pago" value={formatCurrencyBRL(resumoQuery.data.total_pago)} />
+            <KpiCard label="Proventos" value={formatCurrencyBRL(resumoQuery.data.total_proventos)} />
+            <KpiCard label="Descontos" value={formatCurrencyBRL(resumoQuery.data.total_descontos)} />
           </div>
           <h3 className="font-display text-sm font-bold text-foreground">Pagamentos da Competência</h3>
           <PagamentosList
