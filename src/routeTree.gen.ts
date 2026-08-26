@@ -17,7 +17,6 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated/caixa'
 import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authenticated/colaboradores'
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
-import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
@@ -25,10 +24,9 @@ import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedTecnicosRouteImport } from './routes/_authenticated/tecnicos'
-import { Route as AuthenticatedAdminAuditoriaRouteImport } from './routes/_authenticated/admin.auditoria'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminModoTvRouteImport } from './routes/_authenticated/admin.modo-tv'
 import { Route as AuthenticatedAdminPermissoesRouteImport } from './routes/_authenticated/admin.permissoes'
-import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,12 +68,6 @@ const AuthenticatedComissoesRoute = AuthenticatedComissoesRouteImport.update({
   path: '/comissoes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedConfiguracoesRoute =
-  AuthenticatedConfiguracoesRouteImport.update({
-    id: '/configuracoes',
-    path: '/configuracoes',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -111,12 +103,11 @@ const AuthenticatedTecnicosRoute = AuthenticatedTecnicosRouteImport.update({
   path: '/tecnicos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAdminAuditoriaRoute =
-  AuthenticatedAdminAuditoriaRouteImport.update({
-    id: '/admin/auditoria',
-    path: '/admin/auditoria',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminModoTvRoute =
   AuthenticatedAdminModoTvRouteImport.update({
     id: '/admin/modo-tv',
@@ -129,12 +120,6 @@ const AuthenticatedAdminPermissoesRoute =
     path: '/admin/permissoes',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAdminUsuariosRoute =
-  AuthenticatedAdminUsuariosRouteImport.update({
-    id: '/admin/usuarios',
-    path: '/admin/usuarios',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -144,7 +129,6 @@ export interface FileRoutesByFullPath {
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
-  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
@@ -152,10 +136,9 @@ export interface FileRoutesByFullPath {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
-  '/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
-  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -165,7 +148,6 @@ export interface FileRoutesByTo {
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
-  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
@@ -173,10 +155,9 @@ export interface FileRoutesByTo {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
-  '/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
-  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,7 +169,6 @@ export interface FileRoutesById {
   '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
-  '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
@@ -196,10 +176,9 @@ export interface FileRoutesById {
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/tecnicos': typeof AuthenticatedTecnicosRoute
-  '/_authenticated/admin/auditoria': typeof AuthenticatedAdminAuditoriaRoute
   '/_authenticated/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/_authenticated/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
-  '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -211,7 +190,6 @@ export interface FileRouteTypes {
     | '/caixa'
     | '/colaboradores'
     | '/comissoes'
-    | '/configuracoes'
     | '/dashboard'
     | '/financeiro'
     | '/metas'
@@ -219,10 +197,9 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
-    | '/admin/auditoria'
     | '/admin/modo-tv'
     | '/admin/permissoes'
-    | '/admin/usuarios'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -232,7 +209,6 @@ export interface FileRouteTypes {
     | '/caixa'
     | '/colaboradores'
     | '/comissoes'
-    | '/configuracoes'
     | '/dashboard'
     | '/financeiro'
     | '/metas'
@@ -240,10 +216,9 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
-    | '/admin/auditoria'
     | '/admin/modo-tv'
     | '/admin/permissoes'
-    | '/admin/usuarios'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -254,7 +229,6 @@ export interface FileRouteTypes {
     | '/_authenticated/caixa'
     | '/_authenticated/colaboradores'
     | '/_authenticated/comissoes'
-    | '/_authenticated/configuracoes'
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
     | '/_authenticated/metas'
@@ -262,10 +236,9 @@ export interface FileRouteTypes {
     | '/_authenticated/producao'
     | '/_authenticated/relatorios'
     | '/_authenticated/tecnicos'
-    | '/_authenticated/admin/auditoria'
     | '/_authenticated/admin/modo-tv'
     | '/_authenticated/admin/permissoes'
-    | '/_authenticated/admin/usuarios'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -334,13 +307,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComissoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/configuracoes': {
-      id: '/_authenticated/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/configuracoes'
-      preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -390,11 +356,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTecnicosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/admin/auditoria': {
-      id: '/_authenticated/admin/auditoria'
-      path: '/admin/auditoria'
-      fullPath: '/admin/auditoria'
-      preLoaderRoute: typeof AuthenticatedAdminAuditoriaRouteImport
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/modo-tv': {
@@ -411,13 +377,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPermissoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/admin/usuarios': {
-      id: '/_authenticated/admin/usuarios'
-      path: '/admin/usuarios'
-      fullPath: '/admin/usuarios'
-      preLoaderRoute: typeof AuthenticatedAdminUsuariosRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
   }
 }
 
@@ -425,7 +384,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
   AuthenticatedColaboradoresRoute: typeof AuthenticatedColaboradoresRoute
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
-  AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
@@ -433,17 +391,15 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProducaoRoute: typeof AuthenticatedProducaoRoute
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
   AuthenticatedTecnicosRoute: typeof AuthenticatedTecnicosRoute
-  AuthenticatedAdminAuditoriaRoute: typeof AuthenticatedAdminAuditoriaRoute
   AuthenticatedAdminModoTvRoute: typeof AuthenticatedAdminModoTvRoute
   AuthenticatedAdminPermissoesRoute: typeof AuthenticatedAdminPermissoesRoute
-  AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
   AuthenticatedColaboradoresRoute: AuthenticatedColaboradoresRoute,
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
-  AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
@@ -451,10 +407,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProducaoRoute: AuthenticatedProducaoRoute,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
   AuthenticatedTecnicosRoute: AuthenticatedTecnicosRoute,
-  AuthenticatedAdminAuditoriaRoute: AuthenticatedAdminAuditoriaRoute,
   AuthenticatedAdminModoTvRoute: AuthenticatedAdminModoTvRoute,
   AuthenticatedAdminPermissoesRoute: AuthenticatedAdminPermissoesRoute,
-  AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
