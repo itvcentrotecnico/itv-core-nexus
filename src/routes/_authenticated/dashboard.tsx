@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import type { CaixaIndicadores } from "@/lib/caixa";
+import { round2, type CaixaIndicadores } from "@/lib/caixa";
+import type { CustosIndicadores } from "@/lib/custos";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
@@ -48,20 +49,29 @@ const PERIODS: { key: Period; label: string }[] = [
   { key: "personalizado", label: "Personalizado" },
 ];
 
-type KpiKey = "faturamento" | "liquida" | "ticket" | "os";
+type KpiKey =
+  | "faturamento"
+  | "liquida"
+  | "ticket"
+  | "os"
+  | "custo-pecas"
+  | "custos-diretos"
+  | "margem-parcial";
 
 interface KpiDef {
   label: string;
   icon: LucideIcon;
   format: "currency" | "count";
-  /** Indicadores alimentados pelo Caixa Diário; os demais aguardam os próximos módulos. */
+  /** Indicadores alimentados pelo Caixa e por Peças e Custos; os demais aguardam os próximos módulos. */
   key?: KpiKey;
 }
 
 const KPIS: KpiDef[] = [
   { label: "Faturamento", icon: Wallet, format: "currency", key: "faturamento" },
   { label: "Receita Líquida", icon: TrendingUp, format: "currency", key: "liquida" },
-  { label: "Custo de Peças", icon: Package, format: "currency" },
+  { label: "Custo de Peças", icon: Package, format: "currency", key: "custo-pecas" },
+  { label: "Custos Diretos", icon: ArrowDownCircle, format: "currency", key: "custos-diretos" },
+  { label: "Margem Parcial", icon: TrendingUp, format: "currency", key: "margem-parcial" },
   { label: "Comissões", icon: Percent, format: "currency" },
   { label: "Despesas", icon: Receipt, format: "currency" },
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
