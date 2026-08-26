@@ -94,7 +94,7 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         categorias: (categorias.data ?? []) as CategoriaPeca[],
         fornecedores: (fornecedores.data ?? []) as Fornecedor[],
         tecnicos: ((tecnicos.data ?? []) as TecnicoOption[]).filter(
-          (t) => t.roles.includes("tecnico") || t.roles.includes("administrador") || t.roles.includes("gerente"),
+          (t) => t.roles.includes("tecnico") || t.roles.includes("administrador") || t.roles.includes("adm_financeiro") || t.roles.includes("adm_operacional"),
         ),
       };
     },

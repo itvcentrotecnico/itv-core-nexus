@@ -55,7 +55,7 @@ export function useProducaoRefs() {
       const { data, error } = await supabase.rpc("usuarios_basicos");
       if (error) throw error;
       const todos = (data ?? []) as unknown as UsuarioBasico[];
-      return todos.filter((u) => u.roles.includes("tecnico") || u.roles.includes("gerente"));
+      return todos.filter((u) => u.roles.includes("tecnico") || u.roles.includes("adm_operacional") || u.roles.includes("adm_financeiro"));
     },
   });
 
