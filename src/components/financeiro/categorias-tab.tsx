@@ -38,7 +38,7 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
           setSaving(false);
           return;
         }
-        payload.categoria_id = paiId;
+        payload["categoria_id"] = paiId;
       }
       const { error } = await supabase.from(tabela).insert(payload as never);
       if (error) throw error;

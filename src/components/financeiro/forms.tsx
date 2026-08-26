@@ -254,7 +254,7 @@ export function DespesaForm({
           p_data_pagamento: paga ? dataPagamento : null,
         });
         toast.success(
-          r.conta_pagar_id
+          r["conta_pagar_id"]
             ? paga
               ? "Despesa registrada e quitada."
               : "Despesa registrada com obrigação em Contas a Pagar."
@@ -465,7 +465,7 @@ export function ContaPagarForm({
           p_intervalo_dias: intervalo,
         });
         toast.success(
-          (r.parcelas as number) > 1 ? `Obrigação criada em ${r.parcelas} parcelas.` : "Conta a pagar criada.",
+          Number(r["parcelas"]) > 1 ? `Obrigação criada em ${r["parcelas"]} parcelas.` : "Conta a pagar criada.",
         );
       }
       invalidateFinanceiro(queryClient);
@@ -671,7 +671,7 @@ export function ContaReceberForm({
           p_intervalo_dias: intervalo,
         });
         toast.success(
-          (r.parcelas as number) > 1 ? `Conta criada em ${r.parcelas} parcelas.` : "Conta a receber criada.",
+          Number(r["parcelas"]) > 1 ? `Conta criada em ${r["parcelas"]} parcelas.` : "Conta a receber criada.",
         );
       }
       invalidateFinanceiro(queryClient);
