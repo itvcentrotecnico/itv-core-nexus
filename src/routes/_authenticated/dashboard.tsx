@@ -353,6 +353,35 @@ function DashboardPage() {
         </Link>
       )}
 
+      {veMetas && metaPrincipal && (
+        <Link
+          to="/metas"
+          className="block rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Meta principal</p>
+              <p className="mt-0.5 text-sm font-semibold text-foreground">{metaPrincipal.nome}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-display text-lg font-bold text-foreground">
+                {metaPrincipal.percentual.toFixed(1).replace(".", ",")}%
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                {formatCurrencyBRL(metaPrincipal.realizado)} de {formatCurrencyBRL(metaPrincipal.valor_alvo)}
+                {metaPrincipal.projecao != null && ` · projeção ${formatCurrencyBRL(metaPrincipal.projecao)}`}
+              </p>
+            </div>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${Math.min(metaPrincipal.percentual, 100)}%` }}
+            />
+          </div>
+        </Link>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
           const { value, sub } = kpiValue(kpi, ind, custos, comissoes, metaPrincipal);
@@ -371,8 +400,8 @@ function DashboardPage() {
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Comissões, Despesas, Resultado Operacional e Meta serão ativados automaticamente
-          quando os próximos módulos forem implementados. A Margem Parcial ainda não desconta comissões.
+          Despesas e Resultado Operacional são consolidados no módulo Financeiro; a Meta é acompanhada no módulo
+          Metas. A Margem Parcial ainda não desconta comissões.
         </p>
         <ArrowDownCircle className="mx-auto mt-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
       </div>
