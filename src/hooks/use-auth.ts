@@ -18,6 +18,7 @@ export type PermissionAction =
   | "estornar"
   | "fechar"
   | "reabrir"
+  | "desativar"
   | "configurar";
 
 export interface UserProfile {
