@@ -56,7 +56,8 @@ type KpiKey =
   | "os"
   | "custo-pecas"
   | "custos-diretos"
-  | "margem-parcial";
+  | "margem-parcial"
+  | "comissoes";
 
 interface KpiDef {
   label: string;
@@ -72,7 +73,7 @@ const KPIS: KpiDef[] = [
   { label: "Custo de Peças", icon: Package, format: "currency", key: "custo-pecas" },
   { label: "Custos Diretos", icon: ArrowDownCircle, format: "currency", key: "custos-diretos" },
   { label: "Margem Parcial", icon: TrendingUp, format: "currency", key: "margem-parcial" },
-  { label: "Comissões", icon: Percent, format: "currency" },
+  { label: "Comissões", icon: Percent, format: "currency", key: "comissoes" },
   { label: "Despesas", icon: Receipt, format: "currency" },
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
   { label: "Ticket Médio", icon: ArrowUpCircle, format: "currency", key: "ticket" },
