@@ -37,7 +37,7 @@ import {
   type CaixaLancamento,
   type CaixaRpcResult,
   type FormaPagamento,
-  type FormaPagamentoTaxa,
+  
   type TipoReceita,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
@@ -321,8 +321,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           forma_pagamento_id: r.forma_pagamento_id,
           valor: round2(r.valor ?? 0),
           parcelas: Math.max(1, r.parcelas || 1),
-          taxa_percentual: round2(r.taxa_percentual ?? 0),
-          taxa_valor: round2(r.taxa_valor ?? 0),
+          taxa_percentual: 0,
+          taxa_valor: 0,
         })) as unknown as Json,
       p_confirmar_duplicidade: confirmarDuplicidade,
       ...(os.trim() ? { p_os: os.trim() } : {}),
