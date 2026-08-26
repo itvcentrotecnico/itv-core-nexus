@@ -189,9 +189,11 @@ export function ColaboradorForm({
             <div>
               <label htmlFor="c-status" className={labelClass}>Status *</label>
               <select id="c-status" value={status} onChange={(e) => setStatus(e.target.value as ColaboradorStatus)} className={inputClass}>
-                {STATUS_COLABORADOR.filter((s) => s.value !== "desligado").map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
+                {(Object.keys(STATUS_COLABORADOR) as ColaboradorStatus[])
+                  .filter((s) => s !== "desligado")
+                  .map((s) => (
+                    <option key={s} value={s}>{STATUS_COLABORADOR[s].label}</option>
+                  ))}
               </select>
             </div>
           )}
