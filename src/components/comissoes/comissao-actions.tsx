@@ -25,7 +25,8 @@ function invalidateComissoes(queryClient: ReturnType<typeof useQueryClient>) {
 }
 
 async function rpc<T extends ComissaoRpcResult>(fn: string, args: Record<string, unknown>): Promise<T> {
-  const { data, error } = await supabase.rpc(fn, args);
+  // RPCs tipados no generated types; aqui aceitamos nome dinâmico para reutilizar o helper.
+  const { data, error } = await (supabase.rpc as (n: string, a: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>)(fn, args);
   if (error) throw new Error(error.message);
   const r = data as T;
   if (!r.ok) throw new Error(r.message ?? "Operação não concluída.");
