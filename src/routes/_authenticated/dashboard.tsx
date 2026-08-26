@@ -62,7 +62,8 @@ type KpiKey =
   | "custo-pecas"
   | "custos-diretos"
   | "margem-parcial"
-  | "comissoes";
+  | "comissoes"
+  | "meta";
 
 interface KpiDef {
   label: string;
@@ -83,7 +84,7 @@ const KPIS: KpiDef[] = [
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
   { label: "Ticket Médio", icon: ArrowUpCircle, format: "currency", key: "ticket" },
   { label: "OS Faturadas", icon: ClipboardList, format: "count", key: "os" },
-  { label: "Meta", icon: Target, format: "currency" },
+  { label: "Meta", icon: Target, format: "currency", key: "meta" },
 ];
 
 function toISO(dt: Date): string {
@@ -125,12 +126,21 @@ function kpiValue(
   ind: CaixaIndicadores | undefined,
   custos: CustosIndicadores | undefined,
   comissoes?: ComissoesIndicadores,
+  metaPrincipal?: { nome: string; realizado: number; valor_alvo: number; percentual: number } | null,
 ): { value: string; sub: string } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
     sub: "Sem dados no período",
   };
   if (!kpi.key) return vazio;
+
+  if (kpi.key === "meta") {
+    if (!metaPrincipal) return { value: "—", sub: "Nenhuma meta principal ativa" };
+    return {
+      value: formatCurrencyBRL(metaPrincipal.realizado),
+      sub: `${metaPrincipal.percentual.toFixed(1).replace(".", ",")}% de ${formatCurrencyBRL(metaPrincipal.valor_alvo)} — ${metaPrincipal.nome}`,
+    };
+  }
 
   if (kpi.key === "comissoes") {
     if (!comissoes?.ok) return vazio;
@@ -222,6 +232,7 @@ function DashboardPage() {
   });
 
   const ehGerencia = isAdmin || can("producao", "validar");
+  const veMetas = isAdmin || can("metas", "visualizar");
 
   const filaProducaoQuery = useQuery({
     queryKey: ["dashboard-producao-fila"],
@@ -233,10 +244,33 @@ function DashboardPage() {
     },
   });
 
+  const metasQuery = useQuery({
+    queryKey: ["dashboard-meta-principal", range?.from, range?.to],
+    enabled: !!range && veMetas,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("metas_painel", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      const painel = data as unknown as {
+        ok: boolean;
+        metas: { id: string; nome: string; principal: boolean; status: string; realizado: number; valor_alvo: number; percentual: number; status_projecao: string | null; projecao: number | null }[];
+      };
+      if (!painel.ok) return null;
+      const principal =
+        painel.metas.find((m) => m.principal && (m.status === "ativa" || m.status === "planejada")) ??
+        painel.metas.find((m) => m.status === "ativa") ??
+        null;
+      return principal;
+    },
+  });
+
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
   const comissoes = comissoesQuery.data;
   const filaProducao = filaProducaoQuery.data;
+  const metaPrincipal = metasQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -319,9 +353,38 @@ function DashboardPage() {
         </Link>
       )}
 
+      {veMetas && metaPrincipal && (
+        <Link
+          to="/metas"
+          className="block rounded-xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Meta principal</p>
+              <p className="mt-0.5 text-sm font-semibold text-foreground">{metaPrincipal.nome}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-display text-lg font-bold text-foreground">
+                {metaPrincipal.percentual.toFixed(1).replace(".", ",")}%
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                {formatCurrencyBRL(metaPrincipal.realizado)} de {formatCurrencyBRL(metaPrincipal.valor_alvo)}
+                {metaPrincipal.projecao != null && ` · projeção ${formatCurrencyBRL(metaPrincipal.projecao)}`}
+              </p>
+            </div>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${Math.min(metaPrincipal.percentual, 100)}%` }}
+            />
+          </div>
+        </Link>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind, custos, comissoes);
+          const { value, sub } = kpiValue(kpi, ind, custos, comissoes, metaPrincipal);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">
@@ -337,8 +400,8 @@ function DashboardPage() {
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Comissões, Despesas, Resultado Operacional e Meta serão ativados automaticamente
-          quando os próximos módulos forem implementados. A Margem Parcial ainda não desconta comissões.
+          Despesas e Resultado Operacional são consolidados no módulo Financeiro; a Meta é acompanhada no módulo
+          Metas. A Margem Parcial ainda não desconta comissões.
         </p>
         <ArrowDownCircle className="mx-auto mt-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
       </div>

@@ -2673,6 +2673,71 @@ export type Database = {
           },
         ]
       }
+      relatorios_snapshots: {
+        Row: {
+          comissao: number
+          competencia: string
+          created_at: string
+          custos: number
+          despesas: number
+          faturamento: number
+          folha: number
+          gerado_por: string | null
+          id: string
+          margem: number
+          os_faturadas: number
+          producao_validada: number
+          receita_liquida: number
+          resultado: number
+          servicos_validados: number
+          ticket_medio: number
+        }
+        Insert: {
+          comissao?: number
+          competencia: string
+          created_at?: string
+          custos?: number
+          despesas?: number
+          faturamento?: number
+          folha?: number
+          gerado_por?: string | null
+          id?: string
+          margem?: number
+          os_faturadas?: number
+          producao_validada?: number
+          receita_liquida?: number
+          resultado?: number
+          servicos_validados?: number
+          ticket_medio?: number
+        }
+        Update: {
+          comissao?: number
+          competencia?: string
+          created_at?: string
+          custos?: number
+          despesas?: number
+          faturamento?: number
+          folha?: number
+          gerado_por?: string | null
+          id?: string
+          margem?: number
+          os_faturadas?: number
+          producao_validada?: number
+          receita_liquida?: number
+          resultado?: number
+          servicos_validados?: number
+          ticket_medio?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorios_snapshots_gerado_por_fkey"
+            columns: ["gerado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
@@ -3739,6 +3804,34 @@ export type Database = {
       registrar_auditoria: {
         Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
         Returns: undefined
+      }
+      relatorios_custos_por_os: {
+        Args: { p_from: string; p_to: string }
+        Returns: {
+          custo: number
+          os: string
+        }[]
+      }
+      relatorios_faturamento: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      relatorios_planejamento: { Args: never; Returns: Json }
+      relatorios_producao: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      relatorios_rentabilidade: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      relatorios_snapshot_gerar: {
+        Args: { p_competencia: string }
+        Returns: Json
+      }
+      relatorios_tecnicos: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
       }
       usuarios_basicos: {
         Args: never

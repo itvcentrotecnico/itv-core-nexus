@@ -27,7 +27,10 @@ export type PermissionAction =
   | "rejeitar"
   | "visualizar_todos"
   | "relatorios"
-  | "configurar_metas";
+  | "configurar_metas"
+  | "encerrar"
+  | "visualizar_ranking"
+  | "configurar_indicadores";
 
 export interface UserProfile {
   id: string;
