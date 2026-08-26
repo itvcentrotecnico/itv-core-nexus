@@ -117,26 +117,42 @@ function periodRange(
 function kpiValue(
   kpi: KpiDef,
   ind: CaixaIndicadores | undefined,
+  custos: CustosIndicadores | undefined,
 ): { value: string; sub: string } {
-  if (!kpi.key) {
+  const vazio = {
+    value: kpi.format === "currency" ? "R$ 0,00" : "0",
+    sub: "Sem dados no período",
+  };
+  if (!kpi.key) return vazio;
+
+  const deCustos = kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
+  if (deCustos) {
+    if (!custos?.ok) return vazio;
+    const receita = custos.receita_liquida_relacionada;
+    const mapCustos: Record<string, number> = {
+      "custo-pecas": custos.custo_pecas,
+      "custos-diretos": custos.custo_total,
+      "margem-parcial": round2(receita - custos.custo_total),
+    };
     return {
-      value: kpi.format === "currency" ? "R$ 0,00" : "0",
-      sub: "Sem dados no período",
+      value: formatCurrencyBRL(mapCustos[kpi.key] ?? 0),
+      sub:
+        custos.os_com_custos === 0
+          ? "Sem custos no período"
+          : kpi.key === "margem-parcial"
+            ? "Antes das comissões (parcial)"
+            : "Fonte: Peças e Custos",
     };
   }
-  if (!ind || !ind.ok) {
-    return {
-      value: kpi.format === "currency" ? "R$ 0,00" : "0",
-      sub: "Sem dados no período",
-    };
-  }
-  const map: Record<KpiKey, number> = {
+
+  if (!ind || !ind.ok) return vazio;
+  const map: Record<string, number> = {
     faturamento: ind.faturamento_final,
     liquida: ind.receita_liquida,
     ticket: ind.ticket_medio,
     os: ind.os_faturadas,
   };
-  const v = map[kpi.key];
+  const v = map[kpi.key] ?? 0;
   return {
     value: kpi.format === "currency" ? formatCurrencyBRL(v) : String(v),
     sub: ind.quantidade === 0 ? "Sem lançamentos no período" : "Fonte: Caixa Diário",
