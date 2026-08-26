@@ -8,6 +8,8 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { GOVERNANCA_PADRAO, type GovernancaConfig } from "@/lib/governanca";
+import { formatRole, type AppRole } from "@/hooks/use-auth";
 
 interface Nivel {
   id?: string;
@@ -48,7 +50,7 @@ export function AdminParametros() {
   const settingsQuery = useQuery({
     queryKey: ["admin", "settings-parametros"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("settings").select("key, value").in("key", ["financeiro", "metas", "planejamento"]);
+      const { data, error } = await supabase.from("settings").select("key, value").in("key", ["financeiro", "metas", "planejamento", "governanca"]);
       if (error) throw error;
       const map: Record<string, Record<string, unknown>> = {};
       for (const row of data ?? []) map[row.key] = (row.value ?? {}) as Record<string, unknown>;
@@ -68,10 +70,13 @@ export function AdminParametros() {
   const [fin, setFin] = useState<Financeiro>(FIN_PADRAO);
   const [proj, setProj] = useState<Projecao>({ atencao: 80, no_ritmo: 95, acima: 105 });
   const [niveis, setNiveis] = useState<Nivel[]>([]);
+  const [gov, setGov] = useState<GovernancaConfig>(GOVERNANCA_PADRAO);
 
   useEffect(() => {
     const f = settingsQuery.data?.["financeiro"];
     if (f) setFin({ ...FIN_PADRAO, ...(f as Partial<Financeiro>) });
+    const g = settingsQuery.data?.["governanca"];
+    if (g) setGov({ ...GOVERNANCA_PADRAO, ...(g as Partial<GovernancaConfig>), alcada_desconto: { ...GOVERNANCA_PADRAO.alcada_desconto, ...((g as Partial<GovernancaConfig>).alcada_desconto ?? {}) } });
     const m = settingsQuery.data?.["metas"] as { faixas_projecao?: Projecao } | undefined;
     if (m?.faixas_projecao) setProj({ ...proj, ...m.faixas_projecao });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -167,6 +172,147 @@ export function AdminParametros() {
               onCheckedChange={(v) => setFin((f) => ({ ...f, exigir_motivo_reabertura: v }))}
             />
           </label>
+        </div>
+      </SecaoAdmin>
+
+      <SecaoAdmin
+        titulo="Governança financeira"
+        descricao="Tributos gerenciais, alçadas de desconto por perfil, conferência física do caixa e rotina de backup. Não substitui a apuração fiscal oficial."
+        acoes={
+          <Button
+            size="sm"
+            disabled={!podeConfigurar}
+            onClick={() =>
+              void executarAcao(
+                () => rpcAdmin("admin_config_salvar", { p_key: "governanca", p_value: gov }),
+                "Governança financeira salva.",
+                () => {
+                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-parametros"] });
+                  void queryClient.invalidateQueries({ queryKey: ["settings"] });
+                },
+              )
+            }
+          >
+            <Save className="mr-2 size-4" /> Salvar
+          </Button>
+        }
+      >
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <label className={labelClass} htmlFor="gov-trib-metodo">
+              Método padrão de tributo
+            </label>
+            <select
+              id="gov-trib-metodo"
+              className={inputClass}
+              value={gov.tributo_metodo}
+              onChange={(e) => setGov((g) => ({ ...g, tributo_metodo: e.target.value as GovernancaConfig["tributo_metodo"] }))}
+            >
+              <option value="percentual">Percentual sobre a receita</option>
+              <option value="manual">Valor manual</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="gov-trib-pct">
+              Percentual gerencial padrão (%)
+            </label>
+            <input
+              id="gov-trib-pct"
+              type="number"
+              step="0.01"
+              className={inputClass}
+              value={gov.tributo_percentual_padrao}
+              onChange={(e) => setGov((g) => ({ ...g, tributo_percentual_padrao: Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="gov-backup">
+              Intervalo recomendado de backup (dias)
+            </label>
+            <input
+              id="gov-backup"
+              type="number"
+              className={inputClass}
+              value={gov.backup_intervalo_dias}
+              onChange={(e) => setGov((g) => ({ ...g, backup_intervalo_dias: Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="gov-alerta-desc">
+              Alerta de desconto acima de (%)
+            </label>
+            <input
+              id="gov-alerta-desc"
+              type="number"
+              step="0.01"
+              className={inputClass}
+              value={gov.alerta_desconto_pct}
+              onChange={(e) => setGov((g) => ({ ...g, alerta_desconto_pct: Number(e.target.value) }))}
+            />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="gov-entrega">
+              Reconhecer comissão de entrega quando
+            </label>
+            <select
+              id="gov-entrega"
+              className={inputClass}
+              value={gov.comissao_entrega_reconhecimento}
+              onChange={(e) =>
+                setGov((g) => ({
+                  ...g,
+                  comissao_entrega_reconhecimento: e.target.value as GovernancaConfig["comissao_entrega_reconhecimento"],
+                }))
+              }
+            >
+              <option value="validada">Validada</option>
+              <option value="paga">Paga</option>
+            </select>
+          </div>
+          <label className="flex items-center justify-between gap-3 rounded-md border border-border p-3 text-sm">
+            <span>
+              <span className="font-medium text-foreground">Exigir conferência física no fechamento</span>
+              <span className="block text-xs text-muted-foreground">Contagem da gaveta versus saldo esperado.</span>
+            </span>
+            <Switch
+              checked={gov.exige_conferencia_fisica}
+              onCheckedChange={(v) => setGov((g) => ({ ...g, exige_conferencia_fisica: v }))}
+            />
+          </label>
+        </div>
+
+        <div className="mt-5">
+          <p className="text-sm font-medium text-foreground">Alçada de desconto por perfil</p>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Percentual máximo de desconto liberado sem autorização. Deixe em branco para sem limite.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {(["administrador", "adm_financeiro", "adm_operacional", "vendedor", "tecnico"] as AppRole[]).map((r) => (
+              <div key={r}>
+                <label className={labelClass} htmlFor={`gov-alcada-${r}`}>
+                  {formatRole(r)}
+                </label>
+                <input
+                  id={`gov-alcada-${r}`}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="sem limite"
+                  className={inputClass}
+                  value={gov.alcada_desconto[r] ?? ""}
+                  onChange={(e) =>
+                    setGov((g) => ({
+                      ...g,
+                      alcada_desconto: {
+                        ...g.alcada_desconto,
+                        [r]: e.target.value === "" ? null : Number(e.target.value),
+                      },
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </SecaoAdmin>
 
