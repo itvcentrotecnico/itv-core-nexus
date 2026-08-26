@@ -53,13 +53,18 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
   const usaPercentual = tipo === "percentual_mao_obra" || tipo === "percentual_receita";
   const usaFixo = tipo === "fixo_os" || tipo === "fixo_servico";
 
-  async function salvar() {
+  async function salvar(): Promise<void> {
     const pct = percentual ? Number(percentual.replace(",", ".")) : null;
-    if (!regra && !tecnicoId) return toast.error("Selecione o técnico.");
-    if (!inicio) return toast.error("Informe o início da vigência.");
-    if (fim && fim < inicio) return toast.error("O fim da vigência não pode ser anterior ao início.");
-    if (usaPercentual && (!pct || pct <= 0 || pct > 100)) return toast.error("Informe um percentual entre 0 e 100.");
-    if (usaFixo && (!valorFixo || valorFixo <= 0)) return toast.error("Informe o valor fixo.");
+    const invalido =
+      (!regra && !tecnicoId) ||
+      !inicio ||
+      (fim !== "" && fim < inicio) ||
+      (usaPercentual && (!pct || pct <= 0 || pct > 100)) ||
+      (usaFixo && (!valorFixo || valorFixo <= 0));
+    if (invalido) {
+      toast.error("Revise os campos obrigatórios da regra.");
+      return;
+    }
 
     setSaving(true);
     try {
