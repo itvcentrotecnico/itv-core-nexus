@@ -46,16 +46,18 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
 
   const datas = aprovadas.filter((c) => selecionadas.includes(c.id)).map((c) => c.data_referencia).sort();
 
-  async function pagar() {
-    if (selecionadas.length === 0) return toast.error("Selecione ao menos uma comissão.");
-    if (!formaId) return toast.error("Selecione a forma de pagamento.");
+  async function pagar(): Promise<void> {
+    if (selecionadas.length === 0 || !formaId) {
+      toast.error("Selecione as comissões e a forma de pagamento.");
+      return;
+    }
     setSaving(true);
     try {
       const { data, error } = await supabase.rpc("comissoes_pagar", {
         p_tecnico_id: tecnicoId,
         p_comissao_ids: selecionadas,
         p_forma_pagamento_id: formaId,
-        p_observacao: observacao.trim() || null,
+        p_observacao: observacao.trim() || undefined,
       });
       if (error) throw new Error(error.message);
       const r = data as ComissaoRpcResult & { valor_total?: number; quantidade?: number };
@@ -109,7 +111,7 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
             <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 text-sm">
               <span className="text-muted-foreground">
                 {selecionadas.length} comissão(ões)
-                {datas.length > 0 && <> · período {formatDateITV(datas[0])} a {formatDateITV(datas[datas.length - 1])}</>}
+                {datas.length > 0 && <> · período {formatDateITV(datas[0]!)} a {formatDateITV(datas[datas.length - 1]!)}</>}
               </span>
               <strong className="text-base">{formatCurrencyBRL(total)}</strong>
             </div>

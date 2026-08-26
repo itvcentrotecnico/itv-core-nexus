@@ -163,10 +163,12 @@ export function AjusteDialog({ comissao, open, onOpenChange }: { comissao: Comis
   const [motivo, setMotivo] = useState("");
   const [saving, setSaving] = useState(false);
 
-  async function salvar() {
+  async function salvar(): Promise<void> {
     if (!comissao) return;
-    if (!valor || valor <= 0) return toast.error("Informe o valor do ajuste.");
-    if (!motivo.trim()) return toast.error("Informe o motivo do ajuste.");
+    if (!valor || valor <= 0 || !motivo.trim()) {
+      toast.error("Informe o valor e o motivo do ajuste.");
+      return;
+    }
     setSaving(true);
     try {
       const sinal = tipo === "desconto" || tipo === "compensacao" ? -1 : 1;
@@ -223,9 +225,12 @@ export function CancelarComissaoDialog({ comissao, open, onOpenChange }: { comis
   const [motivo, setMotivo] = useState("");
   const [saving, setSaving] = useState(false);
 
-  async function salvar() {
+  async function salvar(): Promise<void> {
     if (!comissao) return;
-    if (!motivo.trim()) return toast.error("Informe o motivo do cancelamento.");
+    if (!motivo.trim()) {
+      toast.error("Informe o motivo do cancelamento.");
+      return;
+    }
     setSaving(true);
     try {
       await rpc("comissoes_cancelar", { p_id: comissao.id, p_motivo: motivo.trim() });
@@ -346,10 +351,12 @@ export function MaoObraDialog({ comissao, open, onOpenChange }: { comissao: Comi
   const [justificativa, setJustificativa] = useState(comissao?.mao_obra_justificativa ?? "");
   const [saving, setSaving] = useState(false);
 
-  async function salvar() {
+  async function salvar(): Promise<void> {
     if (!comissao) return;
-    if (!valor || valor <= 0) return toast.error("Informe o valor da mão de obra.");
-    if (!justificativa.trim()) return toast.error("Informe a justificativa.");
+    if (!valor || valor <= 0 || !justificativa.trim()) {
+      toast.error("Informe o valor da mão de obra e a justificativa.");
+      return;
+    }
     setSaving(true);
     try {
       await rpc("comissoes_definir_mao_obra", {
