@@ -3649,6 +3649,9 @@ export type Database = {
         | "visualizar_todos"
         | "relatorios"
         | "configurar_metas"
+        | "encerrar"
+        | "visualizar_ranking"
+        | "configurar_indicadores"
       producao_status:
         | "rascunho"
         | "enviado_validacao"
@@ -3863,6 +3866,9 @@ export const Constants = {
         "visualizar_todos",
         "relatorios",
         "configurar_metas",
+        "encerrar",
+        "visualizar_ranking",
+        "configurar_indicadores",
       ],
       producao_status: [
         "rascunho",
