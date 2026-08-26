@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateBR } from "@/lib/format";
+import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import {
   AJUSTE_TIPO, TIPO_REGRA,
   type Comissao, type ComissaoAjusteTipo, type ComissaoRpcResult, type ComissaoSimulacao,
@@ -75,7 +75,7 @@ export function ComissaoDetalhes({
 
   const linhas: [string, string][] = [
     ["OS", comissao.os],
-    ["Data", formatDateBR(comissao.data_referencia)],
+    ["Data", formatDateITV(comissao.data_referencia)],
     ["Técnico", comissao.tecnico?.full_name ?? "—"],
     ["Regra", comissao.tipo_regra ? TIPO_REGRA[comissao.tipo_regra] : "Sem regra"],
     ["Receita Líquida da OS", formatCurrencyBRL(comissao.receita_liquida)],

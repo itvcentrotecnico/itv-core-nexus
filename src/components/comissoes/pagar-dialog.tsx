@@ -10,7 +10,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { labelClass, inputClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateBR } from "@/lib/format";
+import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import type { FormaPagamento } from "@/lib/caixa";
 import type { Comissao, ComissaoRpcResult } from "@/lib/comissoes";
 
@@ -99,7 +99,7 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
                         setSelecionadas((prev) => checked ? [...prev, c.id] : prev.filter((id) => id !== c.id))
                       }
                     />
-                    OS {c.os} · {formatDateBR(c.data_referencia)}
+                    OS {c.os} · {formatDateITV(c.data_referencia)}
                   </label>
                   <span className="text-sm font-medium">{formatCurrencyBRL(c.valor_aprovado ?? c.valor_final ?? 0)}</span>
                 </li>
@@ -109,7 +109,7 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
             <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 text-sm">
               <span className="text-muted-foreground">
                 {selecionadas.length} comissão(ões)
-                {datas.length > 0 && <> · período {formatDateBR(datas[0])} a {formatDateBR(datas[datas.length - 1])}</>}
+                {datas.length > 0 && <> · período {formatDateITV(datas[0])} a {formatDateITV(datas[datas.length - 1])}</>}
               </span>
               <strong className="text-base">{formatCurrencyBRL(total)}</strong>
             </div>
