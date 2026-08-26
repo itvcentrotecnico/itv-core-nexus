@@ -53,3 +53,27 @@ export const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
+
+/**
+ * Mapa rota → módulo. Usado para bloquear acesso por URL direta.
+ * Reforço de interface: a segurança real continua sendo RLS + RPCs no banco.
+ */
+export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
+  { prefix: "/admin", moduleKey: "admin" },
+  { prefix: "/caixa", moduleKey: "caixa" },
+  { prefix: "/pecas", moduleKey: "pecas" },
+  { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
+  { prefix: "/comissoes", moduleKey: "comissoes" },
+  { prefix: "/financeiro", moduleKey: "financeiro" },
+  { prefix: "/producao", moduleKey: "producao" },
+  { prefix: "/tecnicos", moduleKey: "tecnicos" },
+  { prefix: "/colaboradores", moduleKey: "colaboradores" },
+  { prefix: "/metas", moduleKey: "metas" },
+  { prefix: "/relatorios", moduleKey: "relatorios" },
+  { prefix: "/dashboard", moduleKey: "dashboard" },
+];
+
+export function moduloDaRota(pathname: string): string | null {
+  const rota = ROUTE_MODULES.find((r) => pathname === r.prefix || pathname.startsWith(`${r.prefix}/`));
+  return rota?.moduleKey ?? null;
+}

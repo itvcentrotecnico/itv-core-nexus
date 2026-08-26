@@ -3391,6 +3391,7 @@ export type Database = {
         Args: { p_key: string; p_value: Json }
         Returns: Json
       }
+      admin_convite_colaboradores: { Args: never; Returns: Json }
       admin_exportar: {
         Args: { p_dataset: string; p_fim?: string; p_inicio?: string }
         Returns: Json
@@ -3421,6 +3422,26 @@ export type Database = {
       admin_tecnicos_listar: { Args: never; Returns: Json }
       admin_usuario_perfis: {
         Args: { p_motivo?: string; p_roles: string[]; p_user_id: string }
+        Returns: Json
+      }
+      admin_usuario_permissao: {
+        Args: {
+          p_action: string
+          p_allowed: boolean
+          p_module: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_usuario_provisionar: {
+        Args: {
+          p_acao?: string
+          p_colaborador_id?: string
+          p_email: string
+          p_nome: string
+          p_role?: string
+          p_user_id: string
+        }
         Returns: Json
       }
       admin_usuario_status: {

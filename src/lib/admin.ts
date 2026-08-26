@@ -26,6 +26,18 @@ export interface AdminUsuario {
   roles: string[];
   overrides: number;
   modulos: string[];
+  colaborador_id: string | null;
+  colaborador_nome: string | null;
+  colaborador_status: string | null;
+}
+
+export interface ColaboradorConvite {
+  id: string;
+  nome: string;
+  status: string;
+  email: string | null;
+  user_id: string | null;
+  usuario_nome: string | null;
 }
 
 export interface AdminTecnico {

@@ -29,6 +29,7 @@ const CODIGOS: Record<string, string> = {
   DATASET_INVALIDO: "Conjunto de dados inválido.",
   NAO_ENCONTRADO: "Registro não encontrado.",
   SEM_CAMPOS: "Nenhum campo válido informado.",
+  COLABORADOR_VINCULADO: "Este colaborador já possui um usuário vinculado.",
   SEM_COLABORADOR: "Este técnico ainda não possui colaborador vinculado.",
 };
 

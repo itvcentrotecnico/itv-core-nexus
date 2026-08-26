@@ -25,14 +25,13 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-type Mode = "login" | "signup" | "forgot";
+type Mode = "login" | "forgot";
 
 function AuthPage() {
   const navigate = useNavigate();
   const { isAuthenticated, loading: sessionLoading } = useSession();
 
   const [mode, setMode] = useState<Mode>("login");
-  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -70,26 +69,6 @@ function AuthPage() {
         return;
       }
 
-      if (mode === "signup") {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            data: { full_name: fullName.trim() },
-            emailRedirectTo: window.location.origin,
-          },
-        });
-        if (signUpError) {
-          setError("Não foi possível criar a conta. Verifique os dados e tente novamente.");
-          return;
-        }
-        setNotice(
-          "Conta criada. Enviamos um link de confirmação para o seu e-mail — confirme para acessar o sistema.",
-        );
-        setMode("login");
-        return;
-      }
-
       // Recuperação de senha
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
@@ -122,35 +101,15 @@ function AuthPage() {
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
           <h2 className="text-base font-semibold text-card-foreground">
-            {mode === "login" && "Acessar o sistema"}
-            {mode === "signup" && "Criar conta"}
-            {mode === "forgot" && "Recuperar senha"}
+            {mode === "login" ? "Acessar o sistema" : "Recuperar senha"}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "login" && "Use seu e-mail e senha para entrar."}
-            {mode === "signup" && "O acesso será liberado conforme o perfil atribuído."}
-            {mode === "forgot" && "Informe seu e-mail para receber o link de redefinição."}
+            {mode === "login"
+              ? "Use seu e-mail e senha para entrar."
+              : "Informe seu e-mail para receber o link de redefinição."}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-            {mode === "signup" && (
-              <div>
-                <label htmlFor="fullName" className="mb-1.5 block text-sm font-medium text-foreground">
-                  Nome completo
-                </label>
-                <input
-                  id="fullName"
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  autoComplete="name"
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
-                  placeholder="Seu nome"
-                />
-              </div>
-            )}
-
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
                 E-mail
@@ -212,36 +171,22 @@ function AuthPage() {
               className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-              {mode === "login" && "Entrar"}
-              {mode === "signup" && "Criar conta"}
-              {mode === "forgot" && "Enviar link de recuperação"}
+              {mode === "login" ? "Entrar" : "Enviar link de recuperação"}
             </button>
           </form>
 
           <div className="mt-4 space-y-2 text-center text-sm">
             {mode === "login" && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode("forgot");
-                    setError(null);
-                  }}
-                  className="block w-full text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Esqueci minha senha
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode("signup");
-                    setError(null);
-                  }}
-                  className="block w-full font-medium text-primary transition-colors hover:text-primary-hover"
-                >
-                  Criar uma conta
-                </button>
-              </>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("forgot");
+                  setError(null);
+                }}
+                className="block w-full text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Esqueci minha senha
+              </button>
             )}
             {mode !== "login" && (
               <button
@@ -260,6 +205,8 @@ function AuthPage() {
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Sistema interno — acesso restrito a colaboradores autorizados.
+          <br />
+          O cadastro é feito somente por convite do administrador.
         </p>
       </div>
     </div>
