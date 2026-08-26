@@ -43,15 +43,15 @@ export const NAV_SECTIONS: NavSection[] = [
       { moduleKey: "metas", label: "Metas", to: "/metas", icon: Target },
       { moduleKey: "modo_tv", label: "Modo TV", to: "/admin/modo-tv", icon: Tv },
       { moduleKey: "relatorios", label: "Relatórios", to: "/relatorios", icon: BarChart3 },
-      { moduleKey: "configuracoes", label: "Configurações", to: "/configuracoes", icon: Settings },
     ],
   },
   {
     title: "Administração",
     items: [
-      { moduleKey: "admin-usuarios", label: "Usuários", to: "/admin/usuarios", icon: UserCog },
-      { moduleKey: "admin-permissoes", label: "Permissões", to: "/admin/permissoes", icon: ShieldCheck },
-      { moduleKey: "admin-auditoria", label: "Auditoria", to: "/admin/auditoria", icon: ScrollText },
+      { moduleKey: "admin", label: "Administração", to: "/admin", icon: Settings },
+      { moduleKey: "admin-usuarios", label: "Usuários", to: "/admin", icon: UserCog },
+      { moduleKey: "admin-auditoria", label: "Auditoria", to: "/admin", icon: ScrollText },
     ],
   },
 ];
+
