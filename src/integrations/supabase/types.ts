@@ -618,6 +618,7 @@ export type Database = {
           data_admissao: string | null
           desligado_em: string | null
           email: string | null
+          especialidade: string | null
           id: string
           motivo_desligamento: string | null
           nome: string
@@ -638,6 +639,7 @@ export type Database = {
           data_admissao?: string | null
           desligado_em?: string | null
           email?: string | null
+          especialidade?: string | null
           id?: string
           motivo_desligamento?: string | null
           nome: string
@@ -658,6 +660,7 @@ export type Database = {
           data_admissao?: string | null
           desligado_em?: string | null
           email?: string | null
+          especialidade?: string | null
           id?: string
           motivo_desligamento?: string | null
           nome?: string
@@ -2129,54 +2132,72 @@ export type Database = {
           created_at: string
           eh_dinheiro: boolean
           id: string
+          max_parcelas: number
           nome: string
           ordem: number
+          permite_parcelamento: boolean
           taxa_padrao_percentual: number
+          tipo: string
         }
         Insert: {
           ativo?: boolean
           created_at?: string
           eh_dinheiro?: boolean
           id?: string
+          max_parcelas?: number
           nome: string
           ordem?: number
+          permite_parcelamento?: boolean
           taxa_padrao_percentual?: number
+          tipo?: string
         }
         Update: {
           ativo?: boolean
           created_at?: string
           eh_dinheiro?: boolean
           id?: string
+          max_parcelas?: number
           nome?: string
           ordem?: number
+          permite_parcelamento?: boolean
           taxa_padrao_percentual?: number
+          tipo?: string
         }
         Relationships: []
       }
       fornecedores: {
         Row: {
           ativo: boolean
+          categoria: string | null
           created_at: string
+          email: string | null
           id: string
           nome: string
+          nome_fantasia: string | null
           observacao: string | null
           telefone: string | null
           updated_at: string
         }
         Insert: {
           ativo?: boolean
+          categoria?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           nome: string
+          nome_fantasia?: string | null
           observacao?: string | null
           telefone?: string | null
           updated_at?: string
         }
         Update: {
           ativo?: boolean
+          categoria?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           nome?: string
+          nome_fantasia?: string | null
           observacao?: string | null
           telefone?: string | null
           updated_at?: string
@@ -2578,6 +2599,10 @@ export type Database = {
           email: string | null
           full_name: string
           id: string
+          status: Database["public"]["Enums"]["usuario_status"]
+          status_alterado_em: string | null
+          status_alterado_por: string | null
+          status_motivo: string | null
           updated_at: string
         }
         Insert: {
@@ -2587,6 +2612,10 @@ export type Database = {
           email?: string | null
           full_name?: string
           id: string
+          status?: Database["public"]["Enums"]["usuario_status"]
+          status_alterado_em?: string | null
+          status_alterado_por?: string | null
+          status_motivo?: string | null
           updated_at?: string
         }
         Update: {
@@ -2596,9 +2625,21 @@ export type Database = {
           email?: string | null
           full_name?: string
           id?: string
+          status?: Database["public"]["Enums"]["usuario_status"]
+          status_alterado_em?: string | null
+          status_alterado_por?: string | null
+          status_motivo?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_status_alterado_por_fkey"
+            columns: ["status_alterado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       regras_comissao: {
         Row: {
@@ -2898,6 +2939,7 @@ export type Database = {
       tipos_servico_tecnico: {
         Row: {
           ativo: boolean
+          categoria: string | null
           created_at: string
           id: string
           nome: string
@@ -2905,6 +2947,7 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean
+          categoria?: string | null
           created_at?: string
           id?: string
           nome: string
@@ -2912,6 +2955,7 @@ export type Database = {
         }
         Update: {
           ativo?: boolean
+          categoria?: string | null
           created_at?: string
           id?: string
           nome?: string
@@ -3195,6 +3239,83 @@ export type Database = {
       }
     }
     Functions: {
+      admin_auditoria: {
+        Args: {
+          p_action?: string
+          p_busca?: string
+          p_fim?: string
+          p_inicio?: string
+          p_limit?: number
+          p_module?: string
+          p_offset?: number
+          p_user_id?: string
+        }
+        Returns: Json
+      }
+      admin_auditoria_filtros: { Args: never; Returns: Json }
+      admin_backup_info: { Args: never; Returns: Json }
+      admin_cadastro_ativo: {
+        Args: {
+          p_ativo: boolean
+          p_id: string
+          p_motivo?: string
+          p_tabela: string
+        }
+        Returns: Json
+      }
+      admin_cadastro_dependencias: {
+        Args: { p_id: string; p_tabela: string }
+        Returns: Json
+      }
+      admin_cadastro_salvar: {
+        Args: { p_dados: Json; p_id?: string; p_tabela: string }
+        Returns: Json
+      }
+      admin_config_salvar: {
+        Args: { p_key: string; p_value: Json }
+        Returns: Json
+      }
+      admin_exportar: {
+        Args: { p_dataset: string; p_fim?: string; p_inicio?: string }
+        Returns: Json
+      }
+      admin_fechamentos_painel: { Args: { p_ano?: number }; Returns: Json }
+      admin_niveis_desempenho_salvar: {
+        Args: { p_niveis: Json }
+        Returns: Json
+      }
+      admin_role_permissao: {
+        Args: {
+          p_action: Database["public"]["Enums"]["permission_action"]
+          p_allowed: boolean
+          p_module: string
+          p_role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: Json
+      }
+      admin_tabela_permitida: { Args: { p_tabela: string }; Returns: boolean }
+      admin_tecnico_atualizar: {
+        Args: {
+          p_especialidade?: string
+          p_observacao?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_tecnicos_listar: { Args: never; Returns: Json }
+      admin_usuario_perfis: {
+        Args: { p_motivo?: string; p_roles: string[]; p_user_id: string }
+        Returns: Json
+      }
+      admin_usuario_status: {
+        Args: {
+          p_motivo?: string
+          p_status: Database["public"]["Enums"]["usuario_status"]
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_usuarios_listar: { Args: never; Returns: Json }
       caixa_atualizar_lancamento: {
         Args: {
           p_cliente?: string
@@ -3935,6 +4056,7 @@ export type Database = {
         | "rejeitado"
         | "correcao_solicitada"
         | "cancelado"
+      usuario_status: "ativo" | "inativo" | "bloqueado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4155,6 +4277,7 @@ export const Constants = {
         "correcao_solicitada",
         "cancelado",
       ],
+      usuario_status: ["ativo", "inativo", "bloqueado"],
     },
   },
 } as const
