@@ -2,12 +2,11 @@ import { useState } from "react";
 import { FileText } from "lucide-react";
 import { toast } from "sonner";
 
-import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
+import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV } from "@/lib/format";
 import type { RelFaturamento, RelPlanejamento, RelProducao, RelRentabilidade, RelTecnicos } from "@/lib/relatorios";
 import { labelMes } from "@/lib/relatorios";
 import { rpcRel } from "@/components/relatorios/shared";
-import { LOGO_MARK_URL } from "@/lib/logo";
-import { nowInManaus } from "@/lib/format";
+import logoMark from "@/assets/itv-logo-mark.png.asset.json";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -64,11 +63,11 @@ export function ResumoExecutivoButton({ range }: { range: { from: string; to: st
   .foot { margin-top: 24px; border-top: 1px solid #e4e4e7; padding-top: 8px; color: #a1a1aa; font-size: 8.5px; display: flex; justify-content: space-between; }
 </style></head><body>
 <div class="head">
-  <img src="${LOGO_MARK_URL}" alt="ITV Centro Técnico">
+  <img src="${logoMark.url}" alt="ITV Centro Técnico">
   <div style="text-align:right">
     <h1>Resumo Executivo</h1>
     <p class="sub">Período: ${formatDateOnlyISO(range.from)} a ${formatDateOnlyISO(range.to)}</p>
-    <p class="sub">Gerado em ${nowInManaus()} (America/Manaus)</p>
+    <p class="sub">Gerado em ${formatDateTimeITV(new Date())} (America/Manaus)</p>
   </div>
 </div>
 
