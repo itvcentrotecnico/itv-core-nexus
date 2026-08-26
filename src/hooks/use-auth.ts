@@ -4,7 +4,7 @@ import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "gerente" | "vendas" | "tecnico";
+export type AppRole = "administrador" | "gerente" | "vendas" | "tecnico" | "tv_display";
 export type PermissionAction =
   | "visualizar"
   | "criar"
@@ -149,6 +149,7 @@ const ROLE_LABELS: Record<AppRole, string> = {
   gerente: "Gerente",
   vendas: "Vendas",
   tecnico: "Técnico",
+  tv_display: "TV Display",
 };
 
 export function formatRole(role: AppRole): string {
