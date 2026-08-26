@@ -12,6 +12,8 @@ import {
   LancamentosView,
   type LancamentoComEntrega,
 } from "@/components/caixa/lancamentos-view";
+import { CaixaFisicoSection, useCaixaFisico } from "@/components/caixa/caixa-fisico";
+import { DescontosSection } from "@/components/caixa/descontos";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV, todayManausISO } from "@/lib/format";
@@ -34,7 +36,7 @@ function CaixaPage() {
 
   const [date, setDate] = useState(todayManausISO());
   const [periodo, setPeriodo] = useState({ inicio: todayManausISO(), fim: todayManausISO() });
-  const [tab, setTab] = useState<"lancamentos" | "fechamentos">("lancamentos");
+  const [tab, setTab] = useState<"lancamentos" | "fisico" | "descontos" | "fechamentos">("lancamentos");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<CaixaLancamento | null>(null);
   const [cancelTarget, setCancelTarget] = useState<CaixaLancamento | null>(null);
@@ -132,6 +134,8 @@ function CaixaPage() {
     [ativos],
   );
 
+
+  const fisicoQuery = useCaixaFisico(date, podeVer);
 
   if (!accessLoading && !podeVer) {
     return (
@@ -236,6 +240,8 @@ function CaixaPage() {
         {(
           [
             { key: "lancamentos", label: "Lançamentos" },
+            { key: "fisico", label: "Caixa físico" },
+            { key: "descontos", label: "Descontos" },
             { key: "fechamentos", label: "Fechamentos" },
           ] as const
         ).map((t) => (
@@ -276,6 +282,17 @@ function CaixaPage() {
       )}
 
 
+      {tab === "fisico" && (
+        <CaixaFisicoSection
+          date={date}
+          resumo={fisicoQuery.data}
+          podeRegistrar={podeCriar}
+          diaBloqueado={diaBloqueado}
+        />
+      )}
+
+      {tab === "descontos" && <DescontosSection periodo={periodo} />}
+
       {tab === "fechamentos" && (
         <FechamentosSection
           fechamentos={fechamentosQuery.data ?? []}
@@ -308,6 +325,7 @@ function CaixaPage() {
         onOpenChange={setFecharOpen}
         date={date}
         dinheiroEsperado={dinheiroEsperado}
+        fisico={fisicoQuery.data}
         totais={{ faturamento: totais.faturamento, taxas: totais.taxas, liquida: totais.liquida }}
         onDone={refresh}
       />
@@ -320,30 +338,7 @@ function CaixaPage() {
   );
 }
 
-export function KpiCard({
-  label,
-  value,
-  sub,
-  highlight,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border p-4",
-        highlight ? "border-primary/30 bg-primary/5" : "border-border bg-card",
-      )}
-    >
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <p className="mt-1.5 font-display text-lg font-bold text-foreground sm:text-xl">{value}</p>
-      {sub && <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{sub}</p>}
-    </div>
-  );
-}
+export { KpiCard } from "@/components/caixa/kpi-card";
 
 
 interface FechamentosSectionProps {

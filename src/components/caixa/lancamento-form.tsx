@@ -49,6 +49,7 @@ import {
   type ComissaoEntregaEstado,
 } from "@/components/caixa/comissao-entrega-section";
 import type { ComissaoEntrega } from "@/lib/comissao-entrega";
+import { SolicitarDescontoDialog, useDescontosDisponiveis } from "@/components/caixa/descontos";
 
 const NONE = "__none__";
 
@@ -96,6 +97,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   const [saving, setSaving] = useState(false);
   const [dupInfo, setDupInfo] = useState<NonNullable<CaixaRpcResult["existente"]> | null>(null);
   const [comissaoEntrega, setComissaoEntrega] = useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
+  const [autorizacaoId, setAutorizacaoId] = useState<string | null>(null);
+  const [alcadaInfo, setAlcadaInfo] = useState<{ percentual: number; limite: number | null } | null>(null);
+  const autorizacoesQuery = useDescontosDisponiveis(open);
+  const autorizacoesDisponiveis = autorizacoesQuery.data ?? [];
 
   const configCeQuery = useComissaoEntregaConfig(open);
   const entregadoresQuery = useEntregadores(open);
@@ -164,6 +169,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   useEffect(() => {
     if (!open) return;
     setDupInfo(null);
+    setAutorizacaoId(null);
+    setAlcadaInfo(null);
     if (editing) {
       setData(editing.data_lancamento);
       setOs(editing.os ?? "");
@@ -323,6 +330,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       ...(descricao.trim() ? { p_descricao: descricao.trim() } : {}),
       ...(tecnicoId ? { p_tecnico_id: tecnicoId } : {}),
       ...(observacao.trim() ? { p_observacao: observacao.trim() } : {}),
+      ...(autorizacaoId ? { p_desconto_autorizacao_id: autorizacaoId } : {}),
     };
 
     setSaving(true);
@@ -338,6 +346,13 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       if (!result.ok) {
         if (result.code === "OS_DUPLICADA" && result.existente) {
           setDupInfo(result.existente);
+          return;
+        }
+        if (result.code === "DESCONTO_ACIMA_ALCADA") {
+          setAlcadaInfo({
+            percentual: Number(result["percentual"] ?? 0),
+            limite: result["limite"] == null ? null : Number(result["limite"]),
+          });
           return;
         }
         toast.error(result.message ?? "Operação não concluída.");
@@ -489,6 +504,41 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
               {formatCurrencyBRL(valorFinal)}
             </span>
           </div>
+
+          {/* Alçada de desconto */}
+          {(desconto ?? 0) > 0 && autorizacoesDisponiveis.length > 0 && !autorizacaoId && (
+            <div className="mt-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+              <p className="font-medium text-foreground">Autorização de desconto aprovada disponível</p>
+              <ul className="mt-2 space-y-1.5">
+                {autorizacoesDisponiveis.map((a) => (
+                  <li key={a.id} className="flex items-center justify-between gap-2">
+                    <span className="text-muted-foreground">
+                      OS {a.os || "—"} · até {formatCurrencyBRL(a.valor_desconto)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setAutorizacaoId(a.id)}
+                      className="rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:bg-secondary"
+                    >
+                      Usar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {autorizacaoId && (
+            <div className="mt-2 flex items-center justify-between rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
+              <span className="font-medium text-primary">Desconto autorizado por gestor</span>
+              <button
+                type="button"
+                onClick={() => setAutorizacaoId(null)}
+                className="text-xs font-medium text-muted-foreground underline"
+              >
+                Remover
+              </button>
+            </div>
+          )}
 
           {/* Pagamentos */}
           <div className="mt-4 space-y-3">
@@ -721,6 +771,22 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <SolicitarDescontoDialog
+        open={!!alcadaInfo}
+        onOpenChange={(v) => !v && setAlcadaInfo(null)}
+        contexto={{
+          os: os.trim() || null,
+          cliente: cliente.trim() || null,
+          valorOriginal: valorBruto ?? 0,
+          valorDesconto: desconto ?? 0,
+        }}
+        limite={alcadaInfo?.limite ?? null}
+        onSolicitado={() => {
+          setAlcadaInfo(null);
+          void autorizacoesQuery.refetch();
+        }}
+      />
     </>
   );
 }

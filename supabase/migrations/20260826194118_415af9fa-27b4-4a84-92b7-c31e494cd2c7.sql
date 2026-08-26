@@ -1,0 +1,13 @@
+revoke execute on function public.admin_backup_status() from anon;
+revoke execute on function public.backup_registrar(date,text,text,text,text) from anon;
+revoke execute on function public.caixa_fisico_resumo(date) from anon;
+revoke execute on function public.caixa_movimento_registrar(date,public.caixa_movimento_tipo,numeric,text,text) from anon;
+revoke execute on function public.caixa_registrar_lancamento(date,text,text,uuid,text,uuid,numeric,numeric,text,jsonb,boolean,uuid) from anon;
+revoke execute on function public.desconto_decidir(uuid,boolean,text) from anon;
+revoke execute on function public.desconto_limite(uuid) from anon;
+revoke execute on function public.desconto_solicitar(text,text,numeric,numeric,text) from anon;
+revoke execute on function public.descontos_indicadores(date,date) from anon;
+revoke execute on function public.dre_gerencial(date,date) from anon;
+revoke execute on function public.governanca_config() from anon;
+revoke execute on function public.tributos_salvar(uuid,date,text,public.tributo_metodo,numeric,numeric,numeric,text) from anon;
+revoke execute on function public.tributos_status(uuid,public.tributo_status,text) from anon;
