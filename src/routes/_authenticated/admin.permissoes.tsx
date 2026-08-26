@@ -136,13 +136,17 @@ function PermissoesPage() {
     const key = `${moduleKey}:${action}`;
     setSavingKey(key);
     try {
-      const { error } = await supabase
-        .from("user_permissions")
-        .upsert(
-          { user_id: usuarioId, module_key: moduleKey, action, allowed } as never,
-          { onConflict: "user_id,module_key,action" },
-        );
+      // Via RPC administrativa: valida permissão no servidor e grava auditoria.
+      const { data, error } = await supabase.rpc("admin_usuario_permissao" as never, {
+        p_user_id: usuarioId,
+        p_module: moduleKey,
+        p_action: action,
+        p_allowed: allowed,
+      } as never);
       if (error) throw error;
+      const res = data as unknown as { ok: boolean; code?: string };
+      if (!res?.ok) throw new Error(res?.code === "SEM_PERMISSAO" ? "Você não tem permissão para esta ação." : "Falha ao salvar permissão.");
+
       toast.success(`Permissão ${allowed ? "concedida" : "revogada"}: ${moduleKey}.${action}`);
       await queryClient.invalidateQueries({ queryKey: ["admin", "user-permissions", usuarioId] });
       await queryClient.invalidateQueries({ queryKey: ["user-access"] });
