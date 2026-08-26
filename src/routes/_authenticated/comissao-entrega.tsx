@@ -71,11 +71,11 @@ function ComissaoEntregaPage() {
 
   const filtros = useMemo(
     () => ({
-      p_inicio: inicio || null,
-      p_fim: fim || null,
-      p_entregador_id: entregadorId || null,
-      p_status: status || null,
-      p_os: os.trim() || null,
+      ...(inicio ? { p_inicio: inicio } : {}),
+      ...(fim ? { p_fim: fim } : {}),
+      ...(entregadorId ? { p_entregador_id: entregadorId } : {}),
+      ...(status ? { p_status: status } : {}),
+      ...(os.trim() ? { p_os: os.trim() } : {}),
     }),
     [inicio, fim, entregadorId, status, os],
   );
