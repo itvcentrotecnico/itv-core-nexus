@@ -222,9 +222,22 @@ function DashboardPage() {
     },
   });
 
+  const ehGerencia = isAdmin || can("producao", "validar");
+
+  const filaProducaoQuery = useQuery({
+    queryKey: ["dashboard-producao-fila"],
+    enabled: ehGerencia,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("producao_fila_indicadores");
+      if (error) throw error;
+      return data as unknown as ProducaoFilaIndicadores;
+    },
+  });
+
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
   const comissoes = comissoesQuery.data;
+  const filaProducao = filaProducaoQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
