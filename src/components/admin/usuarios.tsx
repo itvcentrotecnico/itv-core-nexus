@@ -1,11 +1,19 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Search, ShieldCheck, UserCog } from "lucide-react";
+import { Loader2, Mail, Search, ShieldCheck, UserCog, UserPlus } from "lucide-react";
+import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 
 import { useAccess, formatRole, type AppRole } from "@/hooks/use-auth";
 import { formatDateTimeITV } from "@/lib/format";
-import { USUARIO_STATUS_LABEL, type AdminUsuario, type UsuarioStatus } from "@/lib/admin";
+import {
+  USUARIO_STATUS_LABEL,
+  type AdminUsuario,
+  type ColaboradorConvite,
+  type UsuarioStatus,
+} from "@/lib/admin";
+import { convidarUsuario, reenviarConvite } from "@/lib/usuarios.functions";
 import { inputClass, labelClass } from "@/lib/caixa";
 import {
   BotaoAcao,
@@ -31,6 +39,129 @@ import { Button } from "@/components/ui/button";
 
 const PERFIS: AppRole[] = ["administrador", "gerente", "vendas", "tecnico", "tv_display"];
 
+const PERFIL_RESUMO: Record<AppRole, string> = {
+  administrador: "Acesso total, incluindo administração e permissões.",
+  gerente: "Operação completa, financeiro, validações e relatórios.",
+  vendas: "Caixa, peças, contas a receber e consultas operacionais.",
+  tecnico: "Apenas a própria produção, comissões e metas.",
+  tv_display: "Somente o painel Modo TV.",
+};
+
+/** Convite administrativo: cria o acesso e vincula ao colaborador. */
+function ConviteDialog({
+  aberto,
+  onOpenChange,
+  onConcluido,
+}: {
+  aberto: boolean;
+  onOpenChange: (v: boolean) => void;
+  onConcluido: () => void;
+}) {
+  const convidar = useServerFn(convidarUsuario);
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [colaboradorId, setColaboradorId] = useState("");
+  const [role, setRole] = useState<AppRole>("tecnico");
+  const [enviando, setEnviando] = useState(false);
+
+  const colabQuery = useQuery({
+    queryKey: ["admin", "convite-colaboradores"],
+    enabled: aberto,
+    queryFn: async () => {
+      const res = await rpcAdmin<{ ok: true; colaboradores: ColaboradorConvite[] }>(
+        "admin_convite_colaboradores",
+      );
+      return res.colaboradores ?? [];
+    },
+  });
+
+  const disponiveis = (colabQuery.data ?? []).filter((c) => !c.user_id && c.status !== "desligado");
+
+  async function enviar() {
+    if (nome.trim().length < 2 || !email.trim()) {
+      toast.error("Informe nome e e-mail válidos.");
+      return;
+    }
+    setEnviando(true);
+    try {
+      const res = await convidar({
+        data: {
+          nome: nome.trim(),
+          email: email.trim(),
+          colaboradorId: colaboradorId || null,
+          role,
+          origem: window.location.origin,
+        },
+      });
+      if (!res.ok) {
+        toast.error("Não foi possível convidar", { description: res.message });
+        return;
+      }
+      toast.success(res.message);
+      setNome("");
+      setEmail("");
+      setColaboradorId("");
+      setRole("tecnico");
+      onConcluido();
+      onOpenChange(false);
+    } catch (e) {
+      toast.error("Não foi possível convidar", { description: (e as Error).message });
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  return (
+    <Dialog open={aberto} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Convidar usuário</DialogTitle>
+          <DialogDescription>
+            O colaborador recebe um e-mail para definir a própria senha. Não existe cadastro público.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <label className={labelClass} htmlFor="convite-nome">Nome completo</label>
+            <input id="convite-nome" className={inputClass} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome do colaborador" />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="convite-email">E-mail corporativo</label>
+            <input id="convite-email" type="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="colaborador@itv.com.br" />
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="convite-colab">Colaborador vinculado (opcional)</label>
+            <select id="convite-colab" className={inputClass} value={colaboradorId} onChange={(e) => setColaboradorId(e.target.value)}>
+              <option value="">Sem vínculo</option>
+              {disponiveis.map((c) => (
+                <option key={c.id} value={c.id}>{c.nome}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Um colaborador só pode estar vinculado a um usuário.
+            </p>
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="convite-role">Perfil de acesso</label>
+            <select id="convite-role" className={inputClass} value={role} onChange={(e) => setRole(e.target.value as AppRole)}>
+              {PERFIS.map((p) => (
+                <option key={p} value={p}>{formatRole(p)}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">{PERFIL_RESUMO[role]}</p>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          <Button onClick={() => void enviar()} disabled={enviando}>
+            {enviando && <Loader2 className="mr-2 size-4 animate-spin" />} Enviar convite
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 const TOM_STATUS: Record<UsuarioStatus, "ok" | "alerta" | "erro"> = {
   ativo: "ok",
   inativo: "alerta",
@@ -46,6 +177,9 @@ export function AdminUsuarios() {
   const [alvoStatus, setAlvoStatus] = useState<{ usuario: AdminUsuario; status: UsuarioStatus } | null>(null);
   const [alvoPerfis, setAlvoPerfis] = useState<AdminUsuario | null>(null);
   const [perfisSel, setPerfisSel] = useState<string[]>([]);
+  const [conviteAberto, setConviteAberto] = useState(false);
+  const [reenviando, setReenviando] = useState<string | null>(null);
+  const reenviar = useServerFn(reenviarConvite);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "usuarios"],
@@ -74,11 +208,16 @@ export function AdminUsuarios() {
       titulo="Usuários"
       descricao="Perfis, status de acesso e histórico de entrada. Usuários com histórico nunca são excluídos — apenas desativados."
       acoes={
-        <Link to="/admin/permissoes">
-          <Button size="sm" variant="outline">
-            <ShieldCheck className="mr-2 size-4" /> Exceções por usuário
+        <div className="flex flex-wrap gap-2">
+          <Link to="/admin/permissoes">
+            <Button size="sm" variant="outline">
+              <ShieldCheck className="mr-2 size-4" /> Exceções por usuário
+            </Button>
+          </Link>
+          <Button size="sm" disabled={!podeAdministrar} onClick={() => setConviteAberto(true)}>
+            <UserPlus className="mr-2 size-4" /> Convidar usuário
           </Button>
-        </Link>
+        </div>
       }
     >
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -120,12 +259,24 @@ export function AdminUsuarios() {
       ) : usuarios.length === 0 ? (
         <SemDados label="Nenhum usuário encontrado." />
       ) : (
-        <TabelaAdmin cabecalho={["Usuário", "Perfis", "Status", "Último acesso", "Módulos", "Criado em", "Ações"]}>
+        <TabelaAdmin cabecalho={["Usuário", "Colaborador", "Perfis", "Status", "Último acesso", "Módulos", "Criado em", "Ações"]}>
           {usuarios.map((u) => (
             <tr key={u.id} className="align-top">
               <td className="px-3 py-3">
                 <p className="font-medium text-foreground">{u.full_name}</p>
                 <p className="text-xs text-muted-foreground">{u.email ?? "—"}</p>
+              </td>
+              <td className="px-3 py-3 text-xs">
+                {u.colaborador_nome ? (
+                  <>
+                    <p className="text-foreground">{u.colaborador_nome}</p>
+                    {u.colaborador_status && u.colaborador_status !== "ativo" ? (
+                      <p className="text-destructive">Colaborador {u.colaborador_status}</p>
+                    ) : null}
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">Sem vínculo</span>
+                )}
               </td>
               <td className="px-3 py-3">
                 <div className="flex flex-wrap gap-1">
@@ -163,6 +314,26 @@ export function AdminUsuarios() {
                   >
                     <UserCog className="mr-1.5 size-3.5" /> Perfis
                   </BotaoAcao>
+                  <BotaoAcao
+                    disabled={!podeAdministrar || !u.email || reenviando === u.id}
+                    onClick={async () => {
+                      if (!u.email) return;
+                      setReenviando(u.id);
+                      try {
+                        const res = await reenviar({
+                          data: { userId: u.id, email: u.email, origem: window.location.origin },
+                        });
+                        if (res.ok) toast.success(res.message);
+                        else toast.error("Não foi possível reenviar", { description: res.message });
+                      } catch (e) {
+                        toast.error("Não foi possível reenviar", { description: (e as Error).message });
+                      } finally {
+                        setReenviando(null);
+                      }
+                    }}
+                  >
+                    <Mail className="mr-1.5 size-3.5" /> Reenviar convite
+                  </BotaoAcao>
                   {u.status === "ativo" ? (
                     <>
                       <BotaoAcao
@@ -193,6 +364,8 @@ export function AdminUsuarios() {
           ))}
         </TabelaAdmin>
       )}
+
+      <ConviteDialog aberto={conviteAberto} onOpenChange={setConviteAberto} onConcluido={invalidar} />
 
       <ConfirmarAcao
         aberto={!!alvoStatus}
