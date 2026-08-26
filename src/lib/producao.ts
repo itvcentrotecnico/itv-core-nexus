@@ -57,6 +57,7 @@ export interface ProducaoFoto {
   storage_path: string;
   tipo: string;
   descricao: string | null;
+  uploaded_by: string | null;
   created_at: string;
 }
 

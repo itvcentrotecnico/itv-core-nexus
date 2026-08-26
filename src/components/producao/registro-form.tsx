@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { hojeManaus } from "@/lib/format";
+import { todayManausISO } from "@/lib/format";
 import { storagePathFoto, type ProducaoFoto, type ProducaoRegistro } from "@/lib/producao";
 import { invalidateProducao, rpcProd, useProducaoRefs } from "./shared";
 
@@ -39,7 +39,7 @@ export function RegistroProducaoDialog({
   registro: ProducaoRegistro | null;
 }) {
   const queryClient = useQueryClient();
-  const { user } = useAccess();
+  const { profile } = useAccess();
   const { tipos } = useProducaoRefs();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -48,7 +48,7 @@ export function RegistroProducaoDialog({
   const [duplicidade, setDuplicidade] = useState<string | null>(null);
 
   const [os, setOs] = useState("");
-  const [dataExecucao, setDataExecucao] = useState(hojeManaus());
+  const [dataExecucao, setDataExecucao] = useState(todayManausISO());
   const [cliente, setCliente] = useState("");
   const [marcaTv, setMarcaTv] = useState("");
   const [modeloTv, setModeloTv] = useState("");
@@ -66,7 +66,7 @@ export function RegistroProducaoDialog({
   useEffect(() => {
     if (open) {
       setOs(registro?.os ?? "");
-      setDataExecucao(registro?.data_execucao ?? hojeManaus());
+      setDataExecucao(registro?.data_execucao ?? todayManausISO());
       setCliente(registro?.cliente ?? "");
       setMarcaTv(registro?.marca_tv ?? "");
       setModeloTv(registro?.modelo_tv ?? "");
@@ -85,9 +85,9 @@ export function RegistroProducaoDialog({
   }, [open, registro]);
 
   async function uploadFotos(producaoId: string) {
-    if (!user || fotosNovas.length === 0) return;
+    if (!profile || fotosNovas.length === 0) return;
     for (const file of fotosNovas) {
-      const path = storagePathFoto(user.id, producaoId, file.name);
+      const path = storagePathFoto(profile.id, producaoId, file.name);
       const { error: upErr } = await supabase.storage.from("producao").upload(path, file, {
         contentType: file.type,
         cacheControl: "3600",
@@ -97,16 +97,16 @@ export function RegistroProducaoDialog({
         producao_id: producaoId,
         storage_path: path,
         tipo: "geral",
-        uploaded_by: user.id,
+        uploaded_by: profile.id,
       } as never);
       if (dbErr) throw new Error(dbErr.message);
     }
   }
 
   async function salvar(enviar: boolean, confirmarDup = false) {
-    if (!os.trim()) return toast.error("Informe a OS.");
-    if (!servico.trim()) return toast.error("Informe o serviço executado.");
-    if (!dataExecucao) return toast.error("Informe a data de execução.");
+    if (!os.trim()) { toast.error("Informe a OS."); return; }
+    if (!servico.trim()) { toast.error("Informe o serviço executado."); return; }
+    if (!dataExecucao) { toast.error("Informe a data de execução."); return; }
     setSaving(true);
     try {
       let producaoId: string;
@@ -199,7 +199,7 @@ export function RegistroProducaoDialog({
             </div>
             <div>
               <label htmlFor="pr-data" className={labelClass}>Data de Execução *</label>
-              <input id="pr-data" type="date" value={dataExecucao} max={hojeManaus()}
+              <input id="pr-data" type="date" value={dataExecucao} max={todayManausISO()}
                 onChange={(e) => setDataExecucao(e.target.value)} className={inputClass} required />
             </div>
             <div className="col-span-2">
@@ -314,7 +314,7 @@ export function RegistroProducaoDialog({
 }
 
 function FotosExistentes({ producaoId }: { producaoId: string }) {
-  const { user } = useAccess();
+  const { profile } = useAccess();
   const queryClient = useQueryClient();
   const fotosQuery = useQuery({
     queryKey: ["producao", "fotos", producaoId],
@@ -349,7 +349,7 @@ function FotosExistentes({ producaoId }: { producaoId: string }) {
       {fotos.map((f) => (
         <span key={f.id} className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px]">
           Foto anexada
-          {f.uploaded_by === user?.id && (
+          {f.uploaded_by === profile?.id && (
             <button type="button" onClick={() => void remover(f)} className="text-muted-foreground hover:text-destructive"
               aria-label="Excluir foto anexada">
               <Trash2 className="h-3 w-3" />
