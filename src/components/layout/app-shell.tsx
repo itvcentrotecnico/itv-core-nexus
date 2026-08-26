@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, ShieldAlert, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { NAV_SECTIONS } from "@/lib/navigation";
+import { NAV_SECTIONS, moduloDaRota } from "@/lib/navigation";
 import { useAccess, formatRole } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
+
 
 function Brand() {
   return (
