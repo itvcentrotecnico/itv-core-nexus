@@ -119,12 +119,21 @@ function kpiValue(
   kpi: KpiDef,
   ind: CaixaIndicadores | undefined,
   custos: CustosIndicadores | undefined,
+  comissoes?: ComissoesIndicadores,
 ): { value: string; sub: string } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
     sub: "Sem dados no período",
   };
   if (!kpi.key) return vazio;
+
+  if (kpi.key === "comissoes") {
+    if (!comissoes?.ok) return vazio;
+    return {
+      value: formatCurrencyBRL(comissoes.comissao_gerada),
+      sub: comissoes.tecnicos_com_comissao === 0 ? "Sem comissões no período" : "Fonte: Comissões Técnicas",
+    };
+  }
 
   const deCustos = kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
   if (deCustos) {
