@@ -38,6 +38,7 @@ export interface UserProfile {
   email: string | null;
   avatar_url: string | null;
   active: boolean;
+  status: "ativo" | "inativo" | "bloqueado";
 }
 
 /** Sessão do usuário com recuperação segura via Supabase Auth. */
@@ -92,7 +93,7 @@ export function useAccess() {
     staleTime: 60_000,
     queryFn: async (): Promise<AccessData> => {
       const [profileRes, rolesRes, rolePermsRes, userPermsRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, avatar_url, active").eq("id", user!.id).maybeSingle(),
+        supabase.from("profiles").select("id, full_name, email, avatar_url, active, status").eq("id", user!.id).maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", user!.id),
         supabase.from("role_permissions").select("role, module_key, action"),
         supabase.from("user_permissions").select("module_key, action, allowed").eq("user_id", user!.id),
@@ -119,6 +120,7 @@ export function useAccess() {
 
     const can = (moduleKey: string, action: PermissionAction = "visualizar"): boolean => {
       if (!data) return false;
+      if (data.profile && (!data.profile.active || data.profile.status !== "ativo")) return false;
       if (isAdmin) return true;
 
       // Exceção individual prevalece sobre o perfil
@@ -135,9 +137,14 @@ export function useAccess() {
     return { data, roles, isAdmin, can };
   }, [query.data]);
 
+  const profile = access.data?.profile ?? null;
+  // Segurança: perfil inativo/bloqueado perde acesso mesmo com sessão antiga.
+  const bloqueado = !!profile && (!profile.active || profile.status !== "ativo");
+
   return {
     ...query,
-    profile: access.data?.profile ?? null,
+    bloqueado,
+    profile,
     roles: access.roles,
     isAdmin: access.isAdmin,
     can: access.can,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Menu, X } from "lucide-react";
@@ -109,9 +109,53 @@ function SidebarUser() {
   );
 }
 
+/** Tela de bloqueio para conta inativa/bloqueada (a sessão antiga não vale). */
+function ContaBloqueada() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function sair() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 text-center shadow-sm">
+        <img src={logoColor.url} alt="ITV Centro Técnico" className="mx-auto mb-6 h-10 w-auto" />
+        <h1 className="font-display text-lg font-bold text-foreground">Acesso suspenso</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Seu usuário está inativo ou bloqueado. Procure o administrador do sistema para
+          reativar o acesso.
+        </p>
+        <button
+          type="button"
+          onClick={sair}
+          className="mt-6 w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Sair
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /** Estrutura principal autenticada: sidebar fixa no desktop, drawer no mobile. */
 export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const { bloqueado, roles, isLoading } = useAccess();
+  const somenteTv = roles.length > 0 && roles.every((r) => r === "tv_display");
+
+  useEffect(() => {
+    if (somenteTv) navigate({ to: "/modo-tv", replace: true });
+  }, [somenteTv, navigate]);
+
+  if (bloqueado) return <ContaBloqueada />;
+  if (somenteTv && !isLoading) return null;
+
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { formatCurrencyBRL, ITV_TIMEZONE } from "@/lib/format";
+import { formatCurrencyBRL, formatDateOnlyISO, ITV_TIMEZONE } from "@/lib/format";
 import type { ModoTvConfig, ModoTvIndicadores } from "@/lib/modo-tv";
 import { STATUS_RITMO_LABEL, nomeCurto, percentualTecnico } from "@/lib/modo-tv";
 import { cn } from "@/lib/utils";
@@ -89,7 +89,7 @@ export function CabecalhoTv({ referencia }: { referencia: string }) {
         <p className="font-display text-[2.6vw] font-bold leading-none tabular-nums text-white">{hora}</p>
         <p className="mt-[0.3vw] text-[0.9vw] capitalize text-white/45">{data}</p>
       </div>
-      <span className="sr-only">Referência: {referencia}</span>
+      <span className="sr-only">Referência: {formatDateOnlyISO(referencia)}</span>
     </header>
   );
 }

@@ -4016,6 +4016,7 @@ export type Database = {
       }
       modo_tv_config_salvar: { Args: { p_config: Json }; Returns: Json }
       modo_tv_indicadores: { Args: { p_ref?: string }; Returns: Json }
+      normalizar_marca: { Args: { _marca: string }; Returns: string }
       producao_atualizar: {
         Args: {
           p_cliente: string
@@ -4119,6 +4120,7 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      usuario_ativo: { Args: { _user_id: string }; Returns: boolean }
       usuarios_basicos: {
         Args: never
         Returns: {
