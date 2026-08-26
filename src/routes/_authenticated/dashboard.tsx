@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { round2, type CaixaIndicadores } from "@/lib/caixa";
 import type { CustosIndicadores } from "@/lib/custos";
+import type { ComissoesIndicadores } from "@/lib/comissoes";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 
@@ -56,7 +57,8 @@ type KpiKey =
   | "os"
   | "custo-pecas"
   | "custos-diretos"
-  | "margem-parcial";
+  | "margem-parcial"
+  | "comissoes";
 
 interface KpiDef {
   label: string;
@@ -72,7 +74,7 @@ const KPIS: KpiDef[] = [
   { label: "Custo de Peças", icon: Package, format: "currency", key: "custo-pecas" },
   { label: "Custos Diretos", icon: ArrowDownCircle, format: "currency", key: "custos-diretos" },
   { label: "Margem Parcial", icon: TrendingUp, format: "currency", key: "margem-parcial" },
-  { label: "Comissões", icon: Percent, format: "currency" },
+  { label: "Comissões", icon: Percent, format: "currency", key: "comissoes" },
   { label: "Despesas", icon: Receipt, format: "currency" },
   { label: "Resultado Operacional", icon: Landmark, format: "currency" },
   { label: "Ticket Médio", icon: ArrowUpCircle, format: "currency", key: "ticket" },
@@ -118,12 +120,21 @@ function kpiValue(
   kpi: KpiDef,
   ind: CaixaIndicadores | undefined,
   custos: CustosIndicadores | undefined,
+  comissoes?: ComissoesIndicadores,
 ): { value: string; sub: string } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
     sub: "Sem dados no período",
   };
   if (!kpi.key) return vazio;
+
+  if (kpi.key === "comissoes") {
+    if (!comissoes?.ok) return vazio;
+    return {
+      value: formatCurrencyBRL(comissoes.comissao_gerada),
+      sub: comissoes.tecnicos_com_comissao === 0 ? "Sem comissões no período" : "Fonte: Comissões Técnicas",
+    };
+  }
 
   const deCustos = kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
   if (deCustos) {
@@ -179,6 +190,19 @@ function DashboardPage() {
     },
   });
 
+  const comissoesQuery = useQuery({
+    queryKey: ["dashboard-comissoes", range?.from, range?.to],
+    enabled: !!range,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("comissoes_indicadores", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      return data as unknown as ComissoesIndicadores;
+    },
+  });
+
   const custosQuery = useQuery({
     queryKey: ["dashboard-custos", range?.from, range?.to],
     enabled: !!range,
@@ -194,6 +218,7 @@ function DashboardPage() {
 
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
+  const comissoes = comissoesQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -258,7 +283,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind, custos);
+          const { value, sub } = kpiValue(kpi, ind, custos, comissoes);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">

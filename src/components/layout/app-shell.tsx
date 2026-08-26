@@ -19,12 +19,15 @@ function Brand() {
 }
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
-  const { can, isLoading } = useAccess();
+  const { can, roles, isLoading } = useAccess();
+  const ehTecnico = roles.includes("tecnico");
 
   return (
     <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="Navegação principal">
       {NAV_SECTIONS.map((section, i) => {
-        const items = section.items.filter((item) => can(item.moduleKey, "visualizar"));
+        const items = section.items.filter(
+          (item) => can(item.moduleKey, "visualizar") || (item.moduleKey === "comissoes" && ehTecnico),
+        );
         if (items.length === 0 && !isLoading) return null;
         return (
           <div key={section.title ?? i}>
