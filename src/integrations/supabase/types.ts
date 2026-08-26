@@ -44,6 +44,328 @@ export type Database = {
         }
         Relationships: []
       }
+      caixa_estornos: {
+        Row: {
+          created_at: string
+          forma_estorno: string | null
+          id: string
+          lancamento_id: string
+          motivo: string
+          observacao: string | null
+          responsavel_id: string
+          valor: number
+        }
+        Insert: {
+          created_at?: string
+          forma_estorno?: string | null
+          id?: string
+          lancamento_id: string
+          motivo: string
+          observacao?: string | null
+          responsavel_id: string
+          valor: number
+        }
+        Update: {
+          created_at?: string
+          forma_estorno?: string | null
+          id?: string
+          lancamento_id?: string
+          motivo?: string
+          observacao?: string | null
+          responsavel_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_estornos_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_estornos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caixa_fechamentos: {
+        Row: {
+          data_referencia: string
+          diferenca: number | null
+          dinheiro_esperado: number
+          dinheiro_informado: number
+          faturamento_total: number
+          fechado_em: string
+          id: string
+          motivo_reabertura: string | null
+          observacao: string | null
+          reaberto_em: string | null
+          reaberto_por: string | null
+          receita_liquida: number
+          responsavel_id: string
+          resumo_pagamentos: Json
+          status: Database["public"]["Enums"]["caixa_fechamento_status"]
+          taxas_total: number
+        }
+        Insert: {
+          data_referencia: string
+          diferenca?: number | null
+          dinheiro_esperado?: number
+          dinheiro_informado?: number
+          faturamento_total?: number
+          fechado_em?: string
+          id?: string
+          motivo_reabertura?: string | null
+          observacao?: string | null
+          reaberto_em?: string | null
+          reaberto_por?: string | null
+          receita_liquida?: number
+          responsavel_id: string
+          resumo_pagamentos?: Json
+          status?: Database["public"]["Enums"]["caixa_fechamento_status"]
+          taxas_total?: number
+        }
+        Update: {
+          data_referencia?: string
+          diferenca?: number | null
+          dinheiro_esperado?: number
+          dinheiro_informado?: number
+          faturamento_total?: number
+          fechado_em?: string
+          id?: string
+          motivo_reabertura?: string | null
+          observacao?: string | null
+          reaberto_em?: string | null
+          reaberto_por?: string | null
+          receita_liquida?: number
+          responsavel_id?: string
+          resumo_pagamentos?: Json
+          status?: Database["public"]["Enums"]["caixa_fechamento_status"]
+          taxas_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_fechamentos_reaberto_por_fkey"
+            columns: ["reaberto_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_fechamentos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caixa_lancamentos: {
+        Row: {
+          alerta_duplicidade: boolean
+          cancelado_em: string | null
+          cancelado_por: string | null
+          cliente: string | null
+          created_at: string
+          created_by: string | null
+          data_lancamento: string
+          desconto: number
+          descricao: string | null
+          id: string
+          motivo_cancelamento: string | null
+          observacao: string | null
+          os: string | null
+          receita_liquida: number
+          responsavel_id: string
+          status: Database["public"]["Enums"]["caixa_lancamento_status"]
+          taxas_total: number
+          tecnico_id: string | null
+          tipo_receita_id: string
+          updated_at: string
+          updated_by: string | null
+          valor_bruto: number
+          valor_final: number | null
+        }
+        Insert: {
+          alerta_duplicidade?: boolean
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cliente?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_lancamento?: string
+          desconto?: number
+          descricao?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os?: string | null
+          receita_liquida?: number
+          responsavel_id: string
+          status?: Database["public"]["Enums"]["caixa_lancamento_status"]
+          taxas_total?: number
+          tecnico_id?: string | null
+          tipo_receita_id: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_bruto: number
+          valor_final?: number | null
+        }
+        Update: {
+          alerta_duplicidade?: boolean
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cliente?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_lancamento?: string
+          desconto?: number
+          descricao?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os?: string | null
+          receita_liquida?: number
+          responsavel_id?: string
+          status?: Database["public"]["Enums"]["caixa_lancamento_status"]
+          taxas_total?: number
+          tecnico_id?: string | null
+          tipo_receita_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_bruto?: number
+          valor_final?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_lancamentos_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_tipo_receita_id_fkey"
+            columns: ["tipo_receita_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_receita"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caixa_pagamentos: {
+        Row: {
+          created_at: string
+          forma_pagamento_id: string
+          id: string
+          lancamento_id: string
+          parcelas: number
+          taxa_percentual: number
+          taxa_valor: number
+          valor: number
+          valor_liquido: number | null
+        }
+        Insert: {
+          created_at?: string
+          forma_pagamento_id: string
+          id?: string
+          lancamento_id: string
+          parcelas?: number
+          taxa_percentual?: number
+          taxa_valor?: number
+          valor: number
+          valor_liquido?: number | null
+        }
+        Update: {
+          created_at?: string
+          forma_pagamento_id?: string
+          id?: string
+          lancamento_id?: string
+          parcelas?: number
+          taxa_percentual?: number
+          taxa_valor?: number
+          valor?: number
+          valor_liquido?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_pagamentos_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_pagamentos_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      formas_pagamento: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          eh_dinheiro: boolean
+          id: string
+          nome: string
+          ordem: number
+          taxa_padrao_percentual: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          eh_dinheiro?: boolean
+          id?: string
+          nome: string
+          ordem?: number
+          taxa_padrao_percentual?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          eh_dinheiro?: boolean
+          id?: string
+          nome?: string
+          ordem?: number
+          taxa_padrao_percentual?: number
+        }
+        Relationships: []
+      }
       modules: {
         Row: {
           key: string
@@ -139,6 +461,30 @@ export type Database = {
         }
         Relationships: []
       }
+      tipos_receita: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
       user_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
@@ -200,6 +546,69 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      caixa_atualizar_lancamento: {
+        Args: {
+          p_cliente?: string
+          p_confirmar_duplicidade?: boolean
+          p_data: string
+          p_desconto?: number
+          p_descricao?: string
+          p_id: string
+          p_observacao?: string
+          p_os?: string
+          p_pagamentos?: Json
+          p_tecnico_id?: string
+          p_tipo_receita_id?: string
+          p_valor_bruto?: number
+        }
+        Returns: Json
+      }
+      caixa_cancelar_lancamento: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      caixa_estornar_lancamento: {
+        Args: {
+          p_forma_estorno?: string
+          p_id: string
+          p_motivo: string
+          p_observacao?: string
+        }
+        Returns: Json
+      }
+      caixa_fechar: {
+        Args: {
+          p_data_referencia: string
+          p_dinheiro_informado: number
+          p_observacao?: string
+        }
+        Returns: Json
+      }
+      caixa_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      caixa_periodo_fechado: { Args: { p_data: string }; Returns: boolean }
+      caixa_reabrir: {
+        Args: { p_fechamento_id: string; p_motivo: string }
+        Returns: Json
+      }
+      caixa_registrar_lancamento: {
+        Args: {
+          p_cliente?: string
+          p_confirmar_duplicidade?: boolean
+          p_data: string
+          p_desconto?: number
+          p_descricao?: string
+          p_observacao?: string
+          p_os?: string
+          p_pagamentos?: Json
+          p_tecnico_id?: string
+          p_tipo_receita_id?: string
+          p_valor_bruto?: number
+        }
+        Returns: Json
+      }
       has_permission: {
         Args: {
           _action: Database["public"]["Enums"]["permission_action"]
@@ -215,9 +624,24 @@ export type Database = {
         }
         Returns: boolean
       }
+      registrar_auditoria: {
+        Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
+        Returns: undefined
+      }
+      usuarios_basicos: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          id: string
+          roles: string[]
+        }[]
+      }
     }
     Enums: {
       app_role: "administrador" | "gerente" | "vendas" | "tecnico"
+      caixa_fechamento_status: "fechado" | "reaberto"
+      caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
       permission_action:
         | "visualizar"
         | "criar"
@@ -227,6 +651,9 @@ export type Database = {
         | "cancelar"
         | "exportar"
         | "administrar"
+        | "estornar"
+        | "fechar"
+        | "reabrir"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -355,6 +782,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["administrador", "gerente", "vendas", "tecnico"],
+      caixa_fechamento_status: ["fechado", "reaberto"],
+      caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
       permission_action: [
         "visualizar",
         "criar",
@@ -364,6 +793,9 @@ export const Constants = {
         "cancelar",
         "exportar",
         "administrar",
+        "estornar",
+        "fechar",
+        "reabrir",
       ],
     },
   },
