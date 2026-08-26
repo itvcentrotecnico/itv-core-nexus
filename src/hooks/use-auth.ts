@@ -4,7 +4,7 @@ import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "gerente" | "vendas" | "tecnico" | "tv_display";
+export type AppRole = "administrador" | "adm_financeiro" | "adm_operacional" | "vendedor" | "tecnico" | "tv_display";
 export type PermissionAction =
   | "visualizar"
   | "criar"
@@ -152,9 +152,10 @@ export function useAccess() {
 }
 
 const ROLE_LABELS: Record<AppRole, string> = {
-  administrador: "Administrador",
-  gerente: "Gerente",
-  vendas: "Vendas",
+  administrador: "ADM Geral",
+  adm_financeiro: "ADM Financeiro",
+  adm_operacional: "ADM Operacional",
+  vendedor: "Vendedor",
   tecnico: "Técnico",
   tv_display: "TV Display",
 };

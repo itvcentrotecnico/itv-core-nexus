@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { cn } from "@/lib/utils";
 
-const PERFIS_EDITAVEIS: AppRole[] = ["gerente", "vendas", "tecnico", "tv_display"];
+const PERFIS_EDITAVEIS: AppRole[] = ["adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display"];
 
 const ACOES: { value: PermissionAction; label: string }[] = [
   { value: "visualizar", label: "Visualizar" },
@@ -33,7 +33,7 @@ export function AdminPerfis() {
   const { isAdmin, can } = useAccess();
   const queryClient = useQueryClient();
   const podeAdministrar = isAdmin || can("admin", "administrar");
-  const [perfil, setPerfil] = useState<AppRole>("gerente");
+  const [perfil, setPerfil] = useState<AppRole>("adm_financeiro");
   const [salvando, setSalvando] = useState<string | null>(null);
 
   const modulosQuery = useQuery({

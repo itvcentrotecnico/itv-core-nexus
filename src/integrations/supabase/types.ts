@@ -4156,10 +4156,11 @@ export type Database = {
       adiantamento_status: "pendente" | "descontado" | "cancelado"
       app_role:
         | "administrador"
-        | "gerente"
-        | "vendas"
+        | "adm_financeiro"
+        | "vendedor"
         | "tecnico"
         | "tv_display"
+        | "adm_operacional"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
       colaborador_status: "ativo" | "ferias" | "afastado" | "desligado"
@@ -4378,7 +4379,14 @@ export const Constants = {
   public: {
     Enums: {
       adiantamento_status: ["pendente", "descontado", "cancelado"],
-      app_role: ["administrador", "gerente", "vendas", "tecnico", "tv_display"],
+      app_role: [
+        "administrador",
+        "adm_financeiro",
+        "vendedor",
+        "tecnico",
+        "tv_display",
+        "adm_operacional",
+      ],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
       colaborador_status: ["ativo", "ferias", "afastado", "desligado"],
