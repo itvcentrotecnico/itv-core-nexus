@@ -3272,6 +3272,14 @@ export type Database = {
         | "receber"
         | "configurar"
         | "desativar"
+        | "visualizar_propria"
+        | "editar_propria"
+        | "enviar_validacao"
+        | "validar"
+        | "rejeitar"
+        | "visualizar_todos"
+        | "relatorios"
+        | "configurar_metas"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3471,6 +3479,14 @@ export const Constants = {
         "receber",
         "configurar",
         "desativar",
+        "visualizar_propria",
+        "editar_propria",
+        "enviar_validacao",
+        "validar",
+        "rejeitar",
+        "visualizar_todos",
+        "relatorios",
+        "configurar_metas",
       ],
     },
   },
