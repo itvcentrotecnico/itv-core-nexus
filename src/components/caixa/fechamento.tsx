@@ -15,6 +15,7 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass, round2, type CaixaFechamento, type CaixaRpcResult } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
+import type { CaixaFisicoResumo } from "@/lib/governanca";
 
 const voltarBtnClass =
   "rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary";
@@ -23,8 +24,10 @@ interface FecharCaixaDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   date: string;
-  /** Dinheiro esperado em espécie (soma dos pagamentos em formas marcadas como dinheiro). */
+  /** Entradas em espécie do dia (pagamentos em formas marcadas como dinheiro). */
   dinheiroEsperado: number;
+  /** Resumo do caixa físico (saldo inicial, suprimentos e sangrias). */
+  fisico?: CaixaFisicoResumo | undefined;
   totais: { faturamento: number; taxas: number; liquida: number };
   onDone: () => void;
 }
@@ -34,9 +37,11 @@ export function FecharCaixaDialog({
   onOpenChange,
   date,
   dinheiroEsperado,
+  fisico,
   totais,
   onDone,
 }: FecharCaixaDialogProps) {
+  const saldoEsperado = fisico?.ok ? fisico.saldo_esperado : dinheiroEsperado;
   const [dinheiroInformado, setDinheiroInformado] = useState<number | null>(null);
   const [observacao, setObservacao] = useState("");
   const [saving, setSaving] = useState(false);
@@ -49,8 +54,8 @@ export function FecharCaixaDialog({
   }, [open]);
 
   const diferenca = useMemo(
-    () => (dinheiroInformado == null ? null : round2(dinheiroInformado - dinheiroEsperado)),
-    [dinheiroInformado, dinheiroEsperado],
+    () => (dinheiroInformado == null ? null : round2(dinheiroInformado - saldoEsperado)),
+    [dinheiroInformado, saldoEsperado],
   );
   const precisaObservacao = diferenca != null && diferenca !== 0;
 
@@ -114,14 +119,30 @@ export function FecharCaixaDialog({
             <dd className="font-semibold text-foreground">{formatCurrencyBRL(totais.liquida)}</dd>
           </div>
           <div className="flex justify-between border-t border-border pt-2">
-            <dt className="text-muted-foreground">Dinheiro esperado em caixa</dt>
-            <dd className="font-semibold text-foreground">{formatCurrencyBRL(dinheiroEsperado)}</dd>
+            <dt className="text-muted-foreground">Saldo inicial</dt>
+            <dd className="font-medium text-foreground">{formatCurrencyBRL(fisico?.saldo_inicial ?? 0)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-muted-foreground">Entradas em dinheiro</dt>
+            <dd className="font-medium text-foreground">{formatCurrencyBRL(fisico?.entradas_dinheiro ?? dinheiroEsperado)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-muted-foreground">Suprimentos</dt>
+            <dd className="font-medium text-foreground">+ {formatCurrencyBRL(fisico?.suprimentos ?? 0)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-muted-foreground">Sangrias</dt>
+            <dd className="font-medium text-foreground">− {formatCurrencyBRL(fisico?.sangrias ?? 0)}</dd>
+          </div>
+          <div className="flex justify-between border-t border-border pt-2">
+            <dt className="text-muted-foreground">Saldo físico esperado</dt>
+            <dd className="font-semibold text-foreground">{formatCurrencyBRL(saldoEsperado)}</dd>
           </div>
         </dl>
 
         <div>
           <label htmlFor="cx-fechar-dinheiro" className={labelClass}>
-            Dinheiro contado no caixa
+            Saldo físico contado na gaveta
           </label>
           <MoneyInput
             id="cx-fechar-dinheiro"
@@ -139,7 +160,7 @@ export function FecharCaixaDialog({
             )}
           >
             {diferenca === 0
-              ? "Dinheiro confere com o esperado."
+              ? "Saldo físico confere com o esperado."
               : `Divergência de ${formatCurrencyBRL(diferenca)} — informe uma observação abaixo.`}
           </p>
         )}
