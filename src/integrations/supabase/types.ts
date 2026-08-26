@@ -360,6 +360,320 @@ export type Database = {
         }
         Relationships: []
       }
+      comissao_ajustes: {
+        Row: {
+          comissao_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          motivo: string
+          tipo: Database["public"]["Enums"]["comissao_ajuste_tipo"]
+          valor: number
+        }
+        Insert: {
+          comissao_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          motivo: string
+          tipo: Database["public"]["Enums"]["comissao_ajuste_tipo"]
+          valor: number
+        }
+        Update: {
+          comissao_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          motivo?: string
+          tipo?: Database["public"]["Enums"]["comissao_ajuste_tipo"]
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissao_ajustes_comissao_id_fkey"
+            columns: ["comissao_id"]
+            isOneToOne: false
+            referencedRelation: "comissoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissao_ajustes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comissao_pagamento_itens: {
+        Row: {
+          comissao_id: string
+          created_at: string
+          id: string
+          pagamento_id: string
+          valor: number
+        }
+        Insert: {
+          comissao_id: string
+          created_at?: string
+          id?: string
+          pagamento_id: string
+          valor: number
+        }
+        Update: {
+          comissao_id?: string
+          created_at?: string
+          id?: string
+          pagamento_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissao_pagamento_itens_comissao_id_fkey"
+            columns: ["comissao_id"]
+            isOneToOne: true
+            referencedRelation: "comissoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissao_pagamento_itens_pagamento_id_fkey"
+            columns: ["pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "comissao_pagamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comissao_pagamentos: {
+        Row: {
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          forma_pagamento_id: string | null
+          id: string
+          observacao: string | null
+          pago_em: string
+          responsavel_id: string
+          tecnico_id: string
+          valor_total: number
+        }
+        Insert: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          observacao?: string | null
+          pago_em?: string
+          responsavel_id: string
+          tecnico_id: string
+          valor_total: number
+        }
+        Update: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          forma_pagamento_id?: string | null
+          id?: string
+          observacao?: string | null
+          pago_em?: string
+          responsavel_id?: string
+          tecnico_id?: string
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissao_pagamentos_forma_pagamento_id_fkey"
+            columns: ["forma_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "formas_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissao_pagamentos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissao_pagamentos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comissoes: {
+        Row: {
+          ajuste_total: number
+          aprovada_em: string | null
+          aprovada_por: string | null
+          base_calculo: number | null
+          caixa_lancamento_id: string | null
+          cancelada_em: string | null
+          cancelada_por: string | null
+          conferida_em: string | null
+          conferida_por: string | null
+          created_at: string
+          created_by: string | null
+          custos_diretos: number
+          data_referencia: string
+          id: string
+          mao_obra_em: string | null
+          mao_obra_justificativa: string | null
+          mao_obra_manual: number | null
+          mao_obra_por: string | null
+          motivo_cancelamento: string | null
+          observacao: string | null
+          os: string
+          percentual: number | null
+          receita_liquida: number
+          regra_comissao_id: string | null
+          status: Database["public"]["Enums"]["comissao_status"]
+          tecnico_id: string
+          tipo_regra: Database["public"]["Enums"]["comissao_tipo_regra"] | null
+          updated_at: string
+          updated_by: string | null
+          valor_aprovado: number | null
+          valor_calculado: number | null
+          valor_final: number | null
+        }
+        Insert: {
+          ajuste_total?: number
+          aprovada_em?: string | null
+          aprovada_por?: string | null
+          base_calculo?: number | null
+          caixa_lancamento_id?: string | null
+          cancelada_em?: string | null
+          cancelada_por?: string | null
+          conferida_em?: string | null
+          conferida_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          custos_diretos?: number
+          data_referencia: string
+          id?: string
+          mao_obra_em?: string | null
+          mao_obra_justificativa?: string | null
+          mao_obra_manual?: number | null
+          mao_obra_por?: string | null
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os: string
+          percentual?: number | null
+          receita_liquida?: number
+          regra_comissao_id?: string | null
+          status?: Database["public"]["Enums"]["comissao_status"]
+          tecnico_id: string
+          tipo_regra?: Database["public"]["Enums"]["comissao_tipo_regra"] | null
+          updated_at?: string
+          updated_by?: string | null
+          valor_aprovado?: number | null
+          valor_calculado?: number | null
+          valor_final?: number | null
+        }
+        Update: {
+          ajuste_total?: number
+          aprovada_em?: string | null
+          aprovada_por?: string | null
+          base_calculo?: number | null
+          caixa_lancamento_id?: string | null
+          cancelada_em?: string | null
+          cancelada_por?: string | null
+          conferida_em?: string | null
+          conferida_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          custos_diretos?: number
+          data_referencia?: string
+          id?: string
+          mao_obra_em?: string | null
+          mao_obra_justificativa?: string | null
+          mao_obra_manual?: number | null
+          mao_obra_por?: string | null
+          motivo_cancelamento?: string | null
+          observacao?: string | null
+          os?: string
+          percentual?: number | null
+          receita_liquida?: number
+          regra_comissao_id?: string | null
+          status?: Database["public"]["Enums"]["comissao_status"]
+          tecnico_id?: string
+          tipo_regra?: Database["public"]["Enums"]["comissao_tipo_regra"] | null
+          updated_at?: string
+          updated_by?: string | null
+          valor_aprovado?: number | null
+          valor_calculado?: number | null
+          valor_final?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissoes_aprovada_por_fkey"
+            columns: ["aprovada_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_caixa_lancamento_id_fkey"
+            columns: ["caixa_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_cancelada_por_fkey"
+            columns: ["cancelada_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_conferida_por_fkey"
+            columns: ["conferida_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_mao_obra_por_fkey"
+            columns: ["mao_obra_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_regra_comissao_id_fkey"
+            columns: ["regra_comissao_id"]
+            isOneToOne: false
+            referencedRelation: "regras_comissao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custos_estornos: {
         Row: {
           created_at: string
@@ -644,6 +958,79 @@ export type Database = {
         }
         Relationships: []
       }
+      regras_comissao: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string | null
+          fim_vigencia: string | null
+          id: string
+          inicio_vigencia: string
+          observacao: string | null
+          percentual: number | null
+          servico_descricao: string | null
+          tecnico_id: string
+          tipo_regra: Database["public"]["Enums"]["comissao_tipo_regra"]
+          updated_at: string
+          updated_by: string | null
+          valor_fixo: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia: string
+          observacao?: string | null
+          percentual?: number | null
+          servico_descricao?: string | null
+          tecnico_id: string
+          tipo_regra: Database["public"]["Enums"]["comissao_tipo_regra"]
+          updated_at?: string
+          updated_by?: string | null
+          valor_fixo?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          fim_vigencia?: string | null
+          id?: string
+          inicio_vigencia?: string
+          observacao?: string | null
+          percentual?: number | null
+          servico_descricao?: string | null
+          tecnico_id?: string
+          tipo_regra?: Database["public"]["Enums"]["comissao_tipo_regra"]
+          updated_at?: string
+          updated_by?: string | null
+          valor_fixo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regras_comissao_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "regras_comissao_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "regras_comissao_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
@@ -866,6 +1253,49 @@ export type Database = {
         }
         Returns: Json
       }
+      comissoes_ajustar: {
+        Args: {
+          p_id: string
+          p_motivo: string
+          p_tipo: Database["public"]["Enums"]["comissao_ajuste_tipo"]
+          p_valor: number
+        }
+        Returns: Json
+      }
+      comissoes_aprovar: { Args: { p_id: string }; Returns: Json }
+      comissoes_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      comissoes_conferir: { Args: { p_id: string }; Returns: Json }
+      comissoes_definir_mao_obra: {
+        Args: { p_id: string; p_justificativa: string; p_valor: number }
+        Returns: Json
+      }
+      comissoes_gerar: { Args: { p_from: string; p_to: string }; Returns: Json }
+      comissoes_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      comissoes_pagar: {
+        Args: {
+          p_comissao_ids: string[]
+          p_data?: string
+          p_forma_pagamento_id?: string
+          p_observacao?: string
+          p_tecnico_id: string
+        }
+        Returns: Json
+      }
+      comissoes_por_tecnico: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      comissoes_recalcular: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      comissoes_simular_recalculo: { Args: { p_id: string }; Returns: Json }
       custos_atualizar: {
         Args: {
           p_categoria_id?: string
@@ -955,6 +1385,26 @@ export type Database = {
       app_role: "administrador" | "gerente" | "vendas" | "tecnico"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
+      comissao_ajuste_tipo:
+        | "bonus"
+        | "acrescimo"
+        | "desconto"
+        | "correcao"
+        | "compensacao"
+      comissao_status:
+        | "gerada"
+        | "pendente_conferencia"
+        | "conferida"
+        | "aprovada"
+        | "paga"
+        | "cancelada"
+        | "pendente_configuracao"
+      comissao_tipo_regra:
+        | "percentual_mao_obra"
+        | "percentual_receita"
+        | "fixo_os"
+        | "fixo_servico"
+        | "personalizada"
       custo_os_status: "registrado" | "confirmado" | "cancelado" | "estornado"
       permission_action:
         | "visualizar"
@@ -1098,6 +1548,29 @@ export const Constants = {
       app_role: ["administrador", "gerente", "vendas", "tecnico"],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
+      comissao_ajuste_tipo: [
+        "bonus",
+        "acrescimo",
+        "desconto",
+        "correcao",
+        "compensacao",
+      ],
+      comissao_status: [
+        "gerada",
+        "pendente_conferencia",
+        "conferida",
+        "aprovada",
+        "paga",
+        "cancelada",
+        "pendente_configuracao",
+      ],
+      comissao_tipo_regra: [
+        "percentual_mao_obra",
+        "percentual_receita",
+        "fixo_os",
+        "fixo_servico",
+        "personalizada",
+      ],
       custo_os_status: ["registrado", "confirmado", "cancelado", "estornado"],
       permission_action: [
         "visualizar",
