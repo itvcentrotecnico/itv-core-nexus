@@ -37,7 +37,7 @@ import {
   type CaixaLancamento,
   type CaixaRpcResult,
   type FormaPagamento,
-  type FormaPagamentoTaxa,
+  
   type TipoReceita,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
@@ -157,18 +157,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     },
   });
 
-  const taxasQuery = useQuery({
-    queryKey: ["caixa", "formas-pagamento-taxas"],
-    enabled: open,
-    staleTime: 60_000,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("formas_pagamento_taxas")
-        .select("id, forma_pagamento_id, parcelas, taxa_percentual");
-      if (error) throw error;
-      return data as FormaPagamentoTaxa[];
-    },
-  });
 
   const tecnicosQuery = useQuery({
     queryKey: ["caixa", "usuarios-basicos"],
@@ -254,20 +242,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)));
   }
 
-  /** Taxa configurada para a forma no parcelamento escolhido (fallback: taxa padrão). */
-  function taxaConfigurada(formaId: string, parcelas: number): number {
-    const especifica = (taxasQuery.data ?? []).find(
-      (t) => t.forma_pagamento_id === formaId && t.parcelas === Math.max(1, parcelas),
-    );
-    if (especifica) return Number(especifica.taxa_percentual);
-    const forma = (formasQuery.data ?? []).find((f) => f.id === formaId);
-    return Number(forma?.taxa_padrao_percentual ?? 0);
-  }
-
-  function recalcTaxa(r: PagRow, valor = r.valor, taxa = r.taxa_percentual): number | null {
-    if (valor == null || taxa == null) return r.taxa_valor;
-    return round2((valor * taxa) / 100);
-  }
 
   function addRow() {
     const restante = diferenca > 0 ? diferenca : null;
@@ -347,8 +321,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           forma_pagamento_id: r.forma_pagamento_id,
           valor: round2(r.valor ?? 0),
           parcelas: Math.max(1, r.parcelas || 1),
-          taxa_percentual: round2(r.taxa_percentual ?? 0),
-          taxa_valor: round2(r.taxa_valor ?? 0),
+          taxa_percentual: 0,
+          taxa_valor: 0,
         })) as unknown as Json,
       p_confirmar_duplicidade: confirmarDuplicidade,
       ...(os.trim() ? { p_os: os.trim() } : {}),
@@ -591,14 +565,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                       value={r.forma_pagamento_id}
                       onValueChange={(v) => {
                         const forma = formas.find((f) => f.id === v);
-                        const parcelas = forma?.permite_parcelamento ? Math.min(r.parcelas, forma.max_parcelas ?? 1) : 1;
-                        const taxa = taxaConfigurada(v, parcelas);
-                        updateRow(r.key, {
-                          forma_pagamento_id: v,
-                          parcelas,
-                          taxa_percentual: taxa || null,
-                          taxa_valor: recalcTaxa(r, r.valor, taxa),
-                        });
+                        const parcelas = forma?.permite_parcelamento
+                          ? Math.min(r.parcelas, forma.max_parcelas ?? 1)
+                          : 1;
+                        updateRow(r.key, { forma_pagamento_id: v, parcelas });
                       }}
                     >
                       <SelectTrigger className="w-full" aria-label={`Forma de pagamento ${i + 1}`}>
@@ -620,12 +590,12 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     <MoneyInput
                       aria-label={`Valor do pagamento ${i + 1}`}
                       value={r.valor}
-                      onChange={(v) => updateRow(r.key, { valor: v, taxa_valor: recalcTaxa(r, v) })}
+                      onChange={(v) => updateRow(r.key, { valor: v })}
                     />
                   </div>
-                  <div className="sm:col-span-1">
+                  <div className="col-span-2 sm:col-span-4">
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                      Parc.
+                      Parcelamento
                     </label>
                     {(() => {
                       const forma = formas.find((f) => f.id === r.forma_pagamento_id);
@@ -635,52 +605,19 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                           value={r.parcelas}
                           disabled={max === 1}
                           aria-label={`Parcelas do pagamento ${i + 1}`}
-                          onChange={(e) => {
-                            const parcelas = Math.max(1, Number(e.target.value) || 1);
-                            const taxa = r.forma_pagamento_id
-                              ? taxaConfigurada(r.forma_pagamento_id, parcelas)
-                              : (r.taxa_percentual ?? 0);
-                            updateRow(r.key, {
-                              parcelas,
-                              taxa_percentual: taxa || null,
-                              taxa_valor: recalcTaxa(r, r.valor, taxa),
-                            });
-                          }}
+                          onChange={(e) =>
+                            updateRow(r.key, { parcelas: Math.max(1, Number(e.target.value) || 1) })
+                          }
                           className={inputClass}
                         >
                           {Array.from({ length: max }, (_, n) => n + 1).map((n) => (
-                            <option key={n} value={n}>{n}x</option>
+                            <option key={n} value={n}>
+                              {n}x
+                            </option>
                           ))}
                         </select>
                       );
                     })()}
-                  </div>
-                  <div className="sm:col-span-1">
-                    <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                      Taxa %
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      value={r.taxa_percentual ?? ""}
-                      aria-label={`Taxa percentual do pagamento ${i + 1}`}
-                      onChange={(e) => {
-                        const t = e.target.value === "" ? null : Number(e.target.value);
-                        updateRow(r.key, { taxa_percentual: t, taxa_valor: recalcTaxa(r, r.valor, t) });
-                      }}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                      Taxa R$
-                    </label>
-                    <MoneyInput
-                      aria-label={`Taxa em reais do pagamento ${i + 1}`}
-                      value={r.taxa_valor}
-                      onChange={(v) => updateRow(r.key, { taxa_valor: v })}
-                    />
                   </div>
                   <div className="flex items-end sm:col-span-1">
                     <button
