@@ -174,7 +174,7 @@ function CaixaPage() {
             type="date"
             aria-label="Data do caixa"
             value={date}
-            onChange={(e) => setDate(e.target.value || todayManausISO())}
+            onChange={(e) => mudarData(e.target.value || todayManausISO())}
             className="rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
           />
           {diaFechado && podeReabrir && (
