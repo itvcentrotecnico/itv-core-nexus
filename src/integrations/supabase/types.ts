@@ -2183,6 +2183,63 @@ export type Database = {
         }
         Relationships: []
       }
+      metas_tecnicos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string | null
+          fim: string
+          id: string
+          inicio: string
+          periodo_tipo: string
+          quantidade_meta: number | null
+          tecnico_id: string
+          tipo_meta: string
+          valor_meta: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          fim: string
+          id?: string
+          inicio: string
+          periodo_tipo: string
+          quantidade_meta?: number | null
+          tecnico_id: string
+          tipo_meta: string
+          valor_meta?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          fim?: string
+          id?: string
+          inicio?: string
+          periodo_tipo?: string
+          quantidade_meta?: number | null
+          tecnico_id?: string
+          tipo_meta?: string
+          valor_meta?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_tecnicos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_tecnicos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       modules: {
         Row: {
           key: string
@@ -2200,6 +2257,223 @@ export type Database = {
           sort_order?: number
         }
         Relationships: []
+      }
+      niveis_desempenho: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          percentual_maximo: number | null
+          percentual_minimo: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          percentual_maximo?: number | null
+          percentual_minimo?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          percentual_maximo?: number | null
+          percentual_minimo?: number
+        }
+        Relationships: []
+      }
+      producao_fotos: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          producao_id: string
+          storage_path: string
+          tipo: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          producao_id: string
+          storage_path: string
+          tipo?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          producao_id?: string
+          storage_path?: string
+          tipo?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producao_fotos_producao_id_fkey"
+            columns: ["producao_id"]
+            isOneToOne: false
+            referencedRelation: "producao_tecnica"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_fotos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producao_tecnica: {
+        Row: {
+          cliente: string | null
+          created_at: string
+          data_execucao: string
+          defeito_relatado: string | null
+          diagnostico: string | null
+          enviado_em: string | null
+          id: string
+          marca_tv: string | null
+          modelo_tv: string | null
+          motivo_rejeicao: string | null
+          observacao: string | null
+          os: string
+          pecas_descricao: string | null
+          polegadas: number | null
+          servico_executado: string
+          status: Database["public"]["Enums"]["producao_status"]
+          tecnico_id: string
+          tipo_servico_id: string | null
+          updated_at: string
+          validado_em: string | null
+          validado_por: string | null
+          valor_mao_obra: number | null
+          valor_servico: number | null
+        }
+        Insert: {
+          cliente?: string | null
+          created_at?: string
+          data_execucao?: string
+          defeito_relatado?: string | null
+          diagnostico?: string | null
+          enviado_em?: string | null
+          id?: string
+          marca_tv?: string | null
+          modelo_tv?: string | null
+          motivo_rejeicao?: string | null
+          observacao?: string | null
+          os: string
+          pecas_descricao?: string | null
+          polegadas?: number | null
+          servico_executado: string
+          status?: Database["public"]["Enums"]["producao_status"]
+          tecnico_id: string
+          tipo_servico_id?: string | null
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+          valor_mao_obra?: number | null
+          valor_servico?: number | null
+        }
+        Update: {
+          cliente?: string | null
+          created_at?: string
+          data_execucao?: string
+          defeito_relatado?: string | null
+          diagnostico?: string | null
+          enviado_em?: string | null
+          id?: string
+          marca_tv?: string | null
+          modelo_tv?: string | null
+          motivo_rejeicao?: string | null
+          observacao?: string | null
+          os?: string
+          pecas_descricao?: string | null
+          polegadas?: number | null
+          servico_executado?: string
+          status?: Database["public"]["Enums"]["producao_status"]
+          tecnico_id?: string
+          tipo_servico_id?: string | null
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+          valor_mao_obra?: number | null
+          valor_servico?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producao_tecnica_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_tecnica_tipo_servico_id_fkey"
+            columns: ["tipo_servico_id"]
+            isOneToOne: false
+            referencedRelation: "tipos_servico_tecnico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_tecnica_validado_por_fkey"
+            columns: ["validado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producao_validacoes: {
+        Row: {
+          acao: string
+          comentario: string | null
+          created_at: string
+          id: string
+          producao_id: string
+          usuario_id: string | null
+        }
+        Insert: {
+          acao: string
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          producao_id: string
+          usuario_id?: string | null
+        }
+        Update: {
+          acao?: string
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          producao_id?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producao_validacoes_producao_id_fkey"
+            columns: ["producao_id"]
+            isOneToOne: false
+            referencedRelation: "producao_tecnica"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_validacoes_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -2438,6 +2712,30 @@ export type Database = {
         Relationships: []
       }
       tipos_receita: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      tipos_servico_tecnico: {
         Row: {
           ativo: boolean
           created_at: string
@@ -3192,6 +3490,77 @@ export type Database = {
         }
         Returns: boolean
       }
+      producao_atualizar: {
+        Args: {
+          p_cliente: string
+          p_data_execucao: string
+          p_defeito_relatado: string
+          p_diagnostico: string
+          p_enviar?: boolean
+          p_id: string
+          p_marca_tv: string
+          p_modelo_tv: string
+          p_observacao: string
+          p_pecas_descricao: string
+          p_polegadas: number
+          p_servico_executado: string
+          p_tipo_servico_id: string
+          p_valor_mao_obra: number
+          p_valor_servico: number
+        }
+        Returns: Json
+      }
+      producao_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      producao_enviar: { Args: { p_id: string }; Returns: Json }
+      producao_fila_indicadores: { Args: never; Returns: Json }
+      producao_meus_indicadores: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      producao_ranking: {
+        Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      producao_registrar: {
+        Args: {
+          p_cliente: string
+          p_confirmar_duplicidade?: boolean
+          p_data_execucao: string
+          p_defeito_relatado: string
+          p_diagnostico: string
+          p_enviar?: boolean
+          p_marca_tv: string
+          p_modelo_tv: string
+          p_observacao: string
+          p_os: string
+          p_pecas_descricao: string
+          p_polegadas: number
+          p_servico_executado: string
+          p_tipo_servico_id: string
+          p_valor_mao_obra: number
+          p_valor_servico: number
+        }
+        Returns: Json
+      }
+      producao_rejeitar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      producao_relatorio: {
+        Args: { p_from: string; p_tecnico_id?: string; p_to: string }
+        Returns: Json
+      }
+      producao_solicitar_correcao: {
+        Args: { p_comentario: string; p_id: string }
+        Returns: Json
+      }
+      producao_validar: {
+        Args: { p_id: string; p_observacao?: string }
+        Returns: Json
+      }
       registrar_auditoria: {
         Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
         Returns: undefined
@@ -3272,6 +3641,21 @@ export type Database = {
         | "receber"
         | "configurar"
         | "desativar"
+        | "visualizar_propria"
+        | "editar_propria"
+        | "enviar_validacao"
+        | "validar"
+        | "rejeitar"
+        | "visualizar_todos"
+        | "relatorios"
+        | "configurar_metas"
+      producao_status:
+        | "rascunho"
+        | "enviado_validacao"
+        | "validado"
+        | "rejeitado"
+        | "correcao_solicitada"
+        | "cancelado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3471,6 +3855,22 @@ export const Constants = {
         "receber",
         "configurar",
         "desativar",
+        "visualizar_propria",
+        "editar_propria",
+        "enviar_validacao",
+        "validar",
+        "rejeitar",
+        "visualizar_todos",
+        "relatorios",
+        "configurar_metas",
+      ],
+      producao_status: [
+        "rascunho",
+        "enviado_validacao",
+        "validado",
+        "rejeitado",
+        "correcao_solicitada",
+        "cancelado",
       ],
     },
   },
