@@ -88,7 +88,7 @@ export function PagarDialog({
             <label htmlFor="pg-forma" className={labelClass}>Forma de Pagamento</label>
             <select id="pg-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
               <option value="">—</option>
-              {(formas.data?.formasPagamento ?? []).filter((f) => f.ativo).map((f) => (
+              {(formas.data?.formas ?? []).filter((f) => f.ativo).map((f) => (
                 <option key={f.id} value={f.id}>{f.nome}</option>
               ))}
             </select>
@@ -208,7 +208,7 @@ export function PagarLoteDialog({
               <label htmlFor="pl-forma" className={labelClass}>Forma de Pagamento</label>
               <select id="pl-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
                 <option value="">—</option>
-                {(formas.data?.formasPagamento ?? []).filter((f) => f.ativo).map((f) => (
+                {(formas.data?.formas ?? []).filter((f) => f.ativo).map((f) => (
                   <option key={f.id} value={f.id}>{f.nome}</option>
                 ))}
               </select>
