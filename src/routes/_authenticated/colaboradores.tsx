@@ -1,16 +1,8 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Briefcase,
-  CircleDollarSign,
-  Download,
-  History,
-  Plus,
-  UserMinus,
-  UserPen,
-  Users,
-} from "lucide-react";
+import { toast } from "sonner";
+import { Download, History, Plus, UserPen, Users } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
@@ -340,8 +332,9 @@ function FolhaTab() {
         p_colaborador_id: colaboradorId,
       });
       refresh();
+      toast.success("Item conferido.");
     } catch (err) {
-      toast_error(err);
+      toast.error(err instanceof Error ? err.message : "Falha ao conferir.");
     }
   }
 
@@ -453,12 +446,6 @@ function FolhaTab() {
       )}
     </div>
   );
-}
-
-function toast_error(err: unknown) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { toast } = require("sonner") as typeof import("sonner");
-  toast.error(err instanceof Error ? err.message : "Falha na operação.");
 }
 
 /* ============================= TAB: LANÇAMENTOS ============================= */
