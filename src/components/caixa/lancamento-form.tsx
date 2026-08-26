@@ -256,8 +256,50 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     if (somaPagamentos !== valorFinal) {
       return `A soma dos pagamentos (${formatCurrencyBRL(somaPagamentos)}) não corresponde ao valor final (${formatCurrencyBRL(valorFinal)}). Diferença: ${formatCurrencyBRL(diferenca)}.`;
     }
+    if (comissaoEntrega.ativa) {
+      if (!comissaoEntrega.entregadorId) return "Selecione o entregador da comissão de entrega.";
+      if (
+        comissaoEntrega.tipo === "entrega_avaliacao" &&
+        configCeQuery.data?.valor_taxa_com_avaliacao == null
+      ) {
+        return "O valor de entrega + avaliação ainda não foi configurado pelo administrador.";
+      }
+    }
     return null;
   }
+
+  /** Persiste a comissão de entrega vinculada ao lançamento (nunca afeta o faturamento). */
+  async function salvarComissaoEntrega(lancamentoId: string) {
+    if (!comissaoEntrega.ativa) {
+      if (editing && comissaoAtualQuery.data) {
+        const { data: res } = await supabase.rpc("comissao_entrega_remover", {
+          p_lancamento_id: lancamentoId,
+          p_motivo: "Comissão removida na edição do lançamento.",
+        });
+        const r = res as unknown as { ok: boolean; message?: string };
+        if (r && !r.ok) toast.error(r.message ?? "Não foi possível remover a comissão de entrega.");
+      }
+      return;
+    }
+    const { data: res, error } = await supabase.rpc("comissao_entrega_salvar", {
+      p_lancamento_id: lancamentoId,
+      p_entregador_id: comissaoEntrega.entregadorId,
+      p_tipo: comissaoEntrega.tipo,
+      p_avaliacao_confirmada: comissaoEntrega.avaliacaoConfirmada,
+      ...(comissaoEntrega.observacao.trim()
+        ? { p_avaliacao_observacao: comissaoEntrega.observacao.trim() }
+        : {}),
+    });
+    if (error) {
+      toast.error("Lançamento salvo, mas a comissão de entrega não pôde ser registrada.");
+      return;
+    }
+    const r = res as unknown as { ok: boolean; message?: string };
+    if (r && !r.ok) {
+      toast.error(r.message ?? "Comissão de entrega não registrada.");
+    }
+  }
+
 
   async function submit(confirmarDuplicidade: boolean) {
     // Campos opcionais são omitidos quando vazios (o banco aplica NULL/coalesce).
