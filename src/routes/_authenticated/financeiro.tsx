@@ -157,6 +157,9 @@ function VisaoGeralTab() {
           <KpiCard label="Margem de Contribuição" value={money(ind.margem_contribuicao)} sub="Receita − Custos − Comissões" tone={ind.margem_contribuicao < 0 ? "bad" : "good"} />
           <KpiCard label="Despesas Operacionais" value={money(ind.despesas_operacionais)} sub="Competência do período" />
           <KpiCard label="Resultado antes da Folha" value={money(ind.resultado_antes_folha)} sub="Margem − Despesas" tone={ind.resultado_antes_folha < 0 ? "bad" : "good"} />
+          <KpiCard label="Folha Gerencial" value={money(ind.folha_gerencial)} sub={`Pendente: ${money(ind.folha_pendente)}`} />
+          <KpiCard label="Resultado Operacional" value={money(ind.resultado_operacional)} sub="Receita − Custos − Comissões − Despesas − Folha" tone={ind.resultado_operacional < 0 ? "bad" : "good"} />
+          <KpiCard label="Margem Operacional" value={`${ind.margem_operacional.toFixed(1)}%`} sub="Resultado ÷ Receita" tone={ind.margem_operacional < 0 ? "bad" : "good"} />
           <KpiCard label="A Pagar (pendente)" value={money(ind.contas_pagar_pendente)} sub={`Vencido: ${money(ind.contas_pagar_vencido)}`} tone={ind.contas_pagar_vencido > 0 ? "bad" : undefined} />
           <KpiCard label="A Receber (pendente)" value={money(ind.contas_receber_pendente)} sub={`Vencido: ${money(ind.contas_receber_vencido)}`} tone={ind.contas_receber_vencido > 0 ? "bad" : undefined} />
           <KpiCard label="Entradas previstas 30d" value={money(ind.entradas_previstas_30d)} />
@@ -164,7 +167,7 @@ function VisaoGeralTab() {
         </div>
       )}
       <p className="text-xs text-muted-foreground">
-        Folha e Metas entram em etapas futuras; o resultado acima ainda não considera folha de pagamento.
+        Resultado Operacional = Receita − Custos − Comissões − Despesas − Folha Gerencial. Metas entram em etapa futura.
       </p>
     </div>
   );
