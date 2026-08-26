@@ -35,3 +35,20 @@ export function formatDateTimeITV(date: Date | string): string {
     minute: "2-digit",
   }).format(d);
 }
+
+/** Data de hoje no timezone da operação (America/Manaus), formato YYYY-MM-DD. */
+export function todayManausISO(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: ITV_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+/** Formata colunas DATE (YYYY-MM-DD) sem deslocamento de timezone. */
+export function formatDateOnlyISO(iso: string): string {
+  const [y, m, d] = iso.split("-");
+  if (!y || !m || !d) return iso;
+  return `${d}/${m}/${y}`;
+}
