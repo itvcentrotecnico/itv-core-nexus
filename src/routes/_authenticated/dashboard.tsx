@@ -274,8 +274,8 @@ function DashboardPage() {
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Custo de Peças, Comissões, Despesas, Resultado Operacional e Meta serão ativados
-          automaticamente quando os próximos módulos forem implementados.
+          Comissões, Despesas, Resultado Operacional e Meta serão ativados automaticamente
+          quando os próximos módulos forem implementados. A Margem Parcial ainda não desconta comissões.
         </p>
         <ArrowDownCircle className="mx-auto mt-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
       </div>
