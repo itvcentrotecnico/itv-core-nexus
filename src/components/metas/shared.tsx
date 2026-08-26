@@ -107,7 +107,7 @@ export function VariacaoBadge({ atual, anterior }: { atual: number; anterior: nu
 /** Competência (mês) selecionada → intervalo completo do mês. */
 export function competenciaRange(mes: string): { from: string; to: string } | null {
   if (!/^\d{4}-\d{2}$/.test(mes)) return null;
-  const [y, m] = mes.split("-").map(Number);
+  const [y, m] = mes.split("-").map(Number) as [number, number];
   const from = `${mes}-01`;
   const last = new Date(y, m, 0).getDate();
   return { from, to: `${mes}-${String(last).padStart(2, "0")}` };
