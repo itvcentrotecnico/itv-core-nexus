@@ -267,9 +267,10 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         p_observacao: observacao.trim() || null,
       };
 
+      // Os tipos gerados marcam parâmetros opcionais como não-nulos; o cast preserva o null real.
       const { data: result, error } = isEdit
-        ? await supabase.rpc("custos_atualizar", { p_id: editing!.id, ...payload })
-        : await supabase.rpc("custos_registrar", payload);
+        ? await supabase.rpc("custos_atualizar", { p_id: editing!.id, ...payload } as never)
+        : await supabase.rpc("custos_registrar", payload as never);
       if (error) throw error;
       const res = result as unknown as CustosRpcResult;
       if (!res.ok) {
