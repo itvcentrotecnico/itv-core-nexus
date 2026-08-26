@@ -41,7 +41,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { moduleKey: "tecnicos", label: "Técnicos", to: "/tecnicos", icon: Wrench },
       { moduleKey: "colaboradores", label: "Colaboradores", to: "/colaboradores", icon: Users },
       { moduleKey: "metas", label: "Metas", to: "/metas", icon: Target },
-      { moduleKey: "modo_tv", label: "Modo TV", to: "/modo-tv", icon: Tv },
+      { moduleKey: "modo_tv", label: "Modo TV", to: "/admin/modo-tv", icon: Tv },
       { moduleKey: "relatorios", label: "Relatórios", to: "/relatorios", icon: BarChart3 },
       { moduleKey: "configuracoes", label: "Configurações", to: "/configuracoes", icon: Settings },
     ],
