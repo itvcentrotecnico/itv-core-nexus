@@ -7,7 +7,7 @@ import {
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
-import { useAccess } from "@/hooks/use-auth";
+import { useAccess, useSession } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { KpiCard } from "@/components/kpi-card";
+import { KpiCard } from "@/routes/_authenticated/caixa";
 import { RegraForm } from "@/components/comissoes/regra-form";
 import {
   AjusteDialog, CancelarComissaoDialog, ComissaoDetalhes, MaoObraDialog, RecalcularDialog,
@@ -49,7 +49,9 @@ function monthStart(iso: string) {
 }
 
 function ComissoesPage() {
-  const { can, roles, isLoading, userId } = useAccess();
+  const { can, roles, isLoading } = useAccess();
+  const { user } = useSession();
+  const userId = user?.id ?? null;
   const queryClient = useQueryClient();
   const isTecnicoView = roles.includes("tecnico") && !can("comissoes", "visualizar");
   const podeGerenciar = can("comissoes", "visualizar");
@@ -110,7 +112,7 @@ function ComissoesPage() {
     queryFn: async () => {
       const { data, error } = await supabase.rpc("comissoes_por_tecnico", { p_from: from, p_to: to });
       if (error) throw error;
-      const r = data as { ok: boolean; tecnicos?: ComissaoTecnicoResumo[] };
+      const r = data as unknown as { ok: boolean; tecnicos?: ComissaoTecnicoResumo[] };
       return (r?.tecnicos ?? []) as ComissaoTecnicoResumo[];
     },
   });

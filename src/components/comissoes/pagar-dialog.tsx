@@ -53,12 +53,13 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
     }
     setSaving(true);
     try {
-      const { data, error } = await supabase.rpc("comissoes_pagar", {
+      const args = {
         p_tecnico_id: tecnicoId,
         p_comissao_ids: selecionadas,
         p_forma_pagamento_id: formaId,
-        p_observacao: observacao.trim() || undefined,
-      });
+        ...(observacao.trim() ? { p_observacao: observacao.trim() } : {}),
+      };
+      const { data, error } = await supabase.rpc("comissoes_pagar", args);
       if (error) throw new Error(error.message);
       const r = data as ComissaoRpcResult & { valor_total?: number; quantidade?: number };
       if (!r.ok) throw new Error(r.message ?? "Não foi possível registrar o pagamento.");
