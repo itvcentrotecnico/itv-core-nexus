@@ -232,6 +232,7 @@ function DashboardPage() {
   });
 
   const ehGerencia = isAdmin || can("producao", "validar");
+  const veMetas = isAdmin || can("metas", "visualizar");
 
   const filaProducaoQuery = useQuery({
     queryKey: ["dashboard-producao-fila"],
@@ -243,10 +244,33 @@ function DashboardPage() {
     },
   });
 
+  const metasQuery = useQuery({
+    queryKey: ["dashboard-meta-principal", range?.from, range?.to],
+    enabled: !!range && veMetas,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("metas_painel", {
+        p_from: range!.from,
+        p_to: range!.to,
+      });
+      if (error) throw error;
+      const painel = data as unknown as {
+        ok: boolean;
+        metas: { id: string; nome: string; principal: boolean; status: string; realizado: number; valor_alvo: number; percentual: number; status_projecao: string | null; projecao: number | null }[];
+      };
+      if (!painel.ok) return null;
+      const principal =
+        painel.metas.find((m) => m.principal && (m.status === "ativa" || m.status === "planejada")) ??
+        painel.metas.find((m) => m.status === "ativa") ??
+        null;
+      return principal;
+    },
+  });
+
   const ind = indicadoresQuery.data;
   const custos = custosQuery.data;
   const comissoes = comissoesQuery.data;
   const filaProducao = filaProducaoQuery.data;
+  const metaPrincipal = metasQuery.data;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -331,7 +355,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
-          const { value, sub } = kpiValue(kpi, ind, custos, comissoes);
+          const { value, sub } = kpiValue(kpi, ind, custos, comissoes, metaPrincipal);
           return (
             <div key={kpi.label} className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between">
