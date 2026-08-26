@@ -85,7 +85,7 @@ export const convidarUsuario = createServerFn({ method: "POST" })
       p_user_id: userId!,
       p_nome: data.nome,
       p_email: email,
-      p_colaborador_id: data.colaboradorId ?? null,
+      p_colaborador_id: data.colaboradorId ?? undefined,
       p_role: data.role,
       p_acao: jaExistia ? "usuario_vinculado" : "convite_enviado",
     });
@@ -139,8 +139,8 @@ export const reenviarConvite = createServerFn({ method: "POST" })
       p_user_id: data.userId,
       p_nome: "",
       p_email: data.email.toLowerCase(),
-      p_colaborador_id: null,
-      p_role: null,
+      p_colaborador_id: undefined,
+      p_role: undefined,
       p_acao: "convite_reenviado",
     });
 
