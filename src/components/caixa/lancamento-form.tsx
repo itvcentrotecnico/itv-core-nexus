@@ -195,8 +195,27 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       setDesconto(null);
       setObservacao("");
       setRows([emptyRow()]);
+      setComissaoEntrega(COMISSAO_ENTREGA_VAZIA);
     }
   }, [open, editing, defaultDate]);
+
+  // Carrega a comissão de entrega vigente ao editar um lançamento
+  useEffect(() => {
+    if (!open || !editing) return;
+    const atual = comissaoAtualQuery.data;
+    setComissaoEntrega(
+      atual
+        ? {
+            ativa: true,
+            entregadorId: atual.entregador_id,
+            tipo: atual.tipo,
+            avaliacaoConfirmada: atual.avaliacao_confirmada,
+            observacao: atual.avaliacao_observacao ?? "",
+          }
+        : COMISSAO_ENTREGA_VAZIA,
+    );
+  }, [open, editing, comissaoAtualQuery.data]);
+
 
   const valorFinal = useMemo(
     () => round2((valorBruto ?? 0) - (desconto ?? 0)),
