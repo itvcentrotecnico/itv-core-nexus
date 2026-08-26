@@ -109,7 +109,7 @@ function ProducaoPage() {
         <section className="rounded-xl border border-border bg-card p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-display text-sm font-bold text-foreground">
-              Meta {TIPO_META_LABEL[ind.meta.tipo].toLowerCase()} · {formatDateOnlyISO(ind.meta.inicio)} → {formatDateOnlyISO(ind.meta.fim)}
+              Meta {(TIPO_META_LABEL[ind.meta.tipo] ?? "").toLowerCase()} · {formatDateOnlyISO(ind.meta.inicio)} → {formatDateOnlyISO(ind.meta.fim)}
             </h2>
             {ind.meta.nivel && (
               <span className={`rounded-full px-3 py-1 text-xs font-semibold ${NIVEL_BADGE[ind.meta.nivel] ?? "bg-muted text-muted-foreground"}`}>
