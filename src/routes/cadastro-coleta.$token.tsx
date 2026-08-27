@@ -188,7 +188,7 @@ function CadastroColetaPage() {
   if (!abertura?.ok) {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background px-6 text-center">
-        <img src={logoColor.src} alt="ITV Centro Técnico" className="h-12 w-auto" />
+        <img src={logoColor.url} alt="ITV Centro Técnico" className="h-12 w-auto" />
         <h1 className="font-display text-xl font-bold text-foreground">Link indisponível</h1>
         <p className="max-w-sm text-sm text-muted-foreground">{ERROS[abertura?.erro ?? "invalido"]}</p>
       </main>
@@ -198,7 +198,7 @@ function CadastroColetaPage() {
   if (enviado) {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background px-6 text-center">
-        <img src={logoColor.src} alt="ITV Centro Técnico" className="h-12 w-auto" />
+        <img src={logoColor.url} alt="ITV Centro Técnico" className="h-12 w-auto" />
         <CheckCircle2 className="size-14 text-primary" />
         <h1 className="font-display text-xl font-bold text-foreground">Cadastro enviado!</h1>
         <p className="max-w-sm text-sm text-muted-foreground">
@@ -212,7 +212,7 @@ function CadastroColetaPage() {
   return (
     <main className="min-h-dvh bg-muted/30 pb-16">
       <header className="bg-card px-5 py-5 text-center shadow-sm">
-        <img src={logoColor.src} alt="ITV Centro Técnico" className="mx-auto h-10 w-auto" />
+        <img src={logoColor.url} alt="ITV Centro Técnico" className="mx-auto h-10 w-auto" />
         <h1 className="mt-3 font-display text-lg font-bold text-foreground">
           Ficha de Cadastro — {abertura.tipo === "entrega" ? "Entrega" : "Coleta"} de TV
         </h1>

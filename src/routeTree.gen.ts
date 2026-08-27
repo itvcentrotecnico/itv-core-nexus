@@ -26,6 +26,7 @@ import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedTecnicosRouteImport } from './routes/_authenticated/tecnicos'
+import { Route as CadastroColetaTokenRouteImport } from './routes/cadastro-coleta.$token'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminModoTvRouteImport } from './routes/_authenticated/admin.modo-tv'
 import { Route as AuthenticatedAdminPermissoesRouteImport } from './routes/_authenticated/admin.permissoes'
@@ -116,6 +117,11 @@ const AuthenticatedTecnicosRoute = AuthenticatedTecnicosRouteImport.update({
   path: '/tecnicos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const CadastroColetaTokenRoute = CadastroColetaTokenRouteImport.update({
+  id: '/cadastro-coleta/$token',
+  path: '/cadastro-coleta/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/_authenticated/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/_authenticated/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin/'
@@ -239,6 +249,7 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/producao'
     | '/_authenticated/relatorios'
     | '/_authenticated/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/_authenticated/admin/modo-tv'
     | '/_authenticated/admin/permissoes'
     | '/_authenticated/admin/'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ModoTvRoute: typeof ModoTvRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CadastroColetaTokenRoute: typeof CadastroColetaTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -395,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTecnicosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/cadastro-coleta/$token': {
+      id: '/cadastro-coleta/$token'
+      path: '/cadastro-coleta/$token'
+      fullPath: '/cadastro-coleta/$token'
+      preLoaderRoute: typeof CadastroColetaTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ModoTvRoute: ModoTvRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CadastroColetaTokenRoute: CadastroColetaTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
