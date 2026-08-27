@@ -99,8 +99,14 @@ export function NovaSolicitacaoDialog({
   }, [whatsapp]);
 
   async function salvar() {
-    if (!nome.trim()) return toast.error("Informe o nome do cliente.");
-    if (somenteDigitos(whatsapp).length < 10) return toast.error("Informe um WhatsApp válido.");
+    if (!nome.trim()) {
+      toast.error("Informe o nome do cliente.");
+      return;
+    }
+    if (somenteDigitos(whatsapp).length < 10) {
+      toast.error("Informe um WhatsApp válido.");
+      return;
+    }
     setSalvando(true);
     try {
       const res = await rpcColetas<{ id: string; token: string; expira_em: string }>("coletas_criar", {
