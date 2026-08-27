@@ -821,6 +821,245 @@ export type Database = {
           },
         ]
       }
+      coletas_fotos: {
+        Row: {
+          created_at: string
+          id: string
+          solicitacao_id: string
+          storage_path: string
+          tipo: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          solicitacao_id: string
+          storage_path: string
+          tipo?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          solicitacao_id?: string
+          storage_path?: string
+          tipo?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletas_fotos_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "coletas_solicitacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_fotos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coletas_solicitacoes: {
+        Row: {
+          apartamento: string | null
+          assumido_em: string | null
+          atribuido_em: string | null
+          bairro: string | null
+          cancelado_em: string | null
+          cancelado_por: string | null
+          cep: string | null
+          cidade: string | null
+          cliente_nome: string
+          complemento: string | null
+          concluido_em: string | null
+          concluido_por: string | null
+          condominio: string | null
+          cpf: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          latitude: number | null
+          link_expira_em: string | null
+          link_gerado_em: string | null
+          longitude: number | null
+          maps_url: string | null
+          marca_tv: string | null
+          motivo_cancelamento: string | null
+          motorista_id: string | null
+          numero: string | null
+          observacao: string | null
+          observacao_conclusao: string | null
+          polegadas: number | null
+          preenchido_em: string | null
+          referencia: string | null
+          rua: string | null
+          status: string
+          telefone_alternativo: string | null
+          tipo: string
+          torre_bloco: string | null
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          apartamento?: string | null
+          assumido_em?: string | null
+          atribuido_em?: string | null
+          bairro?: string | null
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cliente_nome: string
+          complemento?: string | null
+          concluido_em?: string | null
+          concluido_por?: string | null
+          condominio?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          latitude?: number | null
+          link_expira_em?: string | null
+          link_gerado_em?: string | null
+          longitude?: number | null
+          maps_url?: string | null
+          marca_tv?: string | null
+          motivo_cancelamento?: string | null
+          motorista_id?: string | null
+          numero?: string | null
+          observacao?: string | null
+          observacao_conclusao?: string | null
+          polegadas?: number | null
+          preenchido_em?: string | null
+          referencia?: string | null
+          rua?: string | null
+          status?: string
+          telefone_alternativo?: string | null
+          tipo: string
+          torre_bloco?: string | null
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          apartamento?: string | null
+          assumido_em?: string | null
+          atribuido_em?: string | null
+          bairro?: string | null
+          cancelado_em?: string | null
+          cancelado_por?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cliente_nome?: string
+          complemento?: string | null
+          concluido_em?: string | null
+          concluido_por?: string | null
+          condominio?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          latitude?: number | null
+          link_expira_em?: string | null
+          link_gerado_em?: string | null
+          longitude?: number | null
+          maps_url?: string | null
+          marca_tv?: string | null
+          motivo_cancelamento?: string | null
+          motorista_id?: string | null
+          numero?: string | null
+          observacao?: string | null
+          observacao_conclusao?: string | null
+          polegadas?: number | null
+          preenchido_em?: string | null
+          referencia?: string | null
+          rua?: string | null
+          status?: string
+          telefone_alternativo?: string | null
+          tipo?: string
+          torre_bloco?: string | null
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletas_solicitacoes_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_solicitacoes_concluido_por_fkey"
+            columns: ["concluido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_solicitacoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_solicitacoes_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coletas_tokens: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expires_at: string
+          id: string
+          solicitacao_id: string
+          token_hash: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expires_at: string
+          id?: string
+          solicitacao_id: string
+          token_hash: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          solicitacao_id?: string
+          token_hash?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletas_tokens_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_tokens_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "coletas_solicitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comissao_ajustes: {
         Row: {
           comissao_id: string
@@ -3929,6 +4168,53 @@ export type Database = {
         }
         Returns: Json
       }
+      coletas_assumir: { Args: { p_id: string }; Returns: undefined }
+      coletas_atribuir: {
+        Args: { p_id: string; p_motorista: string }
+        Returns: undefined
+      }
+      coletas_atualizar: {
+        Args: { p_dados: Json; p_id: string }
+        Returns: undefined
+      }
+      coletas_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: undefined
+      }
+      coletas_concluir: {
+        Args: { p_id: string; p_observacao?: string }
+        Returns: undefined
+      }
+      coletas_cpf: { Args: { p_id: string }; Returns: string }
+      coletas_criar: {
+        Args: {
+          p_horas?: number
+          p_nome: string
+          p_observacao?: string
+          p_tipo: string
+          p_whatsapp: string
+        }
+        Returns: Json
+      }
+      coletas_duplicados: { Args: { p_whatsapp: string }; Returns: Json }
+      coletas_foto_registrar: {
+        Args: { p_id: string; p_path: string }
+        Returns: undefined
+      }
+      coletas_gerar_link: {
+        Args: { p_horas?: number; p_id: string }
+        Returns: Json
+      }
+      coletas_pode: {
+        Args: { _action: Database["public"]["Enums"]["permission_action"] }
+        Returns: boolean
+      }
+      coletas_publico_abrir: { Args: { p_token: string }; Returns: Json }
+      coletas_publico_enviar: {
+        Args: { p_dados: Json; p_token: string }
+        Returns: Json
+      }
+      coletas_relatorio_dia: { Args: { p_data: string }; Returns: Json }
       comissao_entrega_colaboradores: { Args: never; Returns: Json }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }
@@ -4569,6 +4855,7 @@ export type Database = {
         | "tecnico"
         | "tv_display"
         | "adm_operacional"
+        | "motorista"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
       caixa_movimento_tipo: "saldo_inicial" | "suprimento" | "sangria"
@@ -4653,6 +4940,10 @@ export type Database = {
         | "encerrar"
         | "visualizar_ranking"
         | "configurar_indicadores"
+        | "atribuir"
+        | "assumir"
+        | "concluir"
+        | "ver_dados_sensiveis"
       producao_status:
         | "rascunho"
         | "enviado_validacao"
@@ -4798,6 +5089,7 @@ export const Constants = {
         "tecnico",
         "tv_display",
         "adm_operacional",
+        "motorista",
       ],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
@@ -4891,6 +5183,10 @@ export const Constants = {
         "encerrar",
         "visualizar_ranking",
         "configurar_indicadores",
+        "atribuir",
+        "assumir",
+        "concluir",
+        "ver_dados_sensiveis",
       ],
       producao_status: [
         "rascunho",
