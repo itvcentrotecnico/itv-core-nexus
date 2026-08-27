@@ -27,6 +27,14 @@ const ACOES: { value: PermissionAction; label: string }[] = [
   { value: "exportar", label: "Exportar" },
   { value: "configurar", label: "Configurar" },
   { value: "administrar", label: "Administrar" },
+  { value: "assumir", label: "Assumir" },
+  { value: "concluir", label: "Concluir" },
+  { value: "atribuir", label: "Atribuir" },
+  { value: "excluir", label: "Excluir" },
+  { value: "excluir_concluida", label: "Excluir concluída" },
+  { value: "localizacao_ativar", label: "Ativar localização" },
+  { value: "localizacao_visualizar", label: "Ver localização" },
+  { value: "localizacao_historico", label: "Histórico de localização" },
 ];
 
 export function AdminPerfis() {
