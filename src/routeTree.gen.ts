@@ -16,6 +16,7 @@ import { Route as ModoTvRouteImport } from './routes/modo-tv'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated/caixa'
 import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authenticated/colaboradores'
+import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedComissaoEntregaRouteImport } from './routes/_authenticated/comissao-entrega'
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -25,6 +26,7 @@ import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedTecnicosRouteImport } from './routes/_authenticated/tecnicos'
+import { Route as CadastroColetaTokenRouteImport } from './routes/cadastro-coleta.$token'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminModoTvRouteImport } from './routes/_authenticated/admin.modo-tv'
 import { Route as AuthenticatedAdminPermissoesRouteImport } from './routes/_authenticated/admin.permissoes'
@@ -64,6 +66,11 @@ const AuthenticatedColaboradoresRoute =
     path: '/colaboradores',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedColetasRoute = AuthenticatedColetasRouteImport.update({
+  id: '/coletas',
+  path: '/coletas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedComissaoEntregaRoute =
   AuthenticatedComissaoEntregaRouteImport.update({
     id: '/comissao-entrega',
@@ -110,6 +117,11 @@ const AuthenticatedTecnicosRoute = AuthenticatedTecnicosRouteImport.update({
   path: '/tecnicos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const CadastroColetaTokenRoute = CadastroColetaTokenRouteImport.update({
+  id: '/cadastro-coleta/$token',
+  path: '/cadastro-coleta/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -135,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/coletas': typeof AuthenticatedColetasRoute
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -144,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -155,6 +169,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/coletas': typeof AuthenticatedColetasRoute
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -164,6 +179,7 @@ export interface FileRoutesByTo {
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -177,6 +193,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
   '/_authenticated/colaboradores': typeof AuthenticatedColaboradoresRoute
+  '/_authenticated/coletas': typeof AuthenticatedColetasRoute
   '/_authenticated/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -186,6 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/_authenticated/tecnicos': typeof AuthenticatedTecnicosRoute
+  '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/_authenticated/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/_authenticated/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -199,6 +217,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
+    | '/coletas'
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
@@ -208,6 +227,7 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin/'
@@ -219,6 +239,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/caixa'
     | '/colaboradores'
+    | '/coletas'
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
@@ -228,6 +249,7 @@ export interface FileRouteTypes {
     | '/producao'
     | '/relatorios'
     | '/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
     | '/admin'
@@ -240,6 +262,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/caixa'
     | '/_authenticated/colaboradores'
+    | '/_authenticated/coletas'
     | '/_authenticated/comissao-entrega'
     | '/_authenticated/comissoes'
     | '/_authenticated/dashboard'
@@ -249,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/producao'
     | '/_authenticated/relatorios'
     | '/_authenticated/tecnicos'
+    | '/cadastro-coleta/$token'
     | '/_authenticated/admin/modo-tv'
     | '/_authenticated/admin/permissoes'
     | '/_authenticated/admin/'
@@ -260,6 +284,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ModoTvRoute: typeof ModoTvRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CadastroColetaTokenRoute: typeof CadastroColetaTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -311,6 +336,13 @@ declare module '@tanstack/react-router' {
       path: '/colaboradores'
       fullPath: '/colaboradores'
       preLoaderRoute: typeof AuthenticatedColaboradoresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/coletas': {
+      id: '/_authenticated/coletas'
+      path: '/coletas'
+      fullPath: '/coletas'
+      preLoaderRoute: typeof AuthenticatedColetasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/comissao-entrega': {
@@ -376,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTecnicosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/cadastro-coleta/$token': {
+      id: '/cadastro-coleta/$token'
+      path: '/cadastro-coleta/$token'
+      fullPath: '/cadastro-coleta/$token'
+      preLoaderRoute: typeof CadastroColetaTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -403,6 +442,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
   AuthenticatedColaboradoresRoute: typeof AuthenticatedColaboradoresRoute
+  AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
   AuthenticatedComissaoEntregaRoute: typeof AuthenticatedComissaoEntregaRoute
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -420,6 +460,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
   AuthenticatedColaboradoresRoute: AuthenticatedColaboradoresRoute,
+  AuthenticatedColetasRoute: AuthenticatedColetasRoute,
   AuthenticatedComissaoEntregaRoute: AuthenticatedComissaoEntregaRoute,
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
@@ -443,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ModoTvRoute: ModoTvRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CadastroColetaTokenRoute: CadastroColetaTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

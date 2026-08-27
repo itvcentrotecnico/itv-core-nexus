@@ -44,6 +44,7 @@ const PERFIS: AppRole[] = [
   "vendedor",
   "tecnico",
   "tv_display",
+  "motorista",
 ];
 
 const PERFIL_RESUMO: Record<AppRole, string> = {
@@ -53,6 +54,7 @@ const PERFIL_RESUMO: Record<AppRole, string> = {
   vendedor: "Caixa Diário: lançamentos, formas de pagamento e comissão de entrega.",
   tecnico: "Apenas a própria produção, comissões e metas.",
   tv_display: "Somente o painel Modo TV.",
+  motorista: "Somente a fila de Coletas: assumir, executar e concluir.",
 };
 
 /** Convite administrativo: cria o acesso e vincula ao colaborador. */

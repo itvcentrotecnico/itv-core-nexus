@@ -32,7 +32,7 @@ const conviteSchema = z.object({
   nome: z.string().trim().min(2),
   email: z.string().trim().email(),
   colaboradorId: z.string().uuid().nullable().optional(),
-  role: z.enum(["administrador", "adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display"]),
+  role: z.enum(["administrador", "adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display", "motorista"]),
   origem: z.string().optional(),
 });
 
