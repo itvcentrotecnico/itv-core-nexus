@@ -9,6 +9,7 @@ import { useAccess, formatRole } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
+import { BottomNav } from "@/components/layout/bottom-nav";
 
 
 function Brand() {
@@ -293,7 +294,13 @@ export function AppShell() {
 
       <BottomNav
         roles={roles}
-        podeVer={podeVerModulo2}
+        podeVer={(key) =>
+          isAdmin ||
+          can(key, "visualizar") ||
+          can(key, "visualizar_propria") ||
+          can(key, "visualizar_todos") ||
+          can(key, "administrar")
+        }
         onOpenMenu={() => setMobileOpen(true)}
       />
     </div>
