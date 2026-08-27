@@ -13,6 +13,8 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
+import { OfflineBanner } from "@/components/layout/offline-banner";
+import { InstallPrompt } from "@/components/layout/install-prompt";
 
 function NotFoundComponent() {
   return (
@@ -155,7 +157,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <OfflineBanner />
       <Outlet />
+      <InstallPrompt />
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );
