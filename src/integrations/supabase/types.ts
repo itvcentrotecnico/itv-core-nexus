@@ -4215,6 +4215,10 @@ export type Database = {
         Returns: Json
       }
       coletas_relatorio_dia: { Args: { p_data: string }; Returns: Json }
+      coletas_relatorio_periodo: {
+        Args: { p_fim: string; p_ini: string }
+        Returns: Json
+      }
       comissao_entrega_colaboradores: { Args: never; Returns: Json }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }
