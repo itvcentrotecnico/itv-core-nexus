@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { formatCurrencyBRL, formatDateOnlyISO, ITV_TIMEZONE } from "@/lib/format";
 import type { ModoTvConfig, ModoTvIndicadores } from "@/lib/modo-tv";
+import type { EquipeExternaTv } from "@/lib/equipe-externa";
 import { STATUS_RITMO_LABEL, nomeCurto, percentualTecnico } from "@/lib/modo-tv";
 import { cn } from "@/lib/utils";
 import logoWhite from "@/assets/itv-logo-white.png.asset.json";
@@ -408,6 +409,56 @@ export function TelaComparativo({ d }: { d: ModoTvIndicadores }) {
       <CardTv titulo="Projeção de Fechamento" className="col-span-4 row-span-3 justify-center">
         <ValorGigante valor={formatCurrencyBRL(d.ritmo.projecao)} tom={d.ritmo.status === "atencao" ? "atencao" : "verde"} />
         <p className="mt-[0.6vw] text-[1.2vw] text-white/50">{STATUS_RITMO_LABEL[d.ritmo.status]}</p>
+      </CardTv>
+    </div>
+  );
+}
+
+/* ---------- TELA 5 — Equipe externa (coletas e entregas) ---------- */
+
+/**
+ * Visão pública segura: apenas nome, situação e região aproximada.
+ * Nenhuma coordenada, endereço exato, trajetória ou histórico é exibido.
+ */
+export function TelaEquipeExterna({ d }: { d: EquipeExternaTv }) {
+  const i = d.indicadores;
+  const cards: [string, number][] = [
+    ["Motoristas em Operação", i.motoristas_operacao],
+    ["Coletas Pendentes", i.coletas_pendentes],
+    ["Entregas Pendentes", i.entregas_pendentes],
+    ["Em Execução", i.em_execucao],
+    ["Concluídas Hoje", i.concluidas_hoje],
+  ];
+
+  return (
+    <div className="grid h-full grid-cols-12 grid-rows-6 gap-[1.2vw]">
+      <CardTv titulo="Coletas e Entregas — Hoje" className="col-span-12 row-span-2">
+        <div className="grid h-full grid-cols-5 items-center gap-[1vw]">
+          {cards.map(([label, valor]) => (
+            <div key={label} className="text-center">
+              <p className="font-display text-[3.2vw] font-black leading-none tabular-nums text-white">{valor}</p>
+              <p className="mt-[0.4vw] text-[0.95vw] uppercase tracking-[0.16em] text-white/45">{label}</p>
+            </div>
+          ))}
+        </div>
+      </CardTv>
+
+      <CardTv titulo="Equipe Externa" className="col-span-12 row-span-4">
+        {d.equipe.length === 0 ? (
+          <p className="text-[1.4vw] text-white/40">Nenhum motorista cadastrado.</p>
+        ) : (
+          <div className="grid grid-cols-3 gap-[1vw]">
+            {d.equipe.slice(0, 9).map((m) => (
+              <div key={m.motorista} className="rounded-[1vw] border border-white/10 bg-white/[0.04] p-[1vw]">
+                <p className="font-display text-[1.7vw] font-bold text-white">{m.motorista}</p>
+                <p className="text-[1.1vw] text-white/60">
+                  {m.situacao}
+                  {m.regiao ? ` — ${m.regiao}` : ""}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </CardTv>
     </div>
   );

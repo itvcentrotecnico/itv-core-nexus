@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { labelClass } from "@/lib/caixa";
-import { rpcColetas, storagePathColeta, type ColetaSolicitacao } from "@/lib/coletas";
+import { mensagemErro, rpcColetas, storagePathColeta, type ColetaSolicitacao } from "@/lib/coletas";
 
 /** Conclusão da movimentação: observação opcional e foto direto da câmera. */
 export function ConcluirDialog({
@@ -35,24 +35,32 @@ export function ConcluirDialog({
     if (!item) return;
     setSalvando(true);
     try {
+      // Falha de foto não pode derrubar a conclusão: avisamos e seguimos.
+      let falhas = 0;
       for (const file of arquivos) {
-        const path = storagePathColeta(item.id, file.name);
-        const { error } = await supabase.storage.from("coletas").upload(path, file, { upsert: false });
-        if (error) throw new Error(error.message);
-        await rpcColetas("coletas_foto_registrar", { p_id: item.id, p_path: path });
+        try {
+          const path = storagePathColeta(item.id, file.name);
+          const { error } = await supabase.storage.from("coletas").upload(path, file, { upsert: false });
+          if (error) throw new Error(error.message);
+          await rpcColetas("coletas_foto_registrar", { p_id: item.id, p_path: path });
+        } catch {
+          falhas += 1;
+        }
       }
       await rpcColetas("coletas_concluir", { p_id: item.id, p_observacao: observacao.trim() || null });
       void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       toast.success(item.tipo === "coleta" ? "Coleta concluída." : "Entrega concluída.");
+      if (falhas > 0) toast.warning(`Não foi possível enviar ${falhas} foto(s). Você pode tentar novamente pelo detalhe.`);
       setObservacao("");
       setArquivos([]);
       onClose();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível concluir.");
+      toast.error(mensagemErro(e, "Não foi possível concluir agora. Tente novamente."));
     } finally {
       setSalvando(false);
     }
   }
+
 
   return (
     <Dialog open={!!item} onOpenChange={(o) => !o && onClose()}>

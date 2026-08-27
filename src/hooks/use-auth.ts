@@ -34,7 +34,13 @@ export type PermissionAction =
   | "atribuir"
   | "assumir"
   | "concluir"
-  | "ver_dados_sensiveis";
+  | "ver_dados_sensiveis"
+  | "excluir"
+  | "excluir_concluida"
+  | "restaurar"
+  | "localizacao_ativar"
+  | "localizacao_visualizar"
+  | "localizacao_historico";
 
 export interface UserProfile {
   id: string;

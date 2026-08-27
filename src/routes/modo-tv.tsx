@@ -5,10 +5,12 @@ import { Maximize2 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { MODO_TV_CONFIG_PADRAO, type ModoTvConfig, type ModoTvIndicadores } from "@/lib/modo-tv";
+import { rpcEquipe, type EquipeExternaTv } from "@/lib/equipe-externa";
 import {
   CabecalhoTv,
   RodapeTv,
   TelaComparativo,
+  TelaEquipeExterna,
   TelaMeta,
   TelaProducao,
   TelaServicos,
@@ -54,10 +56,20 @@ function ModoTvPage() {
     refetchOnWindowFocus: true,
   });
 
+  // Painel operacional externo: consulta leve e independente dos indicadores financeiros.
+  const equipeQuery = useQuery({
+    queryKey: ["modo-tv", "equipe-externa"],
+    queryFn: () => rpcEquipe<EquipeExternaTv>("equipe_externa_tv"),
+    refetchInterval: 120_000,
+    retry: 1,
+  });
+
   const config: ModoTvConfig = useMemo(
     () => ({ ...MODO_TV_CONFIG_PADRAO, ...(data?.config ?? {}) }),
     [data?.config],
   );
+
+  const equipe = equipeQuery.data;
 
   const telas = useMemo(() => {
     if (!data) return [] as { chave: string; node: React.ReactNode }[];
@@ -70,8 +82,10 @@ function ModoTvPage() {
       lista.push({ chave: "servicos", node: <TelaServicos d={data} config={config} /> });
     }
     if (config.mostrar_comparacao) lista.push({ chave: "comparativo", node: <TelaComparativo d={data} /> });
+    if (equipe) lista.push({ chave: "equipe", node: <TelaEquipeExterna d={equipe} /> });
     return lista;
-  }, [data, config]);
+  }, [data, config, equipe]);
+
 
   const [indice, setIndice] = useState(0);
 
