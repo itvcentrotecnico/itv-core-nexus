@@ -1,4 +1,4 @@
-import { CheckCircle2, MapPin, MessageCircle, Phone, Tv } from "lucide-react";
+import { CheckCircle2, MapPin, MessageCircle, PackagePlus, Phone, Trash2, Tv } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,21 +19,31 @@ export function ColetaCard({
   motoristaNome,
   podeAssumir,
   podeConcluir,
+  podeCriarEntrega,
+  podeExcluir,
   onAssumir,
   onConcluir,
   onAbrir,
+  onCriarEntrega,
+  onExcluir,
 }: {
   item: ColetaSolicitacao;
   motoristaNome?: string | undefined;
   podeAssumir: boolean;
   podeConcluir: boolean;
+  podeCriarEntrega?: boolean;
+  podeExcluir?: boolean;
   onAssumir: (item: ColetaSolicitacao) => void;
   onConcluir: (item: ColetaSolicitacao) => void;
   onAbrir: (item: ColetaSolicitacao) => void;
+  onCriarEntrega?: (item: ColetaSolicitacao) => void;
+  onExcluir?: (item: ColetaSolicitacao) => void;
 }) {
   const tv = [item.marca_tv, item.polegadas ? `${item.polegadas}"` : null].filter(Boolean).join(" ");
   const complemento = complementoResumido(item);
   const emAndamento = item.status === "pronto_coleta" || item.status === "assumida";
+  const mostrarCriarEntrega =
+    !!podeCriarEntrega && item.tipo === "coleta" && item.status === "concluida" && !!onCriarEntrega;
 
   return (
     <article className="rounded-xl border border-border bg-card p-4 shadow-sm">
@@ -41,9 +51,12 @@ export function ColetaCard({
         <div className="flex items-start justify-between gap-2">
           <div>
             <h3 className="font-display text-base font-bold text-foreground">{item.cliente_nome}</h3>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">{TIPO_LABEL[item.tipo]}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              {TIPO_LABEL[item.tipo]}
+              {item.coleta_origem_id ? " · da coleta" : ""}
+            </p>
           </div>
-          <StatusBadgeColeta status={item.status} />
+          <StatusBadgeColeta status={item.status} tipo={item.tipo} />
         </div>
 
         <div className="mt-2 space-y-1 text-sm text-muted-foreground">
@@ -87,8 +100,28 @@ export function ColetaCard({
       {item.status === "assumida" && podeConcluir && (
         <Button className="mt-2 h-12 w-full text-base" onClick={() => onConcluir(item)}>
           <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />
-          {item.tipo === "coleta" ? "TV COLETADA" : "ENTREGA CONCLUÍDA"}
+          {item.tipo === "coleta" ? "TV COLETADA" : "TV ENTREGUE"}
         </Button>
+      )}
+
+      {(mostrarCriarEntrega || (podeExcluir && onExcluir)) && (
+        <div className="mt-2 flex gap-2">
+          {mostrarCriarEntrega && (
+            <Button variant="outline" className="h-11 flex-1" onClick={() => onCriarEntrega?.(item)}>
+              <PackagePlus className="mr-1.5 size-4" aria-hidden="true" /> Criar entrega
+            </Button>
+          )}
+          {podeExcluir && onExcluir && (
+            <Button
+              variant="ghost"
+              className="h-11 text-destructive hover:text-destructive"
+              onClick={() => onExcluir(item)}
+              aria-label="Excluir registro"
+            >
+              <Trash2 className="size-4" aria-hidden="true" />
+            </Button>
+          )}
+        </div>
       )}
     </article>
   );

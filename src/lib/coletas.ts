@@ -15,6 +15,7 @@ export type ColetaStatus =
 export interface ColetaSolicitacao {
   id: string;
   tipo: ColetaTipo;
+  coleta_origem_id: string | null;
   cliente_nome: string;
   whatsapp: string;
   telefone_alternativo: string | null;
@@ -54,7 +55,8 @@ export interface ColetaSolicitacao {
 
 /** Colunas liberadas para leitura direta (o CPF só sai por RPC com permissão). */
 export const COLETA_COLUNAS =
-  "id, tipo, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at";
+  "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at";
+
 
 export const STATUS_COLETA: Record<ColetaStatus, { label: string; className: string }> = {
   aguardando_cadastro: { label: "Aguardando cadastro", className: "bg-amber-100 text-amber-800" },
@@ -175,4 +177,64 @@ export const MENSAGEM_PADRAO =
 export function storagePathColeta(solicitacaoId: string, fileName: string): string {
   const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
   return `${solicitacaoId}/${crypto.randomUUID()}-${safe}`;
+}
+
+/* --------------------- mensagens amigáveis de erro --------------------- */
+
+/**
+ * Traduz falhas técnicas (RLS, rede, SQL) para linguagem operacional.
+ * Nenhuma mensagem bruta do banco deve chegar ao usuário final.
+ */
+export function mensagemErro(e: unknown, padrao = "Não foi possível concluir a ação. Tente novamente."): string {
+  const bruto = e instanceof Error ? e.message : typeof e === "string" ? e : "";
+  const t = bruto.toLowerCase();
+  if (!bruto) return padrao;
+  if (t.includes("failed to fetch") || t.includes("networkerror") || t.includes("network request")) {
+    return "Não foi possível conectar ao sistema. Verifique sua internet e tente novamente.";
+  }
+  if (t.includes("row-level security") || t.includes("violates row") || t.includes("permission denied")) {
+    return "Você não possui permissão para realizar esta ação.";
+  }
+  if (t.includes("jwt") || t.includes("not authenticated") || t.includes("invalid token")) {
+    return "Sua sessão expirou. Entre novamente para continuar.";
+  }
+  if (t.includes("duplicate key") || t.includes("unique constraint")) {
+    return "Este registro já existe.";
+  }
+  // Mensagens escritas por nós nas RPCs já são amigáveis (começam em maiúscula e sem termos técnicos).
+  if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(bruto) && !t.includes("error") && !t.includes("relation") && bruto.length < 160) {
+    return bruto;
+  }
+  return padrao;
+}
+
+/* --------------------- exclusão controlada --------------------- */
+
+export const MOTIVOS_EXCLUSAO = [
+  "Cadastro duplicado",
+  "Criado por engano",
+  "Cliente cancelou",
+  "Informação incorreta",
+  "Outro",
+];
+
+/** Rótulo do status conforme o tipo (entrega usa "Pendente" no lugar de "Pronto para coleta"). */
+export function labelStatus(tipo: ColetaTipo, status: ColetaStatus): string {
+  if (tipo === "entrega") {
+    if (status === "pronto_coleta") return "Pendente";
+    if (status === "aguardando_cadastro") return "Aguardando cadastro";
+  }
+  return STATUS_COLETA[status].label;
+}
+
+/** Tempo decorrido entre dois instantes, em formato curto (ex.: "2d 4h"). */
+export function tempoEntre(inicio?: string | null, fim?: string | null): string | null {
+  if (!inicio || !fim) return null;
+  const ms = new Date(fim).getTime() - new Date(inicio).getTime();
+  if (!Number.isFinite(ms) || ms < 0) return null;
+  const horas = Math.floor(ms / 3_600_000);
+  const dias = Math.floor(horas / 24);
+  if (dias > 0) return `${dias}d ${horas % 24}h`;
+  const minutos = Math.floor(ms / 60_000);
+  return horas > 0 ? `${horas}h ${minutos % 60}min` : `${minutos}min`;
 }

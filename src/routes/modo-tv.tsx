@@ -5,10 +5,12 @@ import { Maximize2 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { MODO_TV_CONFIG_PADRAO, type ModoTvConfig, type ModoTvIndicadores } from "@/lib/modo-tv";
+import { rpcEquipe, type EquipeExternaTv } from "@/lib/equipe-externa";
 import {
   CabecalhoTv,
   RodapeTv,
   TelaComparativo,
+  TelaEquipeExterna,
   TelaMeta,
   TelaProducao,
   TelaServicos,

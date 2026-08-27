@@ -38,7 +38,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { moduleKey: "comissoes", label: "Comissões", to: "/comissoes", icon: Percent },
       { moduleKey: "comissao_entrega", label: "Comissão de Entrega", to: "/comissao-entrega", icon: Bike },
       { moduleKey: "financeiro", label: "Financeiro", to: "/financeiro", icon: BarChart3 },
-      { moduleKey: "coletas", label: "Coletas", to: "/coletas", icon: Truck },
+      { moduleKey: "coletas", label: "Coletas e Entregas", to: "/coletas", icon: Truck },
       { moduleKey: "producao", label: "Produção", to: "/producao", icon: ClipboardList },
       { moduleKey: "tecnicos", label: "Técnicos", to: "/tecnicos", icon: Wrench },
       { moduleKey: "colaboradores", label: "Colaboradores", to: "/colaboradores", icon: Users },

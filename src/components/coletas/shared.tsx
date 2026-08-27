@@ -2,16 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
-import { STATUS_COLETA, type ColetaStatus } from "@/lib/coletas";
+import { labelStatus, STATUS_COLETA, type ColetaStatus, type ColetaTipo } from "@/lib/coletas";
 
-export function StatusBadgeColeta({ status }: { status: ColetaStatus }) {
+export function StatusBadgeColeta({ status, tipo = "coleta" }: { status: ColetaStatus; tipo?: ColetaTipo }) {
   const s = STATUS_COLETA[status];
   return (
     <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}>
-      {s.label}
+      {labelStatus(tipo, status)}
     </span>
   );
 }
+
 
 interface UsuarioBasico {
   id: string;
