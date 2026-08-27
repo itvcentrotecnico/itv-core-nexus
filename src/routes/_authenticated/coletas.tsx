@@ -23,6 +23,7 @@ import { DetalheColetaDialog } from "@/components/coletas/detalhe-dialog";
 import { LinkDialog, type LinkGerado } from "@/components/coletas/link-dialog";
 import { NovaSolicitacaoDialog } from "@/components/coletas/nova-solicitacao";
 import { RelatorioColetas } from "@/components/coletas/relatorio";
+import { RelatorioPeriodoColetas } from "@/components/coletas/relatorio-periodo";
 import { StatusBadgeColeta, useUsuariosMap } from "@/components/coletas/shared";
 
 export const Route = createFileRoute("/_authenticated/coletas")({
@@ -158,6 +159,7 @@ function ColetasPage() {
         <TabsList>
           <TabsTrigger value="fila">Fila</TabsTrigger>
           {podeRelatorios && <TabsTrigger value="relatorio">Relatório Diário</TabsTrigger>}
+          {podeRelatorios && <TabsTrigger value="periodo">Por Período</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="fila" className="space-y-4 pt-4">
@@ -252,6 +254,12 @@ function ColetasPage() {
         {podeRelatorios && (
           <TabsContent value="relatorio" className="pt-4">
             <RelatorioColetas />
+          </TabsContent>
+        )}
+
+        {podeRelatorios && (
+          <TabsContent value="periodo" className="pt-4">
+            <RelatorioPeriodoColetas />
           </TabsContent>
         )}
       </Tabs>
