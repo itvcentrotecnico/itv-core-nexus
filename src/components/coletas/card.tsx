@@ -24,7 +24,7 @@ export function ColetaCard({
   onAbrir,
 }: {
   item: ColetaSolicitacao;
-  motoristaNome?: string;
+  motoristaNome?: string | undefined;
   podeAssumir: boolean;
   podeConcluir: boolean;
   onAssumir: (item: ColetaSolicitacao) => void;

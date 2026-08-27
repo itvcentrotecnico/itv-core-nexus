@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { cn } from "@/lib/utils";
 
-const PERFIS_EDITAVEIS: AppRole[] = ["adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display"];
+const PERFIS_EDITAVEIS: AppRole[] = ["adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display", "motorista"];
 
 const ACOES: { value: PermissionAction; label: string }[] = [
   { value: "visualizar", label: "Visualizar" },

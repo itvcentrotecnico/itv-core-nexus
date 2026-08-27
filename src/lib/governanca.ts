@@ -23,6 +23,7 @@ export const GOVERNANCA_PADRAO: GovernancaConfig = {
     vendedor: 5,
     tecnico: 0,
     tv_display: 0,
+    motorista: 0,
   },
   alerta_desconto_pct: 5,
   backup_intervalo_dias: 7,

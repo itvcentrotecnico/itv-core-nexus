@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 /** Ordem de atalhos por tipo de perfil (o primeiro perfil encontrado vence). */
 const PRIORIDADE: Record<string, string[]> = {
   tecnico: ["dashboard", "producao", "tecnicos", "metas", "relatorios"],
-  vendedor: ["dashboard", "caixa", "comissao_entrega", "relatorios", "metas"],
+  vendedor: ["dashboard", "caixa", "coletas", "comissao_entrega", "relatorios"],
+  motorista: ["coletas", "dashboard"],
   adm_financeiro: ["dashboard", "caixa", "financeiro", "relatorios", "metas"],
-  adm_operacional: ["dashboard", "producao", "caixa", "metas", "relatorios"],
+  adm_operacional: ["dashboard", "coletas", "producao", "caixa", "relatorios"],
 };
 
 const PADRAO = ["dashboard", "caixa", "producao", "metas", "relatorios"];

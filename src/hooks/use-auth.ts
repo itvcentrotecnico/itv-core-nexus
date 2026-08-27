@@ -4,7 +4,7 @@ import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "adm_financeiro" | "adm_operacional" | "vendedor" | "tecnico" | "tv_display";
+export type AppRole = "administrador" | "adm_financeiro" | "adm_operacional" | "vendedor" | "tecnico" | "tv_display" | "motorista";
 export type PermissionAction =
   | "visualizar"
   | "criar"
@@ -30,7 +30,11 @@ export type PermissionAction =
   | "configurar_metas"
   | "encerrar"
   | "visualizar_ranking"
-  | "configurar_indicadores";
+  | "configurar_indicadores"
+  | "atribuir"
+  | "assumir"
+  | "concluir"
+  | "ver_dados_sensiveis";
 
 export interface UserProfile {
   id: string;
@@ -158,6 +162,7 @@ const ROLE_LABELS: Record<AppRole, string> = {
   vendedor: "Vendedor",
   tecnico: "Técnico",
   tv_display: "TV Display",
+  motorista: "Motorista / Coleta",
 };
 
 export function formatRole(role: AppRole): string {
