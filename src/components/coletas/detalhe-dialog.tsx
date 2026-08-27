@@ -23,6 +23,7 @@ import {
   maskCEP,
   maskCPF,
   maskTelefone,
+  mensagemErro,
   rpcColetas,
   telUrl,
   TIPO_LABEL,
