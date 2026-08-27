@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { labelClass } from "@/lib/caixa";
-import { rpcColetas, storagePathColeta, type ColetaSolicitacao } from "@/lib/coletas";
+import { mensagemErro, rpcColetas, storagePathColeta, type ColetaSolicitacao } from "@/lib/coletas";
 
 /** Conclusão da movimentação: observação opcional e foto direto da câmera. */
 export function ConcluirDialog({

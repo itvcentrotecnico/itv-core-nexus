@@ -107,7 +107,7 @@ export function DetalheColetaDialog({
       void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       toast.success(sucesso);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Ação não permitida.");
+      toast.error(mensagemErro(e, "Ação não permitida."));
     }
   }
 
