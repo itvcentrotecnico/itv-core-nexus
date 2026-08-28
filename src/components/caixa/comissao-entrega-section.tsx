@@ -79,22 +79,32 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
   const valorPrevisto =
     valor.tipo === "entrega" ? cfg.valor_taxa_fixa : cfg.valor_taxa_com_avaliacao;
 
+  const faltaEntregador = valor.ativa && !valor.entregadorId;
+
   return (
-    <div className="mt-6 rounded-lg border border-border bg-muted/30 p-4">
+    <div
+      className={cn(
+        "mt-6 rounded-xl border-2 p-4 transition-colors",
+        valor.ativa ? "border-primary/40 bg-primary/5" : "border-border bg-muted/30",
+      )}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-2">
-          <Bike className="mt-0.5 size-4 text-primary" aria-hidden="true" />
+          <Bike className="mt-0.5 size-5 text-primary" aria-hidden="true" />
           <div>
-            <p className="text-sm font-semibold text-foreground">Comissão de Entrega</p>
+            <p className="text-sm font-semibold text-foreground">
+              O aparelho foi entregue por um motorista?
+            </p>
             <p className="text-xs text-muted-foreground">
-              Incentivo operacional do entregador. Não altera o faturamento nem a comissão técnica.
+              Ative para registrar quem entregou e gerar a comissão de entrega. Não altera o
+              faturamento nem a comissão técnica.
             </p>
           </div>
         </div>
         <Switch
           checked={valor.ativa}
           disabled={bloqueado}
-          aria-label="Este atendimento gerou comissão de entrega"
+          aria-label="O aparelho foi entregue por um motorista"
           onCheckedChange={(v) => onChange({ ativa: v })}
         />
       </div>
@@ -103,15 +113,18 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass} htmlFor="ce-entregador">
-              Entregador
+              Quem entregou? <span className="text-destructive">*</span>
             </label>
             <Select
               value={valor.entregadorId}
               onValueChange={(v) => onChange({ entregadorId: v })}
               disabled={bloqueado}
             >
-              <SelectTrigger id="ce-entregador" className="w-full">
-                <SelectValue placeholder="Selecione o entregador" />
+              <SelectTrigger
+                id="ce-entregador"
+                className={cn("w-full", faltaEntregador && "border-destructive")}
+              >
+                <SelectValue placeholder="Selecione o motorista/entregador" />
               </SelectTrigger>
               <SelectContent>
                 {entregadores.length === 0 ? (
@@ -127,7 +140,17 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
                 )}
               </SelectContent>
             </Select>
+            {faltaEntregador ? (
+              <p className="mt-1 text-xs text-destructive">
+                Escolha o motorista para salvar o lançamento.
+              </p>
+            ) : entregadores.length === 0 ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Peça ao administrador para habilitar o colaborador em Administração › Colaboradores.
+              </p>
+            ) : null}
           </div>
+
 
           <div>
             <label className={labelClass} htmlFor="ce-tipo">
