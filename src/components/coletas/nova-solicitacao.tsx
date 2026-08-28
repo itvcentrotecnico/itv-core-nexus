@@ -113,6 +113,11 @@ export function NovaSolicitacaoDialog({
       toast.error("Informe um WhatsApp válido.");
       return;
     }
+    const erroOrigem = validarOrigem(origem, origens);
+    if (erroOrigem) {
+      toast.error(erroOrigem);
+      return;
+    }
     setSalvando(true);
     try {
       const res = await rpcColetas<{ id: string; token: string; expira_em: string }>("coletas_criar", {
@@ -121,6 +126,11 @@ export function NovaSolicitacaoDialog({
         p_whatsapp: somenteDigitos(whatsapp),
         p_observacao: observacao.trim() || null,
         p_horas: horas,
+        p_origem_id: origem.origem_id,
+        p_origem_detalhe: origem.detalhe.trim() || null,
+        p_indicado_nome: origem.indicado_nome.trim() || null,
+        p_indicado_telefone: somenteDigitos(origem.indicado_telefone) || null,
+        p_canal_contato: origem.canal || null,
       });
 
       if (reutilizar) {
