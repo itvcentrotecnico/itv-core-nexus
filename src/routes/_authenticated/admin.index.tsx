@@ -10,6 +10,8 @@ import { AdminTecnicos } from "@/components/admin/tecnicos";
 import { AdminCadastros } from "@/components/admin/cadastros";
 import { AdminRegrasComissao } from "@/components/admin/regras-comissao";
 import { AdminComissaoEntrega } from "@/components/admin/comissao-entrega";
+import { AdminTaxasRecebimento } from "@/components/admin/taxas-recebimento";
+
 import { AdminParametros } from "@/components/admin/parametros";
 import { AdminFechamentos } from "@/components/admin/fechamentos";
 import { AdminAuditoria } from "@/components/admin/auditoria";
