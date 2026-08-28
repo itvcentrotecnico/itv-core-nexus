@@ -4154,6 +4154,7 @@ export type Database = {
         }
         Returns: Json
       }
+      caixa_agg: { Args: { p_from: string; p_to: string }; Returns: Json }
       caixa_atualizar_lancamento: {
         Args: {
           p_cliente?: string
@@ -4173,6 +4174,10 @@ export type Database = {
       }
       caixa_cancelar_lancamento: {
         Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      caixa_desempenho: {
+        Args: { p_meses?: number; p_ref?: string }
         Returns: Json
       }
       caixa_estornar_lancamento: {
