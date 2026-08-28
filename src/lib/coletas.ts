@@ -9,7 +9,10 @@ export type ColetaStatus =
   | "aguardando_cadastro"
   | "pronto_coleta"
   | "assumida"
+  | "em_rota"
+  | "no_local"
   | "concluida"
+  | "nao_realizada"
   | "cancelada";
 
 export interface ColetaSolicitacao {
@@ -37,6 +40,9 @@ export interface ColetaSolicitacao {
   observacao: string | null;
   observacao_conclusao: string | null;
   status: ColetaStatus;
+  data_agendada: string | null;
+  nao_realizada_motivo: string | null;
+  nao_realizada_em: string | null;
   motorista_id: string | null;
   created_by: string | null;
   concluido_por: string | null;
@@ -55,13 +61,16 @@ export interface ColetaSolicitacao {
 
 /** Colunas liberadas para leitura direta (o CPF só sai por RPC com permissão). */
 export const COLETA_COLUNAS =
-  "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at";
+  "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, data_agendada, nao_realizada_motivo, nao_realizada_em, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at";
 
 
 export const STATUS_COLETA: Record<ColetaStatus, { label: string; className: string }> = {
   aguardando_cadastro: { label: "Aguardando cadastro", className: "bg-amber-100 text-amber-800" },
   pronto_coleta: { label: "Pronto para coleta", className: "bg-sky-100 text-sky-800" },
-  assumida: { label: "Assumida", className: "bg-violet-100 text-violet-800" },
+  assumida: { label: "Agendada", className: "bg-violet-100 text-violet-800" },
+  em_rota: { label: "Em rota", className: "bg-blue-100 text-blue-800" },
+  no_local: { label: "Chegou ao local", className: "bg-indigo-100 text-indigo-800" },
+  nao_realizada: { label: "Não realizada", className: "bg-destructive/10 text-destructive" },
   concluida: { label: "Concluída", className: "bg-primary/15 text-primary" },
   cancelada: { label: "Cancelada", className: "bg-muted text-muted-foreground" },
 };
@@ -210,6 +219,61 @@ export function mensagemErro(e: unknown, padrao = "Não foi possível concluir a
 
 /* --------------------- exclusão controlada --------------------- */
 
+/** Situações operacionais que o motorista pode registrar em campo. */
+export const STATUS_MOTORISTA: { valor: "em_rota" | "no_local" | "nao_realizada"; label: string }[] = [
+  { valor: "em_rota", label: "Em rota" },
+  { valor: "no_local", label: "Cheguei ao local" },
+  { valor: "nao_realizada", label: "Não realizada" },
+];
+
+export const MOTIVOS_NAO_REALIZADA = [
+  "Cliente ausente",
+  "Endereço não localizado",
+  "Cliente remarcou",
+  "TV não estava pronta",
+  "Acesso negado no condomínio",
+  "Outro",
+];
+
+/** Item da agenda do dia (RPC coletas_agenda). */
+export interface AgendaItem {
+  id: string;
+  tipo: ColetaTipo;
+  status: ColetaStatus;
+  cliente_nome: string;
+  whatsapp: string;
+  bairro: string | null;
+  rua: string | null;
+  numero: string | null;
+  complemento: string | null;
+  condominio: string | null;
+  torre_bloco: string | null;
+  apartamento: string | null;
+  referencia: string | null;
+  cidade: string | null;
+  cep: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  maps_url: string | null;
+  marca_tv: string | null;
+  polegadas: number | null;
+  observacao: string | null;
+  data_agendada: string | null;
+  motorista_id: string | null;
+  motorista: string | null;
+  qtd_bairro: number;
+  ordem_bairro: number;
+  created_at: string;
+}
+
+export interface HistoricoItem {
+  id: string;
+  status: string;
+  motivo: string | null;
+  autor: string | null;
+  created_at: string;
+}
+
 export const MOTIVOS_EXCLUSAO = [
   "Cadastro duplicado",
   "Criado por engano",
@@ -220,6 +284,7 @@ export const MOTIVOS_EXCLUSAO = [
 
 /** Rótulo do status conforme o tipo (entrega usa "Pendente" no lugar de "Pronto para coleta"). */
 export function labelStatus(tipo: ColetaTipo, status: ColetaStatus): string {
+  if (status === "concluida") return tipo === "entrega" ? "Entregue" : "Coletada";
   if (tipo === "entrega") {
     if (status === "pronto_coleta") return "Pendente";
     if (status === "aguardando_cadastro") return "Aguardando cadastro";
