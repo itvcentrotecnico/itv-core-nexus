@@ -65,6 +65,7 @@ function CaixaPage() {
   const podeFechar = can("caixa", "fechar");
   const podeReabrir = can("caixa", "reabrir");
   const podeAdministrar = can("caixa", "administrar");
+  const podeVerFinanceiro = podeAdministrar || can("financeiro", "visualizar");
 
   const lancamentosQuery = useQuery({
     queryKey: ["caixa", "lancamentos", periodo.inicio, periodo.fim],
@@ -268,7 +269,9 @@ function CaixaPage() {
       </div>
 
       {tab === "lancamentos" && (
-        <LancamentosView
+        <div className="space-y-3">
+          <PeriodoPresets periodo={periodo} onChange={setPeriodo} />
+          <LancamentosView
           lancamentos={lancamentos}
           loading={lancamentosQuery.isLoading}
           diaBloqueado={diaBloqueado}
@@ -281,9 +284,10 @@ function CaixaPage() {
             setEditing(l);
             setFormOpen(true);
           }}
-          onCancel={setCancelTarget}
-          onEstornar={setEstornoTarget}
-        />
+            onCancel={setCancelTarget}
+            onEstornar={setEstornoTarget}
+          />
+        </div>
       )}
 
 
