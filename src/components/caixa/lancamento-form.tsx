@@ -237,8 +237,11 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           parcelas: p.parcelas,
           taxa_percentual: p.taxa_percentual || null,
           taxa_valor: p.taxa_valor || null,
+          adquirente: p.adquirente ?? "",
+          canal: p.canal ?? "",
         })),
       );
+
     } else {
       setData(defaultDate);
       setOs("");
