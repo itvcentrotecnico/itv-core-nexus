@@ -22,6 +22,8 @@ export interface FormaPagamento {
   /** false = valor faturado que ainda será recebido (Boleto/Bemol). */
   liquidacao_imediata?: boolean;
   prazo_liquidacao_dias?: number;
+  /** Meio tarifável usado para buscar a taxa da adquirente (pix, debito, credito, saldo). */
+  meio_taxa?: string | null;
 }
 
 /** Taxa configurada pelo ADM por quantidade de parcelas. */
@@ -40,8 +42,22 @@ export interface CaixaPagamento {
   parcelas: number;
   taxa_percentual: number;
   taxa_valor: number;
+  valor_liquido?: number | null;
+  /** Retrato da taxa aplicada no momento do lançamento (nunca recalculado). */
+  adquirente?: string | null;
+  canal?: string | null;
+  meio_pagamento?: string | null;
+  modalidade?: string | null;
+  taxa_regra_id?: string | null;
+  taxa_vigencia_inicio?: string | null;
+  responsavel_taxa?: string | null;
+  taxa_cliente_percentual?: number | null;
+  taxa_cliente_valor?: number | null;
+  taxa_origem?: string | null;
+  taxa_motivo?: string | null;
   forma?: { nome: string; eh_dinheiro: boolean } | null;
 }
+
 
 export type CaixaLancamentoStatus = "ativo" | "cancelado" | "estornado";
 
