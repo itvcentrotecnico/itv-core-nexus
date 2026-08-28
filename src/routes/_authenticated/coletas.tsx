@@ -224,6 +224,8 @@ function ColetasPage() {
 
       {podeExpediente && <ModoExpediente bairroAtual={bairroAtual} />}
 
+      <FeedAtividades itens={todos} ativo={podeTudo} />
+
       {!podeTudo && (
         <div className="grid grid-cols-3 gap-3">
           {[
