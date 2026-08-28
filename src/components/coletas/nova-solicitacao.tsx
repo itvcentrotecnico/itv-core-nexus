@@ -81,6 +81,7 @@ export function NovaSolicitacaoDialog({
     setHoras(72);
     setDuplicados([]);
     setReutilizar(null);
+    setOrigem(ORIGEM_VAZIA);
   }, [aberto]);
 
   // Alerta de duplicidade assim que o telefone estiver completo (sem bloquear).
