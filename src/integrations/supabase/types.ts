@@ -957,6 +957,7 @@ export type Database = {
           assumido_em: string | null
           atribuido_em: string | null
           bairro: string | null
+          canal_contato: string | null
           cancelado_em: string | null
           cancelado_por: string | null
           cep: string | null
@@ -975,6 +976,8 @@ export type Database = {
           deleted_at: string | null
           deleted_by: string | null
           id: string
+          indicado_por_nome: string | null
+          indicado_por_telefone: string | null
           latitude: number | null
           link_expira_em: string | null
           link_gerado_em: string | null
@@ -988,6 +991,11 @@ export type Database = {
           numero: string | null
           observacao: string | null
           observacao_conclusao: string | null
+          origem_detalhe: string | null
+          origem_id: string | null
+          origem_original_id: string | null
+          origem_preenchida_em: string | null
+          origem_preenchida_por: string | null
           polegadas: number | null
           precisao: number | null
           preenchido_em: string | null
@@ -1005,6 +1013,7 @@ export type Database = {
           assumido_em?: string | null
           atribuido_em?: string | null
           bairro?: string | null
+          canal_contato?: string | null
           cancelado_em?: string | null
           cancelado_por?: string | null
           cep?: string | null
@@ -1023,6 +1032,8 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           id?: string
+          indicado_por_nome?: string | null
+          indicado_por_telefone?: string | null
           latitude?: number | null
           link_expira_em?: string | null
           link_gerado_em?: string | null
@@ -1036,6 +1047,11 @@ export type Database = {
           numero?: string | null
           observacao?: string | null
           observacao_conclusao?: string | null
+          origem_detalhe?: string | null
+          origem_id?: string | null
+          origem_original_id?: string | null
+          origem_preenchida_em?: string | null
+          origem_preenchida_por?: string | null
           polegadas?: number | null
           precisao?: number | null
           preenchido_em?: string | null
@@ -1053,6 +1069,7 @@ export type Database = {
           assumido_em?: string | null
           atribuido_em?: string | null
           bairro?: string | null
+          canal_contato?: string | null
           cancelado_em?: string | null
           cancelado_por?: string | null
           cep?: string | null
@@ -1071,6 +1088,8 @@ export type Database = {
           deleted_at?: string | null
           deleted_by?: string | null
           id?: string
+          indicado_por_nome?: string | null
+          indicado_por_telefone?: string | null
           latitude?: number | null
           link_expira_em?: string | null
           link_gerado_em?: string | null
@@ -1084,6 +1103,11 @@ export type Database = {
           numero?: string | null
           observacao?: string | null
           observacao_conclusao?: string | null
+          origem_detalhe?: string | null
+          origem_id?: string | null
+          origem_original_id?: string | null
+          origem_preenchida_em?: string | null
+          origem_preenchida_por?: string | null
           polegadas?: number | null
           precisao?: number | null
           preenchido_em?: string | null
@@ -1137,6 +1161,20 @@ export type Database = {
             columns: ["motorista_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_solicitacoes_origem_id_fkey"
+            columns: ["origem_id"]
+            isOneToOne: false
+            referencedRelation: "origens_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_solicitacoes_origem_original_id_fkey"
+            columns: ["origem_original_id"]
+            isOneToOne: false
+            referencedRelation: "origens_cliente"
             referencedColumns: ["id"]
           },
         ]
@@ -3373,6 +3411,36 @@ export type Database = {
         }
         Relationships: []
       }
+      origens_cliente: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          requer_detalhe: boolean
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          requer_detalhe?: boolean
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          requer_detalhe?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pendencias_operacionais: {
         Row: {
           cliente: string | null
@@ -4717,6 +4785,7 @@ export type Database = {
         }
         Returns: Json
       }
+      caixa_origem_map: { Args: never; Returns: Json }
       caixa_pagamentos_gravar: {
         Args: {
           p_data: string
@@ -4831,9 +4900,14 @@ export type Database = {
       coletas_cpf: { Args: { p_id: string }; Returns: string }
       coletas_criar: {
         Args: {
+          p_canal_contato?: string
           p_horas?: number
+          p_indicado_nome?: string
+          p_indicado_telefone?: string
           p_nome: string
           p_observacao?: string
+          p_origem_detalhe?: string
+          p_origem_id?: string
           p_tipo: string
           p_whatsapp: string
         }
@@ -4858,6 +4932,18 @@ export type Database = {
       }
       coletas_historico_listar: { Args: { p_id: string }; Returns: Json }
       coletas_lixeira: { Args: never; Returns: Json }
+      coletas_origem_definir: {
+        Args: {
+          p_canal?: string
+          p_detalhe?: string
+          p_id: string
+          p_indicado_nome?: string
+          p_indicado_telefone?: string
+          p_motivo?: string
+          p_origem_id: string
+        }
+        Returns: Json
+      }
       coletas_pode: {
         Args: { _action: Database["public"]["Enums"]["permission_action"] }
         Returns: boolean
@@ -5392,6 +5478,7 @@ export type Database = {
       }
       modo_tv_config_salvar: { Args: { p_config: Json }; Returns: Json }
       modo_tv_indicadores: { Args: { p_ref?: string }; Returns: Json }
+      norm_nome_cliente: { Args: { _v: string }; Returns: string }
       normalizar_marca: { Args: { _marca: string }; Returns: string }
       operacional_alertas: { Args: never; Returns: Json }
       operacional_alterar_tecnico: {
@@ -5445,6 +5532,7 @@ export type Database = {
       operacional_relatorio_semana: { Args: { p_ref?: string }; Returns: Json }
       operacional_semana: { Args: { p_ref?: string }; Returns: Json }
       operacional_semana_inicio: { Args: { p_ref: string }; Returns: string }
+      origens_listar: { Args: never; Returns: Json }
       producao_atualizar: {
         Args: {
           p_cliente: string
@@ -5520,6 +5608,7 @@ export type Database = {
         Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
         Returns: undefined
       }
+      rel_origens: { Args: { p_fim: string; p_ini: string }; Returns: Json }
       relatorios_custos_por_os: {
         Args: { p_from: string; p_to: string }
         Returns: {
