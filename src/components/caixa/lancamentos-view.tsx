@@ -141,6 +141,7 @@ export function LancamentosView({
   const [filtros, setFiltros] = useState<CaixaFiltros>(FILTROS_INICIAIS);
   const [ordem, setOrdem] = useState<"recentes" | "antigos" | "maior" | "menor">("recentes");
   const [page, setPage] = useState(1);
+  const [formaAberta, setFormaAberta] = useState<string | null>(null);
   const [maisFiltros, setMaisFiltros] = useState(false);
 
   useEffect(() => {
