@@ -104,6 +104,12 @@ export function DetalheColetaDialog({
     },
   });
 
+  const historicoQuery = useQuery({
+    queryKey: ["coletas", "historico", item?.id],
+    enabled: !!item,
+    queryFn: () => rpcColetas<HistoricoItem[]>("coletas_historico_listar", { p_id: item!.id }),
+  });
+
   async function acao(fn: () => Promise<unknown>, sucesso: string) {
     try {
       await fn();
