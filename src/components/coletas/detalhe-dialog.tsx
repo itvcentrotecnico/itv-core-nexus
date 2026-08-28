@@ -25,10 +25,12 @@ import {
   maskTelefone,
   mensagemErro,
   rpcColetas,
+  STATUS_COLETA,
   telUrl,
   TIPO_LABEL,
   whatsappUrl,
   type ColetaSolicitacao,
+  type HistoricoItem,
 } from "@/lib/coletas";
 import { StatusBadgeColeta, useMotoristas } from "./shared";
 import type { LinkGerado } from "./link-dialog";
@@ -100,6 +102,12 @@ export function DetalheColetaDialog({
       );
       return urls;
     },
+  });
+
+  const historicoQuery = useQuery({
+    queryKey: ["coletas", "historico", item?.id],
+    enabled: !!item,
+    queryFn: () => rpcColetas<HistoricoItem[]>("coletas_historico_listar", { p_id: item!.id }),
   });
 
   async function acao(fn: () => Promise<unknown>, sucesso: string) {
@@ -200,6 +208,32 @@ export function DetalheColetaDialog({
           <Linha rotulo="Cancelada por" valor={item.cancelado_por ? usuarios[item.cancelado_por] : null} />
           <Linha rotulo="Motivo do cancelamento" valor={item.motivo_cancelamento} />
         </section>
+
+        <section>
+          <h3 className="font-display text-sm font-bold text-foreground">Linha do tempo</h3>
+          {historicoQuery.isLoading && <p className="py-2 text-sm text-muted-foreground">Carregando…</p>}
+          {historicoQuery.isError && (
+            <p className="py-2 text-sm text-muted-foreground">Não foi possível carregar a linha do tempo.</p>
+          )}
+          {!historicoQuery.isLoading && !historicoQuery.isError && (historicoQuery.data ?? []).length === 0 && (
+            <p className="py-2 text-sm text-muted-foreground">Nenhuma movimentação registrada ainda.</p>
+          )}
+          <ol className="mt-2 space-y-2">
+            {(historicoQuery.data ?? []).map((h) => (
+              <li key={h.id} className="border-l-2 border-primary/40 pl-3 text-sm">
+                <p className="font-medium text-foreground">
+                  {STATUS_COLETA[h.status as keyof typeof STATUS_COLETA]?.label ?? h.status}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {formatDateTimeITV(h.created_at)}
+                  {h.autor ? ` · ${h.autor}` : ""}
+                </p>
+                {h.motivo && <p className="text-xs text-muted-foreground">Motivo: {h.motivo}</p>}
+              </li>
+            ))}
+          </ol>
+        </section>
+
 
         {(fotosQuery.data ?? []).length > 0 && (
           <section>
