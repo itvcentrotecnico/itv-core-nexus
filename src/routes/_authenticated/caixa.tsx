@@ -13,6 +13,8 @@ import {
   type LancamentoComEntrega,
 } from "@/components/caixa/lancamentos-view";
 import { CaixaFisicoSection, useCaixaFisico } from "@/components/caixa/caixa-fisico";
+import { ResumoDesempenho } from "@/components/caixa/resumo-desempenho";
+import { PeriodoPresets } from "@/components/caixa/periodo-presets";
 import { DescontosSection } from "@/components/caixa/descontos";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
@@ -63,6 +65,7 @@ function CaixaPage() {
   const podeFechar = can("caixa", "fechar");
   const podeReabrir = can("caixa", "reabrir");
   const podeAdministrar = can("caixa", "administrar");
+  const podeVerFinanceiro = podeAdministrar || can("financeiro", "visualizar");
 
   const lancamentosQuery = useQuery({
     queryKey: ["caixa", "lancamentos", periodo.inicio, periodo.fim],
@@ -219,6 +222,9 @@ function CaixaPage() {
         </div>
       </div>
 
+      {/* Resumo de faturamento — cards fixos (Hoje / Semana / Mês), independentes dos filtros */}
+      <ResumoDesempenho dataRef={date} podeVerFinanceiro={podeVerFinanceiro} />
+
       {/* Banner de fechamento */}
       {diaFechado && fechamentoAtual && (
         <div className="rounded-xl border border-border bg-card p-4 text-sm">
@@ -263,7 +269,9 @@ function CaixaPage() {
       </div>
 
       {tab === "lancamentos" && (
-        <LancamentosView
+        <div className="space-y-3">
+          <PeriodoPresets periodo={periodo} onChange={setPeriodo} />
+          <LancamentosView
           lancamentos={lancamentos}
           loading={lancamentosQuery.isLoading}
           diaBloqueado={diaBloqueado}
@@ -276,9 +284,10 @@ function CaixaPage() {
             setEditing(l);
             setFormOpen(true);
           }}
-          onCancel={setCancelTarget}
-          onEstornar={setEstornoTarget}
-        />
+            onCancel={setCancelTarget}
+            onEstornar={setEstornoTarget}
+          />
+        </div>
       )}
 
 

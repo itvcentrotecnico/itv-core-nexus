@@ -141,6 +141,7 @@ export function LancamentosView({
   const [filtros, setFiltros] = useState<CaixaFiltros>(FILTROS_INICIAIS);
   const [ordem, setOrdem] = useState<"recentes" | "antigos" | "maior" | "menor">("recentes");
   const [page, setPage] = useState(1);
+  const [formaAberta, setFormaAberta] = useState<string | null>(null);
   const [maisFiltros, setMaisFiltros] = useState(false);
 
   useEffect(() => {
@@ -240,6 +241,8 @@ export function LancamentosView({
     const estornados = filtrados.filter((l) => l.status === "estornado");
 
     const formas = new Map<string, number>();
+    // Detalhamento por parcelas dentro de cada forma (ex.: Crédito 1x..6x).
+    const formasDet = new Map<string, Map<number, number>>();
     for (const l of ativos) {
       for (const p of l.pagamentos ?? []) {
         const nome = p.forma?.nome ?? "Outros";
@@ -247,8 +250,13 @@ export function LancamentosView({
         const filtroForma = filtros.forma;
         if (filtroForma && nome !== filtroForma) continue;
         formas.set(nome, round2((formas.get(nome) ?? 0) + p.valor));
+        const det = formasDet.get(nome) ?? new Map<number, number>();
+        const parc = Math.max(1, Number(p.parcelas ?? 1));
+        det.set(parc, round2((det.get(parc) ?? 0) + p.valor));
+        formasDet.set(nome, det);
       }
     }
+    const totalFormas = round2([...formas.values()].reduce((a, v) => a + v, 0));
 
     const ents = ativos.flatMap((l) => entregasAtivas(l));
     return {
@@ -264,7 +272,14 @@ export function LancamentosView({
       estornadosQtd: estornados.length,
       estornadosValor: round2(estornados.reduce((a, l) => a + l.valor_final, 0)),
       formas: [...formas.entries()]
-        .map(([forma, total]) => ({ forma, total }))
+        .map(([forma, total]) => ({
+          forma,
+          total,
+          percentual: totalFormas > 0 ? round2((total / totalFormas) * 100) : 0,
+          parcelas: [...(formasDet.get(forma) ?? new Map<number, number>()).entries()]
+            .map(([parc, valor]) => ({ parcelas: parc, valor }))
+            .sort((a, b) => a.parcelas - b.parcelas),
+        }))
         .sort((a, b) => b.total - a.total),
       entregaQtd: ents.length,
       entregaValor: round2(ents.reduce((a, e) => a + Number(e.valor ?? 0), 0)),
@@ -358,14 +373,46 @@ export function LancamentosView({
           {resumo.formas.length === 0 ? (
             <p className="col-span-full text-xs text-muted-foreground">Sem entradas no filtro atual.</p>
           ) : (
-            resumo.formas.map((f) => (
-              <div key={f.forma} className="rounded-lg border border-border bg-background px-3 py-2">
-                <p className="truncate text-[11px] font-medium text-muted-foreground">{f.forma}</p>
-                <p className="font-display text-sm font-bold text-foreground">
-                  {formatCurrencyBRL(f.total)}
-                </p>
-              </div>
-            ))
+            resumo.formas.map((f) => {
+              const temDetalhe = f.parcelas.length > 1 || (f.parcelas[0]?.parcelas ?? 1) > 1;
+              const aberto = formaAberta === f.forma;
+              return (
+                <div key={f.forma} className="rounded-lg border border-border bg-background px-3 py-2">
+                  <p className="truncate text-[11px] font-medium text-muted-foreground">{f.forma}</p>
+                  <p className="font-display text-sm font-bold text-foreground">
+                    {formatCurrencyBRL(f.total)}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {f.percentual.toFixed(1).replace(".", ",")}% do total
+                  </p>
+                  {temDetalhe && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setFormaAberta(aberto ? null : f.forma)}
+                        aria-expanded={aberto}
+                        className="mt-1 text-[10px] font-medium text-primary hover:underline"
+                      >
+                        {aberto ? "Ocultar parcelas" : "Ver parcelas"}
+                      </button>
+                      {aberto && (
+                        <ul className="mt-1 space-y-0.5">
+                          {f.parcelas.map((p) => (
+                            <li
+                              key={p.parcelas}
+                              className="flex justify-between gap-2 text-[10px] text-muted-foreground"
+                            >
+                              <span>{p.parcelas}x</span>
+                              <strong className="text-foreground">{formatCurrencyBRL(p.valor)}</strong>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
 
