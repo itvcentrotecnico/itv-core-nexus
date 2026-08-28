@@ -53,6 +53,7 @@ export interface CaixaFiltros {
   entrega: string;
   os: string;
   cliente: string;
+  origem: string;
 }
 
 export const FILTROS_INICIAIS: CaixaFiltros = {
@@ -65,6 +66,7 @@ export const FILTROS_INICIAIS: CaixaFiltros = {
   entrega: "todos",
   os: "",
   cliente: "",
+  origem: "",
 };
 
 function nomeEntregador(e: CaixaEntregaResumo): string {
@@ -158,6 +160,7 @@ export function LancamentosView({
   const [page, setPage] = useState(1);
   const [formaAberta, setFormaAberta] = useState<string | null>(null);
   const [maisFiltros, setMaisFiltros] = useState(false);
+  const origemMap = useOrigemMapCaixa();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -209,6 +212,11 @@ export function LancamentosView({
       }
       if (os && !(l.os ?? "").toLowerCase().includes(os)) return false;
       if (cliente && !(l.cliente ?? "").toLowerCase().includes(cliente)) return false;
+      if (filtros.origem) {
+        const chave = normNomeCliente(l.cliente);
+        const orig = (chave && origemMap.get(chave)) || "Não informado";
+        if (orig !== filtros.origem) return false;
+      }
       if (filtros.tipoReceita && l.tipo?.nome !== filtros.tipoReceita) return false;
       if (filtros.tecnico && l.tecnico?.full_name !== filtros.tecnico) return false;
       if (filtros.responsavel && l.responsavel?.full_name !== filtros.responsavel) return false;
@@ -242,7 +250,7 @@ export function LancamentosView({
       menor: (a, b) => a.valor_final - b.valor_final,
     };
     return [...lista].sort(cmp[ordem]);
-  }, [lancamentos, filtros, ordem]);
+  }, [lancamentos, filtros, ordem, origemMap]);
 
   /* Resumo financeiro — sobre TODOS os registros filtrados, não só a página */
   const resumo = useMemo(() => {
@@ -563,6 +571,12 @@ export function LancamentosView({
                 className={cn(inputClass, "mt-1")}
               />
             </label>
+            <SelectFiltro
+              label="Origem do cliente"
+              value={filtros.origem}
+              onChange={(v) => set("origem", v)}
+              options={opcoesOrigem}
+            />
             <SelectFiltro
               label="Tipo de receita"
               value={filtros.tipoReceita}
