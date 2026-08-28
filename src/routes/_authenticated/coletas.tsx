@@ -27,6 +27,7 @@ import { ConcluirDialog } from "@/components/coletas/concluir-dialog";
 import { CriarEntregaDialog } from "@/components/coletas/criar-entrega-dialog";
 import { DetalheColetaDialog } from "@/components/coletas/detalhe-dialog";
 import { EquipeExternaPainel } from "@/components/coletas/equipe-externa";
+import { FeedAtividades } from "@/components/coletas/feed-atividades";
 import { ExcluirDialog } from "@/components/coletas/excluir-dialog";
 import { ModoExpediente } from "@/components/coletas/expediente";
 import { LinkDialog, type LinkGerado } from "@/components/coletas/link-dialog";
