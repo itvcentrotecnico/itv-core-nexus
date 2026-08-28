@@ -17,7 +17,8 @@ export type ComissaoStatus =
   | "aprovada"
   | "paga"
   | "cancelada"
-  | "pendente_configuracao";
+  | "pendente_configuracao"
+  | "devolvida";
 
 export type ComissaoAjusteTipo = "bonus" | "acrescimo" | "desconto" | "correcao" | "compensacao";
 
@@ -152,6 +153,7 @@ export const STATUS_COMISSAO: Record<ComissaoStatus, { label: string; className:
   paga: { label: "Paga", className: "bg-primary/10 text-primary border-primary/20" },
   cancelada: { label: "Cancelada", className: "bg-red-100 text-red-800 border-red-200" },
   pendente_configuracao: { label: "Pend. Configuração", className: "bg-orange-100 text-orange-800 border-orange-200" },
+  devolvida: { label: "Devolvida ao Operacional", className: "bg-purple-100 text-purple-800 border-purple-200" },
 };
 
 export const AJUSTE_TIPO: Record<ComissaoAjusteTipo, string> = {

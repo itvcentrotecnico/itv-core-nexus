@@ -1295,12 +1295,17 @@ export type Database = {
           created_by: string | null
           custos_diretos: number
           data_referencia: string
+          devolvida_em: string | null
+          devolvida_por: string | null
           id: string
+          liberada_em: string | null
+          liberada_por: string | null
           mao_obra_em: string | null
           mao_obra_justificativa: string | null
           mao_obra_manual: number | null
           mao_obra_por: string | null
           motivo_cancelamento: string | null
+          motivo_devolucao: string | null
           observacao: string | null
           os: string
           percentual: number | null
@@ -1329,12 +1334,17 @@ export type Database = {
           created_by?: string | null
           custos_diretos?: number
           data_referencia: string
+          devolvida_em?: string | null
+          devolvida_por?: string | null
           id?: string
+          liberada_em?: string | null
+          liberada_por?: string | null
           mao_obra_em?: string | null
           mao_obra_justificativa?: string | null
           mao_obra_manual?: number | null
           mao_obra_por?: string | null
           motivo_cancelamento?: string | null
+          motivo_devolucao?: string | null
           observacao?: string | null
           os: string
           percentual?: number | null
@@ -1363,12 +1373,17 @@ export type Database = {
           created_by?: string | null
           custos_diretos?: number
           data_referencia?: string
+          devolvida_em?: string | null
+          devolvida_por?: string | null
           id?: string
+          liberada_em?: string | null
+          liberada_por?: string | null
           mao_obra_em?: string | null
           mao_obra_justificativa?: string | null
           mao_obra_manual?: number | null
           mao_obra_por?: string | null
           motivo_cancelamento?: string | null
+          motivo_devolucao?: string | null
           observacao?: string | null
           os?: string
           percentual?: number | null
@@ -1415,6 +1430,20 @@ export type Database = {
           {
             foreignKeyName: "comissoes_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_devolvida_por_fkey"
+            columns: ["devolvida_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_liberada_por_fkey"
+            columns: ["liberada_por"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -2407,6 +2436,100 @@ export type Database = {
           },
         ]
       }
+      fechamentos_operacionais_semanais: {
+        Row: {
+          ano: number
+          created_at: string
+          entradas: number
+          entradas_em: string | null
+          entradas_fonte: string
+          entradas_por: string | null
+          entregas: number
+          fechado_em: string | null
+          fechado_por: string | null
+          fim_periodo: string
+          id: string
+          inicio_periodo: string
+          motivo_reabertura: string | null
+          reaberto_em: string | null
+          reaberto_por: string | null
+          saldo: number
+          semana: number
+          snapshot: Json | null
+          status: string
+          taxa_saida: number | null
+          updated_at: string
+        }
+        Insert: {
+          ano: number
+          created_at?: string
+          entradas?: number
+          entradas_em?: string | null
+          entradas_fonte?: string
+          entradas_por?: string | null
+          entregas?: number
+          fechado_em?: string | null
+          fechado_por?: string | null
+          fim_periodo: string
+          id?: string
+          inicio_periodo: string
+          motivo_reabertura?: string | null
+          reaberto_em?: string | null
+          reaberto_por?: string | null
+          saldo?: number
+          semana: number
+          snapshot?: Json | null
+          status?: string
+          taxa_saida?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          entradas?: number
+          entradas_em?: string | null
+          entradas_fonte?: string
+          entradas_por?: string | null
+          entregas?: number
+          fechado_em?: string | null
+          fechado_por?: string | null
+          fim_periodo?: string
+          id?: string
+          inicio_periodo?: string
+          motivo_reabertura?: string | null
+          reaberto_em?: string | null
+          reaberto_por?: string | null
+          saldo?: number
+          semana?: number
+          snapshot?: Json | null
+          status?: string
+          taxa_saida?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fechamentos_operacionais_semanais_entradas_por_fkey"
+            columns: ["entradas_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fechamentos_operacionais_semanais_fechado_por_fkey"
+            columns: ["fechado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fechamentos_operacionais_semanais_reaberto_por_fkey"
+            columns: ["reaberto_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       folha_colaboradores: {
         Row: {
           colaborador_id: string
@@ -3056,6 +3179,33 @@ export type Database = {
         }
         Relationships: []
       }
+      motivos_pendencia: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       motorista_expedientes: {
         Row: {
           created_at: string
@@ -3171,6 +3321,137 @@ export type Database = {
           percentual_minimo?: number
         }
         Relationships: []
+      }
+      pendencias_operacionais: {
+        Row: {
+          cliente: string | null
+          created_at: string
+          created_by: string | null
+          data_entrada: string
+          fechamento_id: string | null
+          id: string
+          marca: string | null
+          modelo: string | null
+          motivo_id: string
+          observacao: string | null
+          os: string
+          polegadas: number | null
+          status: string
+          tecnico_id: string | null
+          ultima_movimentacao: string
+          updated_at: string
+        }
+        Insert: {
+          cliente?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_entrada?: string
+          fechamento_id?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_id: string
+          observacao?: string | null
+          os: string
+          polegadas?: number | null
+          status?: string
+          tecnico_id?: string | null
+          ultima_movimentacao?: string
+          updated_at?: string
+        }
+        Update: {
+          cliente?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_entrada?: string
+          fechamento_id?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_id?: string
+          observacao?: string | null
+          os?: string
+          polegadas?: number | null
+          status?: string
+          tecnico_id?: string | null
+          ultima_movimentacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pendencias_operacionais_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pendencias_operacionais_fechamento_id_fkey"
+            columns: ["fechamento_id"]
+            isOneToOne: false
+            referencedRelation: "fechamentos_operacionais_semanais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pendencias_operacionais_motivo_id_fkey"
+            columns: ["motivo_id"]
+            isOneToOne: false
+            referencedRelation: "motivos_pendencia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pendencias_operacionais_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pendencias_operacionais_historico: {
+        Row: {
+          created_at: string
+          id: string
+          motivo_anterior: string | null
+          motivo_novo: string
+          observacao: string | null
+          pendencia_id: string
+          usuario_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo_anterior?: string | null
+          motivo_novo: string
+          observacao?: string | null
+          pendencia_id: string
+          usuario_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo_anterior?: string | null
+          motivo_novo?: string
+          observacao?: string | null
+          pendencia_id?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pendencias_operacionais_historico_pendencia_id_fkey"
+            columns: ["pendencia_id"]
+            isOneToOne: false
+            referencedRelation: "pendencias_operacionais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pendencias_operacionais_historico_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       producao_fotos: {
         Row: {
@@ -3311,6 +3592,65 @@ export type Database = {
           {
             foreignKeyName: "producao_tecnica_validado_por_fkey"
             columns: ["validado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producao_tecnico_alteracoes: {
+        Row: {
+          created_at: string
+          id: string
+          motivo: string
+          producao_id: string
+          tecnico_anterior: string | null
+          tecnico_novo: string | null
+          usuario_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo: string
+          producao_id: string
+          tecnico_anterior?: string | null
+          tecnico_novo?: string | null
+          usuario_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo?: string
+          producao_id?: string
+          tecnico_anterior?: string | null
+          tecnico_novo?: string | null
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producao_tecnico_alteracoes_producao_id_fkey"
+            columns: ["producao_id"]
+            isOneToOne: false
+            referencedRelation: "producao_tecnica"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_tecnico_alteracoes_tecnico_anterior_fkey"
+            columns: ["tecnico_anterior"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_tecnico_alteracoes_tecnico_novo_fkey"
+            columns: ["tecnico_novo"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producao_tecnico_alteracoes_usuario_id_fkey"
+            columns: ["usuario_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -4539,6 +4879,10 @@ export type Database = {
         Args: { p_id: string; p_justificativa: string; p_valor: number }
         Returns: Json
       }
+      comissoes_devolver: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
       comissoes_gerar: { Args: { p_from: string; p_to: string }; Returns: Json }
       comissoes_indicadores: {
         Args: { p_from: string; p_to: string }
@@ -4985,6 +5329,58 @@ export type Database = {
       modo_tv_config_salvar: { Args: { p_config: Json }; Returns: Json }
       modo_tv_indicadores: { Args: { p_ref?: string }; Returns: Json }
       normalizar_marca: { Args: { _marca: string }; Returns: string }
+      operacional_alertas: { Args: never; Returns: Json }
+      operacional_alterar_tecnico: {
+        Args: { p_motivo: string; p_producao_id: string; p_tecnico_id: string }
+        Returns: Json
+      }
+      operacional_comissoes_liberar: {
+        Args: { p_ids: string[] }
+        Returns: Json
+      }
+      operacional_dashboard: { Args: never; Returns: Json }
+      operacional_entradas_registrar: {
+        Args: { p_fonte?: string; p_quantidade: number; p_ref: string }
+        Returns: Json
+      }
+      operacional_entregas_periodo: {
+        Args: { p_fim: string; p_ini: string }
+        Returns: number
+      }
+      operacional_fechar_semana: { Args: { p_ref?: string }; Returns: Json }
+      operacional_historico: { Args: { p_semanas?: number }; Returns: Json }
+      operacional_pendencia_remover: { Args: { p_id: string }; Returns: Json }
+      operacional_pendencia_salvar: {
+        Args: {
+          p_cliente?: string
+          p_data_entrada?: string
+          p_id?: string
+          p_marca?: string
+          p_modelo?: string
+          p_motivo_id: string
+          p_observacao?: string
+          p_os: string
+          p_polegadas?: number
+          p_ref: string
+          p_tecnico_id?: string
+        }
+        Returns: Json
+      }
+      operacional_pode: {
+        Args: { _action: Database["public"]["Enums"]["permission_action"] }
+        Returns: boolean
+      }
+      operacional_por_tecnico: {
+        Args: { p_fim: string; p_ini: string }
+        Returns: Json
+      }
+      operacional_reabrir_semana: {
+        Args: { p_motivo: string; p_ref: string }
+        Returns: Json
+      }
+      operacional_relatorio_semana: { Args: { p_ref?: string }; Returns: Json }
+      operacional_semana: { Args: { p_ref?: string }; Returns: Json }
+      operacional_semana_inicio: { Args: { p_ref: string }; Returns: string }
       producao_atualizar: {
         Args: {
           p_cliente: string
@@ -5165,6 +5561,7 @@ export type Database = {
         | "paga"
         | "cancelada"
         | "pendente_configuracao"
+        | "devolvida"
       comissao_tipo_regra:
         | "percentual_mao_obra"
         | "percentual_receita"
@@ -5408,6 +5805,7 @@ export const Constants = {
         "paga",
         "cancelada",
         "pendente_configuracao",
+        "devolvida",
       ],
       comissao_tipo_regra: [
         "percentual_mao_obra",

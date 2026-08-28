@@ -5,6 +5,7 @@ import {
   Package,
   Bike,
   Percent,
+  Radar,
   Settings,
   ShieldCheck,
   Target,
@@ -33,6 +34,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { moduleKey: "dashboard", label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+      { moduleKey: "operacional", label: "Central Operacional", to: "/operacional", icon: Radar },
       { moduleKey: "caixa", label: "Caixa Diário", to: "/caixa", icon: Wallet },
       { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "comissoes", label: "Comissões", to: "/comissoes", icon: Percent },
@@ -62,6 +64,7 @@ export const NAV_SECTIONS: NavSection[] = [
  */
 export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
   { prefix: "/admin", moduleKey: "admin" },
+  { prefix: "/operacional", moduleKey: "operacional" },
   { prefix: "/caixa", moduleKey: "caixa" },
   { prefix: "/pecas", moduleKey: "pecas" },
   { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
