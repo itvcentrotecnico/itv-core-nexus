@@ -676,8 +676,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                         const parcelas = forma?.permite_parcelamento
                           ? Math.min(r.parcelas, forma.max_parcelas ?? 1)
                           : 1;
-                        updateRow(r.key, { forma_pagamento_id: v, parcelas });
+                        const origens = origensDoMeio(taxas, forma?.meio_taxa, data);
+                        const origem = origens[0];
+                        updateRow(r.key, {
+                          forma_pagamento_id: v,
+                          parcelas,
+                          adquirente: origem?.adquirente ?? "",
+                          canal: origem?.canal ?? "",
+                        });
                       }}
+
                     >
                       <SelectTrigger className="w-full" aria-label={`Forma de pagamento ${i + 1}`}>
                         <SelectValue placeholder="Selecione…" />
