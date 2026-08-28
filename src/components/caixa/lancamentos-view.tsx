@@ -240,6 +240,8 @@ export function LancamentosView({
     const estornados = filtrados.filter((l) => l.status === "estornado");
 
     const formas = new Map<string, number>();
+    // Detalhamento por parcelas dentro de cada forma (ex.: Crédito 1x..6x).
+    const formasDet = new Map<string, Map<number, number>>();
     for (const l of ativos) {
       for (const p of l.pagamentos ?? []) {
         const nome = p.forma?.nome ?? "Outros";
@@ -247,8 +249,13 @@ export function LancamentosView({
         const filtroForma = filtros.forma;
         if (filtroForma && nome !== filtroForma) continue;
         formas.set(nome, round2((formas.get(nome) ?? 0) + p.valor));
+        const det = formasDet.get(nome) ?? new Map<number, number>();
+        const parc = Math.max(1, Number(p.parcelas ?? 1));
+        det.set(parc, round2((det.get(parc) ?? 0) + p.valor));
+        formasDet.set(nome, det);
       }
     }
+    const totalFormas = round2([...formas.values()].reduce((a, v) => a + v, 0));
 
     const ents = ativos.flatMap((l) => entregasAtivas(l));
     return {
