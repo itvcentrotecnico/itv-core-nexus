@@ -375,7 +375,14 @@ export function LancamentosView({
             </span>
             <span>
               Taxas <strong className="text-foreground">{formatCurrencyBRL(resumo.taxas)}</strong>
+              {resumo.entradas > 0 && (
+                <span className="ml-1">
+                  ({((resumo.taxas / resumo.entradas) * 100).toFixed(2).replace(".", ",")}% de custo de
+                  recebimento)
+                </span>
+              )}
             </span>
+
             <span>
               Receita líquida{" "}
               <strong className="text-primary">{formatCurrencyBRL(resumo.liquida)}</strong>
@@ -892,6 +899,8 @@ function BlocoCard({
           <Detalhe termo="Valor bruto" valor={formatCurrencyBRL(l.valor_bruto)} />
           <Detalhe termo="Desconto" valor={formatCurrencyBRL(l.desconto)} />
           <Detalhe termo="Taxas" valor={formatCurrencyBRL(l.taxas_total)} />
+          {taxasDetalhe(l) && <Detalhe termo="Taxa de recebimento" valor={taxasDetalhe(l)} />}
+
           <Detalhe termo="Receita líquida" valor={formatCurrencyBRL(l.receita_liquida)} />
           {l.descricao && <Detalhe termo="Descrição" valor={l.descricao} />}
           {l.motivo_cancelamento && <Detalhe termo="Motivo" valor={l.motivo_cancelamento} />}
