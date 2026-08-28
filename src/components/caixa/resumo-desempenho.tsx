@@ -108,10 +108,10 @@ function CardSkeleton() {
 }
 
 export function ResumoDesempenho({
-  ref: refDate,
+  dataRef: refDate,
   podeVerFinanceiro,
 }: {
-  ref: string;
+  dataRef: string;
   podeVerFinanceiro: boolean;
 }) {
   const [meses, setMeses] = useState(6);
@@ -350,7 +350,7 @@ export function ResumoDesempenho({
         <div className="mt-3 h-56 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={evolucao} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} />
               <YAxis
                 tickFormatter={(v: number) => `${Math.round(v / 1000)}k`}
@@ -364,12 +364,12 @@ export function ResumoDesempenho({
                 labelFormatter={(l: string) => `Mês ${l}`}
                 contentStyle={{
                   borderRadius: 8,
-                  border: "1px solid hsl(var(--border))",
-                  background: "hsl(var(--card))",
+                  border: "1px solid var(--border)",
+                  background: "var(--card)",
                   fontSize: 12,
                 }}
               />
-              <Bar dataKey="faturamento" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="faturamento" fill="var(--primary)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
