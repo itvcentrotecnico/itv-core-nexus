@@ -25,10 +25,12 @@ import {
   maskTelefone,
   mensagemErro,
   rpcColetas,
+  STATUS_COLETA,
   telUrl,
   TIPO_LABEL,
   whatsappUrl,
   type ColetaSolicitacao,
+  type HistoricoItem,
 } from "@/lib/coletas";
 import { StatusBadgeColeta, useMotoristas } from "./shared";
 import type { LinkGerado } from "./link-dialog";
