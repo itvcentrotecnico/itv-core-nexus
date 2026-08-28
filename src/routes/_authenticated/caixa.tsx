@@ -13,6 +13,8 @@ import {
   type LancamentoComEntrega,
 } from "@/components/caixa/lancamentos-view";
 import { CaixaFisicoSection, useCaixaFisico } from "@/components/caixa/caixa-fisico";
+import { ResumoDesempenho } from "@/components/caixa/resumo-desempenho";
+import { PeriodoPresets } from "@/components/caixa/periodo-presets";
 import { DescontosSection } from "@/components/caixa/descontos";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
