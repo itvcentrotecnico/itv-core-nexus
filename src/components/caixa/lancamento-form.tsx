@@ -428,9 +428,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           forma_pagamento_id: r.forma_pagamento_id,
           valor: round2(r.valor ?? 0),
           parcelas: Math.max(1, r.parcelas || 1),
-          taxa_percentual: 0,
-          taxa_valor: 0,
+          // A taxa oficial é calculada no banco a partir da tabela vigente.
+          ...(r.adquirente ? { adquirente: r.adquirente, canal: r.canal } : {}),
         })) as unknown as Json,
+
       p_confirmar_duplicidade: confirmarDuplicidade,
       ...(os.trim() ? { p_os: os.trim() } : {}),
       ...(cliente.trim() ? { p_cliente: cliente.trim() } : {}),
