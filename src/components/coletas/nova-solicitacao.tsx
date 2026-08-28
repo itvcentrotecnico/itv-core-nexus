@@ -23,6 +23,8 @@ import {
   TIPO_LABEL,
   type ColetaTipo,
 } from "@/lib/coletas";
+import { OrigemPicker } from "./origem-picker";
+import { ORIGEM_VAZIA, useOrigens, validarOrigem, type OrigemValor } from "@/lib/origens";
 import type { LinkGerado } from "./link-dialog";
 
 interface Duplicado {
