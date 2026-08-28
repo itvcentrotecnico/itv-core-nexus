@@ -57,11 +57,17 @@ export interface ColetaSolicitacao {
   cancelado_em: string | null;
   created_at: string;
   updated_at: string;
+  origem_id: string | null;
+  origem_detalhe: string | null;
+  origem_original_id: string | null;
+  indicado_por_nome: string | null;
+  canal_contato: string | null;
+  origem_preenchida_em: string | null;
 }
 
 /** Colunas liberadas para leitura direta (o CPF só sai por RPC com permissão). */
 export const COLETA_COLUNAS =
-  "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, data_agendada, nao_realizada_motivo, nao_realizada_em, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at";
+  "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, data_agendada, nao_realizada_motivo, nao_realizada_em, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at, origem_id, origem_detalhe, origem_original_id, indicado_por_nome, canal_contato, origem_preenchida_em";
 
 
 export const STATUS_COLETA: Record<ColetaStatus, { label: string; className: string }> = {
