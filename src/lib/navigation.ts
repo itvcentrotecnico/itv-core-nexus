@@ -5,6 +5,7 @@ import {
   Package,
   Bike,
   Percent,
+  Radar,
   Settings,
   ShieldCheck,
   Target,
@@ -63,6 +64,7 @@ export const NAV_SECTIONS: NavSection[] = [
  */
 export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
   { prefix: "/admin", moduleKey: "admin" },
+  { prefix: "/operacional", moduleKey: "operacional" },
   { prefix: "/caixa", moduleKey: "caixa" },
   { prefix: "/pecas", moduleKey: "pecas" },
   { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
