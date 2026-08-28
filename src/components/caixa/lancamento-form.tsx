@@ -360,6 +360,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     if (somaPagamentos !== valorFinal) {
       return `A soma dos pagamentos (${formatCurrencyBRL(somaPagamentos)}) não corresponde ao valor final (${formatCurrencyBRL(valorFinal)}). Diferença: ${formatCurrencyBRL(diferenca)}.`;
     }
+    const formasAtuais = formasQuery.data ?? [];
+    for (const r of validas) {
+      const forma = formasAtuais.find((f) => f.id === r.forma_pagamento_id);
+      if (forma?.meio_taxa && !r.adquirente) {
+        return `Informe a origem do recebimento (maquininha ou link) para o pagamento em ${forma.nome}.`;
+      }
+      const t = taxasLinhas.get(r.key);
+      if (t && !t.ok) return t.message ?? "Taxa de recebimento ainda não configurada.";
+    }
+
     if (comissaoEntrega.ativa) {
       if (!comissaoEntrega.entregadorId) return "Selecione o entregador da comissão de entrega.";
       if (
