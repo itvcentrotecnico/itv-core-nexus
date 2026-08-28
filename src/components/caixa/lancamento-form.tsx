@@ -289,9 +289,55 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   );
   const diferenca = useMemo(() => round2(valorFinal - somaPagamentos), [valorFinal, somaPagamentos]);
 
+  /**
+   * Pré-visualização da taxa por pagamento (o valor oficial é calculado no banco).
+   * VALOR DA VENDA − TAXA DE RECEBIMENTO = VALOR LÍQUIDO.
+   */
+  const taxasLinhas = useMemo(() => {
+    const formas = formasQuery.data ?? [];
+    const mapa = new Map<
+      number,
+      { ok: boolean; message?: string; percentual: number; taxa: number; liquido: number; percentualCliente: number; juros: number }
+    >();
+    for (const r of rows) {
+      const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+      const meio = forma?.meio_taxa ?? null;
+      const valor = r.valor ?? 0;
+      if (!forma || !meio || !r.adquirente) {
+        mapa.set(r.key, { ok: true, percentual: 0, taxa: 0, liquido: round2(valor), percentualCliente: 0, juros: 0 });
+        continue;
+      }
+      const res = resolverTaxa(taxas, {
+        adquirente: r.adquirente,
+        canal: r.canal,
+        meio,
+        parcelas: r.parcelas,
+        data,
+      });
+      const taxa = valorTaxa(valor, res.percentualItv);
+      mapa.set(r.key, {
+        ok: res.ok,
+        ...(res.message ? { message: res.message } : {}),
+        percentual: res.percentualItv,
+        taxa,
+        liquido: round2(valor - taxa),
+        percentualCliente: res.percentualCliente,
+        juros: valorTaxa(valor, res.percentualCliente),
+      });
+    }
+    return mapa;
+  }, [rows, taxas, data, formasQuery.data]);
+
+  const taxaTotal = useMemo(
+    () => round2([...taxasLinhas.values()].reduce((a, t) => a + t.taxa, 0)),
+    [taxasLinhas],
+  );
+  const liquidoTotal = useMemo(() => round2(somaPagamentos - taxaTotal), [somaPagamentos, taxaTotal]);
+
   function updateRow(key: number, patch: Partial<PagRow>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)));
   }
+
 
 
   function addRow() {
