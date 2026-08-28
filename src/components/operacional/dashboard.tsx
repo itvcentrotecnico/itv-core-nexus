@@ -180,6 +180,8 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
         )}
       </Bloco>
 
+      <ColetasBloco />
+
       <Bloco titulo="Estoque operacional">
         {(d.estoque ?? []).length === 0 ? (
           <p className="text-sm text-muted-foreground">Nenhuma TV pendente classificada.</p>
