@@ -66,6 +66,8 @@ export function NovaSolicitacaoDialog({
   const [whatsapp, setWhatsapp] = useState("");
   const [observacao, setObservacao] = useState("");
   const [horas, setHoras] = useState(72);
+  const [origem, setOrigem] = useState<OrigemValor>(ORIGEM_VAZIA);
+  const { data: origens } = useOrigens();
   const [duplicados, setDuplicados] = useState<Duplicado[]>([]);
   const [reutilizar, setReutilizar] = useState<Duplicado | null>(null);
   const [salvando, setSalvando] = useState(false);
