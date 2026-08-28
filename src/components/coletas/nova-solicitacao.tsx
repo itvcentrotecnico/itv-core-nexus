@@ -239,6 +239,8 @@ export function NovaSolicitacaoDialog({
             </div>
           )}
 
+          <OrigemPicker valor={origem} onChange={setOrigem} mostrarCanal compacto />
+
           <div>
             <label className={labelClass} htmlFor="coleta-obs">Observação (opcional)</label>
             <Textarea id="coleta-obs" rows={2} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
