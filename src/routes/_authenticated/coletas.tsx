@@ -395,12 +395,12 @@ function ColetasPage() {
           )}
         </TabsContent>
 
-        {podeRelatorios && (
-          <TabsContent value="agenda" className="pt-4">
+        <TabsContent value="agenda" className="pt-4">
           <AgendaMotorista />
         </TabsContent>
 
-        <TabsContent value="relatorio" className="pt-4">
+        {podeRelatorios && (
+          <TabsContent value="relatorio" className="pt-4">
             <RelatorioColetas />
           </TabsContent>
         )}
