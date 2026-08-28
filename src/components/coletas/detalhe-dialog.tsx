@@ -32,6 +32,7 @@ import {
   type ColetaSolicitacao,
   type HistoricoItem,
 } from "@/lib/coletas";
+import { OrigemBloco } from "./origem-bloco";
 import { StatusBadgeColeta, useMotoristas } from "./shared";
 import type { LinkGerado } from "./link-dialog";
 
@@ -173,6 +174,8 @@ export function DetalheColetaDialog({
             </div>
           )}
         </section>
+
+        <OrigemBloco item={item} podeEditar={permissoes.editar} />
 
         <section>
           <h3 className="font-display text-sm font-bold text-foreground">Endereço</h3>
