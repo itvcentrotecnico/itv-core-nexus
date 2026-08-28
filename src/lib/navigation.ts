@@ -33,6 +33,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { moduleKey: "dashboard", label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+      { moduleKey: "operacional", label: "Central Operacional", to: "/operacional", icon: Radar },
       { moduleKey: "caixa", label: "Caixa Diário", to: "/caixa", icon: Wallet },
       { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "comissoes", label: "Comissões", to: "/comissoes", icon: Percent },
