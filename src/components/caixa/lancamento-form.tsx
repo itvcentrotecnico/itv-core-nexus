@@ -360,6 +360,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     if (somaPagamentos !== valorFinal) {
       return `A soma dos pagamentos (${formatCurrencyBRL(somaPagamentos)}) não corresponde ao valor final (${formatCurrencyBRL(valorFinal)}). Diferença: ${formatCurrencyBRL(diferenca)}.`;
     }
+    const formasAtuais = formasQuery.data ?? [];
+    for (const r of validas) {
+      const forma = formasAtuais.find((f) => f.id === r.forma_pagamento_id);
+      if (forma?.meio_taxa && !r.adquirente) {
+        return `Informe a origem do recebimento (maquininha ou link) para o pagamento em ${forma.nome}.`;
+      }
+      const t = taxasLinhas.get(r.key);
+      if (t && !t.ok) return t.message ?? "Taxa de recebimento ainda não configurada.";
+    }
+
     if (comissaoEntrega.ativa) {
       if (!comissaoEntrega.entregadorId) return "Selecione o entregador da comissão de entrega.";
       if (
@@ -418,9 +428,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           forma_pagamento_id: r.forma_pagamento_id,
           valor: round2(r.valor ?? 0),
           parcelas: Math.max(1, r.parcelas || 1),
-          taxa_percentual: 0,
-          taxa_valor: 0,
+          // A taxa oficial é calculada no banco a partir da tabela vigente.
+          ...(r.adquirente ? { adquirente: r.adquirente, canal: r.canal } : {}),
         })) as unknown as Json,
+
       p_confirmar_duplicidade: confirmarDuplicidade,
       ...(os.trim() ? { p_os: os.trim() } : {}),
       ...(cliente.trim() ? { p_cliente: cliente.trim() } : {}),
@@ -665,8 +676,16 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                         const parcelas = forma?.permite_parcelamento
                           ? Math.min(r.parcelas, forma.max_parcelas ?? 1)
                           : 1;
-                        updateRow(r.key, { forma_pagamento_id: v, parcelas });
+                        const origens = origensDoMeio(taxas, forma?.meio_taxa, data);
+                        const origem = origens[0];
+                        updateRow(r.key, {
+                          forma_pagamento_id: v,
+                          parcelas,
+                          adquirente: origem?.adquirente ?? "",
+                          canal: origem?.canal ?? "",
+                        });
                       }}
+
                     >
                       <SelectTrigger className="w-full" aria-label={`Forma de pagamento ${i + 1}`}>
                         <SelectValue placeholder="Selecione…" />
@@ -697,17 +716,30 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     {(() => {
                       const forma = formas.find((f) => f.id === r.forma_pagamento_id);
                       const max = forma?.permite_parcelamento ? Math.max(1, forma.max_parcelas ?? 1) : 1;
+                      const configuradas =
+                        forma?.meio_taxa && r.adquirente
+                          ? parcelasConfiguradas(taxas, {
+                              adquirente: r.adquirente,
+                              canal: r.canal,
+                              meio: forma.meio_taxa,
+                              data,
+                            }).filter((n) => n <= max)
+                          : [];
+                      const opcoes =
+                        configuradas.length > 0
+                          ? configuradas
+                          : Array.from({ length: max }, (_, n) => n + 1);
                       return (
                         <select
                           value={r.parcelas}
-                          disabled={max === 1}
+                          disabled={opcoes.length <= 1}
                           aria-label={`Parcelas do pagamento ${i + 1}`}
                           onChange={(e) =>
                             updateRow(r.key, { parcelas: Math.max(1, Number(e.target.value) || 1) })
                           }
                           className={inputClass}
                         >
-                          {Array.from({ length: max }, (_, n) => n + 1).map((n) => (
+                          {opcoes.map((n) => (
                             <option key={n} value={n}>
                               {n}x
                             </option>
@@ -728,6 +760,67 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </button>
                   </div>
                 </div>
+
+                {/* Origem do recebimento — define a taxa aplicada automaticamente */}
+                {(() => {
+                  const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+                  const origens = origensDoMeio(taxas, forma?.meio_taxa, data);
+                  if (!forma?.meio_taxa || origens.length === 0) return null;
+                  return (
+                    <div className="mt-3">
+                      <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                        Recebido por
+                      </label>
+                      <select
+                        value={r.adquirente ? `${r.adquirente}|${r.canal}` : ""}
+                        aria-label={`Origem do recebimento ${i + 1}`}
+                        onChange={(e) => {
+                          const [adq = "", can = ""] = e.target.value.split("|");
+                          updateRow(r.key, { adquirente: adq, canal: can });
+                        }}
+                        className={inputClass}
+                      >
+                        <option value="">Selecione…</option>
+                        {origens.map((o) => (
+                          <option key={o.chave} value={o.chave}>
+                            {o.adquirente} · {o.canal}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })()}
+
+                {/* Prévia da taxa de recebimento */}
+                {(() => {
+                  const t = taxasLinhas.get(r.key);
+                  if (!t || (r.valor ?? 0) <= 0) return null;
+                  if (!t.ok) {
+                    return (
+                      <p className="mt-2 rounded-md bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-700">
+                        {t.message}
+                      </p>
+                    );
+                  }
+                  if (t.percentual === 0 && t.percentualCliente === 0) return null;
+                  return (
+                    <div className="mt-2 rounded-md bg-muted px-2 py-1.5 text-[11px] text-muted-foreground">
+                      Taxa de recebimento{" "}
+                      <strong className="text-foreground">
+                        {t.percentual.toFixed(2).replace(".", ",")}%
+                      </strong>{" "}
+                      = {formatCurrencyBRL(t.taxa)} · Líquido{" "}
+                      <strong className="text-primary">{formatCurrencyBRL(t.liquido)}</strong>
+                      {t.percentualCliente > 0 && (
+                        <span className="block">
+                          Juros pagos pelo cliente: {t.percentualCliente.toFixed(2).replace(".", ",")}% (
+                          {formatCurrencyBRL(t.juros)}) — não é custo da ITV.
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {(() => {
                   const forma = formas.find((f) => f.id === r.forma_pagamento_id);
                   if (!forma || forma.liquidacao_imediata !== false) return null;
@@ -738,6 +831,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </p>
                   );
                 })()}
+
               </div>
             ))}
 
@@ -761,6 +855,28 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                 <span className="font-semibold">Pagamentos conferem</span>
               )}
             </div>
+
+            {taxaTotal > 0 && (
+              <dl className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-card px-4 py-3 text-xs sm:grid-cols-4">
+                <div>
+                  <dt className="text-muted-foreground">Valor bruto</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(valorBruto ?? 0)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">(−) Desconto</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(desconto ?? 0)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">(−) Taxa de recebimento</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(taxaTotal)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">= Líquido do recebimento</dt>
+                  <dd className="font-semibold text-primary">{formatCurrencyBRL(liquidoTotal)}</dd>
+                </div>
+              </dl>
+            )}
+
           </div>
 
           <ComissaoEntregaSection

@@ -272,6 +272,8 @@ export const ADMIN_TABS = [
   { value: "cadastros", label: "Cadastros" },
   { value: "comissoes", label: "Regras de Comissão" },
   { value: "comissao-entrega", label: "Comissão de Entrega" },
+  { value: "taxas-recebimento", label: "Taxas de Recebimento" },
+
   { value: "parametros", label: "Parâmetros" },
   { value: "modo-tv", label: "Modo TV" },
   { value: "fechamentos", label: "Fechamentos" },

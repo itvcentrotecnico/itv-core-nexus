@@ -306,7 +306,7 @@ export function ResumoDesempenho({
       </div>
 
       {podeVerFinanceiro && (
-        <div className="grid gap-2 rounded-xl border border-border bg-card p-3 text-[11px] text-muted-foreground sm:grid-cols-3">
+        <div className="grid gap-2 rounded-xl border border-border bg-card p-3 text-[11px] text-muted-foreground sm:grid-cols-4">
           <span>
             Receita líquida do mês{" "}
             <strong className="text-primary">{formatCurrencyBRL(d.mes_ate_hoje.liquida)}</strong>
@@ -318,7 +318,16 @@ export function ResumoDesempenho({
           <span>
             Taxas <strong className="text-foreground">{formatCurrencyBRL(d.mes_ate_hoje.taxas)}</strong>
           </span>
+          <span>
+            Custo de recebimento{" "}
+            <strong className="text-foreground">
+              {d.mes_ate_hoje.faturamento > 0
+                ? `${((d.mes_ate_hoje.taxas / d.mes_ate_hoje.faturamento) * 100).toFixed(2).replace(".", ",")}%`
+                : "0,00%"}
+            </strong>
+          </span>
         </div>
+
       )}
 
       {/* EVOLUÇÃO */}
