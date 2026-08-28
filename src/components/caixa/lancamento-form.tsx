@@ -51,6 +51,12 @@ import {
 } from "@/components/caixa/comissao-entrega-section";
 import type { ComissaoEntrega } from "@/lib/comissao-entrega";
 import { SolicitarDescontoDialog, useDescontosDisponiveis } from "@/components/caixa/descontos";
+import {
+  resolverTaxa,
+  useTaxasRecebimento,
+  valorTaxa,
+  type TaxaRecebimento,
+} from "@/lib/taxas-recebimento";
 
 const NONE = "__none__";
 
@@ -61,6 +67,9 @@ interface PagRow {
   parcelas: number;
   taxa_percentual: number | null;
   taxa_valor: number | null;
+  /** Origem do recebimento usada para localizar a taxa (ex.: Mercado Pago · Point). */
+  adquirente: string;
+  canal: string;
 }
 
 let rowKey = 1;
@@ -72,8 +81,43 @@ function emptyRow(formaId = ""): PagRow {
     parcelas: 1,
     taxa_percentual: null,
     taxa_valor: null,
+    adquirente: "",
+    canal: "",
   };
 }
+
+/** Origens (adquirente + canal) com taxa configurada para o meio informado. */
+function origensDoMeio(taxas: TaxaRecebimento[], meio: string | null | undefined, data: string) {
+  if (!meio) return [];
+  const mapa = new Map<string, { adquirente: string; canal: string }>();
+  for (const t of taxas) {
+    if (t.meio_pagamento.toLowerCase() !== meio.toLowerCase()) continue;
+    if (!t.ativo) continue;
+    if (t.vigencia_inicio > data || (t.vigencia_fim && t.vigencia_fim < data)) continue;
+    mapa.set(`${t.adquirente}|${t.canal}`, { adquirente: t.adquirente, canal: t.canal });
+  }
+  return [...mapa.entries()].map(([chave, v]) => ({ chave, ...v }));
+}
+
+/** Parcelas com taxa configurada para a origem escolhida. */
+function parcelasConfiguradas(
+  taxas: TaxaRecebimento[],
+  args: { adquirente: string; canal: string; meio: string; data: string },
+): number[] {
+  const list = taxas
+    .filter(
+      (t) =>
+        t.ativo &&
+        t.adquirente === args.adquirente &&
+        t.canal === args.canal &&
+        t.meio_pagamento.toLowerCase() === args.meio.toLowerCase() &&
+        t.vigencia_inicio <= args.data &&
+        (!t.vigencia_fim || t.vigencia_fim >= args.data),
+    )
+    .map((t) => t.parcelas);
+  return [...new Set(list)].sort((a, b) => a - b);
+}
+
 
 interface LancamentoFormProps {
   open: boolean;
@@ -148,7 +192,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       const { data, error } = await supabase
         .from("formas_pagamento")
         .select(
-          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias",
+          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias, meio_taxa",
         )
         .eq("ativo", true)
         .order("ordem");
@@ -156,6 +200,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       return data as FormaPagamento[];
     },
   });
+
+  const taxasQuery = useTaxasRecebimento(open);
+  const taxas = useMemo(() => taxasQuery.data ?? [], [taxasQuery.data]);
+
 
 
   const tecnicosQuery = useQuery({
@@ -193,8 +241,11 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           parcelas: p.parcelas,
           taxa_percentual: p.taxa_percentual || null,
           taxa_valor: p.taxa_valor || null,
+          adquirente: p.adquirente ?? "",
+          canal: p.canal ?? "",
         })),
       );
+
     } else {
       setData(defaultDate);
       setOs("");
@@ -238,9 +289,55 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   );
   const diferenca = useMemo(() => round2(valorFinal - somaPagamentos), [valorFinal, somaPagamentos]);
 
+  /**
+   * Pré-visualização da taxa por pagamento (o valor oficial é calculado no banco).
+   * VALOR DA VENDA − TAXA DE RECEBIMENTO = VALOR LÍQUIDO.
+   */
+  const taxasLinhas = useMemo(() => {
+    const formas = formasQuery.data ?? [];
+    const mapa = new Map<
+      number,
+      { ok: boolean; message?: string; percentual: number; taxa: number; liquido: number; percentualCliente: number; juros: number }
+    >();
+    for (const r of rows) {
+      const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+      const meio = forma?.meio_taxa ?? null;
+      const valor = r.valor ?? 0;
+      if (!forma || !meio || !r.adquirente) {
+        mapa.set(r.key, { ok: true, percentual: 0, taxa: 0, liquido: round2(valor), percentualCliente: 0, juros: 0 });
+        continue;
+      }
+      const res = resolverTaxa(taxas, {
+        adquirente: r.adquirente,
+        canal: r.canal,
+        meio,
+        parcelas: r.parcelas,
+        data,
+      });
+      const taxa = valorTaxa(valor, res.percentualItv);
+      mapa.set(r.key, {
+        ok: res.ok,
+        ...(res.message ? { message: res.message } : {}),
+        percentual: res.percentualItv,
+        taxa,
+        liquido: round2(valor - taxa),
+        percentualCliente: res.percentualCliente,
+        juros: valorTaxa(valor, res.percentualCliente),
+      });
+    }
+    return mapa;
+  }, [rows, taxas, data, formasQuery.data]);
+
+  const taxaTotal = useMemo(
+    () => round2([...taxasLinhas.values()].reduce((a, t) => a + t.taxa, 0)),
+    [taxasLinhas],
+  );
+  const liquidoTotal = useMemo(() => round2(somaPagamentos - taxaTotal), [somaPagamentos, taxaTotal]);
+
   function updateRow(key: number, patch: Partial<PagRow>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)));
   }
+
 
 
   function addRow() {

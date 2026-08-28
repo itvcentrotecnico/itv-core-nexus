@@ -397,35 +397,74 @@ export type Database = {
       }
       caixa_pagamentos: {
         Row: {
+          adquirente: string | null
+          canal: string | null
           created_at: string
           forma_pagamento_id: string
           id: string
           lancamento_id: string
+          meio_pagamento: string | null
+          modalidade: string | null
           parcelas: number
+          responsavel_taxa: string | null
+          taxa_cliente_percentual: number
+          taxa_cliente_valor: number
+          taxa_definida_em: string | null
+          taxa_definida_por: string | null
+          taxa_motivo: string | null
+          taxa_origem: string
           taxa_percentual: number
+          taxa_regra_id: string | null
           taxa_valor: number
+          taxa_vigencia_inicio: string | null
           valor: number
           valor_liquido: number | null
         }
         Insert: {
+          adquirente?: string | null
+          canal?: string | null
           created_at?: string
           forma_pagamento_id: string
           id?: string
           lancamento_id: string
+          meio_pagamento?: string | null
+          modalidade?: string | null
           parcelas?: number
+          responsavel_taxa?: string | null
+          taxa_cliente_percentual?: number
+          taxa_cliente_valor?: number
+          taxa_definida_em?: string | null
+          taxa_definida_por?: string | null
+          taxa_motivo?: string | null
+          taxa_origem?: string
           taxa_percentual?: number
+          taxa_regra_id?: string | null
           taxa_valor?: number
+          taxa_vigencia_inicio?: string | null
           valor: number
           valor_liquido?: number | null
         }
         Update: {
+          adquirente?: string | null
+          canal?: string | null
           created_at?: string
           forma_pagamento_id?: string
           id?: string
           lancamento_id?: string
+          meio_pagamento?: string | null
+          modalidade?: string | null
           parcelas?: number
+          responsavel_taxa?: string | null
+          taxa_cliente_percentual?: number
+          taxa_cliente_valor?: number
+          taxa_definida_em?: string | null
+          taxa_definida_por?: string | null
+          taxa_motivo?: string | null
+          taxa_origem?: string
           taxa_percentual?: number
+          taxa_regra_id?: string | null
           taxa_valor?: number
+          taxa_vigencia_inicio?: string | null
           valor?: number
           valor_liquido?: number | null
         }
@@ -442,6 +481,13 @@ export type Database = {
             columns: ["lancamento_id"]
             isOneToOne: false
             referencedRelation: "caixa_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_pagamentos_taxa_regra_id_fkey"
+            columns: ["taxa_regra_id"]
+            isOneToOne: false
+            referencedRelation: "taxas_recebimento"
             referencedColumns: ["id"]
           },
         ]
@@ -2723,6 +2769,7 @@ export type Database = {
           id: string
           liquidacao_imediata: boolean
           max_parcelas: number
+          meio_taxa: string | null
           nome: string
           observacao: string | null
           ordem: number
@@ -2738,6 +2785,7 @@ export type Database = {
           id?: string
           liquidacao_imediata?: boolean
           max_parcelas?: number
+          meio_taxa?: string | null
           nome: string
           observacao?: string | null
           ordem?: number
@@ -2753,6 +2801,7 @@ export type Database = {
           id?: string
           liquidacao_imediata?: boolean
           max_parcelas?: number
+          meio_taxa?: string | null
           nome?: string
           observacao?: string | null
           ordem?: number
@@ -3604,6 +3653,71 @@ export type Database = {
           },
         ]
       }
+      taxas_recebimento: {
+        Row: {
+          adquirente: string
+          ativo: boolean
+          canal: string
+          created_at: string
+          id: string
+          meio_pagamento: string
+          modalidade: string
+          observacao: string | null
+          parcelas: number
+          responsavel_taxa: string
+          taxa_cliente_percentual: number
+          taxa_percentual: number
+          updated_at: string
+          updated_by: string | null
+          vigencia_fim: string | null
+          vigencia_inicio: string
+        }
+        Insert: {
+          adquirente: string
+          ativo?: boolean
+          canal: string
+          created_at?: string
+          id?: string
+          meio_pagamento: string
+          modalidade?: string
+          observacao?: string | null
+          parcelas?: number
+          responsavel_taxa?: string
+          taxa_cliente_percentual?: number
+          taxa_percentual?: number
+          updated_at?: string
+          updated_by?: string | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Update: {
+          adquirente?: string
+          ativo?: boolean
+          canal?: string
+          created_at?: string
+          id?: string
+          meio_pagamento?: string
+          modalidade?: string
+          observacao?: string | null
+          parcelas?: number
+          responsavel_taxa?: string
+          taxa_cliente_percentual?: number
+          taxa_percentual?: number
+          updated_at?: string
+          updated_by?: string | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taxas_recebimento_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tipos_custo: {
         Row: {
           ativo: boolean
@@ -4209,6 +4323,15 @@ export type Database = {
           p_observacao?: string
           p_tipo: Database["public"]["Enums"]["caixa_movimento_tipo"]
           p_valor: number
+        }
+        Returns: Json
+      }
+      caixa_pagamentos_gravar: {
+        Args: {
+          p_data: string
+          p_lancamento: string
+          p_pagamentos: Json
+          p_uid: string
         }
         Returns: Json
       }
@@ -4963,6 +5086,16 @@ export type Database = {
       }
       relatorios_tecnicos: {
         Args: { p_from: string; p_to: string }
+        Returns: Json
+      }
+      taxa_recebimento_resolver: {
+        Args: {
+          p_adquirente: string
+          p_canal: string
+          p_data: string
+          p_meio: string
+          p_parcelas: number
+        }
         Returns: Json
       }
       tributos_salvar: {
