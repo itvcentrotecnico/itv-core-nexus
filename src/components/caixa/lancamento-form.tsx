@@ -855,6 +855,28 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                 <span className="font-semibold">Pagamentos conferem</span>
               )}
             </div>
+
+            {taxaTotal > 0 && (
+              <dl className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-card px-4 py-3 text-xs sm:grid-cols-4">
+                <div>
+                  <dt className="text-muted-foreground">Valor bruto</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(valorBruto ?? 0)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">(−) Desconto</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(desconto ?? 0)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">(−) Taxa de recebimento</dt>
+                  <dd className="font-medium text-foreground">{formatCurrencyBRL(taxaTotal)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">= Líquido do recebimento</dt>
+                  <dd className="font-semibold text-primary">{formatCurrencyBRL(liquidoTotal)}</dd>
+                </div>
+              </dl>
+            )}
+
           </div>
 
           <ComissaoEntregaSection
