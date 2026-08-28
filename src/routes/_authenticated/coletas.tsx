@@ -9,6 +9,7 @@ import { useAccess } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { inputClass } from "@/lib/caixa";
+import { AgendaMotorista } from "@/components/coletas/agenda";
 import { formatDateTimeITV } from "@/lib/format";
 import {
   COLETA_COLUNAS,
@@ -118,7 +119,7 @@ function ColetasPage() {
   const inicioHoje = inicioDoDiaManaus();
 
   const grupos = useMemo(() => {
-    const ativo = (c: ColetaSolicitacao) => ["pronto_coleta", "assumida"].includes(c.status);
+    const ativo = (c: ColetaSolicitacao) => ["pronto_coleta", "assumida", "em_rota", "no_local", "nao_realizada"].includes(c.status);
     const concluidoHoje = (c: ColetaSolicitacao) =>
       !!c.concluido_em && new Date(c.concluido_em).getTime() >= inicioHoje;
     return {
@@ -240,6 +241,7 @@ function ColetasPage() {
       <Tabs defaultValue="fila">
         <TabsList className="flex-wrap">
           <TabsTrigger value="fila">Movimentações</TabsTrigger>
+          <TabsTrigger value="agenda">Agenda do dia</TabsTrigger>
           {podeRelatorios && <TabsTrigger value="relatorio">Relatório Diário</TabsTrigger>}
           {podeRelatorios && <TabsTrigger value="periodo">Por Período</TabsTrigger>}
           {podeVerEquipe && <TabsTrigger value="equipe">Equipe Externa</TabsTrigger>}
@@ -394,7 +396,11 @@ function ColetasPage() {
         </TabsContent>
 
         {podeRelatorios && (
-          <TabsContent value="relatorio" className="pt-4">
+          <TabsContent value="agenda" className="pt-4">
+          <AgendaMotorista />
+        </TabsContent>
+
+        <TabsContent value="relatorio" className="pt-4">
             <RelatorioColetas />
           </TabsContent>
         )}
