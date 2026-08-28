@@ -271,7 +271,14 @@ export function LancamentosView({
       estornadosQtd: estornados.length,
       estornadosValor: round2(estornados.reduce((a, l) => a + l.valor_final, 0)),
       formas: [...formas.entries()]
-        .map(([forma, total]) => ({ forma, total }))
+        .map(([forma, total]) => ({
+          forma,
+          total,
+          percentual: totalFormas > 0 ? round2((total / totalFormas) * 100) : 0,
+          parcelas: [...(formasDet.get(forma) ?? new Map<number, number>()).entries()]
+            .map(([parc, valor]) => ({ parcelas: parc, valor }))
+            .sort((a, b) => a.parcelas - b.parcelas),
+        }))
         .sort((a, b) => b.total - a.total),
       entregaQtd: ents.length,
       entregaValor: round2(ents.reduce((a, e) => a + Number(e.valor ?? 0), 0)),
