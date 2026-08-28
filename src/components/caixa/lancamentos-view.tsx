@@ -372,14 +372,46 @@ export function LancamentosView({
           {resumo.formas.length === 0 ? (
             <p className="col-span-full text-xs text-muted-foreground">Sem entradas no filtro atual.</p>
           ) : (
-            resumo.formas.map((f) => (
-              <div key={f.forma} className="rounded-lg border border-border bg-background px-3 py-2">
-                <p className="truncate text-[11px] font-medium text-muted-foreground">{f.forma}</p>
-                <p className="font-display text-sm font-bold text-foreground">
-                  {formatCurrencyBRL(f.total)}
-                </p>
-              </div>
-            ))
+            resumo.formas.map((f) => {
+              const temDetalhe = f.parcelas.length > 1 || (f.parcelas[0]?.parcelas ?? 1) > 1;
+              const aberto = formaAberta === f.forma;
+              return (
+                <div key={f.forma} className="rounded-lg border border-border bg-background px-3 py-2">
+                  <p className="truncate text-[11px] font-medium text-muted-foreground">{f.forma}</p>
+                  <p className="font-display text-sm font-bold text-foreground">
+                    {formatCurrencyBRL(f.total)}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {f.percentual.toFixed(1).replace(".", ",")}% do total
+                  </p>
+                  {temDetalhe && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setFormaAberta(aberto ? null : f.forma)}
+                        aria-expanded={aberto}
+                        className="mt-1 text-[10px] font-medium text-primary hover:underline"
+                      >
+                        {aberto ? "Ocultar parcelas" : "Ver parcelas"}
+                      </button>
+                      {aberto && (
+                        <ul className="mt-1 space-y-0.5">
+                          {f.parcelas.map((p) => (
+                            <li
+                              key={p.parcelas}
+                              className="flex justify-between gap-2 text-[10px] text-muted-foreground"
+                            >
+                              <span>{p.parcelas}x</span>
+                              <strong className="text-foreground">{formatCurrencyBRL(p.valor)}</strong>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
 
