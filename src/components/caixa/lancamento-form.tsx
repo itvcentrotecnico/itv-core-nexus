@@ -51,6 +51,12 @@ import {
 } from "@/components/caixa/comissao-entrega-section";
 import type { ComissaoEntrega } from "@/lib/comissao-entrega";
 import { SolicitarDescontoDialog, useDescontosDisponiveis } from "@/components/caixa/descontos";
+import {
+  resolverTaxa,
+  useTaxasRecebimento,
+  valorTaxa,
+  type TaxaRecebimento,
+} from "@/lib/taxas-recebimento";
 
 const NONE = "__none__";
 
@@ -61,6 +67,9 @@ interface PagRow {
   parcelas: number;
   taxa_percentual: number | null;
   taxa_valor: number | null;
+  /** Origem do recebimento usada para localizar a taxa (ex.: Mercado Pago · Point). */
+  adquirente: string;
+  canal: string;
 }
 
 let rowKey = 1;
@@ -72,8 +81,43 @@ function emptyRow(formaId = ""): PagRow {
     parcelas: 1,
     taxa_percentual: null,
     taxa_valor: null,
+    adquirente: "",
+    canal: "",
   };
 }
+
+/** Origens (adquirente + canal) com taxa configurada para o meio informado. */
+function origensDoMeio(taxas: TaxaRecebimento[], meio: string | null | undefined, data: string) {
+  if (!meio) return [];
+  const mapa = new Map<string, { adquirente: string; canal: string }>();
+  for (const t of taxas) {
+    if (t.meio_pagamento.toLowerCase() !== meio.toLowerCase()) continue;
+    if (!t.ativo) continue;
+    if (t.vigencia_inicio > data || (t.vigencia_fim && t.vigencia_fim < data)) continue;
+    mapa.set(`${t.adquirente}|${t.canal}`, { adquirente: t.adquirente, canal: t.canal });
+  }
+  return [...mapa.entries()].map(([chave, v]) => ({ chave, ...v }));
+}
+
+/** Parcelas com taxa configurada para a origem escolhida. */
+function parcelasConfiguradas(
+  taxas: TaxaRecebimento[],
+  args: { adquirente: string; canal: string; meio: string; data: string },
+): number[] {
+  const list = taxas
+    .filter(
+      (t) =>
+        t.ativo &&
+        t.adquirente === args.adquirente &&
+        t.canal === args.canal &&
+        t.meio_pagamento.toLowerCase() === args.meio.toLowerCase() &&
+        t.vigencia_inicio <= args.data &&
+        (!t.vigencia_fim || t.vigencia_fim >= args.data),
+    )
+    .map((t) => t.parcelas);
+  return [...new Set(list)].sort((a, b) => a - b);
+}
+
 
 interface LancamentoFormProps {
   open: boolean;
