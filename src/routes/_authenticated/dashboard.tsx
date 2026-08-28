@@ -231,6 +231,26 @@ function DashboardPage() {
     },
   });
 
+  const veOrigens = isAdmin || can("relatorios", "visualizar") || can("coletas", "visualizar");
+  const origensQuery = useQuery({
+    queryKey: ["dashboard-origens", range?.from, range?.to],
+    enabled: !!range && veOrigens,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("rel_origens", { p_ini: range!.from, p_fim: range!.to });
+      if (error) throw error;
+      const r = data as unknown as {
+        ok: boolean;
+        por_origem: { origem: string; clientes: number; faturamento: number }[];
+      };
+      if (!r.ok) return [];
+      return [...(r.por_origem ?? [])]
+        .filter((o) => o.origem !== "Não informado")
+        .sort((a, b) => b.clientes - a.clientes)
+        .slice(0, 3);
+    },
+  });
+  const topOrigens = origensQuery.data ?? [];
+
   const ehGerencia = isAdmin || can("producao", "validar");
   const veMetas = isAdmin || can("metas", "visualizar");
 
@@ -397,6 +417,29 @@ function DashboardPage() {
           );
         })}
       </div>
+
+      {veOrigens && (
+        <Link
+          to="/relatorios"
+          className="block rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
+        >
+          <p className="text-sm font-medium text-muted-foreground">Origem dos clientes — período</p>
+          {topOrigens.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">Sem dados</p>
+          ) : (
+            <ul className="mt-3 space-y-1.5">
+              {topOrigens.map((o) => (
+                <li key={o.origem} className="flex items-center justify-between text-sm">
+                  <span className="font-medium text-card-foreground">{o.origem}</span>
+                  <span className="text-muted-foreground">
+                    {o.clientes} cliente{o.clientes === 1 ? "" : "s"} · {formatCurrencyBRL(Number(o.faturamento))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Link>
+      )}
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
