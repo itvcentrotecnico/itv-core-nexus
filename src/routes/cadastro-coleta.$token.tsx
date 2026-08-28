@@ -14,6 +14,8 @@ import {
   maskTelefone,
   somenteDigitos,
 } from "@/lib/coletas";
+import { OrigemPicker } from "@/components/coletas/origem-picker";
+import { ORIGEM_VAZIA, useOrigens, validarOrigem, type OrigemValor } from "@/lib/origens";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 export const Route = createFileRoute("/cadastro-coleta/$token")({
@@ -35,6 +37,7 @@ interface Abertura {
   tipo?: "coleta" | "entrega";
   cliente_nome?: string;
   whatsapp?: string;
+  pedir_origem?: boolean;
 }
 
 const ERROS: Record<string, string> = {
@@ -45,6 +48,8 @@ const ERROS: Record<string, string> = {
   cpf: "CPF inválido.",
   whatsapp: "Informe um WhatsApp válido.",
   endereco: "Informe rua, número e bairro.",
+  origem: "Informe como você conheceu a ITV.",
+  origem_detalhe: "Informe qual foi a origem.",
 };
 
 function CadastroColetaPage() {
@@ -78,6 +83,8 @@ function CadastroColetaPage() {
   const [polegadas, setPolegadas] = useState("");
   const [obsTv, setObsTv] = useState("");
   const [confirmado, setConfirmado] = useState(false);
+  const [origem, setOrigem] = useState<OrigemValor>(ORIGEM_VAZIA);
+  const { data: origens } = useOrigens();
 
   useEffect(() => {
     void supabase
@@ -141,6 +148,10 @@ function CadastroColetaPage() {
     if (!cpfValido(cpf)) return setErro(ERROS["cpf"] ?? null);
     if (somenteDigitos(whatsapp).length < 10) return setErro(ERROS["whatsapp"] ?? null);
     if (!rua.trim() || !numero.trim() || !bairro.trim()) return setErro(ERROS["endereco"] ?? null);
+    if (abertura?.pedir_origem) {
+      const erroOrigem = validarOrigem(origem, origens);
+      if (erroOrigem) return setErro(erroOrigem);
+    }
     if (!confirmado) return setErro("Confirme que os dados estão corretos.");
 
     setEnviando(true);
@@ -167,6 +178,9 @@ function CadastroColetaPage() {
         marca_tv: marca,
         polegadas: polegadas || null,
         observacao_tv: obsTv,
+        origem_id: origem.origem_id,
+        origem_detalhe: origem.detalhe,
+        indicado_por_nome: origem.indicado_nome,
       },
     } as never);
     setEnviando(false);
@@ -334,6 +348,13 @@ function CadastroColetaPage() {
             <Textarea id="c-obs" rows={2} value={obsTv} onChange={(e) => setObsTv(e.target.value)} />
           </div>
         </section>
+
+        {abertura.pedir_origem && (
+          <section className="space-y-3 rounded-xl border border-border bg-card p-4">
+            <h2 className="font-display text-sm font-bold text-foreground">Só mais uma coisa</h2>
+            <OrigemPicker valor={origem} onChange={setOrigem} />
+          </section>
+        )}
 
         <label className="flex items-start gap-2 rounded-xl border border-border bg-card p-4 text-sm">
           <input type="checkbox" className="mt-0.5 size-5" checked={confirmado} onChange={(e) => setConfirmado(e.target.checked)} />
