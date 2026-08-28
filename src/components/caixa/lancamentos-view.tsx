@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { STATUS_LANCAMENTO, round2, inputClass, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
+import { normNomeCliente, useOrigemMapCaixa } from "@/lib/origens";
 import { formatCurrencyBRL, formatDateTimeITV } from "@/lib/format";
 
 export type CaixaEntregaResumo = {
@@ -161,6 +162,14 @@ export function LancamentosView({
   const [formaAberta, setFormaAberta] = useState<string | null>(null);
   const [maisFiltros, setMaisFiltros] = useState(false);
   const origemMap = useOrigemMapCaixa();
+  const opcoesOrigem = useMemo(() => {
+    const set = new Set<string>();
+    for (const l of lancamentos) {
+      const chave = normNomeCliente(l.cliente);
+      set.add((chave && origemMap.get(chave)) || "Não informado");
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
+  }, [lancamentos, origemMap]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

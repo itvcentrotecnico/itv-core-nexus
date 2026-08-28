@@ -7,6 +7,7 @@
  *
  * A origem é dimensão analítica: nunca altera valor, taxa, comissão ou receita líquida.
  */
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
