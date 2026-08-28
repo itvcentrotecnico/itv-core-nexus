@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { AlertTriangle, Info, TriangleAlert } from "lucide-react";
+
+import { supabase } from "@/integrations/supabase/client";
+
 
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import { NIVEL_ALERTA, rpcOp, type OperacionalDashboard } from "@/lib/operacional";
@@ -50,6 +54,55 @@ function Num({
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       {sub && <p className="mt-0.5 text-[11px] text-muted-foreground">{sub}</p>}
     </Comp>
+  );
+}
+
+const ATIVOS = ["pronto_coleta", "assumida", "em_rota", "no_local", "nao_realizada"];
+
+/** Indicadores clicáveis que ligam a Central Operacional às Coletas e Entregas. */
+function ColetasBloco() {
+  const navigate = useNavigate();
+  const query = useQuery({
+    queryKey: ["operacional", "coletas-indicadores"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("coletas_solicitacoes")
+        .select("tipo, status, motorista_id")
+        .in("status", [...ATIVOS, "aguardando_cadastro"])
+        .limit(500);
+      if (error) throw error;
+      const linhas = data ?? [];
+      return {
+        aguardando: linhas.filter((l) => l.status === "aguardando_cadastro").length,
+        coletas: linhas.filter((l) => l.tipo === "coleta" && ATIVOS.includes(l.status)).length,
+        entregas: linhas.filter((l) => l.tipo === "entrega" && ATIVOS.includes(l.status)).length,
+        semMotorista: linhas.filter((l) => ATIVOS.includes(l.status) && !l.motorista_id).length,
+      };
+    },
+  });
+
+  const ir = () => void navigate({ to: "/coletas" });
+
+  return (
+    <Bloco
+      titulo="Coletas e Entregas"
+      acao={
+        <button type="button" className="text-xs font-semibold text-primary" onClick={ir}>
+          Abrir Coletas
+        </button>
+      }
+    >
+      {query.isLoading && <p className="text-sm text-muted-foreground">Carregando…</p>}
+      {query.isError && <p className="text-sm text-muted-foreground">Não foi possível carregar os indicadores de coletas.</p>}
+      {query.data && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Num label="Aguardando cadastro" value={String(query.data.aguardando)} onClick={ir} />
+          <Num label="Coletas em aberto" value={String(query.data.coletas)} onClick={ir} />
+          <Num label="Entregas em aberto" value={String(query.data.entregas)} onClick={ir} />
+          <Num label="Sem motorista" value={String(query.data.semMotorista)} destaque onClick={ir} />
+        </div>
+      )}
+    </Bloco>
   );
 }
 
@@ -179,6 +232,8 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
           </p>
         )}
       </Bloco>
+
+      <ColetasBloco />
 
       <Bloco titulo="Estoque operacional">
         {(d.estoque ?? []).length === 0 ? (
