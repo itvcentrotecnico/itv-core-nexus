@@ -909,6 +909,48 @@ export type Database = {
           },
         ]
       }
+      coletas_historico: {
+        Row: {
+          autor_id: string | null
+          created_at: string
+          id: string
+          motivo: string | null
+          solicitacao_id: string
+          status: string
+        }
+        Insert: {
+          autor_id?: string | null
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          solicitacao_id: string
+          status: string
+        }
+        Update: {
+          autor_id?: string | null
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          solicitacao_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coletas_historico_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coletas_historico_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "coletas_solicitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coletas_solicitacoes: {
         Row: {
           apartamento: string | null
@@ -928,6 +970,7 @@ export type Database = {
           cpf: string | null
           created_at: string
           created_by: string | null
+          data_agendada: string | null
           delete_reason: string | null
           deleted_at: string | null
           deleted_by: string | null
@@ -940,6 +983,8 @@ export type Database = {
           marca_tv: string | null
           motivo_cancelamento: string | null
           motorista_id: string | null
+          nao_realizada_em: string | null
+          nao_realizada_motivo: string | null
           numero: string | null
           observacao: string | null
           observacao_conclusao: string | null
@@ -973,6 +1018,7 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           created_by?: string | null
+          data_agendada?: string | null
           delete_reason?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
@@ -985,6 +1031,8 @@ export type Database = {
           marca_tv?: string | null
           motivo_cancelamento?: string | null
           motorista_id?: string | null
+          nao_realizada_em?: string | null
+          nao_realizada_motivo?: string | null
           numero?: string | null
           observacao?: string | null
           observacao_conclusao?: string | null
@@ -1018,6 +1066,7 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           created_by?: string | null
+          data_agendada?: string | null
           delete_reason?: string | null
           deleted_at?: string | null
           deleted_by?: string | null
@@ -1030,6 +1079,8 @@ export type Database = {
           marca_tv?: string | null
           motivo_cancelamento?: string | null
           motorista_id?: string | null
+          nao_realizada_em?: string | null
+          nao_realizada_motivo?: string | null
           numero?: string | null
           observacao?: string | null
           observacao_conclusao?: string | null
@@ -4751,6 +4802,14 @@ export type Database = {
         }
         Returns: Json
       }
+      coletas_agenda: {
+        Args: { p_data?: string; p_motorista?: string }
+        Returns: Json
+      }
+      coletas_agendar: {
+        Args: { p_data?: string; p_id: string; p_motorista?: string }
+        Returns: Json
+      }
       coletas_assumir: { Args: { p_id: string }; Returns: undefined }
       coletas_atribuir: {
         Args: { p_id: string; p_motorista: string }
@@ -4797,6 +4856,7 @@ export type Database = {
         Args: { p_horas?: number; p_id: string }
         Returns: Json
       }
+      coletas_historico_listar: { Args: { p_id: string }; Returns: Json }
       coletas_lixeira: { Args: never; Returns: Json }
       coletas_pode: {
         Args: { _action: Database["public"]["Enums"]["permission_action"] }
@@ -4813,6 +4873,10 @@ export type Database = {
         Returns: Json
       }
       coletas_restaurar: { Args: { p_id: string }; Returns: undefined }
+      coletas_status: {
+        Args: { p_id: string; p_motivo?: string; p_status: string }
+        Returns: Json
+      }
       comissao_entrega_colaboradores: { Args: never; Returns: Json }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }
