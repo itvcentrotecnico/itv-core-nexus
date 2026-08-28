@@ -22,6 +22,7 @@ import { Route as AuthenticatedComissoesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
+import { Route as AuthenticatedOperacionalRouteImport } from './routes/_authenticated/operacional'
 import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/pecas'
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
@@ -97,6 +98,12 @@ const AuthenticatedMetasRoute = AuthenticatedMetasRouteImport.update({
   path: '/metas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOperacionalRoute =
+  AuthenticatedOperacionalRouteImport.update({
+    id: '/operacional',
+    path: '/operacional',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPecasRoute = AuthenticatedPecasRouteImport.update({
   id: '/pecas',
   path: '/pecas',
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
+  '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
@@ -175,6 +183,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
+  '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
@@ -199,6 +208,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
+  '/_authenticated/operacional': typeof AuthenticatedOperacionalRoute
   '/_authenticated/pecas': typeof AuthenticatedPecasRoute
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/financeiro'
     | '/metas'
+    | '/operacional'
     | '/pecas'
     | '/producao'
     | '/relatorios'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/financeiro'
     | '/metas'
+    | '/operacional'
     | '/pecas'
     | '/producao'
     | '/relatorios'
@@ -268,6 +280,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/financeiro'
     | '/_authenticated/metas'
+    | '/_authenticated/operacional'
     | '/_authenticated/pecas'
     | '/_authenticated/producao'
     | '/_authenticated/relatorios'
@@ -380,6 +393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMetasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/operacional': {
+      id: '/_authenticated/operacional'
+      path: '/operacional'
+      fullPath: '/operacional'
+      preLoaderRoute: typeof AuthenticatedOperacionalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/pecas': {
       id: '/_authenticated/pecas'
       path: '/pecas'
@@ -448,6 +468,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
+  AuthenticatedOperacionalRoute: typeof AuthenticatedOperacionalRoute
   AuthenticatedPecasRoute: typeof AuthenticatedPecasRoute
   AuthenticatedProducaoRoute: typeof AuthenticatedProducaoRoute
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
@@ -466,6 +487,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
+  AuthenticatedOperacionalRoute: AuthenticatedOperacionalRoute,
   AuthenticatedPecasRoute: AuthenticatedPecasRoute,
   AuthenticatedProducaoRoute: AuthenticatedProducaoRoute,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,

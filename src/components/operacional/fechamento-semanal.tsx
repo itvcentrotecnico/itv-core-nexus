@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
  * Fechamento semanal (segunda a domingo, America/Manaus):
  * entradas informadas + entregas concluídas → saldo que precisa ser explicado por motivo.
  */
-export function FechamentoSemanal({ motivoFiltro }: { motivoFiltro?: string }) {
+export function FechamentoSemanal({ motivoFiltro }: { motivoFiltro?: string | undefined }) {
   const queryClient = useQueryClient();
   const { can, isAdmin } = useAccess();
   const podeEditar = isAdmin || can("operacional", "editar") || can("operacional", "criar");
