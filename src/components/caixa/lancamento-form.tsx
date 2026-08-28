@@ -716,17 +716,30 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     {(() => {
                       const forma = formas.find((f) => f.id === r.forma_pagamento_id);
                       const max = forma?.permite_parcelamento ? Math.max(1, forma.max_parcelas ?? 1) : 1;
+                      const configuradas =
+                        forma?.meio_taxa && r.adquirente
+                          ? parcelasConfiguradas(taxas, {
+                              adquirente: r.adquirente,
+                              canal: r.canal,
+                              meio: forma.meio_taxa,
+                              data,
+                            }).filter((n) => n <= max)
+                          : [];
+                      const opcoes =
+                        configuradas.length > 0
+                          ? configuradas
+                          : Array.from({ length: max }, (_, n) => n + 1);
                       return (
                         <select
                           value={r.parcelas}
-                          disabled={max === 1}
+                          disabled={opcoes.length <= 1}
                           aria-label={`Parcelas do pagamento ${i + 1}`}
                           onChange={(e) =>
                             updateRow(r.key, { parcelas: Math.max(1, Number(e.target.value) || 1) })
                           }
                           className={inputClass}
                         >
-                          {Array.from({ length: max }, (_, n) => n + 1).map((n) => (
+                          {opcoes.map((n) => (
                             <option key={n} value={n}>
                               {n}x
                             </option>
@@ -747,6 +760,67 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </button>
                   </div>
                 </div>
+
+                {/* Origem do recebimento — define a taxa aplicada automaticamente */}
+                {(() => {
+                  const forma = formas.find((f) => f.id === r.forma_pagamento_id);
+                  const origens = origensDoMeio(taxas, forma?.meio_taxa, data);
+                  if (!forma?.meio_taxa || origens.length === 0) return null;
+                  return (
+                    <div className="mt-3">
+                      <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                        Recebido por
+                      </label>
+                      <select
+                        value={r.adquirente ? `${r.adquirente}|${r.canal}` : ""}
+                        aria-label={`Origem do recebimento ${i + 1}`}
+                        onChange={(e) => {
+                          const [adq = "", can = ""] = e.target.value.split("|");
+                          updateRow(r.key, { adquirente: adq, canal: can });
+                        }}
+                        className={inputClass}
+                      >
+                        <option value="">Selecione…</option>
+                        {origens.map((o) => (
+                          <option key={o.chave} value={o.chave}>
+                            {o.adquirente} · {o.canal}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })()}
+
+                {/* Prévia da taxa de recebimento */}
+                {(() => {
+                  const t = taxasLinhas.get(r.key);
+                  if (!t || (r.valor ?? 0) <= 0) return null;
+                  if (!t.ok) {
+                    return (
+                      <p className="mt-2 rounded-md bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-700">
+                        {t.message}
+                      </p>
+                    );
+                  }
+                  if (t.percentual === 0 && t.percentualCliente === 0) return null;
+                  return (
+                    <div className="mt-2 rounded-md bg-muted px-2 py-1.5 text-[11px] text-muted-foreground">
+                      Taxa de recebimento{" "}
+                      <strong className="text-foreground">
+                        {t.percentual.toFixed(2).replace(".", ",")}%
+                      </strong>{" "}
+                      = {formatCurrencyBRL(t.taxa)} · Líquido{" "}
+                      <strong className="text-primary">{formatCurrencyBRL(t.liquido)}</strong>
+                      {t.percentualCliente > 0 && (
+                        <span className="block">
+                          Juros pagos pelo cliente: {t.percentualCliente.toFixed(2).replace(".", ",")}% (
+                          {formatCurrencyBRL(t.juros)}) — não é custo da ITV.
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {(() => {
                   const forma = formas.find((f) => f.id === r.forma_pagamento_id);
                   if (!forma || forma.liquidacao_imediata !== false) return null;
@@ -757,6 +831,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </p>
                   );
                 })()}
+
               </div>
             ))}
 
