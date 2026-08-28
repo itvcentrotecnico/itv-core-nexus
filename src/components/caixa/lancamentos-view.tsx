@@ -79,10 +79,25 @@ function pagamentosResumo(l: CaixaLancamento): string {
   return (l.pagamentos ?? [])
     .map((p) => {
       const parc = p.parcelas > 1 ? ` ${p.parcelas}x` : "";
-      return `${p.forma?.nome ?? "?"}${parc} ${formatCurrencyBRL(p.valor)}`;
+      const origem = p.adquirente ? ` (${p.adquirente}${p.canal ? ` · ${p.canal}` : ""})` : "";
+      return `${p.forma?.nome ?? "?"}${parc}${origem} ${formatCurrencyBRL(p.valor)}`;
     })
     .join(" · ");
 }
+
+/** Detalhe da taxa aplicada em cada pagamento (retrato gravado no lançamento). */
+function taxasDetalhe(l: CaixaLancamento): string {
+  const linhas = (l.pagamentos ?? [])
+    .filter((p) => Number(p.taxa_valor ?? 0) > 0)
+    .map(
+      (p) =>
+        `${p.forma?.nome ?? "?"}${p.parcelas > 1 ? ` ${p.parcelas}x` : ""}: ${Number(p.taxa_percentual ?? 0)
+          .toFixed(2)
+          .replace(".", ",")}% = ${formatCurrencyBRL(Number(p.taxa_valor ?? 0))}`,
+    );
+  return linhas.join(" · ");
+}
+
 
 export function StatusBadge({
   status,

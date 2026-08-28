@@ -95,6 +95,8 @@ function AdminPage() {
       {aba === "cadastros" ? <AdminCadastros /> : null}
       {aba === "comissoes" ? <AdminRegrasComissao /> : null}
       {aba === "comissao-entrega" ? <AdminComissaoEntrega /> : null}
+      {aba === "taxas-recebimento" ? <AdminTaxasRecebimento /> : null}
+
       {aba === "parametros" ? <AdminParametros /> : null}
       {aba === "fechamentos" ? <AdminFechamentos /> : null}
       {aba === "auditoria" ? <AdminAuditoria /> : null}
