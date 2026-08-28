@@ -192,7 +192,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       const { data, error } = await supabase
         .from("formas_pagamento")
         .select(
-          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias",
+          "id, nome, ativo, ordem, eh_dinheiro, taxa_padrao_percentual, permite_parcelamento, max_parcelas, liquidacao_imediata, prazo_liquidacao_dias, meio_taxa",
         )
         .eq("ativo", true)
         .order("ordem");
@@ -200,6 +200,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       return data as FormaPagamento[];
     },
   });
+
+  const taxasQuery = useTaxasRecebimento(open);
+  const taxas = useMemo(() => taxasQuery.data ?? [], [taxasQuery.data]);
+
 
 
   const tecnicosQuery = useQuery({
