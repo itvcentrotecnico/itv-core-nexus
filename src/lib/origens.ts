@@ -85,3 +85,20 @@ export function requerDetalhe(valor: OrigemValor, origens: Origem[] | undefined)
 export function normNomeCliente(v: string | null | undefined): string {
   return (v ?? "").trim().toLowerCase().replace(/\s+/g, " ");
 }
+
+/**
+ * Mapa derivado (nome normalizado do cliente -> origem) usado apenas para
+ * FILTRAR o Caixa. Não altera nenhum valor financeiro.
+ */
+export function useOrigemMapCaixa(): Map<string, string> {
+  const query = useQuery({
+    queryKey: ["caixa-origem-map"],
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("caixa_origem_map");
+      if (error) throw error;
+      return (data as unknown as { cliente: string; origem: string }[]) ?? [];
+    },
+  });
+  return useMemo(() => new Map((query.data ?? []).map((r) => [r.cliente, r.origem])), [query.data]);
+}
