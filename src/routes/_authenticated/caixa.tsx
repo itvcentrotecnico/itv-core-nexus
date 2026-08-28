@@ -219,6 +219,9 @@ function CaixaPage() {
         </div>
       </div>
 
+      {/* Resumo de faturamento — cards fixos (Hoje / Semana / Mês), independentes dos filtros */}
+      <ResumoDesempenho dataRef={date} podeVerFinanceiro={podeVerFinanceiro} />
+
       {/* Banner de fechamento */}
       {diaFechado && fechamentoAtual && (
         <div className="rounded-xl border border-border bg-card p-4 text-sm">
