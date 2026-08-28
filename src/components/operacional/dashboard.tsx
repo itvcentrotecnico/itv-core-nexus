@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { AlertTriangle, Info, TriangleAlert } from "lucide-react";
+
+import { supabase } from "@/integrations/supabase/client";
+
 
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import { NIVEL_ALERTA, rpcOp, type OperacionalDashboard } from "@/lib/operacional";
