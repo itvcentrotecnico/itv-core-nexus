@@ -186,8 +186,33 @@ export function linkCadastro(token: string): string {
   return `${base}/cadastro-coleta/${token}`;
 }
 
+/**
+ * Mensagem operacional padrão do link de cadastro.
+ * Placeholders: {primeiro_nome} e {link}. Texto configurável em Administração.
+ */
 export const MENSAGEM_PADRAO =
-  "Olá! Para agendarmos sua coleta e evitarmos erros no endereço, pedimos que preencha seus dados no link abaixo. Leva menos de 1 minuto.";
+  "Olá, {primeiro_nome}! 👋\n\n" +
+  "Para darmos continuidade à sua solicitação de coleta da TV, precisamos confirmar seus dados de contato e endereço.\n\n" +
+  "Por favor, preencha sua ficha pelo link abaixo:\n\n" +
+  "{link}\n\n" +
+  "O preenchimento leva aproximadamente 1 minuto.\n\n" +
+  "Após o envio, as informações ficarão disponíveis para nossa equipe responsável pela coleta.\n\n" +
+  "ITV Centro Técnico";
+
+export function primeiroNome(nome: string): string {
+  return (nome ?? "").trim().split(/\s+/)[0] ?? "";
+}
+
+/** Monta a mensagem final substituindo os placeholders. O link sempre aparece. */
+export function montarMensagem(template: string, nome: string, link: string): string {
+  const base = template && template.trim() ? template : MENSAGEM_PADRAO;
+  const texto = base
+    .replaceAll("{primeiro_nome}", primeiroNome(nome))
+    .replaceAll("{nome}", (nome ?? "").trim())
+    .replaceAll("{link}", link);
+  return texto.includes(link) ? texto : `${texto}\n\n${link}`;
+}
+
 
 export function storagePathColeta(solicitacaoId: string, fileName: string): string {
   const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");

@@ -1007,6 +1007,9 @@ export type Database = {
           torre_bloco: string | null
           updated_at: string
           whatsapp: string
+          whatsapp_aberto_em: string | null
+          whatsapp_aberto_por: string | null
+          whatsapp_aberturas: number
         }
         Insert: {
           apartamento?: string | null
@@ -1063,6 +1066,9 @@ export type Database = {
           torre_bloco?: string | null
           updated_at?: string
           whatsapp: string
+          whatsapp_aberto_em?: string | null
+          whatsapp_aberto_por?: string | null
+          whatsapp_aberturas?: number
         }
         Update: {
           apartamento?: string | null
@@ -1119,6 +1125,9 @@ export type Database = {
           torre_bloco?: string | null
           updated_at?: string
           whatsapp?: string
+          whatsapp_aberto_em?: string | null
+          whatsapp_aberto_por?: string | null
+          whatsapp_aberturas?: number
         }
         Relationships: [
           {
@@ -4963,6 +4972,7 @@ export type Database = {
         Args: { p_id: string; p_motivo?: string; p_status: string }
         Returns: Json
       }
+      coletas_whatsapp_aberto: { Args: { p_id: string }; Returns: Json }
       comissao_entrega_colaboradores: { Args: never; Returns: Json }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }

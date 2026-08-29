@@ -7,6 +7,8 @@ import { useAccess } from "@/hooks/use-auth";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { MENSAGEM_PADRAO } from "@/lib/coletas";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 interface Organizacao {
@@ -50,7 +52,7 @@ export function AdminGeral() {
       const { data: rows, error } = await supabase
         .from("settings")
         .select("key, value")
-        .in("key", ["organization", "identidade"]);
+        .in("key", ["organization", "identidade", "coletas_mensagem"]);
       if (error) throw error;
       const map: Record<string, Record<string, unknown>> = {};
       for (const r of rows ?? []) map[r.key] = (r.value ?? {}) as Record<string, unknown>;
@@ -60,10 +62,13 @@ export function AdminGeral() {
 
   const [org, setOrg] = useState<Organizacao>(ORG_PADRAO);
   const [ident, setIdent] = useState<Identidade>(IDENT_PADRAO);
+  const [msg, setMsg] = useState<string>(MENSAGEM_PADRAO);
 
   useEffect(() => {
     if (data?.["organization"]) setOrg({ ...ORG_PADRAO, ...(data["organization"] as Partial<Organizacao>) });
     if (data?.["identidade"]) setIdent({ ...IDENT_PADRAO, ...(data["identidade"] as Partial<Identidade>) });
+    const t = (data?.["coletas_mensagem"] as { template?: string } | undefined)?.template;
+    if (t?.trim()) setMsg(t);
   }, [data]);
 
   if (isLoading) return <Carregando />;
@@ -228,6 +233,35 @@ export function AdminGeral() {
           </div>
         </div>
       </SecaoAdmin>
+
+      <SecaoAdmin
+        titulo="Mensagem do link de cadastro (WhatsApp)"
+        descricao="Texto operacional exibido ao vendedor antes de abrir a conversa. O envio continua manual. Placeholders: {primeiro_nome} e {link}."
+        acoes={
+          <Button
+            size="sm"
+            disabled={!podeConfigurar}
+            onClick={() =>
+              void executarAcao(
+                () => rpcAdmin("admin_config_salvar", { p_key: "coletas_mensagem", p_value: { template: msg } }),
+                "Mensagem padrão salva.",
+                () => {
+                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-gerais"] });
+                  void queryClient.invalidateQueries({ queryKey: ["settings", "coletas_mensagem"] });
+                },
+              )
+            }
+          >
+            <Save className="mr-2 size-4" /> Salvar
+          </Button>
+        }
+      >
+        <Textarea rows={10} value={msg} onChange={(e) => setMsg(e.target.value)} disabled={!podeConfigurar} />
+        <p className="mt-2 text-xs text-muted-foreground">
+          Use apenas conteúdo operacional. Não incluir promoções, ofertas ou campanhas.
+        </p>
+      </SecaoAdmin>
     </div>
   );
 }
+

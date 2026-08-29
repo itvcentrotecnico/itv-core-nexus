@@ -283,7 +283,7 @@ export function DetalheColetaDialog({
               void rpcColetas<{ token: string; expira_em: string }>("coletas_gerar_link", { p_id: item.id })
                 .then((r) => {
                   void queryClient.invalidateQueries({ queryKey: ["coletas"] });
-                  onLink({ ...r, whatsapp: item.whatsapp, cliente_nome: item.cliente_nome });
+                  onLink({ ...r, id: item.id, whatsapp: item.whatsapp, cliente_nome: item.cliente_nome });
                 })
                 .catch((e: Error) => toast.error(e.message))
             }

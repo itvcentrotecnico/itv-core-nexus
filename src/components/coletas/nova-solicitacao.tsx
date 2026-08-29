@@ -152,7 +152,7 @@ export function NovaSolicitacaoDialog({
 
       void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       onClose();
-      onLink({ token: res.token, expira_em: res.expira_em, whatsapp: somenteDigitos(whatsapp), cliente_nome: nome.trim() });
+      onLink({ id: res.id, token: res.token, expira_em: res.expira_em, whatsapp: somenteDigitos(whatsapp), cliente_nome: nome.trim() });
     } catch (e) {
       toast.error(mensagemErro(e, "Não foi possível criar a solicitação."));
     } finally {
