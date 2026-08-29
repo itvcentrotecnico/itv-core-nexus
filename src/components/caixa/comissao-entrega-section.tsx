@@ -93,7 +93,7 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
           <Bike className="mt-0.5 size-5 text-primary" aria-hidden="true" />
           <div>
             <p className="text-sm font-semibold text-foreground">
-              O aparelho foi entregue por um motorista?
+              Gerar comissão para entregador?
             </p>
             <p className="text-xs text-muted-foreground">
               Ative para registrar quem entregou e gerar a comissão de entrega. Não altera o
