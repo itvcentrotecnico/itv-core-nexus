@@ -93,7 +93,7 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
           <Bike className="mt-0.5 size-5 text-primary" aria-hidden="true" />
           <div>
             <p className="text-sm font-semibold text-foreground">
-              O aparelho foi entregue por um motorista?
+              Gerar comissão para entregador?
             </p>
             <p className="text-xs text-muted-foreground">
               Ative para registrar quem entregou e gerar a comissão de entrega. Não altera o
@@ -154,7 +154,7 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
 
           <div>
             <label className={labelClass} htmlFor="ce-tipo">
-              Comissão do motorista
+              Tipo de entrega <span className="text-destructive">*</span>
             </label>
             <Select
               value={valor.tipo}
@@ -168,16 +168,30 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="entrega">
-                  Taxa fixa de entrega ({formatCurrencyBRL(cfg.valor_taxa_fixa)})
+                  Apenas Entrega ({formatCurrencyBRL(cfg.valor_taxa_fixa)})
                 </SelectItem>
                 <SelectItem value="entrega_avaliacao">
-                  Taxa fixa + avaliação
+                  Entrega + Avaliação
                   {cfg.valor_taxa_com_avaliacao != null
                     ? ` (${formatCurrencyBRL(cfg.valor_taxa_com_avaliacao)})`
                     : ""}
                 </SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className={labelClass} htmlFor="ce-valor">
+              Valor da comissão (definido pelo sistema)
+            </label>
+            <input
+              id="ce-valor"
+              readOnly
+              tabIndex={-1}
+              aria-readonly="true"
+              value={valorPrevisto != null ? formatCurrencyBRL(valorPrevisto) : "Não definido"}
+              className={cn(inputClass, "cursor-not-allowed bg-muted font-semibold")}
+            />
           </div>
 
           {valor.tipo === "entrega_avaliacao" ? (
