@@ -228,6 +228,35 @@ export function AdminGeral() {
           </div>
         </div>
       </SecaoAdmin>
+
+      <SecaoAdmin
+        titulo="Mensagem do link de cadastro (WhatsApp)"
+        descricao="Texto operacional exibido ao vendedor antes de abrir a conversa. O envio continua manual. Placeholders: {primeiro_nome} e {link}."
+        acoes={
+          <Button
+            size="sm"
+            disabled={!podeConfigurar}
+            onClick={() =>
+              void executarAcao(
+                () => rpcAdmin("admin_config_salvar", { p_key: "coletas_mensagem", p_value: { template: msg } }),
+                "Mensagem padrão salva.",
+                () => {
+                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-gerais"] });
+                  void queryClient.invalidateQueries({ queryKey: ["settings", "coletas_mensagem"] });
+                },
+              )
+            }
+          >
+            <Save className="mr-2 size-4" /> Salvar
+          </Button>
+        }
+      >
+        <Textarea rows={10} value={msg} onChange={(e) => setMsg(e.target.value)} disabled={!podeConfigurar} />
+        <p className="mt-2 text-xs text-muted-foreground">
+          Use apenas conteúdo operacional. Não incluir promoções, ofertas ou campanhas.
+        </p>
+      </SecaoAdmin>
     </div>
   );
 }
+
