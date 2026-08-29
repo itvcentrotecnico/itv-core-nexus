@@ -154,7 +154,7 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
 
           <div>
             <label className={labelClass} htmlFor="ce-tipo">
-              Comissão do motorista
+              Tipo de entrega <span className="text-destructive">*</span>
             </label>
             <Select
               value={valor.tipo}
