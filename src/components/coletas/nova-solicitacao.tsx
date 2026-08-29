@@ -23,8 +23,7 @@ import {
   TIPO_LABEL,
   type ColetaTipo,
 } from "@/lib/coletas";
-import { OrigemPicker } from "./origem-picker";
-import { ORIGEM_VAZIA, useOrigens, validarOrigem, type OrigemValor } from "@/lib/origens";
+import { CANAIS_CONTATO } from "@/lib/origens";
 import type { LinkGerado } from "./link-dialog";
 
 interface Duplicado {
@@ -66,8 +65,7 @@ export function NovaSolicitacaoDialog({
   const [whatsapp, setWhatsapp] = useState("");
   const [observacao, setObservacao] = useState("");
   const [horas, setHoras] = useState(72);
-  const [origem, setOrigem] = useState<OrigemValor>(ORIGEM_VAZIA);
-  const { data: origens } = useOrigens();
+  const [canal, setCanal] = useState<string>("WhatsApp");
   const [duplicados, setDuplicados] = useState<Duplicado[]>([]);
   const [reutilizar, setReutilizar] = useState<Duplicado | null>(null);
   const [salvando, setSalvando] = useState(false);
@@ -81,7 +79,7 @@ export function NovaSolicitacaoDialog({
     setHoras(72);
     setDuplicados([]);
     setReutilizar(null);
-    setOrigem(ORIGEM_VAZIA);
+    setCanal("WhatsApp");
   }, [aberto]);
 
   // Alerta de duplicidade assim que o telefone estiver completo (sem bloquear).
@@ -113,11 +111,6 @@ export function NovaSolicitacaoDialog({
       toast.error("Informe um WhatsApp válido.");
       return;
     }
-    const erroOrigem = validarOrigem(origem, origens);
-    if (erroOrigem) {
-      toast.error(erroOrigem);
-      return;
-    }
     setSalvando(true);
     try {
       const res = await rpcColetas<{ id: string; token: string; expira_em: string }>("coletas_criar", {
@@ -126,11 +119,11 @@ export function NovaSolicitacaoDialog({
         p_whatsapp: somenteDigitos(whatsapp),
         p_observacao: observacao.trim() || null,
         p_horas: horas,
-        p_origem_id: origem.origem_id,
-        p_origem_detalhe: origem.detalhe.trim() || null,
-        p_indicado_nome: origem.indicado_nome.trim() || null,
-        p_indicado_telefone: somenteDigitos(origem.indicado_telefone) || null,
-        p_canal_contato: origem.canal || null,
+        p_origem_id: null,
+        p_origem_detalhe: null,
+        p_indicado_nome: null,
+        p_indicado_telefone: null,
+        p_canal_contato: canal || null,
       });
 
       if (reutilizar) {
@@ -239,7 +232,17 @@ export function NovaSolicitacaoDialog({
             </div>
           )}
 
-          <OrigemPicker valor={origem} onChange={setOrigem} mostrarCanal compacto />
+          <div>
+            <label className={labelClass} htmlFor="coleta-canal">Entrou em contato por</label>
+            <select id="coleta-canal" className={inputClass} value={canal} onChange={(e) => setCanal(e.target.value)}>
+              {CANAIS_CONTATO.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              "Como conheceu a ITV?" é respondido pelo próprio cliente no link.
+            </p>
+          </div>
 
           <div>
             <label className={labelClass} htmlFor="coleta-obs">Observação (opcional)</label>
