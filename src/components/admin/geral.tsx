@@ -7,6 +7,8 @@ import { useAccess } from "@/hooks/use-auth";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { MENSAGEM_PADRAO } from "@/lib/coletas";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 interface Organizacao {
@@ -50,7 +52,7 @@ export function AdminGeral() {
       const { data: rows, error } = await supabase
         .from("settings")
         .select("key, value")
-        .in("key", ["organization", "identidade"]);
+        .in("key", ["organization", "identidade", "coletas_mensagem"]);
       if (error) throw error;
       const map: Record<string, Record<string, unknown>> = {};
       for (const r of rows ?? []) map[r.key] = (r.value ?? {}) as Record<string, unknown>;
@@ -60,10 +62,13 @@ export function AdminGeral() {
 
   const [org, setOrg] = useState<Organizacao>(ORG_PADRAO);
   const [ident, setIdent] = useState<Identidade>(IDENT_PADRAO);
+  const [msg, setMsg] = useState<string>(MENSAGEM_PADRAO);
 
   useEffect(() => {
     if (data?.["organization"]) setOrg({ ...ORG_PADRAO, ...(data["organization"] as Partial<Organizacao>) });
     if (data?.["identidade"]) setIdent({ ...IDENT_PADRAO, ...(data["identidade"] as Partial<Identidade>) });
+    const t = (data?.["coletas_mensagem"] as { template?: string } | undefined)?.template;
+    if (t?.trim()) setMsg(t);
   }, [data]);
 
   if (isLoading) return <Carregando />;
