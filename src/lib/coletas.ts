@@ -3,6 +3,7 @@
  * Ferramenta operacional leve: pré-cadastro do cliente, fila, motorista e relatório diário.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { publicUrl } from "@/lib/app-url";
 
 export type ColetaTipo = "coleta" | "entrega";
 export type ColetaStatus =
@@ -181,9 +182,13 @@ export function mapsUrl(s: Partial<ColetaSolicitacao>): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(enderecoCompleto(s))}`;
 }
 
+/**
+ * Link público do cadastro. Sempre montado a partir da URL pública oficial
+ * (nunca do domínio de preview). Retorna "" quando não há base válida —
+ * a interface bloqueia o envio nesse caso.
+ */
 export function linkCadastro(token: string): string {
-  const base = typeof window !== "undefined" ? window.location.origin : "";
-  return `${base}/cadastro-coleta/${token}`;
+  return publicUrl(`/cadastro-coleta/${token}`) ?? "";
 }
 
 /**
