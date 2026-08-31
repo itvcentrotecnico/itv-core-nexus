@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import QRCode from "qrcode";
-import { Copy, MessageSquareText, QrCode as QrIcon, Send } from "lucide-react";
+import { Copy, ExternalLink, MessageSquareText, QrCode as QrIcon, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
