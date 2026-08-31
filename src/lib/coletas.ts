@@ -3,6 +3,7 @@
  * Ferramenta operacional leve: pré-cadastro do cliente, fila, motorista e relatório diário.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { publicUrl } from "@/lib/app-url";
 
 export type ColetaTipo = "coleta" | "entrega";
 export type ColetaStatus =
