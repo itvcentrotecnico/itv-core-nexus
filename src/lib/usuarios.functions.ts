@@ -10,7 +10,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * que ele é Administrador.
  */
 
-const SITE_URL_PADRAO = "https://itv-core-nexus.lovable.app";
+const SITE_URL_PADRAO = "https://itvcentrotecnico.lovable.app";
 
 /** Aceita apenas origens do próprio sistema; qualquer outra cai no domínio publicado. */
 function resolverOrigem(origem?: string | null): string {
