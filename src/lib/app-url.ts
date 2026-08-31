@@ -44,18 +44,24 @@ function normalizar(valor: string | undefined | null): string | null {
 }
 
 /**
- * URL pública oficial. Ordem: variável de ambiente → domínio atual (se já for
- * um domínio público válido, inclusive domínio próprio) → domínio publicado.
+ * URL pública oficial. Ordem: variável de ambiente → domínio publicado →
+ * domínio atual (apenas se for um domínio público válido).
+ *
+ * O domínio publicado vem ANTES do domínio atual para que nenhum ambiente
+ * inesperado (preview novo, sandbox, iframe do editor) vaze para o cliente.
  */
 export function publicAppUrl(): string | null {
   const doEnv = normalizar(import.meta.env["VITE_PUBLIC_APP_URL"] as string | undefined);
   if (doEnv) return doEnv;
+  const publicada = normalizar(URL_PUBLICADA_PADRAO);
+  if (publicada) return publicada;
   if (typeof window !== "undefined") {
     const atual = normalizar(window.location.origin);
     if (atual) return atual;
   }
-  return normalizar(URL_PUBLICADA_PADRAO);
+  return null;
 }
+
 
 /** Mensagem interna (nunca exibida ao cliente) quando não há URL pública válida. */
 export const ERRO_URL_PUBLICA =
