@@ -733,7 +733,7 @@ Finalize apenas a fundação do GESTÃO ITV CENTRO TÉCNICO e aguarde a próxima
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://itv-core-nexus.lovable.app
+**Live app**: https://itvcentrotecnico.lovable.app
 
 ## Build with Lovable
 
