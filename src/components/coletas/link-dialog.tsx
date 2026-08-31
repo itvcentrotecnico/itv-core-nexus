@@ -25,6 +25,7 @@ import {
   whatsappUrl,
 } from "@/lib/coletas";
 import { labelClass } from "@/lib/caixa";
+import { ERRO_URL_PUBLICA } from "@/lib/app-url";
 
 export interface LinkGerado {
   id?: string;
