@@ -144,19 +144,39 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
             </div>
           )}
 
-          <Button className="h-14 w-full text-base font-semibold" onClick={abrirWhatsapp}>
+          {!url && (
+            <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+              {ERRO_URL_PUBLICA}
+            </div>
+          )}
+
+          <Button className="h-14 w-full text-base font-semibold" onClick={abrirWhatsapp} disabled={!url}>
             <Send className="mr-2 size-5" />
             {aberturas > 0 ? "Reenviar pelo WhatsApp" : "Enviar pelo WhatsApp"}
           </Button>
 
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" className="h-11" onClick={() => void copiar(url, "Link copiado.")}>
-              <Copy className="mr-2 size-4" /> Copiar link
+          <div className="grid grid-cols-3 gap-2">
+            <Button
+              variant="outline"
+              className="h-11"
+              disabled={!url}
+              onClick={() => void copiar(url, "Link copiado.")}
+            >
+              <Copy className="mr-2 size-4" /> Copiar
             </Button>
-            <Button variant="outline" className="h-11" onClick={() => setMostrarQr((v) => !v)}>
+            <Button variant="outline" className="h-11" disabled={!url} onClick={() => setMostrarQr((v) => !v)}>
               <QrIcon className="mr-2 size-4" /> QR Code
             </Button>
+            <Button
+              variant="outline"
+              className="h-11"
+              disabled={!url}
+              onClick={() => window.open(url, "_blank", "noopener")}
+            >
+              <ExternalLink className="mr-2 size-4" /> Testar
+            </Button>
           </div>
+
 
           {falhou && (
             <div className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
