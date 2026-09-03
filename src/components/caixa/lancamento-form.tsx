@@ -485,7 +485,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     void submit(false);
   }
 
-  const tecnicos = tecnicosQuery.data ?? [];
+  // Somente vendedores podem ser vinculados ao lançamento (sem motoristas/técnicos).
+  const tecnicos = (tecnicosQuery.data ?? []).filter((u) => (u.roles ?? []).includes("vendedor"));
   const formas = formasQuery.data ?? [];
 
   return (
