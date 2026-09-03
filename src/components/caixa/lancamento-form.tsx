@@ -570,7 +570,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
             </div>
             <div>
               <label className={labelClass}>
-                Técnico <span className="font-normal text-muted-foreground">(opcional)</span>
+                Vendedor <span className="font-normal text-muted-foreground">(opcional)</span>
               </label>
               <Select value={tecnicoId || NONE} onValueChange={(v) => setTecnicoId(v === NONE ? "" : v)}>
                 <SelectTrigger className="w-full">
