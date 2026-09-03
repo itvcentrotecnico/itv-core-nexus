@@ -485,7 +485,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     void submit(false);
   }
 
-  const tecnicos = tecnicosQuery.data ?? [];
+  // Somente vendedores podem ser vinculados ao lançamento (sem motoristas/técnicos).
+  const tecnicos = (tecnicosQuery.data ?? []).filter((u) => (u.roles ?? []).includes("vendedor"));
   const formas = formasQuery.data ?? [];
 
   return (
@@ -569,7 +570,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
             </div>
             <div>
               <label className={labelClass}>
-                Técnico <span className="font-normal text-muted-foreground">(opcional)</span>
+                Vendedor <span className="font-normal text-muted-foreground">(opcional)</span>
               </label>
               <Select value={tecnicoId || NONE} onValueChange={(v) => setTecnicoId(v === NONE ? "" : v)}>
                 <SelectTrigger className="w-full">
