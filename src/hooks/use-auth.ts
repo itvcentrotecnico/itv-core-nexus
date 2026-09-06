@@ -4,7 +4,14 @@ import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "adm_financeiro" | "adm_operacional" | "vendedor" | "tecnico" | "tv_display" | "motorista";
+export type AppRole =
+  | "administrador"
+  | "adm_financeiro"
+  | "adm_operacional"
+  | "vendedor"
+  | "tecnico"
+  | "tv_display"
+  | "motorista";
 export type PermissionAction =
   | "visualizar"
   | "criar"
@@ -103,10 +110,17 @@ export function useAccess() {
     staleTime: 60_000,
     queryFn: async (): Promise<AccessData> => {
       const [profileRes, rolesRes, rolePermsRes, userPermsRes] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, avatar_url, active, status").eq("id", user!.id).maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("id, full_name, email, avatar_url, active, status")
+          .eq("id", user!.id)
+          .maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", user!.id),
         supabase.from("role_permissions").select("role, module_key, action"),
-        supabase.from("user_permissions").select("module_key, action, allowed").eq("user_id", user!.id),
+        supabase
+          .from("user_permissions")
+          .select("module_key, action, allowed")
+          .eq("user_id", user!.id),
       ]);
 
       if (profileRes.error) throw profileRes.error;

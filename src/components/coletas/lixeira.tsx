@@ -41,7 +41,9 @@ export function LixeiraColetas() {
       <div className="rounded-xl border border-border p-6 text-center text-sm text-muted-foreground">
         {mensagemErro(query.error, "Não foi possível carregar a lixeira.")}
         <div className="mt-3">
-          <Button size="sm" variant="outline" onClick={() => void query.refetch()}>Tentar novamente</Button>
+          <Button size="sm" variant="outline" onClick={() => void query.refetch()}>
+            Tentar novamente
+          </Button>
         </div>
       </div>
     );

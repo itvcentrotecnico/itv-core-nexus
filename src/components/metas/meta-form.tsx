@@ -126,7 +126,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className={labelClass} htmlFor="meta-nome">Nome da meta</label>
+            <label className={labelClass} htmlFor="meta-nome">
+              Nome da meta
+            </label>
             <input
               id="meta-nome"
               className={inputClass}
@@ -137,7 +139,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass} htmlFor="meta-tipo">Indicador</label>
+              <label className={labelClass} htmlFor="meta-tipo">
+                Indicador
+              </label>
               <select
                 id="meta-tipo"
                 className={inputClass}
@@ -145,18 +149,29 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
                 onChange={(e) => setForm((f) => ({ ...f, tipo: e.target.value as MetaTipo }))}
               >
                 {tipos.map(([k, l]) => (
-                  <option key={k} value={k}>{l}</option>
+                  <option key={k} value={k}>
+                    {l}
+                  </option>
                 ))}
               </select>
-              <p className="mt-1 text-[11px] text-muted-foreground">Fonte: {TIPO_META_FONTE[form.tipo]}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Fonte: {TIPO_META_FONTE[form.tipo]}
+              </p>
             </div>
             <div>
-              <label className={labelClass} htmlFor="meta-periodo">Período</label>
+              <label className={labelClass} htmlFor="meta-periodo">
+                Período
+              </label>
               <select
                 id="meta-periodo"
                 className={inputClass}
                 value={form.periodo_tipo}
-                onChange={(e) => setForm((f) => ({ ...f, periodo_tipo: e.target.value as typeof form.periodo_tipo }))}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    periodo_tipo: e.target.value as typeof form.periodo_tipo,
+                  }))
+                }
               >
                 <option value="semanal">Semanal</option>
                 <option value="mensal">Mensal</option>
@@ -166,7 +181,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass} htmlFor="meta-ini">Início</label>
+              <label className={labelClass} htmlFor="meta-ini">
+                Início
+              </label>
               <input
                 id="meta-ini"
                 type="date"
@@ -176,7 +193,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
               />
             </div>
             <div>
-              <label className={labelClass} htmlFor="meta-fim">Fim</label>
+              <label className={labelClass} htmlFor="meta-fim">
+                Fim
+              </label>
               <input
                 id="meta-fim"
                 type="date"
@@ -187,7 +206,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
             </div>
           </div>
           <div>
-            <label className={labelClass} htmlFor="meta-valor">Valor alvo</label>
+            <label className={labelClass} htmlFor="meta-valor">
+              Valor alvo
+            </label>
             <input
               id="meta-valor"
               inputMode="decimal"
@@ -207,7 +228,9 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
             Definir como meta principal do período (destaque no Dashboard)
           </label>
           <div>
-            <label className={labelClass} htmlFor="meta-obs">Observação (opcional)</label>
+            <label className={labelClass} htmlFor="meta-obs">
+              Observação (opcional)
+            </label>
             <textarea
               id="meta-obs"
               className={inputClass}
@@ -286,8 +309,8 @@ export function FaixasDialog({
           <DialogTitle>Faixas de Projeção</DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground">
-          Limites (em % da projeção sobre a meta) que classificam cada meta como Acima da Meta, No Ritmo, Atenção ou
-          Crítico.
+          Limites (em % da projeção sobre a meta) que classificam cada meta como Acima da Meta, No
+          Ritmo, Atenção ou Crítico.
         </p>
         <div className="space-y-3">
           {(
@@ -307,7 +330,9 @@ export function FaixasDialog({
               />
             </div>
           ))}
-          <p className="text-[11px] text-muted-foreground">Abaixo de "Atenção" a meta é classificada como Crítico.</p>
+          <p className="text-[11px] text-muted-foreground">
+            Abaixo de "Atenção" a meta é classificada como Crítico.
+          </p>
         </div>
         <div className="flex justify-end gap-2">
           <button

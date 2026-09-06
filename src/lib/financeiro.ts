@@ -204,12 +204,18 @@ export const STATUS_DESPESA: Record<DespesaStatus, { label: string; className: s
 
 export const STATUS_CONTA_PAGAR: Record<ContaPagarStatus, { label: string; className: string }> = {
   pendente: { label: "Pendente", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-  parcialmente_pago: { label: "Parcialmente Pago", className: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  parcialmente_pago: {
+    label: "Parcialmente Pago",
+    className: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  },
   pago: { label: "Pago", className: "bg-primary/10 text-primary" },
   cancelado: { label: "Cancelado", className: "bg-muted text-muted-foreground" },
 };
 
-export const STATUS_CONTA_RECEBER: Record<ContaReceberStatus, { label: string; className: string }> = {
+export const STATUS_CONTA_RECEBER: Record<
+  ContaReceberStatus,
+  { label: string; className: string }
+> = {
   pendente: { label: "Pendente", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
   parcialmente_recebido: {
     label: "Parcialmente Recebido",
@@ -221,12 +227,13 @@ export const STATUS_CONTA_RECEBER: Record<ContaReceberStatus, { label: string; c
 
 export type FaixaAtraso = "1-7" | "8-15" | "16-30" | "30+";
 
-export const FAIXAS_ATRASO: { key: FaixaAtraso; label: string; test: (dias: number) => boolean }[] = [
-  { key: "1-7", label: "1 a 7 dias", test: (d) => d >= 1 && d <= 7 },
-  { key: "8-15", label: "8 a 15 dias", test: (d) => d >= 8 && d <= 15 },
-  { key: "16-30", label: "16 a 30 dias", test: (d) => d >= 16 && d <= 30 },
-  { key: "30+", label: "Acima de 30 dias", test: (d) => d > 30 },
-];
+export const FAIXAS_ATRASO: { key: FaixaAtraso; label: string; test: (dias: number) => boolean }[] =
+  [
+    { key: "1-7", label: "1 a 7 dias", test: (d) => d >= 1 && d <= 7 },
+    { key: "8-15", label: "8 a 15 dias", test: (d) => d >= 8 && d <= 15 },
+    { key: "16-30", label: "16 a 30 dias", test: (d) => d >= 16 && d <= 30 },
+    { key: "30+", label: "Acima de 30 dias", test: (d) => d > 30 },
+  ];
 
 /** Competência (YYYY-MM-01) a partir de um mês "YYYY-MM". */
 export function competenciaFromMonth(month: string): string | null {

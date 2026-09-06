@@ -62,7 +62,6 @@ export function publicAppUrl(): string | null {
   return null;
 }
 
-
 /** Mensagem interna (nunca exibida ao cliente) quando não há URL pública válida. */
 export const ERRO_URL_PUBLICA =
   "Endereço público do cadastro não está configurado. Contate a administração.";

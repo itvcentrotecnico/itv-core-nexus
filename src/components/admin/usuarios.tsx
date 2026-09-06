@@ -128,24 +128,51 @@ function ConviteDialog({
         <DialogHeader>
           <DialogTitle>Convidar usuário</DialogTitle>
           <DialogDescription>
-            O colaborador recebe um e-mail para definir a própria senha. Não existe cadastro público.
+            O colaborador recebe um e-mail para definir a própria senha. Não existe cadastro
+            público.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <label className={labelClass} htmlFor="convite-nome">Nome completo</label>
-            <input id="convite-nome" className={inputClass} value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome do colaborador" />
+            <label className={labelClass} htmlFor="convite-nome">
+              Nome completo
+            </label>
+            <input
+              id="convite-nome"
+              className={inputClass}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="Nome do colaborador"
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="convite-email">E-mail corporativo</label>
-            <input id="convite-email" type="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="colaborador@itv.com.br" />
+            <label className={labelClass} htmlFor="convite-email">
+              E-mail corporativo
+            </label>
+            <input
+              id="convite-email"
+              type="email"
+              className={inputClass}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="colaborador@itv.com.br"
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="convite-colab">Colaborador vinculado (opcional)</label>
-            <select id="convite-colab" className={inputClass} value={colaboradorId} onChange={(e) => setColaboradorId(e.target.value)}>
+            <label className={labelClass} htmlFor="convite-colab">
+              Colaborador vinculado (opcional)
+            </label>
+            <select
+              id="convite-colab"
+              className={inputClass}
+              value={colaboradorId}
+              onChange={(e) => setColaboradorId(e.target.value)}
+            >
               <option value="">Sem vínculo</option>
               {disponiveis.map((c) => (
-                <option key={c.id} value={c.id}>{c.nome}</option>
+                <option key={c.id} value={c.id}>
+                  {c.nome}
+                </option>
               ))}
             </select>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -153,17 +180,28 @@ function ConviteDialog({
             </p>
           </div>
           <div>
-            <label className={labelClass} htmlFor="convite-role">Perfil de acesso</label>
-            <select id="convite-role" className={inputClass} value={role} onChange={(e) => setRole(e.target.value as AppRole)}>
+            <label className={labelClass} htmlFor="convite-role">
+              Perfil de acesso
+            </label>
+            <select
+              id="convite-role"
+              className={inputClass}
+              value={role}
+              onChange={(e) => setRole(e.target.value as AppRole)}
+            >
               {PERFIS.map((p) => (
-                <option key={p} value={p}>{formatRole(p)}</option>
+                <option key={p} value={p}>
+                  {formatRole(p)}
+                </option>
               ))}
             </select>
             <p className="mt-1 text-xs text-muted-foreground">{PERFIL_RESUMO[role]}</p>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
           <Button onClick={() => void enviar()} disabled={enviando}>
             {enviando && <Loader2 className="mr-2 size-4 animate-spin" />} Enviar convite
           </Button>
@@ -185,7 +223,10 @@ export function AdminUsuarios() {
   const podeAdministrar = isAdmin || can("admin", "administrar");
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<"todos" | UsuarioStatus>("todos");
-  const [alvoStatus, setAlvoStatus] = useState<{ usuario: AdminUsuario; status: UsuarioStatus } | null>(null);
+  const [alvoStatus, setAlvoStatus] = useState<{
+    usuario: AdminUsuario;
+    status: UsuarioStatus;
+  } | null>(null);
   const [alvoPerfis, setAlvoPerfis] = useState<AdminUsuario | null>(null);
   const [perfisSel, setPerfisSel] = useState<string[]>([]);
   const [conviteAberto, setConviteAberto] = useState(false);
@@ -270,7 +311,18 @@ export function AdminUsuarios() {
       ) : usuarios.length === 0 ? (
         <SemDados label="Nenhum usuário encontrado." />
       ) : (
-        <TabelaAdmin cabecalho={["Usuário", "Colaborador", "Perfis", "Status", "Último acesso", "Módulos", "Criado em", "Ações"]}>
+        <TabelaAdmin
+          cabecalho={[
+            "Usuário",
+            "Colaborador",
+            "Perfis",
+            "Status",
+            "Último acesso",
+            "Módulos",
+            "Criado em",
+            "Ações",
+          ]}
+        >
           {usuarios.map((u) => (
             <tr key={u.id} className="align-top">
               <td className="px-3 py-3">
@@ -302,18 +354,24 @@ export function AdminUsuarios() {
                   )}
                 </div>
                 {u.overrides > 0 ? (
-                  <p className="mt-1 text-xs text-muted-foreground">{u.overrides} exceção(ões) individual(is)</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {u.overrides} exceção(ões) individual(is)
+                  </p>
                 ) : null}
               </td>
               <td className="px-3 py-3">
                 <PillStatus tom={TOM_STATUS[u.status]}>{USUARIO_STATUS_LABEL[u.status]}</PillStatus>
-                {u.status_motivo ? <p className="mt-1 text-xs text-muted-foreground">{u.status_motivo}</p> : null}
+                {u.status_motivo ? (
+                  <p className="mt-1 text-xs text-muted-foreground">{u.status_motivo}</p>
+                ) : null}
               </td>
               <td className="px-3 py-3 text-xs text-muted-foreground">
                 {u.last_sign_in_at ? formatDateTimeITV(u.last_sign_in_at) : "Nunca acessou"}
               </td>
               <td className="px-3 py-3 text-xs text-muted-foreground">{u.modulos.length}</td>
-              <td className="px-3 py-3 text-xs text-muted-foreground">{formatDateTimeITV(u.created_at)}</td>
+              <td className="px-3 py-3 text-xs text-muted-foreground">
+                {formatDateTimeITV(u.created_at)}
+              </td>
               <td className="px-3 py-3">
                 <div className="flex flex-wrap gap-2">
                   <BotaoAcao
@@ -376,7 +434,11 @@ export function AdminUsuarios() {
         </TabelaAdmin>
       )}
 
-      <ConviteDialog aberto={conviteAberto} onOpenChange={setConviteAberto} onConcluido={invalidar} />
+      <ConviteDialog
+        aberto={conviteAberto}
+        onOpenChange={setConviteAberto}
+        onConcluido={invalidar}
+      />
 
       <ConfirmarAcao
         aberto={!!alvoStatus}
@@ -417,7 +479,8 @@ export function AdminUsuarios() {
           <DialogHeader>
             <DialogTitle>Perfis de {alvoPerfis?.full_name}</DialogTitle>
             <DialogDescription>
-              O perfil define as permissões padrão. Ajustes individuais são feitos na tela de Permissões.
+              O perfil define as permissões padrão. Ajustes individuais são feitos na tela de
+              Permissões.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
@@ -426,7 +489,9 @@ export function AdminUsuarios() {
                 <Checkbox
                   checked={perfisSel.includes(p)}
                   onCheckedChange={(v) =>
-                    setPerfisSel((atual) => (v ? [...new Set([...atual, p])] : atual.filter((r) => r !== p)))
+                    setPerfisSel((atual) =>
+                      v ? [...new Set([...atual, p])] : atual.filter((r) => r !== p),
+                    )
                   }
                 />
                 {formatRole(p)}
@@ -441,7 +506,11 @@ export function AdminUsuarios() {
               onClick={async () => {
                 if (!alvoPerfis) return;
                 const ok = await executarAcao(
-                  () => rpcAdmin("admin_usuario_perfis", { p_user_id: alvoPerfis.id, p_roles: perfisSel }),
+                  () =>
+                    rpcAdmin("admin_usuario_perfis", {
+                      p_user_id: alvoPerfis.id,
+                      p_roles: perfisSel,
+                    }),
                   "Perfis atualizados.",
                   invalidar,
                 );

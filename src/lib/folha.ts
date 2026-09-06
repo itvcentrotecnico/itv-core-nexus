@@ -195,9 +195,15 @@ export const STATUS_COLABORADOR: Record<ColaboradorStatus, { label: string; clas
   desligado: { label: "Desligado", className: "bg-muted text-muted-foreground" },
 };
 
-export const STATUS_COMPETENCIA: Record<FolhaCompetenciaStatus, { label: string; className: string }> = {
+export const STATUS_COMPETENCIA: Record<
+  FolhaCompetenciaStatus,
+  { label: string; className: string }
+> = {
   aberta: { label: "Aberta", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-  em_conferencia: { label: "Em Conferência", className: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  em_conferencia: {
+    label: "Em Conferência",
+    className: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  },
   aprovada: { label: "Aprovada", className: "bg-primary/10 text-primary" },
   paga: { label: "Paga", className: "bg-primary/10 text-primary" },
   fechada: { label: "Fechada", className: "bg-muted text-muted-foreground" },
@@ -207,7 +213,10 @@ export const STATUS_ITEM_FOLHA: Record<FolhaItemStatus, { label: string; classNa
   pendente: { label: "Pendente", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
   conferido: { label: "Conferido", className: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
   aprovado: { label: "Aprovado", className: "bg-primary/10 text-primary" },
-  parcialmente_pago: { label: "Parcialmente Pago", className: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  parcialmente_pago: {
+    label: "Parcialmente Pago",
+    className: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  },
   pago: { label: "Pago", className: "bg-primary/10 text-primary" },
 };
 
@@ -224,8 +233,18 @@ export const BENEFICIO_TIPOS: { value: ColaboradorBeneficio["tipo"]; label: stri
 export function competenciaLabel(iso: string): string {
   const [y, m] = iso.split("-").map(Number);
   const meses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
   return `${meses[(m ?? 1) - 1]}/${y}`;
 }

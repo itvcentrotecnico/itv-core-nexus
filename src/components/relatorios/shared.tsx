@@ -30,7 +30,13 @@ export function exportarCSV(nome: string, cabecalho: string[], linhas: (string |
   toast.success("CSV exportado.");
 }
 
-export function BotaoExportar({ onClick, label = "Exportar CSV" }: { onClick: () => void; label?: string }) {
+export function BotaoExportar({
+  onClick,
+  label = "Exportar CSV",
+}: {
+  onClick: () => void;
+  label?: string;
+}) {
   return (
     <button
       type="button"
@@ -42,7 +48,15 @@ export function BotaoExportar({ onClick, label = "Exportar CSV" }: { onClick: ()
   );
 }
 
-export function KpiRel({ titulo, valor, sub }: { titulo: string; valor: string; sub?: string | undefined }) {
+export function KpiRel({
+  titulo,
+  valor,
+  sub,
+}: {
+  titulo: string;
+  valor: string;
+  sub?: string | undefined;
+}) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{titulo}</p>
@@ -100,7 +114,9 @@ export function TabelaRel({
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
             {colunas.map((c) => (
-              <th key={c} className="px-4 py-2.5 font-medium">{c}</th>
+              <th key={c} className="px-4 py-2.5 font-medium">
+                {c}
+              </th>
             ))}
           </tr>
         </thead>
@@ -108,7 +124,9 @@ export function TabelaRel({
           {linhas.map((l, i) => (
             <tr key={i} className="border-b border-border/60 last:border-0">
               {l.map((cel, j) => (
-                <td key={j} className="px-4 py-2.5 text-foreground">{cel}</td>
+                <td key={j} className="px-4 py-2.5 text-foreground">
+                  {cel}
+                </td>
               ))}
             </tr>
           ))}
@@ -135,11 +153,18 @@ export function RankingBarras({
   }
   const max = Math.max(...itens.map((i) => i.valor), 1);
   const fmt = (v: number) =>
-    formato === "moeda" ? formatCurrencyBRL(v) : formato === "percentual" ? `${v.toFixed(1).replace(".", ",")}%` : String(Math.round(v));
+    formato === "moeda"
+      ? formatCurrencyBRL(v)
+      : formato === "percentual"
+        ? `${v.toFixed(1).replace(".", ",")}%`
+        : String(Math.round(v));
   return (
     <div className="space-y-2">
       {itens.map((item, i) => (
-        <div key={`${item.rotulo}-${i}`} className="rounded-xl border border-border bg-card px-4 py-3">
+        <div
+          key={`${item.rotulo}-${i}`}
+          className="rounded-xl border border-border bg-card px-4 py-3"
+        >
           <div className="flex items-center justify-between gap-2">
             <p className="truncate text-sm font-medium text-foreground">
               <span className="mr-2 text-xs font-bold text-muted-foreground">{i + 1}º</span>
@@ -148,7 +173,10 @@ export function RankingBarras({
             <p className="shrink-0 text-sm font-bold text-foreground">{fmt(item.valor)}</p>
           </div>
           <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${(item.valor / max) * 100}%` }} />
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${(item.valor / max) * 100}%` }}
+            />
           </div>
           {item.sub && <p className="mt-1 text-[11px] text-muted-foreground">{item.sub}</p>}
         </div>

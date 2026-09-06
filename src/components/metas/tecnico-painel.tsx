@@ -10,7 +10,13 @@ import { NivelBadge, ProgressBarMeta, rpcMetas } from "@/components/metas/shared
 import { cn } from "@/lib/utils";
 
 /** Painel individual do técnico: meta atual, ritmo, projeção e qualidade. */
-export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: { from: string; to: string } }) {
+export function TecnicoPainel({
+  tecnicoId,
+  range,
+}: {
+  tecnicoId: string;
+  range: { from: string; to: string };
+}) {
   const painel = useQuery({
     queryKey: ["metas", "tecnico-painel", tecnicoId, range.from, range.to],
     queryFn: async () => {
@@ -53,11 +59,14 @@ export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: 
     URL.revokeObjectURL(url);
   }
 
-  if (painel.isLoading) return <p className="text-sm text-muted-foreground">Carregando seus indicadores…</p>;
+  if (painel.isLoading)
+    return <p className="text-sm text-muted-foreground">Carregando seus indicadores…</p>;
   if (painel.error || !painel.data?.desempenho) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
-        <p className="text-sm text-muted-foreground">Sem dados de desempenho no período selecionado.</p>
+        <p className="text-sm text-muted-foreground">
+          Sem dados de desempenho no período selecionado.
+        </p>
       </div>
     );
   }
@@ -69,21 +78,41 @@ export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi titulo="Produção validada" valor={formatCurrencyBRL(d.producao_validada)} sub={`${d.validados} serviços validados`} />
+        <Kpi
+          titulo="Produção validada"
+          valor={formatCurrencyBRL(d.producao_validada)}
+          sub={`${d.validados} serviços validados`}
+        />
         <Kpi
           titulo="Meta do período"
-          valor={meta?.valor_meta != null ? formatCurrencyBRL(meta.valor_meta) : meta?.quantidade_meta != null ? `${meta.quantidade_meta} serviços` : "—"}
-          sub={meta ? `${formatDateOnlyISO(meta.inicio)} a ${formatDateOnlyISO(meta.fim)}` : "Nenhuma meta ativa"}
+          valor={
+            meta?.valor_meta != null
+              ? formatCurrencyBRL(meta.valor_meta)
+              : meta?.quantidade_meta != null
+                ? `${meta.quantidade_meta} serviços`
+                : "—"
+          }
+          sub={
+            meta
+              ? `${formatDateOnlyISO(meta.inicio)} a ${formatDateOnlyISO(meta.fim)}`
+              : "Nenhuma meta ativa"
+          }
         />
         <Kpi
           titulo="Atingimento"
-          valor={meta?.percentual != null ? `${meta.percentual.toFixed(1).replace(".", ",")}%` : "—"}
+          valor={
+            meta?.percentual != null ? `${meta.percentual.toFixed(1).replace(".", ",")}%` : "—"
+          }
           sub={meta?.nivel ?? "Sem nível"}
         />
         <Kpi
           titulo="Projeção"
           valor={meta?.projecao != null ? formatCurrencyBRL(meta.projecao) : "—"}
-          sub={meta?.ritmo_necessario != null ? `Ritmo necessário: ${formatCurrencyBRL(meta.ritmo_necessario)}/dia` : "Período em andamento"}
+          sub={
+            meta?.ritmo_necessario != null
+              ? `Ritmo necessário: ${formatCurrencyBRL(meta.ritmo_necessario)}/dia`
+              : "Período em andamento"
+          }
         />
       </div>
 
@@ -103,7 +132,11 @@ export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: 
       )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi titulo="Ticket médio" valor={formatCurrencyBRL(d.ticket_medio)} sub="Por serviço validado" />
+        <Kpi
+          titulo="Ticket médio"
+          valor={formatCurrencyBRL(d.ticket_medio)}
+          sub="Por serviço validado"
+        />
         <Kpi
           titulo="Índice de validação"
           valor={d.indice_validacao != null ? `${d.indice_validacao.toFixed(0)}%` : "—"}
@@ -131,7 +164,9 @@ export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: 
                   const st = STATUS_META[m.status];
                   return (
                     <tr key={m.id} className="border-b border-border/60 last:border-0">
-                      <td className="px-4 py-2.5 text-foreground">{TIPO_META_TECNICO_LABEL[m.tipo] ?? m.tipo}</td>
+                      <td className="px-4 py-2.5 text-foreground">
+                        {TIPO_META_TECNICO_LABEL[m.tipo] ?? m.tipo}
+                      </td>
                       <td className="px-4 py-2.5 text-muted-foreground">
                         {formatDateOnlyISO(m.inicio)} a {formatDateOnlyISO(m.fim)}
                       </td>
@@ -141,7 +176,12 @@ export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: 
                         {m.quantidade_meta != null && `${m.quantidade_meta} serviços`}
                       </td>
                       <td className="px-4 py-2.5">
-                        <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", st.className)}>
+                        <span
+                          className={cn(
+                            "inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                            st.className,
+                          )}
+                        >
                           {st.label}
                         </span>
                       </td>

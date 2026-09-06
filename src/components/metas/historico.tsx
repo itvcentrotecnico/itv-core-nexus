@@ -58,7 +58,17 @@ export function HistoricoTab({
       return;
     }
     baixarCSV(`metas-historico-${mes}.csv`, [
-      ["Meta", "Tipo", "Início", "Fim", "Alvo", "Realizado", "Atingimento %", "Projeção %", "Status"],
+      [
+        "Meta",
+        "Tipo",
+        "Início",
+        "Fim",
+        "Alvo",
+        "Realizado",
+        "Atingimento %",
+        "Projeção %",
+        "Status",
+      ],
       ...dados.map((m) => [
         m.nome,
         TIPO_META_EMPRESA_LABEL[m.tipo] ?? m.tipo,
@@ -127,7 +137,9 @@ export function HistoricoTab({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <label htmlFor="hist-anos" className="text-sm text-muted-foreground">Últimos</label>
+          <label htmlFor="hist-anos" className="text-sm text-muted-foreground">
+            Últimos
+          </label>
           <select
             id="hist-anos"
             value={anos}
@@ -181,14 +193,22 @@ export function HistoricoTab({
                 <tr key={m.id} className="border-b border-border/60 last:border-0">
                   <td className="px-4 py-3">
                     <p className="font-medium text-foreground">{m.nome}</p>
-                    <p className="text-xs text-muted-foreground">{TIPO_META_EMPRESA_LABEL[m.tipo] ?? m.tipo}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {TIPO_META_EMPRESA_LABEL[m.tipo] ?? m.tipo}
+                    </p>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {formatDateOnlyISO(m.data_inicio)} a {formatDateOnlyISO(m.data_fim)}
                   </td>
-                  <td className="px-4 py-3 text-foreground">{formatMetaValor(m.valor_alvo, m.unidade)}</td>
-                  <td className="px-4 py-3 text-foreground">{formatMetaValor(m.realizado, m.unidade)}</td>
-                  <td className="px-4 py-3 font-semibold text-foreground">{m.percentual.toFixed(1).replace(".", ",")}%</td>
+                  <td className="px-4 py-3 text-foreground">
+                    {formatMetaValor(m.valor_alvo, m.unidade)}
+                  </td>
+                  <td className="px-4 py-3 text-foreground">
+                    {formatMetaValor(m.realizado, m.unidade)}
+                  </td>
+                  <td className="px-4 py-3 font-semibold text-foreground">
+                    {m.percentual.toFixed(1).replace(".", ",")}%
+                  </td>
                   <td className="px-4 py-3">
                     <StatusProjecaoBadge status={m.status_projecao} />
                   </td>

@@ -9,7 +9,11 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { KpiCard } from "@/components/caixa/kpi-card";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateTimeITV, todayManausISO } from "@/lib/format";
-import { STATUS_DESCONTO, type DescontoAutorizacao, type DescontosIndicadores } from "@/lib/governanca";
+import {
+  STATUS_DESCONTO,
+  type DescontoAutorizacao,
+  type DescontosIndicadores,
+} from "@/lib/governanca";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -29,7 +33,12 @@ interface SolicitarProps {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   /** Dados pré-preenchidos vindos do lançamento em edição. */
-  contexto: { os: string | null; cliente: string | null; valorOriginal: number; valorDesconto: number };
+  contexto: {
+    os: string | null;
+    cliente: string | null;
+    valorOriginal: number;
+    valorDesconto: number;
+  };
   limite: number | null;
   onSolicitado: () => void;
 }
@@ -89,8 +98,8 @@ export function SolicitarDescontoDialog({
           </DialogTitle>
           <DialogDescription>
             O desconto informado ultrapassa sua alçada
-            {limite != null ? ` de ${limite.toFixed(2).replace(".", ",")}%` : ""}. Envie para aprovação
-            de um gestor — a decisão fica registrada na auditoria.
+            {limite != null ? ` de ${limite.toFixed(2).replace(".", ",")}%` : ""}. Envie para
+            aprovação de um gestor — a decisão fica registrada na auditoria.
           </DialogDescription>
         </DialogHeader>
 
@@ -101,12 +110,15 @@ export function SolicitarDescontoDialog({
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Valor bruto</dt>
-            <dd className="font-medium text-foreground">{formatCurrencyBRL(contexto.valorOriginal)}</dd>
+            <dd className="font-medium text-foreground">
+              {formatCurrencyBRL(contexto.valorOriginal)}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Desconto solicitado</dt>
             <dd className="font-semibold text-destructive">
-              {formatCurrencyBRL(contexto.valorDesconto)} ({percentual.toFixed(2).replace(".", ",")}%)
+              {formatCurrencyBRL(contexto.valorDesconto)} ({percentual.toFixed(2).replace(".", ",")}
+              %)
             </dd>
           </div>
         </dl>
@@ -150,7 +162,9 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
   const { can } = useAccess();
   const queryClient = useQueryClient();
   const podeAprovar = can("caixa", "aprovar");
-  const [decisao, setDecisao] = useState<{ item: DescontoAutorizacao; aprovar: boolean } | null>(null);
+  const [decisao, setDecisao] = useState<{ item: DescontoAutorizacao; aprovar: boolean } | null>(
+    null,
+  );
   const [comentario, setComentario] = useState("");
   const [saving, setSaving] = useState(false);
   const [filtro, setFiltro] = useState<"pendente" | "todos">("pendente");
@@ -184,7 +198,10 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
 
   const ind = indicadoresQuery.data;
   const lista = useMemo(
-    () => (listaQuery.data ?? []).filter((d) => (filtro === "pendente" ? d.status === "pendente" : true)),
+    () =>
+      (listaQuery.data ?? []).filter((d) =>
+        filtro === "pendente" ? d.status === "pendente" : true,
+      ),
     [listaQuery.data, filtro],
   );
 
@@ -222,16 +239,31 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <KpiCard label="Descontos concedidos" value={formatCurrencyBRL(ind?.total_descontos ?? 0)} sub="No período filtrado" />
+        <KpiCard
+          label="Descontos concedidos"
+          value={formatCurrencyBRL(ind?.total_descontos ?? 0)}
+          sub="No período filtrado"
+        />
         <KpiCard
           label="% sobre faturamento"
           value={`${(ind?.desconto_percentual ?? 0).toFixed(2).replace(".", ",")}%`}
           sub={`Alerta acima de ${(ind?.limite_alerta_pct ?? 0).toString().replace(".", ",")}%`}
           highlight={!!ind?.alerta}
         />
-        <KpiCard label="Desconto médio" value={formatCurrencyBRL(ind?.desconto_medio ?? 0)} sub={`${ind?.lancamentos_com_desconto ?? 0} lançamento(s)`} />
-        <KpiCard label="Acima da alçada" value={String(ind?.solicitacoes_acima_alcada ?? 0)} sub="Solicitações registradas" />
-        <KpiCard label="Aprovado por gestor" value={formatCurrencyBRL(ind?.valor_aprovado_gestor ?? 0)} />
+        <KpiCard
+          label="Desconto médio"
+          value={formatCurrencyBRL(ind?.desconto_medio ?? 0)}
+          sub={`${ind?.lancamentos_com_desconto ?? 0} lançamento(s)`}
+        />
+        <KpiCard
+          label="Acima da alçada"
+          value={String(ind?.solicitacoes_acima_alcada ?? 0)}
+          sub="Solicitações registradas"
+        />
+        <KpiCard
+          label="Aprovado por gestor"
+          value={formatCurrencyBRL(ind?.valor_aprovado_gestor ?? 0)}
+        />
       </div>
 
       {ind?.alerta && (
@@ -253,7 +285,9 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
                 <span className="text-muted-foreground">
                   {u.usuario} <span className="text-xs">({u.lancamentos} lançamento(s))</span>
                 </span>
-                <span className="font-medium text-foreground">{formatCurrencyBRL(Number(u.total))}</span>
+                <span className="font-medium text-foreground">
+                  {formatCurrencyBRL(Number(u.total))}
+                </span>
               </li>
             ))}
           </ul>
@@ -305,17 +339,24 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
             </thead>
             <tbody>
               {lista.map((d) => (
-                <tr key={d.id} className="border-b border-border last:border-0 hover:bg-secondary/40">
+                <tr
+                  key={d.id}
+                  className="border-b border-border last:border-0 hover:bg-secondary/40"
+                >
                   <td className="px-4 py-3">
                     <p className="font-medium text-foreground">{d.solicitante?.full_name ?? "—"}</p>
-                    <p className="text-xs text-muted-foreground">{formatDateTimeITV(d.solicitado_em)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDateTimeITV(d.solicitado_em)}
+                    </p>
                     <p className="mt-1 max-w-64 text-xs text-muted-foreground">{d.motivo}</p>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     <p className="font-medium text-foreground">{d.os || "—"}</p>
                     <p className="text-xs">{d.cliente || "—"}</p>
                   </td>
-                  <td className="px-4 py-3 text-right text-foreground">{formatCurrencyBRL(d.valor_original)}</td>
+                  <td className="px-4 py-3 text-right text-foreground">
+                    {formatCurrencyBRL(d.valor_original)}
+                  </td>
                   <td className="px-4 py-3 text-right font-medium text-destructive">
                     {formatCurrencyBRL(d.valor_desconto)}
                     <p className="text-xs font-normal text-muted-foreground">
@@ -330,8 +371,10 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
                       className={cn(
                         "rounded-full px-2 py-0.5 text-[11px] font-semibold",
                         STATUS_DESCONTO[d.status].tom === "ok" && "bg-primary/10 text-primary",
-                        STATUS_DESCONTO[d.status].tom === "alerta" && "bg-amber-500/15 text-amber-700 dark:text-amber-400",
-                        STATUS_DESCONTO[d.status].tom === "erro" && "bg-destructive/10 text-destructive",
+                        STATUS_DESCONTO[d.status].tom === "alerta" &&
+                          "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+                        STATUS_DESCONTO[d.status].tom === "erro" &&
+                          "bg-destructive/10 text-destructive",
                       )}
                     >
                       {STATUS_DESCONTO[d.status].label}
@@ -341,8 +384,12 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
                         {d.decisor?.full_name ?? "—"} · {formatDateTimeITV(d.decidido_em)}
                       </p>
                     )}
-                    {d.comentario && <p className="max-w-48 text-xs text-muted-foreground">{d.comentario}</p>}
-                    {d.utilizado_em && <p className="text-xs text-muted-foreground">Utilizada no lançamento</p>}
+                    {d.comentario && (
+                      <p className="max-w-48 text-xs text-muted-foreground">{d.comentario}</p>
+                    )}
+                    {d.utilizado_em && (
+                      <p className="text-xs text-muted-foreground">Utilizada no lançamento</p>
+                    )}
                   </td>
                   {podeAprovar && (
                     <td className="px-4 py-3">
@@ -382,7 +429,9 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
       <Dialog open={!!decisao} onOpenChange={(v) => !v && setDecisao(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{decisao?.aprovar ? "Autorizar desconto" : "Recusar solicitação"}</DialogTitle>
+            <DialogTitle>
+              {decisao?.aprovar ? "Autorizar desconto" : "Recusar solicitação"}
+            </DialogTitle>
             <DialogDescription>
               {decisao
                 ? `${formatCurrencyBRL(decisao.item.valor_desconto)} sobre ${formatCurrencyBRL(
@@ -393,7 +442,12 @@ export function DescontosSection({ periodo }: { periodo: { inicio: string; fim: 
           </DialogHeader>
           <div>
             <label htmlFor="dsc-comentario" className={labelClass}>
-              Comentário {decisao?.aprovar ? <span className="font-normal text-muted-foreground">(opcional)</span> : ""}
+              Comentário{" "}
+              {decisao?.aprovar ? (
+                <span className="font-normal text-muted-foreground">(opcional)</span>
+              ) : (
+                ""
+              )}
             </label>
             <textarea
               id="dsc-comentario"

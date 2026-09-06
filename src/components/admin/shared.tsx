@@ -41,11 +41,15 @@ export interface RpcResposta {
 }
 
 /** Chamada padronizada às RPCs administrativas (validação server-side). */
-export async function rpcAdmin<T extends RpcResposta>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
+export async function rpcAdmin<T extends RpcResposta>(
+  fn: string,
+  args: Record<string, unknown> = {},
+): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
   if (error) throw new Error(mensagemErro(error));
   const res = (data ?? { ok: false, code: "SEM_RESPOSTA" }) as T;
-  if (!res.ok) throw new Error(CODIGOS[res.code ?? ""] ?? res.code ?? "Não foi possível concluir a operação.");
+  if (!res.ok)
+    throw new Error(CODIGOS[res.code ?? ""] ?? res.code ?? "Não foi possível concluir a operação.");
   return res;
 }
 
@@ -135,7 +139,13 @@ export function TabelaAdmin({ cabecalho, children }: { cabecalho: string[]; chil
   );
 }
 
-export function PillStatus({ tom, children }: { tom: "ok" | "alerta" | "erro" | "neutro"; children: ReactNode }) {
+export function PillStatus({
+  tom,
+  children,
+}: {
+  tom: "ok" | "alerta" | "erro" | "neutro";
+  children: ReactNode;
+}) {
   return (
     <span
       className={cn(
@@ -181,7 +191,9 @@ export function ConfirmarAcao({
           <AlertDialogTitle>{titulo}</AlertDialogTitle>
           <AlertDialogDescription>{descricao}</AlertDialogDescription>
         </AlertDialogHeader>
-        {aviso ? <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">{aviso}</div> : null}
+        {aviso ? (
+          <div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">{aviso}</div>
+        ) : null}
         {pedirMotivo ? (
           <Textarea
             value={motivo}

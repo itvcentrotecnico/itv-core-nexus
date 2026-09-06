@@ -65,8 +65,10 @@ export function AdminGeral() {
   const [msg, setMsg] = useState<string>(MENSAGEM_PADRAO);
 
   useEffect(() => {
-    if (data?.["organization"]) setOrg({ ...ORG_PADRAO, ...(data["organization"] as Partial<Organizacao>) });
-    if (data?.["identidade"]) setIdent({ ...IDENT_PADRAO, ...(data["identidade"] as Partial<Identidade>) });
+    if (data?.["organization"])
+      setOrg({ ...ORG_PADRAO, ...(data["organization"] as Partial<Organizacao>) });
+    if (data?.["identidade"])
+      setIdent({ ...IDENT_PADRAO, ...(data["identidade"] as Partial<Identidade>) });
     const t = (data?.["coletas_mensagem"] as { template?: string } | undefined)?.template;
     if (t?.trim()) setMsg(t);
   }, [data]);
@@ -172,7 +174,8 @@ export function AdminGeral() {
               void executarAcao(
                 () => rpcAdmin("admin_config_salvar", { p_key: "identidade", p_value: ident }),
                 "Identidade visual salva.",
-                () => void queryClient.invalidateQueries({ queryKey: ["admin", "settings-gerais"] }),
+                () =>
+                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-gerais"] }),
               )
             }
           >
@@ -224,7 +227,9 @@ export function AdminGeral() {
             />
           </div>
           <div className="rounded-md border border-border bg-muted/40 p-4 sm:col-span-2 lg:col-span-3">
-            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Prévia da marca</p>
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
+              Prévia da marca
+            </p>
             <img
               src={ident.logo_url || logoColor.url}
               alt="Marca institucional ITV Centro Técnico"
@@ -243,11 +248,17 @@ export function AdminGeral() {
             disabled={!podeConfigurar}
             onClick={() =>
               void executarAcao(
-                () => rpcAdmin("admin_config_salvar", { p_key: "coletas_mensagem", p_value: { template: msg } }),
+                () =>
+                  rpcAdmin("admin_config_salvar", {
+                    p_key: "coletas_mensagem",
+                    p_value: { template: msg },
+                  }),
                 "Mensagem padrão salva.",
                 () => {
                   void queryClient.invalidateQueries({ queryKey: ["admin", "settings-gerais"] });
-                  void queryClient.invalidateQueries({ queryKey: ["settings", "coletas_mensagem"] });
+                  void queryClient.invalidateQueries({
+                    queryKey: ["settings", "coletas_mensagem"],
+                  });
                 },
               )
             }
@@ -256,7 +267,12 @@ export function AdminGeral() {
           </Button>
         }
       >
-        <Textarea rows={10} value={msg} onChange={(e) => setMsg(e.target.value)} disabled={!podeConfigurar} />
+        <Textarea
+          rows={10}
+          value={msg}
+          onChange={(e) => setMsg(e.target.value)}
+          disabled={!podeConfigurar}
+        />
         <p className="mt-2 text-xs text-muted-foreground">
           Use apenas conteúdo operacional. Não incluir promoções, ofertas ou campanhas.
         </p>
@@ -264,4 +280,3 @@ export function AdminGeral() {
     </div>
   );
 }
-

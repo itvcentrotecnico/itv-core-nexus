@@ -3,7 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 
 import { formatDateTimeITV } from "@/lib/format";
-import { Carregando, PillStatus, SecaoAdmin, TabelaAdmin, rpcAdmin } from "@/components/admin/shared";
+import {
+  Carregando,
+  PillStatus,
+  SecaoAdmin,
+  TabelaAdmin,
+  rpcAdmin,
+} from "@/components/admin/shared";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { Button } from "@/components/ui/button";
 
@@ -42,16 +48,21 @@ const FOLHA_LABEL: Record<string, string> = {
 
 export function AdminFechamentos() {
   const anoAtual = Number(
-    new Intl.DateTimeFormat("en-CA", { timeZone: "America/Manaus", year: "numeric" }).format(new Date()),
+    new Intl.DateTimeFormat("en-CA", { timeZone: "America/Manaus", year: "numeric" }).format(
+      new Date(),
+    ),
   );
   const [ano, setAno] = useState(anoAtual);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "fechamentos", ano],
     queryFn: async () => {
-      const res = await rpcAdmin<{ ok: true; competencias: CompetenciaLinha[] }>("admin_fechamentos_painel", {
-        p_ano: ano,
-      });
+      const res = await rpcAdmin<{ ok: true; competencias: CompetenciaLinha[] }>(
+        "admin_fechamentos_painel",
+        {
+          p_ano: ano,
+        },
+      );
       return res.competencias ?? [];
     },
   });
@@ -82,7 +93,9 @@ export function AdminFechamentos() {
           <TabelaAdmin cabecalho={["Competência", "Caixa", "Financeiro", "Folha", "Status geral"]}>
             {(data ?? []).map((c) => {
               const mes = Number(c.competencia.slice(5, 7));
-              const caixaOk = c.caixa_dias_com_lancamento > 0 && c.caixa_dias_fechados >= c.caixa_dias_com_lancamento;
+              const caixaOk =
+                c.caixa_dias_com_lancamento > 0 &&
+                c.caixa_dias_fechados >= c.caixa_dias_com_lancamento;
               const caixaVazio = c.caixa_dias_com_lancamento === 0;
               const finOk = c.financeiro_pendencias === 0;
               const folhaOk = c.folha_status === "fechada" || c.folha_status === "paga";

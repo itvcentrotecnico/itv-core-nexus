@@ -6,19 +6,24 @@ import { Lock, LockOpen, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
 import { LancamentoForm } from "@/components/caixa/lancamento-form";
-import { CancelarLancamentoDialog, EstornarLancamentoDialog } from "@/components/caixa/lancamento-actions";
-import { FecharCaixaDialog, ReabrirCaixaDialog } from "@/components/caixa/fechamento";
 import {
-  LancamentosView,
-  type LancamentoComEntrega,
-} from "@/components/caixa/lancamentos-view";
+  CancelarLancamentoDialog,
+  EstornarLancamentoDialog,
+} from "@/components/caixa/lancamento-actions";
+import { FecharCaixaDialog, ReabrirCaixaDialog } from "@/components/caixa/fechamento";
+import { LancamentosView, type LancamentoComEntrega } from "@/components/caixa/lancamentos-view";
 import { CaixaFisicoSection, useCaixaFisico } from "@/components/caixa/caixa-fisico";
 import { ResumoDesempenho } from "@/components/caixa/resumo-desempenho";
 import { PeriodoPresets } from "@/components/caixa/periodo-presets";
 import { DescontosSection } from "@/components/caixa/descontos";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
-import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV, todayManausISO } from "@/lib/format";
+import {
+  formatCurrencyBRL,
+  formatDateOnlyISO,
+  formatDateTimeITV,
+  todayManausISO,
+} from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/caixa")({
   head: () => ({
@@ -26,7 +31,10 @@ export const Route = createFileRoute("/_authenticated/caixa")({
       { title: "Caixa Diário — GESTÃO ITV Centro Técnico" },
       { name: "description", content: "Registro das movimentações diárias de caixa da operação." },
       { property: "og:title", content: "Caixa Diário — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Registro das movimentações diárias de caixa da operação." },
+      {
+        property: "og:description",
+        content: "Registro das movimentações diárias de caixa da operação.",
+      },
     ],
   }),
   component: CaixaPage,
@@ -38,7 +46,9 @@ function CaixaPage() {
 
   const [date, setDate] = useState(todayManausISO());
   const [periodo, setPeriodo] = useState({ inicio: todayManausISO(), fim: todayManausISO() });
-  const [tab, setTab] = useState<"lancamentos" | "fisico" | "descontos" | "fechamentos">("lancamentos");
+  const [tab, setTab] = useState<"lancamentos" | "fisico" | "descontos" | "fechamentos">(
+    "lancamentos",
+  );
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<CaixaLancamento | null>(null);
   const [cancelTarget, setCancelTarget] = useState<CaixaLancamento | null>(null);
@@ -50,7 +60,6 @@ function CaixaPage() {
     setDate(d);
     setPeriodo({ inicio: d, fim: d });
   };
-
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["caixa"] });
@@ -130,13 +139,13 @@ function CaixaPage() {
       round2(
         ativos.reduce(
           (acc, l) =>
-            acc + (l.pagamentos ?? []).reduce((a, p) => a + (p.forma?.eh_dinheiro ? p.valor : 0), 0),
+            acc +
+            (l.pagamentos ?? []).reduce((a, p) => a + (p.forma?.eh_dinheiro ? p.valor : 0), 0),
           0,
         ),
       ),
     [ativos],
   );
-
 
   const fisicoQuery = useCaixaFisico(date, podeVer);
 
@@ -242,7 +251,11 @@ function CaixaPage() {
       )}
 
       {/* Abas */}
-      <div role="tablist" aria-label="Seções do caixa" className="flex gap-1 rounded-lg border border-border bg-card p-1">
+      <div
+        role="tablist"
+        aria-label="Seções do caixa"
+        className="flex gap-1 rounded-lg border border-border bg-card p-1"
+      >
         {(
           [
             { key: "lancamentos", label: "Lançamentos" },
@@ -272,24 +285,23 @@ function CaixaPage() {
         <div className="space-y-3">
           <PeriodoPresets periodo={periodo} onChange={setPeriodo} />
           <LancamentosView
-          lancamentos={lancamentos}
-          loading={lancamentosQuery.isLoading}
-          diaBloqueado={diaBloqueado}
-          podeEditar={podeEditar}
-          podeCancelar={podeCancelar}
-          podeEstornar={podeEstornar}
-          periodo={periodo}
-          onPeriodoChange={setPeriodo}
-          onEdit={(l) => {
-            setEditing(l);
-            setFormOpen(true);
-          }}
+            lancamentos={lancamentos}
+            loading={lancamentosQuery.isLoading}
+            diaBloqueado={diaBloqueado}
+            podeEditar={podeEditar}
+            podeCancelar={podeCancelar}
+            podeEstornar={podeEstornar}
+            periodo={periodo}
+            onPeriodoChange={setPeriodo}
+            onEdit={(l) => {
+              setEditing(l);
+              setFormOpen(true);
+            }}
             onCancel={setCancelTarget}
             onEstornar={setEstornoTarget}
           />
         </div>
       )}
-
 
       {tab === "fisico" && (
         <CaixaFisicoSection
@@ -349,7 +361,6 @@ function CaixaPage() {
 
 export { KpiCard } from "@/components/caixa/kpi-card";
 
-
 interface FechamentosSectionProps {
   fechamentos: CaixaFechamento[];
   loading: boolean;
@@ -357,7 +368,12 @@ interface FechamentosSectionProps {
   onReabrir: (f: CaixaFechamento) => void;
 }
 
-function FechamentosSection({ fechamentos, loading, podeReabrir, onReabrir }: FechamentosSectionProps) {
+function FechamentosSection({
+  fechamentos,
+  loading,
+  podeReabrir,
+  onReabrir,
+}: FechamentosSectionProps) {
   if (loading) {
     return (
       <div className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">

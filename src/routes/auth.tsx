@@ -128,7 +128,10 @@ function AuthPage() {
 
             {mode !== "forgot" && (
               <div>
-                <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="password"
+                  className="mb-1.5 block text-sm font-medium text-foreground"
+                >
                   Senha
                 </label>
                 <div className="relative">
@@ -160,7 +163,10 @@ function AuthPage() {
             )}
 
             {error && (
-              <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <p
+                role="alert"
+                className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              >
                 {error}
               </p>
             )}
@@ -205,8 +211,7 @@ function AuthPage() {
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Sistema interno — acesso restrito a colaboradores autorizados.
-          <br />
-          O cadastro é feito somente por convite do administrador.
+          <br />O cadastro é feito somente por convite do administrador.
         </p>
       </div>
     </div>

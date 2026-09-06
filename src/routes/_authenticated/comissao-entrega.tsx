@@ -33,7 +33,8 @@ export const Route = createFileRoute("/_authenticated/comissao-entrega")({
       { title: "Comissão de Entrega — GESTÃO ITV Centro Técnico" },
       {
         name: "description",
-        content: "Validação, pagamento e relatório do incentivo de entrega vinculado ao Caixa Diário.",
+        content:
+          "Validação, pagamento e relatório do incentivo de entrega vinculado ao Caixa Diário.",
       },
       { property: "og:title", content: "Comissão de Entrega — GESTÃO ITV Centro Técnico" },
       {
@@ -85,7 +86,11 @@ function ComissaoEntregaPage() {
     queryFn: async () => {
       const { data, error } = await supabase.rpc("comissao_entrega_listar", filtros);
       if (error) throw error;
-      const res = data as unknown as { ok: boolean; itens?: ComissaoEntrega[]; pode_gerir?: boolean };
+      const res = data as unknown as {
+        ok: boolean;
+        itens?: ComissaoEntrega[];
+        pode_gerir?: boolean;
+      };
       return { itens: res?.itens ?? [], podeGerir: !!res?.pode_gerir };
     },
   });
@@ -143,7 +148,8 @@ function ComissaoEntregaPage() {
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight">Comissão de Entrega</h1>
           <p className="text-sm text-muted-foreground">
-            Incentivo operacional gerado nos lançamentos do Caixa. Não integra faturamento nem comissão técnica.
+            Incentivo operacional gerado nos lançamentos do Caixa. Não integra faturamento nem
+            comissão técnica.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => void listaQuery.refetch()}>
@@ -157,13 +163,25 @@ function ComissaoEntregaPage() {
             <label className={labelClass} htmlFor="ce-inicio">
               Início
             </label>
-            <input id="ce-inicio" type="date" className={inputClass} value={inicio} onChange={(e) => setInicio(e.target.value)} />
+            <input
+              id="ce-inicio"
+              type="date"
+              className={inputClass}
+              value={inicio}
+              onChange={(e) => setInicio(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass} htmlFor="ce-fim">
               Fim
             </label>
-            <input id="ce-fim" type="date" className={inputClass} value={fim} onChange={(e) => setFim(e.target.value)} />
+            <input
+              id="ce-fim"
+              type="date"
+              className={inputClass}
+              value={fim}
+              onChange={(e) => setFim(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass} htmlFor="ce-entregador-filtro">
@@ -205,7 +223,13 @@ function ComissaoEntregaPage() {
             <label className={labelClass} htmlFor="ce-os-filtro">
               OS
             </label>
-            <input id="ce-os-filtro" className={inputClass} value={os} onChange={(e) => setOs(e.target.value)} placeholder="Nº da OS" />
+            <input
+              id="ce-os-filtro"
+              className={inputClass}
+              value={os}
+              onChange={(e) => setOs(e.target.value)}
+              placeholder="Nº da OS"
+            />
           </div>
         </div>
       </SecaoAdmin>
@@ -226,7 +250,9 @@ function ComissaoEntregaPage() {
             ) : itens.length === 0 ? (
               <SemDados label="Nenhuma comissão de entrega no período" />
             ) : (
-              <TabelaAdmin cabecalho={["Data", "OS", "Entregador", "Tipo", "Valor", "Status", "Ações"]}>
+              <TabelaAdmin
+                cabecalho={["Data", "OS", "Entregador", "Tipo", "Valor", "Status", "Ações"]}
+              >
                 {itens.map((i) => (
                   <tr key={i.id}>
                     <td className="px-3 py-2 whitespace-nowrap">{formatDateITV(i.data)}</td>
@@ -236,22 +262,33 @@ function ComissaoEntregaPage() {
                       {TIPO_ENTREGA[i.tipo]}
                       {i.tipo === "entrega_avaliacao" ? (
                         <span className="ml-2 text-xs">
-                          {i.avaliacao_confirmada ? "· avaliação confirmada" : "· avaliação pendente"}
+                          {i.avaliacao_confirmada
+                            ? "· avaliação confirmada"
+                            : "· avaliação pendente"}
                         </span>
                       ) : null}
                     </td>
-                    <td className="px-3 py-2 whitespace-nowrap">{formatCurrencyBRL(Number(i.valor))}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      {formatCurrencyBRL(Number(i.valor))}
+                    </td>
                     <td className="px-3 py-2">
-                      <PillStatus tom={STATUS_ENTREGA[i.status].tom}>{STATUS_ENTREGA[i.status].label}</PillStatus>
+                      <PillStatus tom={STATUS_ENTREGA[i.status].tom}>
+                        {STATUS_ENTREGA[i.status].label}
+                      </PillStatus>
                     </td>
                     <td className="px-3 py-2">
                       <div className="flex flex-wrap gap-2">
-                        {podeValidar && (i.status === "gerada" || i.status === "pendente_validacao") ? (
+                        {podeValidar &&
+                        (i.status === "gerada" || i.status === "pendente_validacao") ? (
                           <>
                             <Button size="sm" onClick={() => void executar(i, "validar", "")}>
                               Validar
                             </Button>
-                            <Button size="sm" variant="outline" onClick={() => setAcao({ item: i, tipo: "rejeitar" })}>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setAcao({ item: i, tipo: "rejeitar" })}
+                            >
                               Rejeitar
                             </Button>
                           </>
@@ -262,7 +299,11 @@ function ComissaoEntregaPage() {
                           </Button>
                         ) : null}
                         {podeCancelar && i.status !== "cancelada" ? (
-                          <Button size="sm" variant="ghost" onClick={() => setAcao({ item: i, tipo: "cancelar" })}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setAcao({ item: i, tipo: "cancelar" })}
+                          >
                             Cancelar
                           </Button>
                         ) : null}
@@ -276,14 +317,25 @@ function ComissaoEntregaPage() {
         </TabsContent>
 
         <TabsContent value="relatorio" className="mt-4">
-          <SecaoAdmin titulo="Desempenho por entregador" descricao="Quantidade de entregas, avaliações e valores do período.">
+          <SecaoAdmin
+            titulo="Desempenho por entregador"
+            descricao="Quantidade de entregas, avaliações e valores do período."
+          >
             {relatorioQuery.isLoading ? (
               <Carregando />
             ) : (relatorioQuery.data ?? []).length === 0 ? (
               <SemDados label="Sem dados no período" />
             ) : (
               <TabelaAdmin
-                cabecalho={["Entregador", "Entregas", "Com avaliação", "Gerado", "Validado", "Pago", "Pendente"]}
+                cabecalho={[
+                  "Entregador",
+                  "Entregas",
+                  "Com avaliação",
+                  "Gerado",
+                  "Validado",
+                  "Pago",
+                  "Pendente",
+                ]}
               >
                 {(relatorioQuery.data ?? []).map((r) => (
                   <tr key={r.entregador_id}>
@@ -306,7 +358,11 @@ function ComissaoEntregaPage() {
 
       <ConfirmarAcao
         aberto={!!acao}
-        titulo={acao?.tipo === "cancelar" ? "Cancelar comissão de entrega" : "Rejeitar comissão de entrega"}
+        titulo={
+          acao?.tipo === "cancelar"
+            ? "Cancelar comissão de entrega"
+            : "Rejeitar comissão de entrega"
+        }
         descricao="A ação fica registrada na auditoria com o motivo informado."
         pedirMotivo
         confirmarLabel="Confirmar"
@@ -317,7 +373,8 @@ function ComissaoEntregaPage() {
       />
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Bike className="size-3.5" aria-hidden="true" /> A comissão de entrega nunca é paga automaticamente.
+        <Bike className="size-3.5" aria-hidden="true" /> A comissão de entrega nunca é paga
+        automaticamente.
       </div>
     </div>
   );

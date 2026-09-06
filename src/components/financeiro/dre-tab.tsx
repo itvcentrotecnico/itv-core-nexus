@@ -108,7 +108,11 @@ export function DreTab() {
                   >
                     <td className="px-4 py-2.5 text-foreground">
                       {l.label}
-                      {l.hint && <span className="ml-2 text-xs font-normal text-muted-foreground">{l.hint}</span>}
+                      {l.hint && (
+                        <span className="ml-2 text-xs font-normal text-muted-foreground">
+                          {l.hint}
+                        </span>
+                      )}
                     </td>
                     <td
                       className={cn(
@@ -137,8 +141,8 @@ export function DreTab() {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            DRE gerencial da ITV: valores apurados pelo caixa e pelos lançamentos do período. Tributos são
-            gerenciais e não substituem a apuração fiscal oficial.
+            DRE gerencial da ITV: valores apurados pelo caixa e pelos lançamentos do período.
+            Tributos são gerenciais e não substituem a apuração fiscal oficial.
           </p>
         </>
       )}
@@ -146,7 +150,15 @@ export function DreTab() {
   );
 }
 
-function Indicador({ label, valor, tom }: { label: string; valor: string; tom?: "good" | "bad" | undefined }) {
+function Indicador({
+  label,
+  valor,
+  tom,
+}: {
+  label: string;
+  valor: string;
+  tom?: "good" | "bad" | undefined;
+}) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>

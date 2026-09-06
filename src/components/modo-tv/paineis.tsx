@@ -28,13 +28,21 @@ export function CardTv({
         className,
       )}
     >
-      <h2 className="mb-[0.8vw] text-[1.05vw] font-semibold uppercase tracking-[0.22em] text-white/55">{titulo}</h2>
+      <h2 className="mb-[0.8vw] text-[1.05vw] font-semibold uppercase tracking-[0.22em] text-white/55">
+        {titulo}
+      </h2>
       {children}
     </section>
   );
 }
 
-export function ValorGigante({ valor, tom = "claro" }: { valor: string; tom?: "claro" | "verde" | "atencao" }) {
+export function ValorGigante({
+  valor,
+  tom = "claro",
+}: {
+  valor: string;
+  tom?: "claro" | "verde" | "atencao";
+}) {
   return (
     <p
       className={cn(
@@ -53,7 +61,10 @@ export function BarraProgresso({ pct, tom = "verde" }: { pct: number; tom?: "ver
   return (
     <div className="h-[1.6vw] w-full overflow-hidden rounded-full bg-white/10" role="presentation">
       <div
-        className={cn("h-full rounded-full transition-[width] duration-1000 ease-out", tom === "verde" ? "bg-primary" : "bg-amber-400")}
+        className={cn(
+          "h-full rounded-full transition-[width] duration-1000 ease-out",
+          tom === "verde" ? "bg-primary" : "bg-amber-400",
+        )}
         style={{ width: `${largura}%` }}
       />
     </div>
@@ -69,7 +80,11 @@ export function CabecalhoTv({ referencia }: { referencia: string }) {
     return () => clearInterval(id);
   }, []);
 
-  const hora = agora.toLocaleTimeString("pt-BR", { timeZone: ITV_TIMEZONE, hour: "2-digit", minute: "2-digit" });
+  const hora = agora.toLocaleTimeString("pt-BR", {
+    timeZone: ITV_TIMEZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   const data = agora.toLocaleDateString("pt-BR", {
     timeZone: ITV_TIMEZONE,
     weekday: "long",
@@ -82,12 +97,18 @@ export function CabecalhoTv({ referencia }: { referencia: string }) {
       <div className="flex items-center gap-[1.2vw]">
         <img src={logoWhite.url} alt="ITV Centro Técnico" className="h-[3.2vw] w-auto" />
         <div className="border-l border-white/15 pl-[1.2vw]">
-          <p className="text-[1.1vw] font-semibold uppercase tracking-[0.2em] text-white/80">Painel de Desempenho</p>
-          <p className="text-[0.85vw] uppercase tracking-[0.18em] text-white/40">Gestão ITV Centro Técnico</p>
+          <p className="text-[1.1vw] font-semibold uppercase tracking-[0.2em] text-white/80">
+            Painel de Desempenho
+          </p>
+          <p className="text-[0.85vw] uppercase tracking-[0.18em] text-white/40">
+            Gestão ITV Centro Técnico
+          </p>
         </div>
       </div>
       <div className="text-right">
-        <p className="font-display text-[2.6vw] font-bold leading-none tabular-nums text-white">{hora}</p>
+        <p className="font-display text-[2.6vw] font-bold leading-none tabular-nums text-white">
+          {hora}
+        </p>
         <p className="mt-[0.3vw] text-[0.9vw] capitalize text-white/45">{data}</p>
       </div>
       <span className="sr-only">Referência: {formatDateOnlyISO(referencia)}</span>
@@ -95,17 +116,29 @@ export function CabecalhoTv({ referencia }: { referencia: string }) {
   );
 }
 
-export function RodapeTv({ indice, total, mensagem }: { indice: number; total: number; mensagem: string | null }) {
+export function RodapeTv({
+  indice,
+  total,
+  mensagem,
+}: {
+  indice: number;
+  total: number;
+  mensagem: string | null;
+}) {
   return (
     <footer className="flex items-center justify-between px-[2vw] pb-[1.4vw]">
       <p className="text-[0.9vw] text-white/35">
-        {mensagem ?? "Dados oficiais: Caixa Diário, Metas e Produção Técnica validada · America/Manaus"}
+        {mensagem ??
+          "Dados oficiais: Caixa Diário, Metas e Produção Técnica validada · America/Manaus"}
       </p>
       <div className="flex gap-[0.5vw]" aria-hidden="true">
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}
-            className={cn("h-[0.5vw] rounded-full transition-all duration-500", i === indice ? "w-[2.4vw] bg-primary" : "w-[0.5vw] bg-white/20")}
+            className={cn(
+              "h-[0.5vw] rounded-full transition-all duration-500",
+              i === indice ? "w-[2.4vw] bg-primary" : "w-[0.5vw] bg-white/20",
+            )}
           />
         ))}
       </div>
@@ -119,7 +152,8 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
   const meta = d.meta;
   const pct = meta?.percentual ?? 0;
   const tomMeta = pct >= 100 ? "verde" : pct >= 70 ? "claro" : "atencao";
-  const statusTom = d.ritmo.status === "acima" ? "verde" : d.ritmo.status === "no_ritmo" ? "claro" : "atencao";
+  const statusTom =
+    d.ritmo.status === "acima" ? "verde" : d.ritmo.status === "no_ritmo" ? "claro" : "atencao";
 
   return (
     <div className="grid h-full grid-cols-12 grid-rows-6 gap-[1.2vw]">
@@ -128,7 +162,8 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
           <ValorGigante valor={formatCurrencyBRL(d.faturamento.mes)} tom="verde" />
           <p className="mt-[0.8vw] text-[1.2vw] text-white/55">
             {d.faturamento.os} OS faturadas
-            {config.mostrar_ticket_medio && ` · Ticket médio ${formatCurrencyBRL(d.faturamento.ticket_medio)}`}
+            {config.mostrar_ticket_medio &&
+              ` · Ticket médio ${formatCurrencyBRL(d.faturamento.ticket_medio)}`}
           </p>
         </CardTv>
       )}
@@ -141,7 +176,10 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
                 <ValorGigante valor={`${pct.toFixed(1).replace(".", ",")}%`} tom={tomMeta} />
                 <p className="pb-[0.6vw] text-right text-[1.5vw] font-semibold tabular-nums text-white/75">
                   {formatCurrencyBRL(meta.realizado)}
-                  <span className="text-[1.1vw] font-normal text-white/40"> / {formatCurrencyBRL(meta.valor)}</span>
+                  <span className="text-[1.1vw] font-normal text-white/40">
+                    {" "}
+                    / {formatCurrencyBRL(meta.valor)}
+                  </span>
                 </p>
               </div>
               <div className="mt-[1vw]">
@@ -157,7 +195,9 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
               </div>
             </>
           ) : (
-            <p className="text-[1.6vw] text-white/45">Nenhuma meta principal definida para o período.</p>
+            <p className="text-[1.6vw] text-white/45">
+              Nenhuma meta principal definida para o período.
+            </p>
           )}
         </CardTv>
       )}
@@ -179,7 +219,10 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
       {config.mostrar_projecao && (
         <CardTv titulo="Projeção de Fechamento" className="col-span-6 row-span-3 justify-center">
           <div className="flex items-end gap-[2vw]">
-            <ValorGigante valor={formatCurrencyBRL(d.ritmo.projecao)} tom={statusTom === "verde" ? "verde" : statusTom} />
+            <ValorGigante
+              valor={formatCurrencyBRL(d.ritmo.projecao)}
+              tom={statusTom === "verde" ? "verde" : statusTom}
+            />
             <span
               className={cn(
                 "mb-[1vw] rounded-full px-[1.4vw] py-[0.5vw] text-[1.2vw] font-bold uppercase tracking-wide",
@@ -194,7 +237,9 @@ export function TelaMeta({ d, config }: { d: ModoTvIndicadores; config: ModoTvCo
             </span>
           </div>
           {meta && (
-            <p className="mt-[0.6vw] text-[1.2vw] text-white/50">Meta do mês: {formatCurrencyBRL(meta.valor)}</p>
+            <p className="mt-[0.6vw] text-[1.2vw] text-white/50">
+              Meta do mês: {formatCurrencyBRL(meta.valor)}
+            </p>
           )}
         </CardTv>
       )}
@@ -220,11 +265,21 @@ export function TelaProducao({ d, config }: { d: ModoTvIndicadores; config: Modo
       </CardTv>
 
       {config.mostrar_mensagem && config.mensagem_texto ? (
-        <CardTv titulo={config.mensagem_titulo || "Mensagem"} className="col-span-5 row-span-2 justify-center" destaque>
-          <p className="text-[1.8vw] font-semibold leading-tight text-white">{config.mensagem_texto}</p>
+        <CardTv
+          titulo={config.mensagem_titulo || "Mensagem"}
+          className="col-span-5 row-span-2 justify-center"
+          destaque
+        >
+          <p className="text-[1.8vw] font-semibold leading-tight text-white">
+            {config.mensagem_texto}
+          </p>
         </CardTv>
       ) : (
-        <CardTv titulo="Destaque da Semana" className="col-span-5 row-span-2 justify-center" destaque>
+        <CardTv
+          titulo="Destaque da Semana"
+          className="col-span-5 row-span-2 justify-center"
+          destaque
+        >
           {config.criterio_destaque === "validacao" && d.destaque_semana.validacao ? (
             <>
               <p className="font-display text-[2.4vw] font-black leading-none text-primary">
@@ -264,9 +319,20 @@ export function TelaProducao({ d, config }: { d: ModoTvIndicadores; config: Modo
                     <p className="text-[1.6vw] font-bold text-white">{nomeCurto(t.tecnico)}</p>
                     <p className="text-[1.3vw] tabular-nums text-white/60">
                       {formatCurrencyBRL(t.valor_mes)}
-                      {t.meta?.valor ? <span className="text-white/35"> / {formatCurrencyBRL(t.meta.valor)}</span> : null}
+                      {t.meta?.valor ? (
+                        <span className="text-white/35"> / {formatCurrencyBRL(t.meta.valor)}</span>
+                      ) : null}
                       {pct != null && (
-                        <span className={cn("ml-[0.8vw] font-bold", pct >= 100 ? "text-primary" : pct >= 70 ? "text-white" : "text-amber-400")}>
+                        <span
+                          className={cn(
+                            "ml-[0.8vw] font-bold",
+                            pct >= 100
+                              ? "text-primary"
+                              : pct >= 70
+                                ? "text-white"
+                                : "text-amber-400",
+                          )}
+                        >
                           {pct.toFixed(0)}%
                         </span>
                       )}
@@ -309,9 +375,20 @@ export function TelaServicos({ d, config }: { d: ModoTvIndicadores; config: Modo
             <div className="flex items-end justify-between gap-[1.5vw]">
               {d.ranking.slice(0, 3).map((r, i) => (
                 <div key={r.tecnico} className="flex-1">
-                  <p className={cn("text-[1.1vw] font-bold", i === 0 ? "text-primary" : "text-white/40")}>{i + 1}º</p>
-                  <p className="truncate text-[1.7vw] font-bold text-white">{nomeCurto(r.tecnico)}</p>
-                  <p className="text-[1.2vw] tabular-nums text-white/55">{formatCurrencyBRL(r.valor)}</p>
+                  <p
+                    className={cn(
+                      "text-[1.1vw] font-bold",
+                      i === 0 ? "text-primary" : "text-white/40",
+                    )}
+                  >
+                    {i + 1}º
+                  </p>
+                  <p className="truncate text-[1.7vw] font-bold text-white">
+                    {nomeCurto(r.tecnico)}
+                  </p>
+                  <p className="text-[1.2vw] tabular-nums text-white/55">
+                    {formatCurrencyBRL(r.valor)}
+                  </p>
                 </div>
               ))}
             </div>
@@ -351,11 +428,18 @@ export function TelaServicos({ d, config }: { d: ModoTvIndicadores; config: Modo
             <div className="mt-[0.6vw] flex flex-1 flex-col justify-center gap-[0.9vw]">
               {marcas.map((m) => (
                 <div key={m.marca} className="flex items-center gap-[1vw]">
-                  <p className="w-[7vw] shrink-0 truncate text-[1.4vw] font-semibold text-white">{m.marca}</p>
+                  <p className="w-[7vw] shrink-0 truncate text-[1.4vw] font-semibold text-white">
+                    {m.marca}
+                  </p>
                   <div className="h-[1.2vw] flex-1 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full rounded-full bg-primary/70" style={{ width: `${(m.quantidade / maxMarca) * 100}%` }} />
+                    <div
+                      className="h-full rounded-full bg-primary/70"
+                      style={{ width: `${(m.quantidade / maxMarca) * 100}%` }}
+                    />
                   </div>
-                  <p className="w-[3vw] shrink-0 text-right text-[1.4vw] font-bold tabular-nums text-white/70">{m.quantidade}</p>
+                  <p className="w-[3vw] shrink-0 text-right text-[1.4vw] font-bold tabular-nums text-white/70">
+                    {m.quantidade}
+                  </p>
                 </div>
               ))}
             </div>
@@ -376,19 +460,31 @@ export function TelaComparativo({ d }: { d: ModoTvIndicadores }) {
     <div className="grid h-full grid-cols-12 grid-rows-6 gap-[1.2vw]">
       <CardTv titulo="Mês Atual (até hoje)" className="col-span-4 row-span-3 justify-center">
         <ValorGigante valor={formatCurrencyBRL(d.faturamento.mes)} tom="verde" />
-        <p className="mt-[0.6vw] text-[1.1vw] text-white/45">{d.mes.dias_decorridos} dias decorridos</p>
+        <p className="mt-[0.6vw] text-[1.1vw] text-white/45">
+          {d.mes.dias_decorridos} dias decorridos
+        </p>
       </CardTv>
 
-      <CardTv titulo="Mesmo Período · Mês Anterior" className="col-span-4 row-span-3 justify-center">
+      <CardTv
+        titulo="Mesmo Período · Mês Anterior"
+        className="col-span-4 row-span-3 justify-center"
+      >
         <ValorGigante valor={formatCurrencyBRL(d.faturamento.mes_anterior_mesmo_periodo)} />
       </CardTv>
 
-      <CardTv titulo="Evolução" className="col-span-4 row-span-3 justify-center" destaque={positivo}>
+      <CardTv
+        titulo="Evolução"
+        className="col-span-4 row-span-3 justify-center"
+        destaque={positivo}
+      >
         {evo == null ? (
           <p className="text-[1.6vw] text-white/40">Sem base de comparação.</p>
         ) : (
           <>
-            <ValorGigante valor={`${positivo ? "+" : ""}${evo.toFixed(1).replace(".", ",")}%`} tom={positivo ? "verde" : "atencao"} />
+            <ValorGigante
+              valor={`${positivo ? "+" : ""}${evo.toFixed(1).replace(".", ",")}%`}
+              tom={positivo ? "verde" : "atencao"}
+            />
             <p className="mt-[0.6vw] text-[1.2vw] text-white/50">
               {positivo ? "acima" : "abaixo"} do mesmo período do mês anterior
             </p>
@@ -402,13 +498,21 @@ export function TelaComparativo({ d }: { d: ModoTvIndicadores }) {
       </CardTv>
 
       <CardTv titulo="Dias Restantes" className="col-span-4 row-span-3 justify-center">
-        <ValorGigante valor={String(d.mes.dias_restantes)} tom={d.mes.dias_restantes <= 5 ? "atencao" : "claro"} />
+        <ValorGigante
+          valor={String(d.mes.dias_restantes)}
+          tom={d.mes.dias_restantes <= 5 ? "atencao" : "claro"}
+        />
         <p className="mt-[0.6vw] text-[1.1vw] text-white/45">para o fechamento do mês</p>
       </CardTv>
 
       <CardTv titulo="Projeção de Fechamento" className="col-span-4 row-span-3 justify-center">
-        <ValorGigante valor={formatCurrencyBRL(d.ritmo.projecao)} tom={d.ritmo.status === "atencao" ? "atencao" : "verde"} />
-        <p className="mt-[0.6vw] text-[1.2vw] text-white/50">{STATUS_RITMO_LABEL[d.ritmo.status]}</p>
+        <ValorGigante
+          valor={formatCurrencyBRL(d.ritmo.projecao)}
+          tom={d.ritmo.status === "atencao" ? "atencao" : "verde"}
+        />
+        <p className="mt-[0.6vw] text-[1.2vw] text-white/50">
+          {STATUS_RITMO_LABEL[d.ritmo.status]}
+        </p>
       </CardTv>
     </div>
   );
@@ -436,8 +540,12 @@ export function TelaEquipeExterna({ d }: { d: EquipeExternaTv }) {
         <div className="grid h-full grid-cols-5 items-center gap-[1vw]">
           {cards.map(([label, valor]) => (
             <div key={label} className="text-center">
-              <p className="font-display text-[3.2vw] font-black leading-none tabular-nums text-white">{valor}</p>
-              <p className="mt-[0.4vw] text-[0.95vw] uppercase tracking-[0.16em] text-white/45">{label}</p>
+              <p className="font-display text-[3.2vw] font-black leading-none tabular-nums text-white">
+                {valor}
+              </p>
+              <p className="mt-[0.4vw] text-[0.95vw] uppercase tracking-[0.16em] text-white/45">
+                {label}
+              </p>
             </div>
           ))}
         </div>
@@ -449,7 +557,10 @@ export function TelaEquipeExterna({ d }: { d: EquipeExternaTv }) {
         ) : (
           <div className="grid grid-cols-3 gap-[1vw]">
             {d.equipe.slice(0, 9).map((m) => (
-              <div key={m.motorista} className="rounded-[1vw] border border-white/10 bg-white/[0.04] p-[1vw]">
+              <div
+                key={m.motorista}
+                className="rounded-[1vw] border border-white/10 bg-white/[0.04] p-[1vw]"
+              >
                 <p className="font-display text-[1.7vw] font-bold text-white">{m.motorista}</p>
                 <p className="text-[1.1vw] text-white/60">
                   {m.situacao}

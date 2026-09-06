@@ -4,11 +4,7 @@
  */
 
 export type ComissaoTipoRegra =
-  | "percentual_mao_obra"
-  | "percentual_receita"
-  | "fixo_os"
-  | "fixo_servico"
-  | "personalizada";
+  "percentual_mao_obra" | "percentual_receita" | "fixo_os" | "fixo_servico" | "personalizada";
 
 export type ComissaoStatus =
   | "gerada"
@@ -147,13 +143,22 @@ export const TIPO_REGRA: Record<ComissaoTipoRegra, string> = {
 
 export const STATUS_COMISSAO: Record<ComissaoStatus, { label: string; className: string }> = {
   gerada: { label: "Gerada", className: "bg-blue-100 text-blue-800 border-blue-200" },
-  pendente_conferencia: { label: "Pend. Conferência", className: "bg-amber-100 text-amber-800 border-amber-200" },
+  pendente_conferencia: {
+    label: "Pend. Conferência",
+    className: "bg-amber-100 text-amber-800 border-amber-200",
+  },
   conferida: { label: "Conferida", className: "bg-cyan-100 text-cyan-800 border-cyan-200" },
   aprovada: { label: "Aprovada", className: "bg-emerald-100 text-emerald-800 border-emerald-200" },
   paga: { label: "Paga", className: "bg-primary/10 text-primary border-primary/20" },
   cancelada: { label: "Cancelada", className: "bg-red-100 text-red-800 border-red-200" },
-  pendente_configuracao: { label: "Pend. Configuração", className: "bg-orange-100 text-orange-800 border-orange-200" },
-  devolvida: { label: "Devolvida ao Operacional", className: "bg-purple-100 text-purple-800 border-purple-200" },
+  pendente_configuracao: {
+    label: "Pend. Configuração",
+    className: "bg-orange-100 text-orange-800 border-orange-200",
+  },
+  devolvida: {
+    label: "Devolvida ao Operacional",
+    className: "bg-purple-100 text-purple-800 border-purple-200",
+  },
 };
 
 export const AJUSTE_TIPO: Record<ComissaoAjusteTipo, string> = {

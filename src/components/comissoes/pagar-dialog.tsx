@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { labelClass, inputClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
@@ -35,7 +40,11 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
     queryKey: ["formas-pagamento"],
     enabled: open,
     queryFn: async () => {
-      const { data, error } = await supabase.from("formas_pagamento").select("*").eq("ativo", true).order("ordem");
+      const { data, error } = await supabase
+        .from("formas_pagamento")
+        .select("*")
+        .eq("ativo", true)
+        .order("ordem");
       if (error) throw error;
       return (data ?? []) as FormaPagamento[];
     },
@@ -45,7 +54,10 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
     .filter((c) => selecionadas.includes(c.id))
     .reduce((acc, c) => acc + (c.valor_aprovado ?? c.valor_final ?? 0), 0);
 
-  const datas = aprovadas.filter((c) => selecionadas.includes(c.id)).map((c) => c.data_referencia).sort();
+  const datas = aprovadas
+    .filter((c) => selecionadas.includes(c.id))
+    .map((c) => c.data_referencia)
+    .sort();
 
   async function pagar(): Promise<void> {
     if (selecionadas.length === 0 || !formaId) {
@@ -64,7 +76,9 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
       if (error) throw new Error(mensagemErro(error));
       const r = data as ComissaoRpcResult & { valor_total?: number; quantidade?: number };
       if (!r.ok) throw new ErroNegocio(r?.message ?? "Não foi possível registrar o pagamento.");
-      toast.success(`Pagamento registrado: ${r.quantidade ?? selecionadas.length} comissão(ões), ${formatCurrencyBRL(Number(r.valor_total ?? total))}.`);
+      toast.success(
+        `Pagamento registrado: ${r.quantidade ?? selecionadas.length} comissão(ões), ${formatCurrencyBRL(Number(r.valor_total ?? total))}.`,
+      );
       queryClient.invalidateQueries({ queryKey: ["comissoes"] });
       queryClient.invalidateQueries({ queryKey: ["comissoes-indicadores"] });
       queryClient.invalidateQueries({ queryKey: ["comissoes-pagamentos"] });
@@ -100,12 +114,16 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
                     <Checkbox
                       checked={selecionadas.includes(c.id)}
                       onCheckedChange={(checked) =>
-                        setSelecionadas((prev) => checked ? [...prev, c.id] : prev.filter((id) => id !== c.id))
+                        setSelecionadas((prev) =>
+                          checked ? [...prev, c.id] : prev.filter((id) => id !== c.id),
+                        )
                       }
                     />
                     OS {c.os} · {formatDateITV(c.data_referencia)}
                   </label>
-                  <span className="text-sm font-medium">{formatCurrencyBRL(c.valor_aprovado ?? c.valor_final ?? 0)}</span>
+                  <span className="text-sm font-medium">
+                    {formatCurrencyBRL(c.valor_aprovado ?? c.valor_final ?? 0)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -113,32 +131,51 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
             <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 text-sm">
               <span className="text-muted-foreground">
                 {selecionadas.length} comissão(ões)
-                {datas.length > 0 && <> · período {formatDateITV(datas[0]!)} a {formatDateITV(datas[datas.length - 1]!)}</>}
+                {datas.length > 0 && (
+                  <>
+                    {" "}
+                    · período {formatDateITV(datas[0]!)} a {formatDateITV(datas[datas.length - 1]!)}
+                  </>
+                )}
               </span>
               <strong className="text-base">{formatCurrencyBRL(total)}</strong>
             </div>
 
             <div>
               <label className={labelClass}>Forma de Pagamento *</label>
-              <select className={inputClass} value={formaId} onChange={(e) => setFormaId(e.target.value)}>
+              <select
+                className={inputClass}
+                value={formaId}
+                onChange={(e) => setFormaId(e.target.value)}
+              >
                 <option value="">Selecione</option>
                 {(formasQuery.data ?? []).map((f) => (
-                  <option key={f.id} value={f.id}>{f.nome}</option>
+                  <option key={f.id} value={f.id}>
+                    {f.nome}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
               <label className={labelClass}>Observação</label>
-              <Textarea rows={2} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+              <Textarea
+                rows={2}
+                value={observacao}
+                onChange={(e) => setObservacao(e.target.value)}
+              />
             </div>
           </div>
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancelar</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+            Cancelar
+          </Button>
           {aprovadas.length > 0 && (
-            <Button onClick={pagar} disabled={saving}>{saving ? "Registrando…" : `Pagar ${formatCurrencyBRL(total)}`}</Button>
+            <Button onClick={pagar} disabled={saving}>
+              {saving ? "Registrando…" : `Pagar ${formatCurrencyBRL(total)}`}
+            </Button>
           )}
         </DialogFooter>
       </DialogContent>

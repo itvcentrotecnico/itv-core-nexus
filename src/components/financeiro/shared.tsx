@@ -51,7 +51,11 @@ export async function rpcFin<T extends { ok: boolean; message?: string } = Finan
   fn: string,
   args: Record<string, unknown>,
 ): Promise<T> {
-  const dynRpc = supabase.rpc as unknown as (this: typeof supabase, n: string, a: Record<string, unknown>) => Promise<RpcResponse>;
+  const dynRpc = supabase.rpc as unknown as (
+    this: typeof supabase,
+    n: string,
+    a: Record<string, unknown>,
+  ) => Promise<RpcResponse>;
   const { data, error } = await dynRpc.call(supabase, fn, args);
   if (error) throw new Error(mensagemErro(error));
   const r = data as T;

@@ -31,7 +31,9 @@ export function formatMetaValor(valor: number | null | undefined, unidade: MetaU
 export function StatusMetaBadge({ status }: { status: MetaStatus }) {
   const s = STATUS_META[status];
   return (
-    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}>
+    <span
+      className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}
+    >
       {s.label}
     </span>
   );
@@ -41,7 +43,9 @@ export function StatusProjecaoBadge({ status }: { status: StatusProjecao | null 
   if (!status) return <span className="text-xs text-muted-foreground">—</span>;
   const s = STATUS_PROJECAO[status];
   return (
-    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}>
+    <span
+      className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}
+    >
       {s.label}
     </span>
   );
@@ -62,7 +66,13 @@ export function NivelBadge({ nivel }: { nivel: string | null }) {
 }
 
 /** Barra de progresso da meta (limitada visualmente a 100%). */
-export function ProgressBarMeta({ percentual, statusProjecao }: { percentual: number; statusProjecao?: StatusProjecao | null }) {
+export function ProgressBarMeta({
+  percentual,
+  statusProjecao,
+}: {
+  percentual: number;
+  statusProjecao?: StatusProjecao | null;
+}) {
   const largura = Math.min(Math.max(percentual, 0), 100);
   const cor =
     percentual >= 100 || statusProjecao === "acima"
@@ -80,7 +90,10 @@ export function ProgressBarMeta({ percentual, statusProjecao }: { percentual: nu
       aria-valuemax={100}
       className="h-2 w-full overflow-hidden rounded-full bg-muted"
     >
-      <div className={cn("h-full rounded-full transition-all", cor)} style={{ width: `${largura}%` }} />
+      <div
+        className={cn("h-full rounded-full transition-all", cor)}
+        style={{ width: `${largura}%` }}
+      />
     </div>
   );
 }
@@ -88,7 +101,9 @@ export function ProgressBarMeta({ percentual, statusProjecao }: { percentual: nu
 /** Badge de variação percentual vs período anterior. */
 export function VariacaoBadge({ atual, anterior }: { atual: number; anterior: number }) {
   if (anterior === 0) {
-    return <span className="text-xs text-muted-foreground">{atual === 0 ? "sem variação" : "novo"}</span>;
+    return (
+      <span className="text-xs text-muted-foreground">{atual === 0 ? "sem variação" : "novo"}</span>
+    );
   }
   const v = ((atual - anterior) / Math.abs(anterior)) * 100;
   const positivo = v >= 0;
@@ -140,7 +155,10 @@ export function MetaCard({ meta, destaque }: { meta: MetaEmpresaDetalhe; destaqu
             )}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Fonte: {metaFonte(meta)} · {meta.dias_restantes > 0 ? `${meta.dias_restantes} dias restantes` : "período encerrado"}
+            Fonte: {metaFonte(meta)} ·{" "}
+            {meta.dias_restantes > 0
+              ? `${meta.dias_restantes} dias restantes`
+              : "período encerrado"}
           </p>
         </div>
         <StatusProjecaoBadge status={meta.status_projecao} />
@@ -152,7 +170,9 @@ export function MetaCard({ meta, destaque }: { meta: MetaEmpresaDetalhe; destaqu
         </p>
         <p className="text-sm text-muted-foreground">
           de {formatMetaValor(meta.valor_alvo, meta.unidade)} ·{" "}
-          <span className="font-semibold text-foreground">{meta.percentual.toFixed(1).replace(".", ",")}%</span>
+          <span className="font-semibold text-foreground">
+            {meta.percentual.toFixed(1).replace(".", ",")}%
+          </span>
         </p>
       </div>
 
@@ -170,13 +190,17 @@ export function MetaCard({ meta, destaque }: { meta: MetaEmpresaDetalhe; destaqu
           </p>
         </div>
         <div className="rounded-lg bg-muted/50 px-2 py-1.5">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Ritmo/dia</p>
+          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+            Ritmo/dia
+          </p>
           <p className="text-sm font-semibold text-foreground">
             {formatMetaValor(meta.ritmo_necessario, meta.unidade)}
           </p>
         </div>
         <div className="rounded-lg bg-muted/50 px-2 py-1.5">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Projeção</p>
+          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+            Projeção
+          </p>
           <p className="text-sm font-semibold text-foreground">
             {formatMetaValor(meta.projecao, meta.unidade)}
             {meta.projecao_percentual != null && (
@@ -225,11 +249,15 @@ export function useTecnicosDesempenho(range: { from: string; to: string } | null
     queryKey: ["metas", "tecnicos", range?.from, range?.to],
     enabled: !!range && enabled,
     queryFn: async () => {
-      const r = await rpcMetas<import("@/lib/metas").MetasTecnicosResult>("metas_tecnicos_desempenho", {
-        p_from: range!.from,
-        p_to: range!.to,
-      });
-      if (!r.ok) throw new ErroNegocio(r?.message ?? "Falha ao carregar o desempenho dos técnicos.");
+      const r = await rpcMetas<import("@/lib/metas").MetasTecnicosResult>(
+        "metas_tecnicos_desempenho",
+        {
+          p_from: range!.from,
+          p_to: range!.to,
+        },
+      );
+      if (!r.ok)
+        throw new ErroNegocio(r?.message ?? "Falha ao carregar o desempenho dos técnicos.");
       return r.tecnicos;
     },
   });

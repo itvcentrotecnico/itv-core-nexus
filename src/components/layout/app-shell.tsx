@@ -11,7 +11,6 @@ import logoColor from "@/assets/itv-logo-color.png.asset.json";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
 import { BottomNav } from "@/components/layout/bottom-nav";
 
-
 function Brand() {
   return (
     <Link to="/dashboard" className="flex items-center px-2" aria-label="GESTÃO ITV — Dashboard">
@@ -134,8 +133,8 @@ function ContaBloqueada() {
         <img src={logoColor.url} alt="ITV Centro Técnico" className="mx-auto mb-6 h-10 w-auto" />
         <h1 className="font-display text-lg font-bold text-foreground">Acesso suspenso</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Seu usuário está inativo ou bloqueado. Procure o administrador do sistema para
-          reativar o acesso.
+          Seu usuário está inativo ou bloqueado. Procure o administrador do sistema para reativar o
+          acesso.
         </p>
         <button
           type="button"
@@ -224,9 +223,6 @@ export function AppShell() {
     can(moduloAtual, "visualizar") ||
     can(moduloAtual, "visualizar_propria") ||
     can(moduloAtual, "administrar");
-
-
-
 
   return (
     <div className="min-h-screen bg-background">

@@ -10,7 +10,14 @@ import { Button } from "@/components/ui/button";
 import { Carregando, SecaoAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
 import { cn } from "@/lib/utils";
 
-const PERFIS_EDITAVEIS: AppRole[] = ["adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display", "motorista"];
+const PERFIS_EDITAVEIS: AppRole[] = [
+  "adm_financeiro",
+  "adm_operacional",
+  "vendedor",
+  "tecnico",
+  "tv_display",
+  "motorista",
+];
 
 const ACOES: { value: PermissionAction; label: string }[] = [
   { value: "visualizar", label: "Visualizar" },
@@ -47,7 +54,10 @@ export function AdminPerfis() {
   const modulosQuery = useQuery({
     queryKey: ["admin", "modules"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("modules").select("key, label").order("sort_order");
+      const { data, error } = await supabase
+        .from("modules")
+        .select("key, label")
+        .order("sort_order");
       if (error) throw error;
       return data as { key: string; label: string }[];
     },
@@ -56,7 +66,9 @@ export function AdminPerfis() {
   const permsQuery = useQuery({
     queryKey: ["admin", "role-permissions"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("role_permissions").select("role, module_key, action");
+      const { data, error } = await supabase
+        .from("role_permissions")
+        .select("role, module_key, action");
       if (error) throw error;
       return (data ?? []) as { role: AppRole; module_key: string; action: PermissionAction }[];
     },
@@ -64,7 +76,8 @@ export function AdminPerfis() {
 
   const mapa = useMemo(() => {
     const m = new Set<string>();
-    for (const p of permsQuery.data ?? []) if (p.role === perfil) m.add(`${p.module_key}:${p.action}`);
+    for (const p of permsQuery.data ?? [])
+      if (p.role === perfil) m.add(`${p.module_key}:${p.action}`);
     return m;
   }, [permsQuery.data, perfil]);
 
@@ -143,7 +156,9 @@ export function AdminPerfis() {
             <tbody className="divide-y divide-border">
               {modulos.map((m) => (
                 <tr key={m.key}>
-                  <td className="sticky left-0 bg-card px-3 py-2 font-medium text-foreground">{m.label}</td>
+                  <td className="sticky left-0 bg-card px-3 py-2 font-medium text-foreground">
+                    {m.label}
+                  </td>
                   {ACOES.map((a) => {
                     const chave = `${m.key}:${a.value}`;
                     const ativo = mapa.has(chave);

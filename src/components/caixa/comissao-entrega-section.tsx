@@ -72,7 +72,13 @@ interface Props {
 }
 
 /** Seção "Comissão de Entrega" do lançamento do caixa (incentivo operacional). */
-export function ComissaoEntregaSection({ valor, onChange, config, entregadores, bloqueado = false }: Props) {
+export function ComissaoEntregaSection({
+  valor,
+  onChange,
+  config,
+  entregadores,
+  bloqueado = false,
+}: Props) {
   const cfg = config ?? CONFIG_PADRAO;
   if (!cfg.ativo) return null;
 
@@ -92,9 +98,7 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
         <div className="flex items-start gap-2">
           <Bike className="mt-0.5 size-5 text-primary" aria-hidden="true" />
           <div>
-            <p className="text-sm font-semibold text-foreground">
-              Gerar comissão para entregador?
-            </p>
+            <p className="text-sm font-semibold text-foreground">Gerar comissão para entregador?</p>
             <p className="text-xs text-muted-foreground">
               Ative para registrar quem entregou e gerar a comissão de entrega. Não altera o
               faturamento nem a comissão técnica.
@@ -150,7 +154,6 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
               </p>
             ) : null}
           </div>
-
 
           <div>
             <label className={labelClass} htmlFor="ce-tipo">
@@ -225,17 +228,25 @@ export function ComissaoEntregaSection({ valor, onChange, config, entregadores, 
           <div
             className={cn(
               "rounded-md px-3 py-2 text-sm sm:col-span-2",
-              valorPrevisto != null ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive",
+              valorPrevisto != null
+                ? "bg-primary/10 text-primary"
+                : "bg-destructive/10 text-destructive",
             )}
           >
             {valorPrevisto != null ? (
               <>
-                Valor da comissão: <strong>{formatCurrencyBRL(valorPrevisto)}</strong> — será registrada
-                como {cfg.exige_validacao || valor.tipo === "entrega_avaliacao" ? "pendente de validação" : "gerada"}.
-                O pagamento nunca é automático.
+                Valor da comissão: <strong>{formatCurrencyBRL(valorPrevisto)}</strong> — será
+                registrada como{" "}
+                {cfg.exige_validacao || valor.tipo === "entrega_avaliacao"
+                  ? "pendente de validação"
+                  : "gerada"}
+                . O pagamento nunca é automático.
               </>
             ) : (
-              <>O valor de “entrega + avaliação” ainda não foi definido em Administração › Parâmetros.</>
+              <>
+                O valor de “entrega + avaliação” ainda não foi definido em Administração ›
+                Parâmetros.
+              </>
             )}
           </div>
         </div>

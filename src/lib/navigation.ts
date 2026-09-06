@@ -38,7 +38,12 @@ export const NAV_SECTIONS: NavSection[] = [
       { moduleKey: "caixa", label: "Caixa Diário", to: "/caixa", icon: Wallet },
       { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "comissoes", label: "Comissões", to: "/comissoes", icon: Percent },
-      { moduleKey: "comissao_entrega", label: "Comissão de Entrega", to: "/comissao-entrega", icon: Bike },
+      {
+        moduleKey: "comissao_entrega",
+        label: "Comissão de Entrega",
+        to: "/comissao-entrega",
+        icon: Bike,
+      },
       { moduleKey: "financeiro", label: "Financeiro", to: "/financeiro", icon: BarChart3 },
       { moduleKey: "coletas", label: "Coletas e Entregas", to: "/coletas", icon: Truck },
       { moduleKey: "producao", label: "Produção", to: "/producao", icon: ClipboardList },
@@ -51,12 +56,9 @@ export const NAV_SECTIONS: NavSection[] = [
   },
   {
     title: "Administração",
-    items: [
-      { moduleKey: "admin", label: "Administração", to: "/admin", icon: Settings },
-    ],
+    items: [{ moduleKey: "admin", label: "Administração", to: "/admin", icon: Settings }],
   },
 ];
-
 
 /**
  * Mapa rota → módulo. Usado para bloquear acesso por URL direta.
@@ -80,6 +82,8 @@ export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
 ];
 
 export function moduloDaRota(pathname: string): string | null {
-  const rota = ROUTE_MODULES.find((r) => pathname === r.prefix || pathname.startsWith(`${r.prefix}/`));
+  const rota = ROUTE_MODULES.find(
+    (r) => pathname === r.prefix || pathname.startsWith(`${r.prefix}/`),
+  );
   return rota?.moduleKey ?? null;
 }

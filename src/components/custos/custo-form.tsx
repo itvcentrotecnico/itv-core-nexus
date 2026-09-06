@@ -82,9 +82,21 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
     staleTime: 60_000,
     queryFn: async () => {
       const [tipos, categorias, fornecedores, tecnicos] = await Promise.all([
-        supabase.from("tipos_custo").select("id, nome, eh_peca, ativo, ordem").eq("ativo", true).order("ordem"),
-        supabase.from("categorias_pecas").select("id, nome, ativo, ordem").eq("ativo", true).order("ordem"),
-        supabase.from("fornecedores").select("id, nome, telefone, observacao, ativo").eq("ativo", true).order("nome"),
+        supabase
+          .from("tipos_custo")
+          .select("id, nome, eh_peca, ativo, ordem")
+          .eq("ativo", true)
+          .order("ordem"),
+        supabase
+          .from("categorias_pecas")
+          .select("id, nome, ativo, ordem")
+          .eq("ativo", true)
+          .order("ordem"),
+        supabase
+          .from("fornecedores")
+          .select("id, nome, telefone, observacao, ativo")
+          .eq("ativo", true)
+          .order("nome"),
         supabase.rpc("usuarios_basicos"),
       ]);
       if (tipos.error) throw tipos.error;
@@ -95,7 +107,11 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         categorias: (categorias.data ?? []) as CategoriaPeca[],
         fornecedores: (fornecedores.data ?? []) as Fornecedor[],
         tecnicos: ((tecnicos.data ?? []) as TecnicoOption[]).filter(
-          (t) => t.roles.includes("tecnico") || t.roles.includes("administrador") || t.roles.includes("adm_financeiro") || t.roles.includes("adm_operacional"),
+          (t) =>
+            t.roles.includes("tecnico") ||
+            t.roles.includes("administrador") ||
+            t.roles.includes("adm_financeiro") ||
+            t.roles.includes("adm_operacional"),
         ),
       };
     },
@@ -302,7 +318,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="custo-data" className={labelClass}>Data *</label>
+            <label htmlFor="custo-data" className={labelClass}>
+              Data *
+            </label>
             <input
               id="custo-data"
               type="date"
@@ -313,7 +331,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
           </div>
 
           <div>
-            <label htmlFor="custo-os" className={labelClass}>Número da OS *</label>
+            <label htmlFor="custo-os" className={labelClass}>
+              Número da OS *
+            </label>
             <div className="relative">
               <input
                 id="custo-os"
@@ -326,28 +346,49 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
                 className={inputClass}
               />
               {buscandoOs && (
-                <Loader2 className="absolute right-3 top-2.5 h-4 w-4 animate-spin text-muted-foreground" aria-hidden="true" />
+                <Loader2
+                  className="absolute right-3 top-2.5 h-4 w-4 animate-spin text-muted-foreground"
+                  aria-hidden="true"
+                />
               )}
             </div>
           </div>
         </div>
 
         {/* Consulta da OS no Caixa */}
-        {os.trim() && osConsultada === os.trim() && (
-          caixaRef ? (
+        {os.trim() &&
+          osConsultada === os.trim() &&
+          (caixaRef ? (
             <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
               <p className="flex items-center gap-1.5 font-medium text-foreground">
                 <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
                 OS encontrada no Caixa
               </p>
               <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground sm:grid-cols-4">
-                <span>Cliente: <strong className="text-foreground">{caixaRef.cliente ?? "—"}</strong></span>
-                <span>Técnico: <strong className="text-foreground">{caixaRef.tecnico_nome ?? "—"}</strong></span>
-                <span>Receita líquida: <strong className="text-foreground">{formatCurrencyBRL(caixaRef.receita_liquida)}</strong></span>
-                <span>Faturado em: <strong className="text-foreground">{formatDateOnlyISO(caixaRef.data_lancamento)}</strong></span>
+                <span>
+                  Cliente: <strong className="text-foreground">{caixaRef.cliente ?? "—"}</strong>
+                </span>
+                <span>
+                  Técnico:{" "}
+                  <strong className="text-foreground">{caixaRef.tecnico_nome ?? "—"}</strong>
+                </span>
+                <span>
+                  Receita líquida:{" "}
+                  <strong className="text-foreground">
+                    {formatCurrencyBRL(caixaRef.receita_liquida)}
+                  </strong>
+                </span>
+                <span>
+                  Faturado em:{" "}
+                  <strong className="text-foreground">
+                    {formatDateOnlyISO(caixaRef.data_lancamento)}
+                  </strong>
+                </span>
               </div>
               {caixaRef.pagamentos && (
-                <p className="mt-1 text-xs text-muted-foreground">Pagamento: {caixaRef.pagamentos}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Pagamento: {caixaRef.pagamentos}
+                </p>
               )}
             </div>
           ) : (
@@ -357,22 +398,26 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
                 Esta OS ainda não possui faturamento registrado no Caixa.
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                O custo pode ser lançado normalmente — a margem será calculada quando a OS for faturada.
+                O custo pode ser lançado normalmente — a margem será calculada quando a OS for
+                faturada.
               </p>
             </div>
-          )
-        )}
+          ))}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass} id="custo-tipo-label">Tipo de Custo *</label>
+            <label className={labelClass} id="custo-tipo-label">
+              Tipo de Custo *
+            </label>
             <Select value={tipoId} onValueChange={setTipoId}>
               <SelectTrigger aria-labelledby="custo-tipo-label">
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
                 {tipos.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.nome}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -380,7 +425,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
 
           {mostrarCategoria && (
             <div>
-              <label className={labelClass} id="custo-categoria-label">Categoria da Peça</label>
+              <label className={labelClass} id="custo-categoria-label">
+                Categoria da Peça
+              </label>
               <Select value={categoriaId} onValueChange={setCategoriaId}>
                 <SelectTrigger aria-labelledby="custo-categoria-label">
                   <SelectValue placeholder="Opcional" />
@@ -388,7 +435,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
                 <SelectContent>
                   <SelectItem value={NONE}>Sem categoria</SelectItem>
                   {categorias.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.nome}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -397,7 +446,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         </div>
 
         <div>
-          <label htmlFor="custo-descricao" className={labelClass}>Descrição *</label>
+          <label htmlFor="custo-descricao" className={labelClass}>
+            Descrição *
+          </label>
           <input
             id="custo-descricao"
             type="text"
@@ -411,7 +462,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelClass} id="custo-tecnico-label">Técnico</label>
+            <label className={labelClass} id="custo-tecnico-label">
+              Técnico
+            </label>
             <Select
               value={tecnicoId}
               onValueChange={(v) => {
@@ -425,14 +478,18 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
               <SelectContent>
                 <SelectItem value={NONE}>Não informado</SelectItem>
                 {tecnicos.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>{t.full_name}</SelectItem>
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.full_name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <label className={labelClass} id="custo-fornecedor-label">Fornecedor</label>
+            <label className={labelClass} id="custo-fornecedor-label">
+              Fornecedor
+            </label>
             <Select value={fornecedorSel} onValueChange={setFornecedorSel}>
               <SelectTrigger aria-labelledby="custo-fornecedor-label">
                 <SelectValue placeholder="Opcional" />
@@ -440,7 +497,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
               <SelectContent>
                 <SelectItem value={NONE}>Não se aplica</SelectItem>
                 {fornecedores.map((f) => (
-                  <SelectItem key={f.id} value={f.id}>{f.nome}</SelectItem>
+                  <SelectItem key={f.id} value={f.id}>
+                    {f.nome}
+                  </SelectItem>
                 ))}
                 <SelectItem value={NOVO_FORNECEDOR}>+ Novo fornecedor…</SelectItem>
               </SelectContent>
@@ -451,7 +510,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         {fornecedorSel === NOVO_FORNECEDOR && (
           <div className="grid grid-cols-1 gap-4 rounded-lg border border-dashed border-border p-3 sm:grid-cols-2">
             <div>
-              <label htmlFor="novo-fornecedor-nome" className={labelClass}>Nome do fornecedor *</label>
+              <label htmlFor="novo-fornecedor-nome" className={labelClass}>
+                Nome do fornecedor *
+              </label>
               <input
                 id="novo-fornecedor-nome"
                 type="text"
@@ -462,7 +523,9 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
               />
             </div>
             <div>
-              <label htmlFor="novo-fornecedor-fone" className={labelClass}>Telefone</label>
+              <label htmlFor="novo-fornecedor-fone" className={labelClass}>
+                Telefone
+              </label>
               <input
                 id="novo-fornecedor-fone"
                 type="tel"
@@ -481,23 +544,55 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
           </summary>
           <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label htmlFor="custo-marca" className={labelClass}>Marca</label>
-              <input id="custo-marca" type="text" value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="Samsung" maxLength={60} className={inputClass} />
+              <label htmlFor="custo-marca" className={labelClass}>
+                Marca
+              </label>
+              <input
+                id="custo-marca"
+                type="text"
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+                placeholder="Samsung"
+                maxLength={60}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="custo-modelo" className={labelClass}>Modelo</label>
-              <input id="custo-modelo" type="text" value={modelo} onChange={(e) => setModelo(e.target.value)} placeholder="BN44-00932A" maxLength={60} className={inputClass} />
+              <label htmlFor="custo-modelo" className={labelClass}>
+                Modelo
+              </label>
+              <input
+                id="custo-modelo"
+                type="text"
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                placeholder="BN44-00932A"
+                maxLength={60}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="custo-compat" className={labelClass}>Compatibilidade</label>
-              <input id="custo-compat" type="text" value={compatibilidade} onChange={(e) => setCompatibilidade(e.target.value)} placeholder="UN55RU7100" maxLength={80} className={inputClass} />
+              <label htmlFor="custo-compat" className={labelClass}>
+                Compatibilidade
+              </label>
+              <input
+                id="custo-compat"
+                type="text"
+                value={compatibilidade}
+                onChange={(e) => setCompatibilidade(e.target.value)}
+                placeholder="UN55RU7100"
+                maxLength={80}
+                className={inputClass}
+              />
             </div>
           </div>
         </details>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <div>
-            <label htmlFor="custo-qtd" className={labelClass}>Quantidade *</label>
+            <label htmlFor="custo-qtd" className={labelClass}>
+              Quantidade *
+            </label>
             <input
               id="custo-qtd"
               type="text"
@@ -509,12 +604,17 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
             />
           </div>
           <div>
-            <label htmlFor="custo-unit" className={labelClass}>Custo Unitário *</label>
+            <label htmlFor="custo-unit" className={labelClass}>
+              Custo Unitário *
+            </label>
             <MoneyInput id="custo-unit" value={custoUnitario} onChange={setCustoUnitario} />
           </div>
           <div className="col-span-2 sm:col-span-1">
             <span className={labelClass}>Custo Total</span>
-            <p className="rounded-md border border-border bg-muted px-3 py-2 text-sm font-semibold text-foreground" aria-live="polite">
+            <p
+              className="rounded-md border border-border bg-muted px-3 py-2 text-sm font-semibold text-foreground"
+              aria-live="polite"
+            >
               {custoTotal != null ? formatCurrencyBRL(custoTotal) : "—"}
             </p>
           </div>
@@ -523,12 +623,15 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
         {isEdit && editing!.devolvido_total > 0 && (
           <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-            Este custo já possui {formatCurrencyBRL(editing!.devolvido_total)} devolvido — o total não pode ficar abaixo disso.
+            Este custo já possui {formatCurrencyBRL(editing!.devolvido_total)} devolvido — o total
+            não pode ficar abaixo disso.
           </p>
         )}
 
         <div>
-          <label htmlFor="custo-obs" className={labelClass}>Observação</label>
+          <label htmlFor="custo-obs" className={labelClass}>
+            Observação
+          </label>
           <textarea
             id="custo-obs"
             value={observacao}

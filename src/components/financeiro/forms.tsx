@@ -52,7 +52,12 @@ function SelectField({
         {label}
         {required && " *"}
       </label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className={inputClass}>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={inputClass}
+      >
         {children}
       </select>
     </div>
@@ -144,23 +149,46 @@ function CategoriaFields({
   );
   return (
     <>
-      <SelectField id="f-cat" label="Categoria" value={categoriaId} onChange={(v) => { setCategoriaId(v); setSubcategoriaId(""); }}>
+      <SelectField
+        id="f-cat"
+        label="Categoria"
+        value={categoriaId}
+        onChange={(v) => {
+          setCategoriaId(v);
+          setSubcategoriaId("");
+        }}
+      >
         <option value="">—</option>
-        {refs.categorias.filter((c) => c.ativo && c.tipo !== "receita").map((c) => (
-          <option key={c.id} value={c.id}>{c.nome}</option>
-        ))}
+        {refs.categorias
+          .filter((c) => c.ativo && c.tipo !== "receita")
+          .map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nome}
+            </option>
+          ))}
       </SelectField>
-      <SelectField id="f-sub" label="Subcategoria" value={subcategoriaId} onChange={setSubcategoriaId}>
+      <SelectField
+        id="f-sub"
+        label="Subcategoria"
+        value={subcategoriaId}
+        onChange={setSubcategoriaId}
+      >
         <option value="">—</option>
         {subs.map((s) => (
-          <option key={s.id} value={s.id}>{s.nome}</option>
+          <option key={s.id} value={s.id}>
+            {s.nome}
+          </option>
         ))}
       </SelectField>
       <SelectField id="f-centro" label="Centro de Custo" value={centroId} onChange={setCentroId}>
         <option value="">—</option>
-        {refs.centros.filter((c) => c.ativo).map((c) => (
-          <option key={c.id} value={c.id}>{c.nome}</option>
-        ))}
+        {refs.centros
+          .filter((c) => c.ativo)
+          .map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nome}
+            </option>
+          ))}
       </SelectField>
     </>
   );
@@ -282,7 +310,13 @@ export function DespesaForm({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <TextField id="d-desc" label="Descrição" value={descricao} onChange={setDescricao} required />
+            <TextField
+              id="d-desc"
+              label="Descrição"
+              value={descricao}
+              onChange={setDescricao}
+              required
+            />
           </div>
           {refs.data && (
             <CategoriaFields
@@ -295,14 +329,23 @@ export function DespesaForm({
               setCentroId={setCentroId}
             />
           )}
-          <SelectField id="d-forn" label="Fornecedor" value={fornecedorId} onChange={setFornecedorId}>
+          <SelectField
+            id="d-forn"
+            label="Fornecedor"
+            value={fornecedorId}
+            onChange={setFornecedorId}
+          >
             <option value="">—</option>
             {(refs.data?.fornecedores ?? []).map((f) => (
-              <option key={f.id} value={f.id}>{f.nome}</option>
+              <option key={f.id} value={f.id}>
+                {f.nome}
+              </option>
             ))}
           </SelectField>
           <div>
-            <label htmlFor="d-comp" className={labelClass}>Competência *</label>
+            <label htmlFor="d-comp" className={labelClass}>
+              Competência *
+            </label>
             <input
               id="d-comp"
               type="month"
@@ -311,10 +354,18 @@ export function DespesaForm({
               className={inputClass}
             />
           </div>
-          <DateField id="d-data" label="Data do Lançamento" value={dataLancamento} onChange={setDataLancamento} required />
+          <DateField
+            id="d-data"
+            label="Data do Lançamento"
+            value={dataLancamento}
+            onChange={setDataLancamento}
+            required
+          />
           <DateField id="d-venc" label="Vencimento" value={vencimento} onChange={setVencimento} />
           <div>
-            <label htmlFor="d-valor" className={labelClass}>Valor *</label>
+            <label htmlFor="d-valor" className={labelClass}>
+              Valor *
+            </label>
             <MoneyInput id="d-valor" value={valor} onChange={setValor} />
           </div>
           <label className="flex items-center gap-2 self-end pb-2 text-sm text-foreground">
@@ -339,13 +390,27 @@ export function DespesaForm({
               </label>
               {paga && (
                 <>
-                  <SelectField id="d-forma" label="Forma de Pagamento" value={formaId} onChange={setFormaId} required>
+                  <SelectField
+                    id="d-forma"
+                    label="Forma de Pagamento"
+                    value={formaId}
+                    onChange={setFormaId}
+                    required
+                  >
                     <option value="">Selecione…</option>
                     {(refs.data?.formas ?? []).map((f) => (
-                      <option key={f.id} value={f.id}>{f.nome}</option>
+                      <option key={f.id} value={f.id}>
+                        {f.nome}
+                      </option>
                     ))}
                   </SelectField>
-                  <DateField id="d-dtpag" label="Data do Pagamento" value={dataPagamento} onChange={setDataPagamento} required />
+                  <DateField
+                    id="d-dtpag"
+                    label="Data do Pagamento"
+                    value={dataPagamento}
+                    onChange={setDataPagamento}
+                    required
+                  />
                 </>
               )}
             </>
@@ -361,8 +426,15 @@ export function DespesaForm({
             </div>
           )}
           <div className="sm:col-span-2">
-            <label htmlFor="d-obs" className={labelClass}>Observação</label>
-            <Textarea id="d-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="d-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="d-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
@@ -466,7 +538,9 @@ export function ContaPagarForm({
           p_intervalo_dias: intervalo,
         });
         toast.success(
-          Number(r["parcelas"]) > 1 ? `Obrigação criada em ${r["parcelas"]} parcelas.` : "Conta a pagar criada.",
+          Number(r["parcelas"]) > 1
+            ? `Obrigação criada em ${r["parcelas"]} parcelas.`
+            : "Conta a pagar criada.",
         );
       }
       invalidateFinanceiro(queryClient);
@@ -483,16 +557,31 @@ export function ContaPagarForm({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{editing ? "Editar Conta a Pagar" : "Nova Conta a Pagar"}</DialogTitle>
-          <DialogDescription>Compromisso financeiro futuro da ITV. Suporta parcelamento.</DialogDescription>
+          <DialogDescription>
+            Compromisso financeiro futuro da ITV. Suporta parcelamento.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <TextField id="cp-desc" label="Descrição" value={descricao} onChange={setDescricao} required />
+            <TextField
+              id="cp-desc"
+              label="Descrição"
+              value={descricao}
+              onChange={setDescricao}
+              required
+            />
           </div>
-          <SelectField id="cp-forn" label="Fornecedor" value={fornecedorId} onChange={setFornecedorId}>
+          <SelectField
+            id="cp-forn"
+            label="Fornecedor"
+            value={fornecedorId}
+            onChange={setFornecedorId}
+          >
             <option value="">—</option>
             {(refs.data?.fornecedores ?? []).map((f) => (
-              <option key={f.id} value={f.id}>{f.nome}</option>
+              <option key={f.id} value={f.id}>
+                {f.nome}
+              </option>
             ))}
           </SelectField>
           {refs.data && (
@@ -507,7 +596,9 @@ export function ContaPagarForm({
             />
           )}
           <div>
-            <label htmlFor="cp-comp" className={labelClass}>Competência</label>
+            <label htmlFor="cp-comp" className={labelClass}>
+              Competência
+            </label>
             <input
               id="cp-comp"
               type="month"
@@ -516,37 +607,62 @@ export function ContaPagarForm({
               className={inputClass}
             />
           </div>
-          <DateField id="cp-emis" label="Data de Emissão" value={dataEmissao} onChange={setDataEmissao} required />
-          <DateField id="cp-venc" label={editing || parcelas === 1 ? "Vencimento" : "1º Vencimento"} value={vencimento} onChange={setVencimento} required />
+          <DateField
+            id="cp-emis"
+            label="Data de Emissão"
+            value={dataEmissao}
+            onChange={setDataEmissao}
+            required
+          />
+          <DateField
+            id="cp-venc"
+            label={editing || parcelas === 1 ? "Vencimento" : "1º Vencimento"}
+            value={vencimento}
+            onChange={setVencimento}
+            required
+          />
           <div>
             <label htmlFor="cp-valor" className={labelClass}>
               {editing ? "Valor *" : parcelas > 1 ? "Valor Total *" : "Valor *"}
             </label>
             <MoneyInput id="cp-valor" value={valor} onChange={setValor} />
           </div>
-          <SelectField id="cp-forma" label="Forma de Pagamento Prevista" value={formaId} onChange={setFormaId}>
+          <SelectField
+            id="cp-forma"
+            label="Forma de Pagamento Prevista"
+            value={formaId}
+            onChange={setFormaId}
+          >
             <option value="">—</option>
             {(refs.data?.formas ?? []).map((f) => (
-              <option key={f.id} value={f.id}>{f.nome}</option>
+              <option key={f.id} value={f.id}>
+                {f.nome}
+              </option>
             ))}
           </SelectField>
           {!editing && (
             <>
               <div>
-                <label htmlFor="cp-parc" className={labelClass}>Parcelas</label>
+                <label htmlFor="cp-parc" className={labelClass}>
+                  Parcelas
+                </label>
                 <input
                   id="cp-parc"
                   type="number"
                   min={1}
                   max={60}
                   value={parcelas}
-                  onChange={(e) => setParcelas(Math.max(1, Math.min(60, Number(e.target.value) || 1)))}
+                  onChange={(e) =>
+                    setParcelas(Math.max(1, Math.min(60, Number(e.target.value) || 1)))
+                  }
                   className={inputClass}
                 />
               </div>
               {parcelas > 1 && (
                 <div>
-                  <label htmlFor="cp-int" className={labelClass}>Intervalo (dias)</label>
+                  <label htmlFor="cp-int" className={labelClass}>
+                    Intervalo (dias)
+                  </label>
                   <input
                     id="cp-int"
                     type="number"
@@ -579,8 +695,15 @@ export function ContaPagarForm({
             </div>
           )}
           <div className="sm:col-span-2">
-            <label htmlFor="cp-obs" className={labelClass}>Observação</label>
-            <Textarea id="cp-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="cp-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="cp-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
@@ -672,7 +795,9 @@ export function ContaReceberForm({
           p_intervalo_dias: intervalo,
         });
         toast.success(
-          Number(r["parcelas"]) > 1 ? `Conta criada em ${r["parcelas"]} parcelas.` : "Conta a receber criada.",
+          Number(r["parcelas"]) > 1
+            ? `Conta criada em ${r["parcelas"]} parcelas.`
+            : "Conta a receber criada.",
         );
       }
       invalidateFinanceiro(queryClient);
@@ -690,14 +815,27 @@ export function ContaReceberForm({
         <DialogHeader>
           <DialogTitle>{editing ? "Editar Conta a Receber" : "Nova Conta a Receber"}</DialogTitle>
           <DialogDescription>
-            Direito de recebimento futuro. Ao receber, o valor entra automaticamente no Caixa Diário.
+            Direito de recebimento futuro. Ao receber, o valor entra automaticamente no Caixa
+            Diário.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <TextField id="cr-cli" label="Cliente" value={cliente} onChange={setCliente} required />
-          <TextField id="cr-os" label="OS (quando aplicável)" value={os} onChange={setOs} placeholder="Nº da OS" />
+          <TextField
+            id="cr-os"
+            label="OS (quando aplicável)"
+            value={os}
+            onChange={setOs}
+            placeholder="Nº da OS"
+          />
           <div className="sm:col-span-2">
-            <TextField id="cr-desc" label="Descrição" value={descricao} onChange={setDescricao} required />
+            <TextField
+              id="cr-desc"
+              label="Descrição"
+              value={descricao}
+              onChange={setDescricao}
+              required
+            />
           </div>
           <TextField
             id="cr-origem"
@@ -707,7 +845,9 @@ export function ContaReceberForm({
             placeholder="Ex.: venda a prazo, boleto, crédito acordado"
           />
           <div>
-            <label htmlFor="cr-comp" className={labelClass}>Competência</label>
+            <label htmlFor="cr-comp" className={labelClass}>
+              Competência
+            </label>
             <input
               id="cr-comp"
               type="month"
@@ -716,8 +856,20 @@ export function ContaReceberForm({
               className={inputClass}
             />
           </div>
-          <DateField id="cr-emis" label="Data de Emissão" value={dataEmissao} onChange={setDataEmissao} required />
-          <DateField id="cr-venc" label={editing || parcelas === 1 ? "Vencimento" : "1º Vencimento"} value={vencimento} onChange={setVencimento} required />
+          <DateField
+            id="cr-emis"
+            label="Data de Emissão"
+            value={dataEmissao}
+            onChange={setDataEmissao}
+            required
+          />
+          <DateField
+            id="cr-venc"
+            label={editing || parcelas === 1 ? "Vencimento" : "1º Vencimento"}
+            value={vencimento}
+            onChange={setVencimento}
+            required
+          />
           <div>
             <label htmlFor="cr-valor" className={labelClass}>
               {editing || parcelas === 1 ? "Valor *" : "Valor Total *"}
@@ -727,20 +879,26 @@ export function ContaReceberForm({
           {!editing && (
             <>
               <div>
-                <label htmlFor="cr-parc" className={labelClass}>Parcelas</label>
+                <label htmlFor="cr-parc" className={labelClass}>
+                  Parcelas
+                </label>
                 <input
                   id="cr-parc"
                   type="number"
                   min={1}
                   max={60}
                   value={parcelas}
-                  onChange={(e) => setParcelas(Math.max(1, Math.min(60, Number(e.target.value) || 1)))}
+                  onChange={(e) =>
+                    setParcelas(Math.max(1, Math.min(60, Number(e.target.value) || 1)))
+                  }
                   className={inputClass}
                 />
               </div>
               {parcelas > 1 && (
                 <div>
-                  <label htmlFor="cr-int" className={labelClass}>Intervalo (dias)</label>
+                  <label htmlFor="cr-int" className={labelClass}>
+                    Intervalo (dias)
+                  </label>
                   <input
                     id="cr-int"
                     type="number"
@@ -764,14 +922,24 @@ export function ContaReceberForm({
             </div>
           )}
           <div className="sm:col-span-2">
-            <label htmlFor="cr-obs" className={labelClass}>Observação</label>
-            <Textarea id="cr-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="cr-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="cr-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter className="sm:col-span-2">
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving || !cliente.trim() || !descricao.trim() || !valor || !vencimento}>
+            <Button
+              type="submit"
+              disabled={saving || !cliente.trim() || !descricao.trim() || !valor || !vencimento}
+            >
               {saving ? "Salvando…" : editing ? "Salvar alterações" : "Criar conta a receber"}
             </Button>
           </DialogFooter>

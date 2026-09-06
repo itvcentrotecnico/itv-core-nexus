@@ -15,9 +15,15 @@ export const Route = createFileRoute("/_authenticated/admin/permissoes")({
   head: () => ({
     meta: [
       { title: "Permissões — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Concessão individual de acesso por usuário, módulo e ação." },
+      {
+        name: "description",
+        content: "Concessão individual de acesso por usuário, módulo e ação.",
+      },
       { property: "og:title", content: "Permissões — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Concessão individual de acesso por usuário, módulo e ação." },
+      {
+        property: "og:description",
+        content: "Concessão individual de acesso por usuário, módulo e ação.",
+      },
     ],
   }),
   component: PermissoesPage,
@@ -74,7 +80,10 @@ function PermissoesPage() {
     queryKey: ["admin", "modules"],
     enabled: isAdmin,
     queryFn: async () => {
-      const { data, error } = await supabase.from("modules").select("key, label").order("sort_order");
+      const { data, error } = await supabase
+        .from("modules")
+        .select("key, label")
+        .order("sort_order");
       if (error) throw error;
       return data as { key: string; label: string }[];
     },
@@ -97,7 +106,9 @@ function PermissoesPage() {
     queryKey: ["admin", "role-permissions"],
     enabled: isAdmin,
     queryFn: async () => {
-      const { data, error } = await supabase.from("role_permissions").select("role, module_key, action");
+      const { data, error } = await supabase
+        .from("role_permissions")
+        .select("role, module_key, action");
       if (error) throw error;
       return (data ?? []) as { role: AppRole; module_key: string; action: PermissionAction }[];
     },
@@ -117,7 +128,8 @@ function PermissoesPage() {
     const map = new Map<string, boolean>();
     if (!usuario) return map;
     for (const p of rolePermsQuery.data ?? []) {
-      if ((usuario.roles as string[]).includes(p.role)) map.set(`${p.module_key}:${p.action}`, true);
+      if ((usuario.roles as string[]).includes(p.role))
+        map.set(`${p.module_key}:${p.action}`, true);
     }
     return map;
   }, [rolePermsQuery.data, usuario]);
@@ -127,7 +139,9 @@ function PermissoesPage() {
       <div className="flex flex-col items-center gap-3 py-20 text-center">
         <ShieldCheck className="size-10 text-muted-foreground/40" />
         <h1 className="font-display text-xl font-bold text-foreground">Acesso restrito</h1>
-        <p className="max-w-sm text-sm text-muted-foreground">Somente administradores podem gerenciar permissões.</p>
+        <p className="max-w-sm text-sm text-muted-foreground">
+          Somente administradores podem gerenciar permissões.
+        </p>
       </div>
     );
   }
@@ -138,15 +152,23 @@ function PermissoesPage() {
     setSavingKey(key);
     try {
       // Via RPC administrativa: valida permissão no servidor e grava auditoria.
-      const { data, error } = await supabase.rpc("admin_usuario_permissao" as never, {
-        p_user_id: usuarioId,
-        p_module: moduleKey,
-        p_action: action,
-        p_allowed: allowed,
-      } as never);
+      const { data, error } = await supabase.rpc(
+        "admin_usuario_permissao" as never,
+        {
+          p_user_id: usuarioId,
+          p_module: moduleKey,
+          p_action: action,
+          p_allowed: allowed,
+        } as never,
+      );
       if (error) throw error;
       const res = data as unknown as { ok: boolean; code?: string };
-      if (!res?.ok) throw new Error(res?.code === "SEM_PERMISSAO" ? "Você não tem permissão para esta ação." : "Falha ao salvar permissão.");
+      if (!res?.ok)
+        throw new Error(
+          res?.code === "SEM_PERMISSAO"
+            ? "Você não tem permissão para esta ação."
+            : "Falha ao salvar permissão.",
+        );
 
       toast.success(`Permissão ${allowed ? "concedida" : "revogada"}: ${moduleKey}.${action}`);
       await queryClient.invalidateQueries({ queryKey: ["admin", "user-permissions", usuarioId] });
@@ -163,14 +185,21 @@ function PermissoesPage() {
       <header>
         <h1 className="font-display text-2xl font-bold text-foreground">Permissões por Usuário</h1>
         <p className="text-sm text-muted-foreground">
-          Concessão individual de acesso. Exceções individuais prevalecem sobre o perfil. Módulos como Financeiro e
-          Folha Gerencial só ficam acessíveis quando liberados aqui.
+          Concessão individual de acesso. Exceções individuais prevalecem sobre o perfil. Módulos
+          como Financeiro e Folha Gerencial só ficam acessíveis quando liberados aqui.
         </p>
       </header>
 
       <div className="max-w-md">
-        <label htmlFor="pm-usuario" className={labelClass}>Usuário</label>
-        <select id="pm-usuario" value={usuarioId} onChange={(e) => setUsuarioId(e.target.value)} className={inputClass}>
+        <label htmlFor="pm-usuario" className={labelClass}>
+          Usuário
+        </label>
+        <select
+          id="pm-usuario"
+          value={usuarioId}
+          onChange={(e) => setUsuarioId(e.target.value)}
+          className={inputClass}
+        >
           <option value="">Selecione o usuário…</option>
           {usuarios.map((u) => (
             <option key={u.id} value={u.id}>
@@ -188,7 +217,13 @@ function PermissoesPage() {
             </p>
             {usuario.roles.length === 0 && <Badge variant="outline">Sem perfil</Badge>}
             {usuario.roles.map((r) => (
-              <Badge key={r} variant="outline" className="border-primary/30 bg-primary/5 text-primary">{r}</Badge>
+              <Badge
+                key={r}
+                variant="outline"
+                className="border-primary/30 bg-primary/5 text-primary"
+              >
+                {r}
+              </Badge>
             ))}
           </div>
 
@@ -245,8 +280,8 @@ function PermissoesPage() {
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            * indica exceção individual registrada para este usuário. A segurança real é aplicada no banco (RLS e
-            funções); esta tela controla a liberação de acesso.
+            * indica exceção individual registrada para este usuário. A segurança real é aplicada no
+            banco (RLS e funções); esta tela controla a liberação de acesso.
           </p>
         </div>
       )}

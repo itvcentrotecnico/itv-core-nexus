@@ -31,7 +31,9 @@ export function AdminTaxasPagamento() {
           )
           .eq("ativo", true)
           .order("ordem"),
-        supabase.from("formas_pagamento_taxas").select("id, forma_pagamento_id, parcelas, taxa_percentual"),
+        supabase
+          .from("formas_pagamento_taxas")
+          .select("id, forma_pagamento_id, parcelas, taxa_percentual"),
       ]);
       if (formas.error) throw formas.error;
       if (taxas.error) throw taxas.error;
@@ -97,7 +99,9 @@ export function AdminTaxasPagamento() {
       }
     >
       {parceladas.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Nenhuma forma de pagamento com parcelamento ativa.</p>
+        <p className="text-sm text-muted-foreground">
+          Nenhuma forma de pagamento com parcelamento ativa.
+        </p>
       ) : (
         <div className="space-y-5">
           {parceladas.map((f) => (
@@ -111,28 +115,33 @@ export function AdminTaxasPagamento() {
                 )}
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
-                {Array.from({ length: Math.max(1, f.max_parcelas ?? 1) }, (_, i) => i + 1).map((n) => (
-                  <div key={n}>
-                    <label className="mb-1 block text-xs text-muted-foreground" htmlFor={`taxa-${f.id}-${n}`}>
-                      {n}x (%)
-                    </label>
-                    <input
-                      id={`taxa-${f.id}-${n}`}
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      className={inputClass}
-                      disabled={!podeConfigurar}
-                      value={mapa[f.id]?.[n] ?? 0}
-                      onChange={(e) =>
-                        setMapa((prev) => ({
-                          ...prev,
-                          [f.id]: { ...(prev[f.id] ?? {}), [n]: Number(e.target.value) },
-                        }))
-                      }
-                    />
-                  </div>
-                ))}
+                {Array.from({ length: Math.max(1, f.max_parcelas ?? 1) }, (_, i) => i + 1).map(
+                  (n) => (
+                    <div key={n}>
+                      <label
+                        className="mb-1 block text-xs text-muted-foreground"
+                        htmlFor={`taxa-${f.id}-${n}`}
+                      >
+                        {n}x (%)
+                      </label>
+                      <input
+                        id={`taxa-${f.id}-${n}`}
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        className={inputClass}
+                        disabled={!podeConfigurar}
+                        value={mapa[f.id]?.[n] ?? 0}
+                        onChange={(e) =>
+                          setMapa((prev) => ({
+                            ...prev,
+                            [f.id]: { ...(prev[f.id] ?? {}), [n]: Number(e.target.value) },
+                          }))
+                        }
+                      />
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           ))}

@@ -4,7 +4,13 @@ import { FileText } from "lucide-react";
 import { toast } from "sonner";
 
 import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV } from "@/lib/format";
-import type { RelFaturamento, RelPlanejamento, RelProducao, RelRentabilidade, RelTecnicos } from "@/lib/relatorios";
+import type {
+  RelFaturamento,
+  RelPlanejamento,
+  RelProducao,
+  RelRentabilidade,
+  RelTecnicos,
+} from "@/lib/relatorios";
 import { labelMes } from "@/lib/relatorios";
 import { rpcRel } from "@/components/relatorios/shared";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
@@ -30,15 +36,21 @@ export function ResumoExecutivoButton({ range }: { range: { from: string; to: st
         rpcRel<RelFaturamento>("relatorios_faturamento", { p_from: range.from, p_to: range.to }),
         rpcRel<RelProducao>("relatorios_producao", { p_from: range.from, p_to: range.to }),
         rpcRel<RelTecnicos>("relatorios_tecnicos", { p_from: range.from, p_to: range.to }),
-        rpcRel<RelRentabilidade>("relatorios_rentabilidade", { p_from: range.from, p_to: range.to }),
+        rpcRel<RelRentabilidade>("relatorios_rentabilidade", {
+          p_from: range.from,
+          p_to: range.to,
+        }),
         rpcRel<RelPlanejamento>("relatorios_planejamento"),
       ]);
-      if (!fat.ok || !prod.ok || !tec.ok || !rent.ok || !plan.ok) throw new Error("Falha ao consolidar os relatórios.");
+      if (!fat.ok || !prod.ok || !tec.ok || !rent.ok || !plan.ok)
+        throw new Error("Falha ao consolidar os relatórios.");
 
       const r = fat.resumo;
       const variacao =
         fat.anterior.faturamento_final > 0
-          ? ((r.faturamento_final - fat.anterior.faturamento_final) / fat.anterior.faturamento_final) * 100
+          ? ((r.faturamento_final - fat.anterior.faturamento_final) /
+              fat.anterior.faturamento_final) *
+            100
           : null;
 
       const html = `<!doctype html>
@@ -82,26 +94,68 @@ export function ResumoExecutivoButton({ range }: { range: { from: string; to: st
 <h2>Faturamento mensal (12 meses)</h2>
 ${linhasTabela(
   ["Mês", "Faturamento", "Receita Líquida", "OS", "Ticket Médio", "Variação"],
-  fat.por_mes.map((x) => [labelMes(x.mes), formatCurrencyBRL(x.faturamento), formatCurrencyBRL(x.receita_liquida), x.os, formatCurrencyBRL(x.ticket_medio), x.variacao_pct != null ? `${x.variacao_pct.toFixed(1).replace(".", ",")}%` : "—"]),
+  fat.por_mes.map((x) => [
+    labelMes(x.mes),
+    formatCurrencyBRL(x.faturamento),
+    formatCurrencyBRL(x.receita_liquida),
+    x.os,
+    formatCurrencyBRL(x.ticket_medio),
+    x.variacao_pct != null ? `${x.variacao_pct.toFixed(1).replace(".", ",")}%` : "—",
+  ]),
 )}
 <p class="sub">Médias: 3m ${formatCurrencyBRL(fat.medias.m3)} · 6m ${formatCurrencyBRL(fat.medias.m6)} · 12m ${formatCurrencyBRL(fat.medias.m12)}</p>
 
 <h2>Serviços executados — ranking por tipo</h2>
 ${linhasTabela(
   ["Serviço", "Qtd", "%", "Valor Produção", "Ticket Médio", "Receita Associada"],
-  prod.por_tipo.slice(0, 10).map((x) => [x.tipo, x.quantidade, `${x.pct.toFixed(1).replace(".", ",")}%`, formatCurrencyBRL(x.valor), formatCurrencyBRL(x.ticket_medio), formatCurrencyBRL(x.receita_associada)]),
+  prod.por_tipo
+    .slice(0, 10)
+    .map((x) => [
+      x.tipo,
+      x.quantidade,
+      `${x.pct.toFixed(1).replace(".", ",")}%`,
+      formatCurrencyBRL(x.valor),
+      formatCurrencyBRL(x.ticket_medio),
+      formatCurrencyBRL(x.receita_associada),
+    ]),
 )}
 
 <h2>Técnicos — desempenho</h2>
 ${linhasTabela(
-  ["Técnico", "Validados", "Receita", "Ticket Médio", "Custos", "Comissão", "Margem", "Índice Validação"],
-  tec.tecnicos.map((x) => [x.tecnico, x.validados, formatCurrencyBRL(x.receita_associada), formatCurrencyBRL(x.ticket_medio), formatCurrencyBRL(x.custos), formatCurrencyBRL(x.comissao), formatCurrencyBRL(x.margem), x.indice_validacao != null ? `${x.indice_validacao.toFixed(1).replace(".", ",")}%` : "—"]),
+  [
+    "Técnico",
+    "Validados",
+    "Receita",
+    "Ticket Médio",
+    "Custos",
+    "Comissão",
+    "Margem",
+    "Índice Validação",
+  ],
+  tec.tecnicos.map((x) => [
+    x.tecnico,
+    x.validados,
+    formatCurrencyBRL(x.receita_associada),
+    formatCurrencyBRL(x.ticket_medio),
+    formatCurrencyBRL(x.custos),
+    formatCurrencyBRL(x.comissao),
+    formatCurrencyBRL(x.margem),
+    x.indice_validacao != null ? `${x.indice_validacao.toFixed(1).replace(".", ",")}%` : "—",
+  ]),
 )}
 
 <h2>Rentabilidade por tipo de serviço</h2>
 ${linhasTabela(
   ["Categoria", "OS", "Receita", "Custos", "Comissões", "Margem", "Margem %"],
-  rent.por_servico.map((x) => [x.categoria, x.quantidade, formatCurrencyBRL(x.receita), formatCurrencyBRL(x.custos), formatCurrencyBRL(x.comissao), formatCurrencyBRL(x.margem), x.margem_pct != null ? `${x.margem_pct.toFixed(1).replace(".", ",")}%` : "—"]),
+  rent.por_servico.map((x) => [
+    x.categoria,
+    x.quantidade,
+    formatCurrencyBRL(x.receita),
+    formatCurrencyBRL(x.custos),
+    formatCurrencyBRL(x.comissao),
+    formatCurrencyBRL(x.margem),
+    x.margem_pct != null ? `${x.margem_pct.toFixed(1).replace(".", ",")}%` : "—",
+  ]),
 )}
 
 <h2>Planejamento do próximo mês</h2>

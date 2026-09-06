@@ -19,7 +19,14 @@ interface ConfigSectionProps {
   comCategoriaPai?: { id: string; nome: string }[];
 }
 
-function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCategoriaPai }: ConfigSectionProps) {
+function ConfigSection({
+  titulo,
+  descricao,
+  tabela,
+  itens,
+  podeConfigurar,
+  comCategoriaPai,
+}: ConfigSectionProps) {
   const queryClient = useQueryClient();
   const [nome, setNome] = useState("");
   const [paiId, setPaiId] = useState("");
@@ -55,7 +62,10 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
 
   async function alternarAtivo(id: string, ativo: boolean) {
     try {
-      const { error } = await supabase.from(tabela).update({ ativo: !ativo } as never).eq("id", id);
+      const { error } = await supabase
+        .from(tabela)
+        .update({ ativo: !ativo } as never)
+        .eq("id", id);
       if (error) throw error;
       toast.success(ativo ? "Desativado." : "Reativado.");
       refresh();
@@ -72,7 +82,9 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
       {podeConfigurar && (
         <form onSubmit={adicionar} className="mt-4 flex flex-wrap items-end gap-2">
           <div className="min-w-40 flex-1">
-            <label htmlFor={`${tabela}-nome`} className={labelClass}>Nome</label>
+            <label htmlFor={`${tabela}-nome`} className={labelClass}>
+              Nome
+            </label>
             <input
               id={`${tabela}-nome`}
               value={nome}
@@ -83,7 +95,9 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
           </div>
           {comCategoriaPai && (
             <div className="min-w-40 flex-1">
-              <label htmlFor={`${tabela}-pai`} className={labelClass}>Categoria</label>
+              <label htmlFor={`${tabela}-pai`} className={labelClass}>
+                Categoria
+              </label>
               <select
                 id={`${tabela}-pai`}
                 value={paiId}
@@ -92,7 +106,9 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
               >
                 <option value="">Selecione…</option>
                 {comCategoriaPai.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nome}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.nome}
+                  </option>
                 ))}
               </select>
             </div>
@@ -105,10 +121,14 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
       )}
 
       <ul className="mt-4 divide-y divide-border">
-        {itens.length === 0 && <li className="py-3 text-sm text-muted-foreground">Nenhum item cadastrado.</li>}
+        {itens.length === 0 && (
+          <li className="py-3 text-sm text-muted-foreground">Nenhum item cadastrado.</li>
+        )}
         {itens.map((item) => (
           <li key={item.id} className="flex items-center gap-3 py-2 text-sm">
-            <span className={cn("flex-1", !item.ativo && "text-muted-foreground line-through")}>{item.nome}</span>
+            <span className={cn("flex-1", !item.ativo && "text-muted-foreground line-through")}>
+              {item.nome}
+            </span>
             {!item.ativo && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
                 Inativo
@@ -137,8 +157,8 @@ export function CategoriasTab({ podeConfigurar }: { podeConfigurar: boolean }) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Somente usuários com a permissão <strong>financeiro.configurar</strong> podem gerenciar categorias e
-          centros de custo. Consulte o administrador.
+          Somente usuários com a permissão <strong>financeiro.configurar</strong> podem gerenciar
+          categorias e centros de custo. Consulte o administrador.
         </p>
       </div>
     );
@@ -158,7 +178,11 @@ export function CategoriasTab({ podeConfigurar }: { podeConfigurar: boolean }) {
         titulo="Subcategorias"
         descricao="Detalhamento vinculado a uma categoria."
         tabela="subcategorias_financeiras"
-        itens={(refs.data?.subcategorias ?? []).map((s) => ({ id: s.id, nome: s.nome, ativo: s.ativo }))}
+        itens={(refs.data?.subcategorias ?? []).map((s) => ({
+          id: s.id,
+          nome: s.nome,
+          ativo: s.ativo,
+        }))}
         podeConfigurar={podeConfigurar}
         comCategoriaPai={categorias.filter((c) => c.ativo).map((c) => ({ id: c.id, nome: c.nome }))}
       />

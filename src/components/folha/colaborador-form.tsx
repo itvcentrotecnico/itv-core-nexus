@@ -115,16 +115,20 @@ export function ColaboradorForm({
         toast.success(
           salario && salario > 0
             ? "Colaborador cadastrado com salário inicial registrado."
-            : "Colaborador cadastrado. O salário pode ser definido depois em \"Salário\".",
+            : 'Colaborador cadastrado. O salário pode ser definido depois em "Salário".',
         );
       }
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
       const msg = mensagemErro(err, "");
-      toast.error(msg || "Não foi possível salvar o colaborador. Verifique os campos obrigatórios e tente novamente.", {
-        description: msg ? "Corrija a informação indicada e tente novamente." : undefined,
-      });
+      toast.error(
+        msg ||
+          "Não foi possível salvar o colaborador. Verifique os campos obrigatórios e tente novamente.",
+        {
+          description: msg ? "Corrija a informação indicada e tente novamente." : undefined,
+        },
+      );
     } finally {
       setSaving(false);
     }
@@ -137,63 +141,127 @@ export function ColaboradorForm({
           <DialogTitle>{editing ? "Editar Colaborador" : "Novo Colaborador"}</DialogTitle>
           <DialogDescription>
             {editing
-              ? "Dados cadastrais. Para alterar o salário, use \"Alterar Salário\" (preserva o histórico)."
+              ? 'Dados cadastrais. Para alterar o salário, use "Alterar Salário" (preserva o histórico).'
               : "Obrigatórios: nome, cargo e status. O colaborador não precisa ter login no sistema; o salário é opcional e pode ser definido depois."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label htmlFor="c-nome" className={labelClass}>Nome Completo *</label>
-            <input id="c-nome" value={nome} onChange={(e) => setNome(e.target.value)} className={inputClass} />
+            <label htmlFor="c-nome" className={labelClass}>
+              Nome Completo *
+            </label>
+            <input
+              id="c-nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="c-exib" className={labelClass}>Nome de Exibição</label>
-            <input id="c-exib" value={nomeExibicao} onChange={(e) => setNomeExibicao(e.target.value)} className={inputClass} />
+            <label htmlFor="c-exib" className={labelClass}>
+              Nome de Exibição
+            </label>
+            <input
+              id="c-exib"
+              value={nomeExibicao}
+              onChange={(e) => setNomeExibicao(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="c-vinc" className={labelClass}>Tipo de Vínculo</label>
-            <select id="c-vinc" value={vinculo} onChange={(e) => setVinculo(e.target.value)} className={inputClass}>
+            <label htmlFor="c-vinc" className={labelClass}>
+              Tipo de Vínculo
+            </label>
+            <select
+              id="c-vinc"
+              value={vinculo}
+              onChange={(e) => setVinculo(e.target.value)}
+              className={inputClass}
+            >
               {TIPOS_VINCULO.map((v) => (
-                <option key={v} value={v}>{v}</option>
+                <option key={v} value={v}>
+                  {v}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="c-cargo" className={labelClass}>Cargo / Função *</label>
-            <select id="c-cargo" value={cargoId} onChange={(e) => setCargoId(e.target.value)} className={inputClass}>
+            <label htmlFor="c-cargo" className={labelClass}>
+              Cargo / Função *
+            </label>
+            <select
+              id="c-cargo"
+              value={cargoId}
+              onChange={(e) => setCargoId(e.target.value)}
+              className={inputClass}
+            >
               <option value="">—</option>
-              {(refs.data?.cargos ?? []).filter((c) => c.ativo).map((c) => (
-                <option key={c.id} value={c.id}>{c.nome}</option>
-              ))}
+              {(refs.data?.cargos ?? [])
+                .filter((c) => c.ativo)
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nome}
+                  </option>
+                ))}
             </select>
           </div>
           <div>
-            <label htmlFor="c-setor" className={labelClass}>Setor</label>
-            <select id="c-setor" value={setorId} onChange={(e) => setSetorId(e.target.value)} className={inputClass}>
+            <label htmlFor="c-setor" className={labelClass}>
+              Setor
+            </label>
+            <select
+              id="c-setor"
+              value={setorId}
+              onChange={(e) => setSetorId(e.target.value)}
+              className={inputClass}
+            >
               <option value="">—</option>
-              {(refs.data?.setores ?? []).filter((s) => s.ativo).map((s) => (
-                <option key={s.id} value={s.id}>{s.nome}</option>
-              ))}
+              {(refs.data?.setores ?? [])
+                .filter((s) => s.ativo)
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.nome}
+                  </option>
+                ))}
             </select>
           </div>
           <div>
-            <label htmlFor="c-adm" className={labelClass}>Data de Admissão</label>
-            <input id="c-adm" type="date" value={dataAdmissao} onChange={(e) => setDataAdmissao(e.target.value)} className={inputClass} />
+            <label htmlFor="c-adm" className={labelClass}>
+              Data de Admissão
+            </label>
+            <input
+              id="c-adm"
+              type="date"
+              value={dataAdmissao}
+              onChange={(e) => setDataAdmissao(e.target.value)}
+              className={inputClass}
+            />
           </div>
           {!editing && (
             <div>
-              <label htmlFor="c-sal" className={labelClass}>Salário Base (opcional)</label>
+              <label htmlFor="c-sal" className={labelClass}>
+                Salário Base (opcional)
+              </label>
               <MoneyInput id="c-sal" value={salario} onChange={setSalario} />
             </div>
           )}
           {!editing && (
             <div>
-              <label htmlFor="c-status" className={labelClass}>Status *</label>
-              <select id="c-status" value={status} onChange={(e) => setStatus(e.target.value as ColaboradorStatus)} className={inputClass}>
+              <label htmlFor="c-status" className={labelClass}>
+                Status *
+              </label>
+              <select
+                id="c-status"
+                value={status}
+                onChange={(e) => setStatus(e.target.value as ColaboradorStatus)}
+                className={inputClass}
+              >
                 {(Object.keys(STATUS_COLABORADOR) as ColaboradorStatus[])
                   .filter((s) => s !== "desligado")
                   .map((s) => (
-                    <option key={s} value={s}>{STATUS_COLABORADOR[s].label}</option>
+                    <option key={s} value={s}>
+                      {STATUS_COLABORADOR[s].label}
+                    </option>
                   ))}
               </select>
             </div>
@@ -203,7 +271,10 @@ export function ColaboradorForm({
               id="c-entrega"
               type="checkbox"
               checked={entrega}
-              onChange={(e) => { setEntrega(e.target.checked); setEntregaTocado(true); }}
+              onChange={(e) => {
+                setEntrega(e.target.checked);
+                setEntregaTocado(true);
+              }}
               className="h-4 w-4 accent-primary"
             />
             <label htmlFor="c-entrega" className="text-sm">
@@ -211,19 +282,43 @@ export function ColaboradorForm({
             </label>
           </div>
           <div>
-            <label htmlFor="c-tel" className={labelClass}>Telefone</label>
-            <input id="c-tel" value={telefone} onChange={(e) => setTelefone(e.target.value)} className={inputClass} />
+            <label htmlFor="c-tel" className={labelClass}>
+              Telefone
+            </label>
+            <input
+              id="c-tel"
+              value={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="c-email" className={labelClass}>E-mail</label>
-            <input id="c-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+            <label htmlFor="c-email" className={labelClass}>
+              E-mail
+            </label>
+            <input
+              id="c-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="c-obs" className={labelClass}>Observação</label>
-            <Textarea id="c-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="c-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="c-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter className="sm:col-span-2">
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || !nome.trim() || !cargoId}>
               {saving ? "Salvando…" : editing ? "Salvar alterações" : "Cadastrar"}
             </Button>
@@ -236,7 +331,13 @@ export function ColaboradorForm({
 
 /* ============================= ALTERAR SALÁRIO ============================= */
 
-export function AlterarSalarioDialog({ colaborador, onClose }: { colaborador: Colaborador; onClose: () => void }) {
+export function AlterarSalarioDialog({
+  colaborador,
+  onClose,
+}: {
+  colaborador: Colaborador;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [valor, setValor] = useState<number | null>(null);
@@ -269,27 +370,49 @@ export function AlterarSalarioDialog({ colaborador, onClose }: { colaborador: Co
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Alterar Salário — {colaborador.nome_exibicao || colaborador.nome}</DialogTitle>
+          <DialogTitle>
+            Alterar Salário — {colaborador.nome_exibicao || colaborador.nome}
+          </DialogTitle>
           <DialogDescription>
-            Salário atual: <strong>{formatCurrencyBRL(colaborador.salario_atual ?? 0)}</strong>. O histórico é
-            preservado: o salário anterior recebe fim de vigência automaticamente.
+            Salário atual: <strong>{formatCurrencyBRL(colaborador.salario_atual ?? 0)}</strong>. O
+            histórico é preservado: o salário anterior recebe fim de vigência automaticamente.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="as-valor" className={labelClass}>Novo Salário *</label>
+            <label htmlFor="as-valor" className={labelClass}>
+              Novo Salário *
+            </label>
             <MoneyInput id="as-valor" value={valor} onChange={setValor} />
           </div>
           <div>
-            <label htmlFor="as-vig" className={labelClass}>Início da Vigência *</label>
-            <input id="as-vig" type="date" value={vigencia} onChange={(e) => setVigencia(e.target.value)} className={inputClass} />
+            <label htmlFor="as-vig" className={labelClass}>
+              Início da Vigência *
+            </label>
+            <input
+              id="as-vig"
+              type="date"
+              value={vigencia}
+              onChange={(e) => setVigencia(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="as-motivo" className={labelClass}>Motivo *</label>
-            <Textarea id="as-motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} required />
+            <label htmlFor="as-motivo" className={labelClass}>
+              Motivo *
+            </label>
+            <Textarea
+              id="as-motivo"
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              rows={2}
+              required
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || valor == null || !vigencia || !motivo.trim()}>
               {saving ? "Salvando…" : "Registrar alteração"}
             </Button>
@@ -302,7 +425,13 @@ export function AlterarSalarioDialog({ colaborador, onClose }: { colaborador: Co
 
 /* ============================= STATUS / DESLIGAMENTO ============================= */
 
-export function AlterarStatusDialog({ colaborador, onClose }: { colaborador: Colaborador; onClose: () => void }) {
+export function AlterarStatusDialog({
+  colaborador,
+  onClose,
+}: {
+  colaborador: Colaborador;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<ColaboradorStatus>(colaborador.status);
@@ -331,14 +460,18 @@ export function AlterarStatusDialog({ colaborador, onClose }: { colaborador: Col
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Alterar Status — {colaborador.nome_exibicao || colaborador.nome}</DialogTitle>
+          <DialogTitle>
+            Alterar Status — {colaborador.nome_exibicao || colaborador.nome}
+          </DialogTitle>
           <DialogDescription>
             Status atual: <strong>{STATUS_COLABORADOR[colaborador.status].label}</strong>
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="st-novo" className={labelClass}>Novo Status *</label>
+            <label htmlFor="st-novo" className={labelClass}>
+              Novo Status *
+            </label>
             <select
               id="st-novo"
               value={status}
@@ -348,16 +481,27 @@ export function AlterarStatusDialog({ colaborador, onClose }: { colaborador: Col
               {(Object.keys(STATUS_COLABORADOR) as ColaboradorStatus[])
                 .filter((s) => s !== "desligado")
                 .map((s) => (
-                  <option key={s} value={s}>{STATUS_COLABORADOR[s].label}</option>
+                  <option key={s} value={s}>
+                    {STATUS_COLABORADOR[s].label}
+                  </option>
                 ))}
             </select>
           </div>
           <div>
-            <label htmlFor="st-motivo" className={labelClass}>Motivo</label>
-            <Textarea id="st-motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} />
+            <label htmlFor="st-motivo" className={labelClass}>
+              Motivo
+            </label>
+            <Textarea
+              id="st-motivo"
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || status === colaborador.status}>
               {saving ? "Salvando…" : "Atualizar status"}
             </Button>
@@ -368,7 +512,13 @@ export function AlterarStatusDialog({ colaborador, onClose }: { colaborador: Col
   );
 }
 
-export function DesligarDialog({ colaborador, onClose }: { colaborador: Colaborador; onClose: () => void }) {
+export function DesligarDialog({
+  colaborador,
+  onClose,
+}: {
+  colaborador: Colaborador;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState(todayManausISO());
@@ -399,8 +549,9 @@ export function DesligarDialog({ colaborador, onClose }: { colaborador: Colabora
         <DialogHeader>
           <DialogTitle>Desligar — {colaborador.nome_exibicao || colaborador.nome}</DialogTitle>
           <DialogDescription>
-            O colaborador passa a <strong>Desligado</strong> sem apagar o histórico. Verbas rescisórias devem ser
-            lançadas na folha da competência com o tipo <strong>Rescisão</strong>.
+            O colaborador passa a <strong>Desligado</strong> sem apagar o histórico. Verbas
+            rescisórias devem ser lançadas na folha da competência com o tipo{" "}
+            <strong>Rescisão</strong>.
             {colaborador.data_admissao && (
               <> Admissão: {formatDateOnlyISO(colaborador.data_admissao)}.</>
             )}
@@ -408,15 +559,33 @@ export function DesligarDialog({ colaborador, onClose }: { colaborador: Colabora
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="dl-data" className={labelClass}>Data de Desligamento *</label>
-            <input id="dl-data" type="date" value={data} onChange={(e) => setData(e.target.value)} className={inputClass} />
+            <label htmlFor="dl-data" className={labelClass}>
+              Data de Desligamento *
+            </label>
+            <input
+              id="dl-data"
+              type="date"
+              value={data}
+              onChange={(e) => setData(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="dl-motivo" className={labelClass}>Motivo *</label>
-            <Textarea id="dl-motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} required />
+            <label htmlFor="dl-motivo" className={labelClass}>
+              Motivo *
+            </label>
+            <Textarea
+              id="dl-motivo"
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              rows={2}
+              required
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Voltar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Voltar
+            </Button>
             <Button type="submit" variant="destructive" disabled={saving || !motivo.trim()}>
               {saving ? "Desligando…" : "Confirmar desligamento"}
             </Button>

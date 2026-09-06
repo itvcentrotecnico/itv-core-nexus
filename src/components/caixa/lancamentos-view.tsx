@@ -94,13 +94,14 @@ function taxasDetalhe(l: CaixaLancamento): string {
     .filter((p) => Number(p.taxa_valor ?? 0) > 0)
     .map(
       (p) =>
-        `${p.forma?.nome ?? "?"}${p.parcelas > 1 ? ` ${p.parcelas}x` : ""}: ${Number(p.taxa_percentual ?? 0)
+        `${p.forma?.nome ?? "?"}${p.parcelas > 1 ? ` ${p.parcelas}x` : ""}: ${Number(
+          p.taxa_percentual ?? 0,
+        )
           .toFixed(2)
           .replace(".", ",")}% = ${formatCurrencyBRL(Number(p.taxa_valor ?? 0))}`,
     );
   return linhas.join(" · ");
 }
-
 
 export function StatusBadge({
   status,
@@ -252,12 +253,13 @@ export function LancamentosView({
       return true;
     });
 
-    const cmp: Record<typeof ordem, (a: LancamentoComEntrega, b: LancamentoComEntrega) => number> = {
-      recentes: (a, b) => b.created_at.localeCompare(a.created_at),
-      antigos: (a, b) => a.created_at.localeCompare(b.created_at),
-      maior: (a, b) => b.valor_final - a.valor_final,
-      menor: (a, b) => a.valor_final - b.valor_final,
-    };
+    const cmp: Record<typeof ordem, (a: LancamentoComEntrega, b: LancamentoComEntrega) => number> =
+      {
+        recentes: (a, b) => b.created_at.localeCompare(a.created_at),
+        antigos: (a, b) => a.created_at.localeCompare(b.created_at),
+        maior: (a, b) => b.valor_final - a.valor_final,
+        menor: (a, b) => a.valor_final - b.valor_final,
+      };
     return [...lista].sort(cmp[ordem]);
   }, [lancamentos, filtros, ordem, origemMap]);
 
@@ -394,8 +396,8 @@ export function LancamentosView({
               Taxas <strong className="text-foreground">{formatCurrencyBRL(resumo.taxas)}</strong>
               {resumo.entradas > 0 && (
                 <span className="ml-1">
-                  ({((resumo.taxas / resumo.entradas) * 100).toFixed(2).replace(".", ",")}% de custo de
-                  recebimento)
+                  ({((resumo.taxas / resumo.entradas) * 100).toFixed(2).replace(".", ",")}% de custo
+                  de recebimento)
                 </span>
               )}
             </span>
@@ -410,14 +412,21 @@ export function LancamentosView({
         {/* Somatória por forma de pagamento */}
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {resumo.formas.length === 0 ? (
-            <p className="col-span-full text-xs text-muted-foreground">Sem entradas no filtro atual.</p>
+            <p className="col-span-full text-xs text-muted-foreground">
+              Sem entradas no filtro atual.
+            </p>
           ) : (
             resumo.formas.map((f) => {
               const temDetalhe = f.parcelas.length > 1 || (f.parcelas[0]?.parcelas ?? 1) > 1;
               const aberto = formaAberta === f.forma;
               return (
-                <div key={f.forma} className="rounded-lg border border-border bg-background px-3 py-2">
-                  <p className="truncate text-[11px] font-medium text-muted-foreground">{f.forma}</p>
+                <div
+                  key={f.forma}
+                  className="rounded-lg border border-border bg-background px-3 py-2"
+                >
+                  <p className="truncate text-[11px] font-medium text-muted-foreground">
+                    {f.forma}
+                  </p>
                   <p className="font-display text-sm font-bold text-foreground">
                     {formatCurrencyBRL(f.total)}
                   </p>
@@ -442,7 +451,9 @@ export function LancamentosView({
                               className="flex justify-between gap-2 text-[10px] text-muted-foreground"
                             >
                               <span>{p.parcelas}x</span>
-                              <strong className="text-foreground">{formatCurrencyBRL(p.valor)}</strong>
+                              <strong className="text-foreground">
+                                {formatCurrencyBRL(p.valor)}
+                              </strong>
                             </li>
                           ))}
                         </ul>
@@ -463,11 +474,13 @@ export function LancamentosView({
             <span className="opacity-70">(indicador — não reduz o faturamento)</span>
           </span>
           <span>
-            Cancelados no período <strong className="text-foreground">{resumo.canceladosQtd}</strong> ·{" "}
+            Cancelados no período{" "}
+            <strong className="text-foreground">{resumo.canceladosQtd}</strong> ·{" "}
             {formatCurrencyBRL(resumo.canceladosValor)}
           </span>
           <span>
-            Estornados no período <strong className="text-foreground">{resumo.estornadosQtd}</strong> ·{" "}
+            Estornados no período{" "}
+            <strong className="text-foreground">{resumo.estornadosQtd}</strong> ·{" "}
             {formatCurrencyBRL(resumo.estornadosValor)}
           </span>
         </div>
@@ -558,7 +571,9 @@ export function LancamentosView({
               <input
                 type="date"
                 value={periodo.fim}
-                onChange={(e) => e.target.value && onPeriodoChange({ ...periodo, fim: e.target.value })}
+                onChange={(e) =>
+                  e.target.value && onPeriodoChange({ ...periodo, fim: e.target.value })
+                }
                 className={cn(inputClass, "mt-1")}
               />
             </label>
@@ -821,10 +836,14 @@ function ListaView({
                   {ents.length === 0
                     ? "—"
                     : ents
-                        .map((e) => `${nomeEntregador(e)} ${formatCurrencyBRL(Number(e.valor ?? 0))}`)
+                        .map(
+                          (e) => `${nomeEntregador(e)} ${formatCurrencyBRL(Number(e.valor ?? 0))}`,
+                        )
                         .join(" · ")}
                 </td>
-                <td className="px-3 py-3 text-muted-foreground">{l.responsavel?.full_name ?? "—"}</td>
+                <td className="px-3 py-3 text-muted-foreground">
+                  {l.responsavel?.full_name ?? "—"}
+                </td>
                 <td className="px-3 py-3">
                   <StatusBadge status={l.status} duplicidade={l.alerta_duplicidade} />
                   {l.motivo_cancelamento && (

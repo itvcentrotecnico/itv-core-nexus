@@ -76,14 +76,18 @@ export function PagarDialog({ conta, onClose }: { conta: ContaPagarSaldo; onClos
           <DialogTitle>Registrar Pagamento</DialogTitle>
           <DialogDescription>
             {conta.descricao}
-            {conta.parcela_total ? ` · Parcela ${conta.parcela_atual}/${conta.parcela_total}` : ""} — Saldo:{" "}
-            <strong>{formatCurrencyBRL(conta.saldo)}</strong>
+            {conta.parcela_total
+              ? ` · Parcela ${conta.parcela_atual}/${conta.parcela_total}`
+              : ""}{" "}
+            — Saldo: <strong>{formatCurrencyBRL(conta.saldo)}</strong>
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="pg-data" className={labelClass}>Data *</label>
+              <label htmlFor="pg-data" className={labelClass}>
+                Data *
+              </label>
               <input
                 id="pg-data"
                 type="date"
@@ -93,22 +97,40 @@ export function PagarDialog({ conta, onClose }: { conta: ContaPagarSaldo; onClos
               />
             </div>
             <div>
-              <label htmlFor="pg-valor" className={labelClass}>Valor Pago *</label>
+              <label htmlFor="pg-valor" className={labelClass}>
+                Valor Pago *
+              </label>
               <MoneyInput id="pg-valor" value={valor} onChange={setValor} />
             </div>
           </div>
           <div>
-            <label htmlFor="pg-forma" className={labelClass}>Forma de Pagamento</label>
-            <select id="pg-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
+            <label htmlFor="pg-forma" className={labelClass}>
+              Forma de Pagamento
+            </label>
+            <select
+              id="pg-forma"
+              value={formaId}
+              onChange={(e) => setFormaId(e.target.value)}
+              className={inputClass}
+            >
               <option value="">—</option>
               {(refs.data?.formas ?? []).map((f) => (
-                <option key={f.id} value={f.id}>{f.nome}</option>
+                <option key={f.id} value={f.id}>
+                  {f.nome}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="pg-obs" className={labelClass}>Observação</label>
-            <Textarea id="pg-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="pg-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="pg-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
@@ -126,7 +148,13 @@ export function PagarDialog({ conta, onClose }: { conta: ContaPagarSaldo; onClos
 
 /* ============================= REGISTRAR RECEBIMENTO ============================= */
 
-export function ReceberDialog({ conta, onClose }: { conta: ContaReceberSaldo; onClose: () => void }) {
+export function ReceberDialog({
+  conta,
+  onClose,
+}: {
+  conta: ContaReceberSaldo;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const refs = useFinanceiroRefs(true);
   const [saving, setSaving] = useState(false);
@@ -169,17 +197,22 @@ export function ReceberDialog({ conta, onClose }: { conta: ContaReceberSaldo; on
           <DialogTitle>Registrar Recebimento</DialogTitle>
           <DialogDescription>
             {conta.cliente} — {conta.descricao}
-            {conta.parcela_total ? ` · Parcela ${conta.parcela_atual}/${conta.parcela_total}` : ""} — Saldo:{" "}
-            <strong>{formatCurrencyBRL(conta.saldo)}</strong>
+            {conta.parcela_total
+              ? ` · Parcela ${conta.parcela_atual}/${conta.parcela_total}`
+              : ""}{" "}
+            — Saldo: <strong>{formatCurrencyBRL(conta.saldo)}</strong>
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <p className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-foreground">
-            O valor será lançado automaticamente no Caixa Diário da data informada, sem dupla contabilização.
+            O valor será lançado automaticamente no Caixa Diário da data informada, sem dupla
+            contabilização.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="rc-data" className={labelClass}>Data *</label>
+              <label htmlFor="rc-data" className={labelClass}>
+                Data *
+              </label>
               <input
                 id="rc-data"
                 type="date"
@@ -189,21 +222,34 @@ export function ReceberDialog({ conta, onClose }: { conta: ContaReceberSaldo; on
               />
             </div>
             <div>
-              <label htmlFor="rc-valor" className={labelClass}>Valor Recebido *</label>
+              <label htmlFor="rc-valor" className={labelClass}>
+                Valor Recebido *
+              </label>
               <MoneyInput id="rc-valor" value={valor} onChange={setValor} />
             </div>
           </div>
           <div>
-            <label htmlFor="rc-forma" className={labelClass}>Forma de Pagamento *</label>
-            <select id="rc-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
+            <label htmlFor="rc-forma" className={labelClass}>
+              Forma de Pagamento *
+            </label>
+            <select
+              id="rc-forma"
+              value={formaId}
+              onChange={(e) => setFormaId(e.target.value)}
+              className={inputClass}
+            >
               <option value="">Selecione…</option>
               {(refs.data?.formas ?? []).map((f) => (
-                <option key={f.id} value={f.id}>{f.nome}</option>
+                <option key={f.id} value={f.id}>
+                  {f.nome}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="rc-ref" className={labelClass}>Referência</label>
+            <label htmlFor="rc-ref" className={labelClass}>
+              Referência
+            </label>
             <input
               id="rc-ref"
               value={referencia}
@@ -213,8 +259,15 @@ export function ReceberDialog({ conta, onClose }: { conta: ContaReceberSaldo; on
             />
           </div>
           <div>
-            <label htmlFor="rc-obs" className={labelClass}>Observação</label>
-            <Textarea id="rc-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="rc-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="rc-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
@@ -254,10 +307,13 @@ export function EstornoMovimentoDialog({
     e.preventDefault();
     setSaving(true);
     try {
-      await rpcFin(ehPagamento ? "contas_pagar_estornar_pagamento" : "contas_receber_estornar_recebimento", {
-        [ehPagamento ? "p_pagamento_id" : "p_recebimento_id"]: movimentoId,
-        p_motivo: motivo,
-      });
+      await rpcFin(
+        ehPagamento ? "contas_pagar_estornar_pagamento" : "contas_receber_estornar_recebimento",
+        {
+          [ehPagamento ? "p_pagamento_id" : "p_recebimento_id"]: movimentoId,
+          p_motivo: motivo,
+        },
+      );
       toast.success(
         ehPagamento
           ? "Pagamento estornado (movimento reverso criado)."
@@ -278,14 +334,16 @@ export function EstornoMovimentoDialog({
         <DialogHeader>
           <DialogTitle>Estornar {ehPagamento ? "Pagamento" : "Recebimento"}</DialogTitle>
           <DialogDescription>
-            {formatDateOnlyISO(data)} · {formatCurrencyBRL(valor)} — o movimento original será preservado e um
-            movimento reverso será criado.
+            {formatDateOnlyISO(data)} · {formatCurrencyBRL(valor)} — o movimento original será
+            preservado e um movimento reverso será criado.
             {!ehPagamento && " O lançamento correspondente no Caixa Diário também será estornado."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="est-motivo" className={labelClass}>Motivo *</label>
+            <label htmlFor="est-motivo" className={labelClass}>
+              Motivo *
+            </label>
             <Textarea
               id="est-motivo"
               value={motivo}
@@ -326,8 +384,13 @@ export function CancelarFinanceiroDialog({
   const [motivo, setMotivo] = useState("");
 
   const rpc =
-    tipo === "despesa" ? "despesas_cancelar" : tipo === "pagar" ? "contas_pagar_cancelar" : "contas_receber_cancelar";
-  const nome = tipo === "despesa" ? "despesa" : tipo === "pagar" ? "conta a pagar" : "conta a receber";
+    tipo === "despesa"
+      ? "despesas_cancelar"
+      : tipo === "pagar"
+        ? "contas_pagar_cancelar"
+        : "contas_receber_cancelar";
+  const nome =
+    tipo === "despesa" ? "despesa" : tipo === "pagar" ? "conta a pagar" : "conta a receber";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -355,7 +418,9 @@ export function CancelarFinanceiroDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="canc-motivo" className={labelClass}>Motivo *</label>
+            <label htmlFor="canc-motivo" className={labelClass}>
+              Motivo *
+            </label>
             <Textarea
               id="canc-motivo"
               value={motivo}
@@ -389,7 +454,11 @@ export function MovimentosContaList({
   contaId: string;
   podeEstornar: boolean;
 }) {
-  const [estornoTarget, setEstornoTarget] = useState<{ id: string; valor: number; data: string } | null>(null);
+  const [estornoTarget, setEstornoTarget] = useState<{
+    id: string;
+    valor: number;
+    data: string;
+  } | null>(null);
   const ehPagamento = tipo === "pagar";
 
   const movimentosQuery = useQuery({

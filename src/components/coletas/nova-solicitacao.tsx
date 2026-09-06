@@ -113,18 +113,21 @@ export function NovaSolicitacaoDialog({
     }
     setSalvando(true);
     try {
-      const res = await rpcColetas<{ id: string; token: string; expira_em: string }>("coletas_criar", {
-        p_tipo: tipo,
-        p_nome: nome.trim(),
-        p_whatsapp: somenteDigitos(whatsapp),
-        p_observacao: observacao.trim() || null,
-        p_horas: horas,
-        p_origem_id: null,
-        p_origem_detalhe: null,
-        p_indicado_nome: null,
-        p_indicado_telefone: null,
-        p_canal_contato: canal || null,
-      });
+      const res = await rpcColetas<{ id: string; token: string; expira_em: string }>(
+        "coletas_criar",
+        {
+          p_tipo: tipo,
+          p_nome: nome.trim(),
+          p_whatsapp: somenteDigitos(whatsapp),
+          p_observacao: observacao.trim() || null,
+          p_horas: horas,
+          p_origem_id: null,
+          p_origem_detalhe: null,
+          p_indicado_nome: null,
+          p_indicado_telefone: null,
+          p_canal_contato: canal || null,
+        },
+      );
 
       if (reutilizar) {
         await rpcColetas("coletas_atualizar", {
@@ -152,7 +155,13 @@ export function NovaSolicitacaoDialog({
 
       void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       onClose();
-      onLink({ id: res.id, token: res.token, expira_em: res.expira_em, whatsapp: somenteDigitos(whatsapp), cliente_nome: nome.trim() });
+      onLink({
+        id: res.id,
+        token: res.token,
+        expira_em: res.expira_em,
+        whatsapp: somenteDigitos(whatsapp),
+        cliente_nome: nome.trim(),
+      });
     } catch (e) {
       toast.error(mensagemErro(e, "Não foi possível criar a solicitação."));
     } finally {
@@ -165,7 +174,9 @@ export function NovaSolicitacaoDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Solicitar cadastro para coleta</DialogTitle>
-          <DialogDescription>Preencha só o mínimo. O cliente completa o restante pelo link.</DialogDescription>
+          <DialogDescription>
+            Preencha só o mínimo. O cliente completa o restante pelo link.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
@@ -178,7 +189,9 @@ export function NovaSolicitacaoDialog({
                   type="button"
                   onClick={() => setTipo(t)}
                   className={`h-11 rounded-md border text-sm font-semibold transition-colors ${
-                    tipo === t ? "border-primary bg-primary/10 text-primary" : "border-input text-muted-foreground"
+                    tipo === t
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-input text-muted-foreground"
                   }`}
                 >
                   {TIPO_LABEL[t]}
@@ -188,12 +201,22 @@ export function NovaSolicitacaoDialog({
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="coleta-nome">Nome do cliente</label>
-            <input id="coleta-nome" className={inputClass} value={nome} onChange={(e) => setNome(e.target.value)} autoComplete="off" />
+            <label className={labelClass} htmlFor="coleta-nome">
+              Nome do cliente
+            </label>
+            <input
+              id="coleta-nome"
+              className={inputClass}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              autoComplete="off"
+            />
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="coleta-zap">WhatsApp</label>
+            <label className={labelClass} htmlFor="coleta-zap">
+              WhatsApp
+            </label>
             <input
               id="coleta-zap"
               className={inputClass}
@@ -207,13 +230,15 @@ export function NovaSolicitacaoDialog({
           {duplicados.length > 0 && (
             <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
               <p className="flex items-center gap-1.5 font-semibold">
-                <AlertTriangle className="size-3.5" /> Já existe cadastro recente para este telefone.
+                <AlertTriangle className="size-3.5" /> Já existe cadastro recente para este
+                telefone.
               </p>
               <ul className="mt-1.5 space-y-1.5">
                 {duplicados.map((d) => (
                   <li key={d.id} className="flex flex-wrap items-center justify-between gap-2">
                     <span>
-                      {d.cliente_nome} · {TIPO_LABEL[d.tipo]} · {d.bairro ?? "sem bairro"} · {formatDateTimeITV(d.created_at)}
+                      {d.cliente_nome} · {TIPO_LABEL[d.tipo]} · {d.bairro ?? "sem bairro"} ·{" "}
+                      {formatDateTimeITV(d.created_at)}
                     </span>
                     {d.rua && (
                       <Button
@@ -233,10 +258,19 @@ export function NovaSolicitacaoDialog({
           )}
 
           <div>
-            <label className={labelClass} htmlFor="coleta-canal">Entrou em contato por</label>
-            <select id="coleta-canal" className={inputClass} value={canal} onChange={(e) => setCanal(e.target.value)}>
+            <label className={labelClass} htmlFor="coleta-canal">
+              Entrou em contato por
+            </label>
+            <select
+              id="coleta-canal"
+              className={inputClass}
+              value={canal}
+              onChange={(e) => setCanal(e.target.value)}
+            >
               {CANAIS_CONTATO.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
             <p className="mt-1 text-[11px] text-muted-foreground">
@@ -245,13 +279,27 @@ export function NovaSolicitacaoDialog({
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="coleta-obs">Observação (opcional)</label>
-            <Textarea id="coleta-obs" rows={2} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+            <label className={labelClass} htmlFor="coleta-obs">
+              Observação (opcional)
+            </label>
+            <Textarea
+              id="coleta-obs"
+              rows={2}
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+            />
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="coleta-val">Validade do link</label>
-            <select id="coleta-val" className={inputClass} value={horas} onChange={(e) => setHoras(Number(e.target.value))}>
+            <label className={labelClass} htmlFor="coleta-val">
+              Validade do link
+            </label>
+            <select
+              id="coleta-val"
+              className={inputClass}
+              value={horas}
+              onChange={(e) => setHoras(Number(e.target.value))}
+            >
               <option value={24}>24 horas</option>
               <option value={48}>48 horas</option>
               <option value={72}>72 horas</option>
@@ -261,7 +309,9 @@ export function NovaSolicitacaoDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button onClick={salvar} disabled={salvando}>
             {salvando && <Loader2 className="mr-2 size-4 animate-spin" />} Gerar link
           </Button>

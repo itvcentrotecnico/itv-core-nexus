@@ -57,7 +57,10 @@ export function TributosTab() {
 
   const lista = tributosQuery.data ?? [];
   const total = useMemo(
-    () => round2(lista.filter((t) => t.status !== "cancelado").reduce((a, t) => a + Number(t.valor), 0)),
+    () =>
+      round2(
+        lista.filter((t) => t.status !== "cancelado").reduce((a, t) => a + Number(t.valor), 0),
+      ),
     [lista],
   );
 
@@ -96,7 +99,9 @@ export function TributosTab() {
         <div className="flex items-end gap-3">
           <div className="rounded-xl border border-primary/30 bg-primary/5 px-4 py-3">
             <p className="text-xs font-medium text-muted-foreground">Tributos da competência</p>
-            <p className="mt-1 font-display text-lg font-bold text-foreground">{formatCurrencyBRL(total)}</p>
+            <p className="mt-1 font-display text-lg font-bold text-foreground">
+              {formatCurrencyBRL(total)}
+            </p>
           </div>
           {podeCriar && (
             <button
@@ -125,7 +130,9 @@ export function TributosTab() {
       ) : lista.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-card/60 p-10 text-center">
           <Receipt className="mx-auto h-8 w-8 text-muted-foreground" aria-hidden="true" />
-          <p className="mt-3 text-sm font-medium text-foreground">Nenhum tributo nesta competência</p>
+          <p className="mt-3 text-sm font-medium text-foreground">
+            Nenhum tributo nesta competência
+          </p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -142,7 +149,10 @@ export function TributosTab() {
             </thead>
             <tbody>
               {lista.map((t) => (
-                <tr key={t.id} className="border-b border-border last:border-0 hover:bg-secondary/40">
+                <tr
+                  key={t.id}
+                  className="border-b border-border last:border-0 hover:bg-secondary/40"
+                >
                   <td className="px-4 py-3 font-medium text-foreground">
                     {t.tipo}
                     <p className="text-xs font-normal text-muted-foreground">
@@ -152,7 +162,9 @@ export function TributosTab() {
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {t.metodo === "percentual"
-                      ? `${Number(t.percentual ?? 0).toString().replace(".", ",")}% sobre a base`
+                      ? `${Number(t.percentual ?? 0)
+                          .toString()
+                          .replace(".", ",")}% sobre a base`
                       : "Valor manual"}
                   </td>
                   <td className="px-4 py-3 text-right text-muted-foreground">
@@ -171,7 +183,9 @@ export function TributosTab() {
                       {STATUS_TRIBUTO[t.status].label}
                     </span>
                     {t.motivo_cancelamento && (
-                      <p className="mt-1 max-w-48 text-xs text-muted-foreground">{t.motivo_cancelamento}</p>
+                      <p className="mt-1 max-w-48 text-xs text-muted-foreground">
+                        {t.motivo_cancelamento}
+                      </p>
                     )}
                   </td>
                   {podeEditar && (
@@ -251,7 +265,11 @@ function TributoForm({
   const configQuery = useQuery({
     queryKey: ["settings", "governanca"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("settings").select("value").eq("key", "governanca").maybeSingle();
+      const { data, error } = await supabase
+        .from("settings")
+        .select("value")
+        .eq("key", "governanca")
+        .maybeSingle();
       if (error) throw error;
       return { ...GOVERNANCA_PADRAO, ...((data?.value ?? {}) as Partial<GovernancaConfig>) };
     },
@@ -337,8 +355,8 @@ function TributoForm({
         <DialogHeader>
           <DialogTitle>{editing ? "Editar tributo" : "Novo tributo gerencial"}</DialogTitle>
           <DialogDescription>
-            Cálculo gerencial para a competência {mes.split("-").reverse().join("/")}. Não substitui a
-            apuração fiscal oficial.
+            Cálculo gerencial para a competência {mes.split("-").reverse().join("/")}. Não substitui
+            a apuração fiscal oficial.
           </DialogDescription>
         </DialogHeader>
 
@@ -346,7 +364,12 @@ function TributoForm({
           <label className={labelClass} htmlFor="trib-tipo">
             Tipo
           </label>
-          <select id="trib-tipo" className={inputClass} value={tipo} onChange={(e) => setTipo(e.target.value)}>
+          <select
+            id="trib-tipo"
+            className={inputClass}
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+          >
             {TIPOS_TRIBUTO.map((t) => (
               <option key={t} value={t}>
                 {t}
@@ -389,7 +412,9 @@ function TributoForm({
                 min="0"
                 className={inputClass}
                 value={percentual ?? ""}
-                onChange={(e) => setPercentual(e.target.value === "" ? null : Number(e.target.value))}
+                onChange={(e) =>
+                  setPercentual(e.target.value === "" ? null : Number(e.target.value))
+                }
               />
             </div>
           ) : (
@@ -404,7 +429,9 @@ function TributoForm({
 
         <div className="flex items-center justify-between rounded-lg bg-secondary px-4 py-3">
           <span className="text-sm font-medium text-secondary-foreground">Valor do tributo</span>
-          <span className="font-display text-lg font-bold text-foreground">{formatCurrencyBRL(previsto)}</span>
+          <span className="font-display text-lg font-bold text-foreground">
+            {formatCurrencyBRL(previsto)}
+          </span>
         </div>
 
         <div>

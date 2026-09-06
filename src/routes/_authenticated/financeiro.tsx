@@ -32,7 +32,12 @@ import {
 } from "@/lib/financeiro";
 import { rpcFin } from "@/components/financeiro/shared";
 import { ContaPagarForm, ContaReceberForm, DespesaForm } from "@/components/financeiro/forms";
-import { CancelarFinanceiroDialog, MovimentosContaList, PagarDialog, ReceberDialog } from "@/components/financeiro/movimentos";
+import {
+  CancelarFinanceiroDialog,
+  MovimentosContaList,
+  PagarDialog,
+  ReceberDialog,
+} from "@/components/financeiro/movimentos";
 import { CategoriasTab } from "@/components/financeiro/categorias-tab";
 import { DreTab } from "@/components/financeiro/dre-tab";
 import { TributosTab } from "@/components/financeiro/tributos-tab";
@@ -41,15 +46,31 @@ export const Route = createFileRoute("/_authenticated/financeiro")({
   head: () => ({
     meta: [
       { title: "Financeiro — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Despesas, contas a pagar, contas a receber e fluxo de caixa." },
+      {
+        name: "description",
+        content: "Despesas, contas a pagar, contas a receber e fluxo de caixa.",
+      },
       { property: "og:title", content: "Financeiro — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Despesas, contas a pagar, contas a receber e fluxo de caixa." },
+      {
+        property: "og:description",
+        content: "Despesas, contas a pagar, contas a receber e fluxo de caixa.",
+      },
     ],
   }),
   component: FinanceiroPage,
 });
 
-function KpiCard({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: "good" | "bad" | undefined }) {
+function KpiCard({
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: "good" | "bad" | undefined;
+}) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -69,13 +90,18 @@ function KpiCard({ label, value, sub, tone }: { label: string; value: string; su
 
 function Badge({ label, className }: { label: string; className: string }) {
   return (
-    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", className)}>{label}</span>
+    <span
+      className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", className)}
+    >
+      {label}
+    </span>
   );
 }
 
 const money = (n: number | null | undefined) => formatCurrencyBRL(n ?? 0);
 
-type TabKey = "visao" | "dre" | "despesas" | "pagar" | "receber" | "tributos" | "fluxo" | "categorias";
+type TabKey =
+  "visao" | "dre" | "despesas" | "pagar" | "receber" | "tributos" | "fluxo" | "categorias";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "visao", label: "Visão Geral" },
@@ -97,11 +123,16 @@ function FinanceiroPage() {
       <header>
         <h1 className="font-display text-2xl font-bold text-foreground">Financeiro</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Controle financeiro e compromissos da ITV — acesso restrito e liberado individualmente pelo administrador.
+          Controle financeiro e compromissos da ITV — acesso restrito e liberado individualmente
+          pelo administrador.
         </p>
       </header>
 
-      <div className="flex gap-1 overflow-x-auto border-b border-border" role="tablist" aria-label="Seções do Financeiro">
+      <div
+        className="flex gap-1 overflow-x-auto border-b border-border"
+        role="tablist"
+        aria-label="Seções do Financeiro"
+      >
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -144,7 +175,8 @@ function VisaoGeralTab() {
 
   const indQuery = useQuery({
     queryKey: ["financeiro", "indicadores", from, to],
-    queryFn: () => rpcFin<FinanceiroIndicadores>("financeiro_indicadores", { p_from: from, p_to: to }),
+    queryFn: () =>
+      rpcFin<FinanceiroIndicadores>("financeiro_indicadores", { p_from: from, p_to: to }),
   });
   const ind = indQuery.data;
 
@@ -152,28 +184,86 @@ function VisaoGeralTab() {
     <div className="space-y-4">
       <div className="flex items-end gap-3">
         <div>
-          <label htmlFor="vg-mes" className={labelClass}>Competência</label>
-          <input id="vg-mes" type="month" value={mes} onChange={(e) => setMes(e.target.value)} className={inputClass} />
+          <label htmlFor="vg-mes" className={labelClass}>
+            Competência
+          </label>
+          <input
+            id="vg-mes"
+            type="month"
+            value={mes}
+            onChange={(e) => setMes(e.target.value)}
+            className={inputClass}
+          />
         </div>
       </div>
-      {indQuery.isLoading && <p className="text-sm text-muted-foreground">Carregando indicadores…</p>}
+      {indQuery.isLoading && (
+        <p className="text-sm text-muted-foreground">Carregando indicadores…</p>
+      )}
       {ind && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          <KpiCard label="Receita Líquida" value={money(ind.receita_liquida)} sub="Caixa no período" />
-          <KpiCard label="Margem de Contribuição" value={money(ind.margem_contribuicao)} sub="Receita − Custos − Comissões" tone={ind.margem_contribuicao < 0 ? "bad" : "good"} />
-          <KpiCard label="Despesas Operacionais" value={money(ind.despesas_operacionais)} sub="Competência do período" />
-          <KpiCard label="Resultado antes da Folha" value={money(ind.resultado_antes_folha)} sub="Margem − Despesas" tone={ind.resultado_antes_folha < 0 ? "bad" : "good"} />
-          <KpiCard label="Folha Gerencial" value={money(ind.folha_gerencial)} sub={`Pendente: ${money(ind.folha_pendente)}`} />
-          <KpiCard label="Resultado Operacional" value={money(ind.resultado_operacional)} sub="Receita − Custos − Comissões − Despesas − Folha" tone={ind.resultado_operacional < 0 ? "bad" : "good"} />
-          <KpiCard label="Margem Operacional" value={`${ind.margem_operacional.toFixed(1)}%`} sub="Resultado ÷ Receita" tone={ind.margem_operacional < 0 ? "bad" : "good"} />
-          <KpiCard label="A Pagar (pendente)" value={money(ind.contas_pagar_pendente)} sub={`Vencido: ${money(ind.contas_pagar_vencido)}`} tone={ind.contas_pagar_vencido > 0 ? "bad" : undefined} />
-          <KpiCard label="A Receber (pendente)" value={money(ind.contas_receber_pendente)} sub={`Vencido: ${money(ind.contas_receber_vencido)}`} tone={ind.contas_receber_vencido > 0 ? "bad" : undefined} />
+          <KpiCard
+            label="Receita Líquida"
+            value={money(ind.receita_liquida)}
+            sub="Caixa no período"
+          />
+          <KpiCard
+            label="Margem de Contribuição"
+            value={money(ind.margem_contribuicao)}
+            sub="Receita − Custos − Comissões"
+            tone={ind.margem_contribuicao < 0 ? "bad" : "good"}
+          />
+          <KpiCard
+            label="Despesas Operacionais"
+            value={money(ind.despesas_operacionais)}
+            sub="Competência do período"
+          />
+          <KpiCard
+            label="Resultado antes da Folha"
+            value={money(ind.resultado_antes_folha)}
+            sub="Margem − Despesas"
+            tone={ind.resultado_antes_folha < 0 ? "bad" : "good"}
+          />
+          <KpiCard
+            label="Folha Gerencial"
+            value={money(ind.folha_gerencial)}
+            sub={`Pendente: ${money(ind.folha_pendente)}`}
+          />
+          <KpiCard
+            label="Resultado Operacional"
+            value={money(ind.resultado_operacional)}
+            sub="Receita − Custos − Comissões − Despesas − Folha"
+            tone={ind.resultado_operacional < 0 ? "bad" : "good"}
+          />
+          <KpiCard
+            label="Margem Operacional"
+            value={`${ind.margem_operacional.toFixed(1)}%`}
+            sub="Resultado ÷ Receita"
+            tone={ind.margem_operacional < 0 ? "bad" : "good"}
+          />
+          <KpiCard
+            label="A Pagar (pendente)"
+            value={money(ind.contas_pagar_pendente)}
+            sub={`Vencido: ${money(ind.contas_pagar_vencido)}`}
+            tone={ind.contas_pagar_vencido > 0 ? "bad" : undefined}
+          />
+          <KpiCard
+            label="A Receber (pendente)"
+            value={money(ind.contas_receber_pendente)}
+            sub={`Vencido: ${money(ind.contas_receber_vencido)}`}
+            tone={ind.contas_receber_vencido > 0 ? "bad" : undefined}
+          />
           <KpiCard label="Entradas previstas 30d" value={money(ind.entradas_previstas_30d)} />
-          <KpiCard label="Saldo Projetado 30d" value={money(ind.saldo_projetado_30d)} sub={`Saídas: ${money(ind.saidas_previstas_30d)}`} tone={ind.saldo_projetado_30d < 0 ? "bad" : "good"} />
+          <KpiCard
+            label="Saldo Projetado 30d"
+            value={money(ind.saldo_projetado_30d)}
+            sub={`Saídas: ${money(ind.saidas_previstas_30d)}`}
+            tone={ind.saldo_projetado_30d < 0 ? "bad" : "good"}
+          />
         </div>
       )}
       <p className="text-xs text-muted-foreground">
-        Resultado Operacional = Receita − Custos − Comissões − Despesas − Folha Gerencial. Metas entram em etapa futura.
+        Resultado Operacional = Receita − Custos − Comissões − Despesas − Folha Gerencial. Metas
+        entram em etapa futura.
       </p>
     </div>
   );
@@ -206,21 +296,40 @@ function DespesasTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
     },
   });
   const despesas = despesasQuery.data ?? [];
-  const total = despesas.filter((d) => d.status !== "cancelada").reduce((acc, d) => acc + Number(d.valor), 0);
+  const total = despesas
+    .filter((d) => d.status !== "cancelada")
+    .reduce((acc, d) => acc + Number(d.valor), 0);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <label htmlFor="dp-mes" className={labelClass}>Competência</label>
-          <input id="dp-mes" type="month" value={mes} onChange={(e) => setMes(e.target.value)} className={inputClass} />
+          <label htmlFor="dp-mes" className={labelClass}>
+            Competência
+          </label>
+          <input
+            id="dp-mes"
+            type="month"
+            value={mes}
+            onChange={(e) => setMes(e.target.value)}
+            className={inputClass}
+          />
         </div>
         <div>
-          <label htmlFor="dp-status" className={labelClass}>Status</label>
-          <select id="dp-status" value={status} onChange={(e) => setStatus(e.target.value)} className={inputClass}>
+          <label htmlFor="dp-status" className={labelClass}>
+            Status
+          </label>
+          <select
+            id="dp-status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className={inputClass}
+          >
             <option value="">Todos</option>
             {Object.entries(STATUS_DESPESA).map(([k, v]) => (
-              <option key={k} value={k}>{v.label}</option>
+              <option key={k} value={k}>
+                {v.label}
+              </option>
             ))}
           </select>
         </div>
@@ -229,7 +338,13 @@ function DespesasTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
             Total: <strong className="text-foreground">{money(total)}</strong>
           </p>
           {can("financeiro", "criar") && (
-            <Button size="sm" onClick={() => { setEditing(null); setFormOpen(true); }}>
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditing(null);
+                setFormOpen(true);
+              }}
+            >
               <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
               Nova Despesa
             </Button>
@@ -249,8 +364,12 @@ function DespesasTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-medium text-foreground">{d.descricao}</p>
               <Badge {...STATUS_DESPESA[d.status]} />
-              {d.recorrente && <Badge label="Recorrente" className="bg-secondary text-secondary-foreground" />}
-              <span className="ml-auto font-display font-bold text-foreground">{money(d.valor)}</span>
+              {d.recorrente && (
+                <Badge label="Recorrente" className="bg-secondary text-secondary-foreground" />
+              )}
+              <span className="ml-auto font-display font-bold text-foreground">
+                {money(d.valor)}
+              </span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {d.categoria?.nome ?? "Sem categoria"}
@@ -260,22 +379,35 @@ function DespesasTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
               {d.vencimento ? ` · Vence ${formatDateOnlyISO(d.vencimento)}` : ""}
               {d.responsavel?.full_name ? ` · por ${d.responsavel.full_name}` : ""}
             </p>
-            {d.status !== "cancelada" && (can("financeiro", "editar") || can("financeiro", "cancelar")) && (
-              <div className="mt-2 flex gap-2">
-                {can("financeiro", "editar") && (
-                  <Button size="sm" variant="outline" onClick={() => { setEditing(d); setFormOpen(true); }}>
-                    <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
-                    Editar
-                  </Button>
-                )}
-                {can("financeiro", "cancelar") && (
-                  <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setCancelTarget(d)}>
-                    <XCircle className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
-                    Cancelar
-                  </Button>
-                )}
-              </div>
-            )}
+            {d.status !== "cancelada" &&
+              (can("financeiro", "editar") || can("financeiro", "cancelar")) && (
+                <div className="mt-2 flex gap-2">
+                  {can("financeiro", "editar") && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditing(d);
+                        setFormOpen(true);
+                      }}
+                    >
+                      <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+                      Editar
+                    </Button>
+                  )}
+                  {can("financeiro", "cancelar") && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive"
+                      onClick={() => setCancelTarget(d)}
+                    >
+                      <XCircle className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
+              )}
             {d.status === "cancelada" && d.motivo_cancelamento && (
               <p className="mt-1 text-xs text-muted-foreground">Motivo: {d.motivo_cancelamento}</p>
             )}
@@ -340,11 +472,24 @@ function ContasPagarTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <KpiCard label="Vencidas" value={money(vencidas.reduce((a, c) => a + Number(c.saldo), 0))} sub={`${vencidas.length} conta(s)`} tone={vencidas.length > 0 ? "bad" : undefined} />
-        <KpiCard label="Vencem hoje" value={money(abertas.filter((c) => c.vencimento === hoje).reduce((a, c) => a + Number(c.saldo), 0))} />
+        <KpiCard
+          label="Vencidas"
+          value={money(vencidas.reduce((a, c) => a + Number(c.saldo), 0))}
+          sub={`${vencidas.length} conta(s)`}
+          tone={vencidas.length > 0 ? "bad" : undefined}
+        />
+        <KpiCard
+          label="Vencem hoje"
+          value={money(
+            abertas.filter((c) => c.vencimento === hoje).reduce((a, c) => a + Number(c.saldo), 0),
+          )}
+        />
         <KpiCard label="Próximos 7 dias" value={money(emDias(7))} />
         <KpiCard label="Próximos 30 dias" value={money(emDias(30))} />
-        <KpiCard label="Total pendente" value={money(abertas.reduce((a, c) => a + Number(c.saldo), 0))} />
+        <KpiCard
+          label="Total pendente"
+          value={money(abertas.reduce((a, c) => a + Number(c.saldo), 0))}
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -354,14 +499,29 @@ function ContasPagarTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
             onClick={() => setFiltro(f)}
             className={cn(
               "rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors",
-              filtro === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+              filtro === f
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
             )}
           >
-            {f === "abertas" ? "Abertas" : f === "vencidas" ? "Vencidas" : f === "todas" ? "Todas" : "Canceladas"}
+            {f === "abertas"
+              ? "Abertas"
+              : f === "vencidas"
+                ? "Vencidas"
+                : f === "todas"
+                  ? "Todas"
+                  : "Canceladas"}
           </button>
         ))}
         {can("financeiro", "criar") && (
-          <Button size="sm" className="ml-auto" onClick={() => { setEditing(null); setFormOpen(true); }}>
+          <Button
+            size="sm"
+            className="ml-auto"
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+          >
             <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
             Nova Conta a Pagar
           </Button>
@@ -392,16 +552,25 @@ function ContasPagarTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
                 <ArrowDownCircle className="h-4 w-4 text-destructive" aria-hidden="true" />
                 <p className="font-medium text-foreground">{c.descricao}</p>
                 {c.parcela_total && (
-                  <Badge label={`${c.parcela_atual}/${c.parcela_total}`} className="bg-secondary text-secondary-foreground" />
+                  <Badge
+                    label={`${c.parcela_atual}/${c.parcela_total}`}
+                    className="bg-secondary text-secondary-foreground"
+                  />
                 )}
                 <Badge {...STATUS_CONTA_PAGAR[c.status]} />
                 {c.vencido && c.saldo > 0 && (
-                  <Badge label={`Vencida há ${c.dias_atraso}d`} className="bg-destructive/10 text-destructive" />
+                  <Badge
+                    label={`Vencida há ${c.dias_atraso}d`}
+                    className="bg-destructive/10 text-destructive"
+                  />
                 )}
-                <span className="ml-auto font-display font-bold text-foreground">{money(c.saldo)}</span>
+                <span className="ml-auto font-display font-bold text-foreground">
+                  {money(c.saldo)}
+                </span>
               </div>
               <p className="mt-1 pl-6 text-xs text-muted-foreground">
-                {c.fornecedor_nome ?? "Sem fornecedor"} · Vence {formatDateOnlyISO(c.vencimento)} · Original {money(c.valor_original)} · Pago {money(c.valor_pago)}
+                {c.fornecedor_nome ?? "Sem fornecedor"} · Vence {formatDateOnlyISO(c.vencimento)} ·
+                Original {money(c.valor_original)} · Pago {money(c.valor_pago)}
               </p>
             </button>
             {expandida === c.id && (
@@ -414,19 +583,35 @@ function ContasPagarTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
                     </Button>
                   )}
                   {c.status !== "cancelado" && can("financeiro", "editar") && (
-                    <Button size="sm" variant="outline" onClick={() => { setEditing(c); setFormOpen(true); }}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditing(c);
+                        setFormOpen(true);
+                      }}
+                    >
                       <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                       Editar
                     </Button>
                   )}
                   {c.status !== "cancelado" && can("financeiro", "cancelar") && (
-                    <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setCancelTarget(c)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive"
+                      onClick={() => setCancelTarget(c)}
+                    >
                       <XCircle className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                       Cancelar
                     </Button>
                   )}
                 </div>
-                <MovimentosContaList tipo="pagar" contaId={c.id} podeEstornar={can("financeiro", "estornar")} />
+                <MovimentosContaList
+                  tipo="pagar"
+                  contaId={c.id}
+                  podeEstornar={can("financeiro", "estornar")}
+                />
               </div>
             )}
           </li>
@@ -436,7 +621,12 @@ function ContasPagarTab({ can }: { can: ReturnType<typeof useAccess>["can"] }) {
       <ContaPagarForm open={formOpen} onClose={() => setFormOpen(false)} editing={editing} />
       {pagarTarget && <PagarDialog conta={pagarTarget} onClose={() => setPagarTarget(null)} />}
       {cancelTarget && (
-        <CancelarFinanceiroDialog tipo="pagar" id={cancelTarget.id} titulo={cancelTarget.descricao} onClose={() => setCancelTarget(null)} />
+        <CancelarFinanceiroDialog
+          tipo="pagar"
+          id={cancelTarget.id}
+          titulo={cancelTarget.descricao}
+          onClose={() => setCancelTarget(null)}
+        />
       )}
     </div>
   );
@@ -466,11 +656,14 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
   });
   const todas = contasQuery.data ?? [];
   const hoje = todayManausISO();
-  const abertas = todas.filter((c) => c.status === "pendente" || c.status === "parcialmente_recebido");
+  const abertas = todas.filter(
+    (c) => c.status === "pendente" || c.status === "parcialmente_recebido",
+  );
   const vencidas = abertas.filter((c) => c.vencido);
 
   const contas = todas.filter((c) => {
-    if (filtro === "abertas" && !(c.status === "pendente" || c.status === "parcialmente_recebido")) return false;
+    if (filtro === "abertas" && !(c.status === "pendente" || c.status === "parcialmente_recebido"))
+      return false;
     if (filtro === "vencidas" && !(c.vencido && c.saldo > 0)) return false;
     if (filtro === "canceladas" && c.status !== "cancelado") return false;
     if (faixa) {
@@ -491,11 +684,24 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <KpiCard label="Vencidas (inadimplência)" value={money(vencidas.reduce((a, c) => a + Number(c.saldo), 0))} sub={`${vencidas.length} conta(s)`} tone={vencidas.length > 0 ? "bad" : undefined} />
-        <KpiCard label="Vencem hoje" value={money(abertas.filter((c) => c.vencimento === hoje).reduce((a, c) => a + Number(c.saldo), 0))} />
+        <KpiCard
+          label="Vencidas (inadimplência)"
+          value={money(vencidas.reduce((a, c) => a + Number(c.saldo), 0))}
+          sub={`${vencidas.length} conta(s)`}
+          tone={vencidas.length > 0 ? "bad" : undefined}
+        />
+        <KpiCard
+          label="Vencem hoje"
+          value={money(
+            abertas.filter((c) => c.vencimento === hoje).reduce((a, c) => a + Number(c.saldo), 0),
+          )}
+        />
         <KpiCard label="Próximos 7 dias" value={money(emDias(7))} />
         <KpiCard label="Próximos 30 dias" value={money(emDias(30))} />
-        <KpiCard label="Total a receber" value={money(abertas.reduce((a, c) => a + Number(c.saldo), 0))} />
+        <KpiCard
+          label="Total a receber"
+          value={money(abertas.reduce((a, c) => a + Number(c.saldo), 0))}
+        />
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -505,10 +711,18 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
             onClick={() => setFiltro(f)}
             className={cn(
               "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-              filtro === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+              filtro === f
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
             )}
           >
-            {f === "abertas" ? "Abertas" : f === "vencidas" ? "Vencidas" : f === "todas" ? "Todas" : "Canceladas"}
+            {f === "abertas"
+              ? "Abertas"
+              : f === "vencidas"
+                ? "Vencidas"
+                : f === "todas"
+                  ? "Todas"
+                  : "Canceladas"}
           </button>
         ))}
         <select
@@ -519,11 +733,20 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
         >
           <option value="">Todas as faixas de atraso</option>
           {FAIXAS_ATRASO.map((f) => (
-            <option key={f.key} value={f.key}>{f.label}</option>
+            <option key={f.key} value={f.key}>
+              {f.label}
+            </option>
           ))}
         </select>
         {can("financeiro", "criar") && (
-          <Button size="sm" className="ml-auto" onClick={() => { setEditing(null); setFormOpen(true); }}>
+          <Button
+            size="sm"
+            className="ml-auto"
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+          >
             <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
             Nova Conta a Receber
           </Button>
@@ -553,18 +776,29 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
                 )}
                 <ArrowUpCircle className="h-4 w-4 text-primary" aria-hidden="true" />
                 <p className="font-medium text-foreground">{c.cliente}</p>
-                {c.os && <Badge label={`OS ${c.os}`} className="bg-secondary text-secondary-foreground" />}
+                {c.os && (
+                  <Badge label={`OS ${c.os}`} className="bg-secondary text-secondary-foreground" />
+                )}
                 {c.parcela_total && (
-                  <Badge label={`${c.parcela_atual}/${c.parcela_total}`} className="bg-secondary text-secondary-foreground" />
+                  <Badge
+                    label={`${c.parcela_atual}/${c.parcela_total}`}
+                    className="bg-secondary text-secondary-foreground"
+                  />
                 )}
                 <Badge {...STATUS_CONTA_RECEBER[c.status]} />
                 {c.vencido && c.saldo > 0 && (
-                  <Badge label={`Vencida há ${c.dias_atraso}d`} className="bg-destructive/10 text-destructive" />
+                  <Badge
+                    label={`Vencida há ${c.dias_atraso}d`}
+                    className="bg-destructive/10 text-destructive"
+                  />
                 )}
-                <span className="ml-auto font-display font-bold text-foreground">{money(c.saldo)}</span>
+                <span className="ml-auto font-display font-bold text-foreground">
+                  {money(c.saldo)}
+                </span>
               </div>
               <p className="mt-1 pl-6 text-xs text-muted-foreground">
-                {c.descricao} · Vence {formatDateOnlyISO(c.vencimento)} · Original {money(c.valor_original)} · Recebido {money(c.valor_recebido)}
+                {c.descricao} · Vence {formatDateOnlyISO(c.vencimento)} · Original{" "}
+                {money(c.valor_original)} · Recebido {money(c.valor_recebido)}
               </p>
             </button>
             {expandida === c.id && (
@@ -577,19 +811,35 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
                     </Button>
                   )}
                   {c.status !== "cancelado" && can("financeiro", "editar") && (
-                    <Button size="sm" variant="outline" onClick={() => { setEditing(c); setFormOpen(true); }}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setEditing(c);
+                        setFormOpen(true);
+                      }}
+                    >
                       <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                       Editar
                     </Button>
                   )}
                   {c.status !== "cancelado" && can("financeiro", "cancelar") && (
-                    <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setCancelTarget(c)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive"
+                      onClick={() => setCancelTarget(c)}
+                    >
                       <XCircle className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                       Cancelar
                     </Button>
                   )}
                 </div>
-                <MovimentosContaList tipo="receber" contaId={c.id} podeEstornar={can("financeiro", "estornar")} />
+                <MovimentosContaList
+                  tipo="receber"
+                  contaId={c.id}
+                  podeEstornar={can("financeiro", "estornar")}
+                />
               </div>
             )}
           </li>
@@ -597,9 +847,16 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
       </ul>
 
       <ContaReceberForm open={formOpen} onClose={() => setFormOpen(false)} editing={editing} />
-      {receberTarget && <ReceberDialog conta={receberTarget} onClose={() => setReceberTarget(null)} />}
+      {receberTarget && (
+        <ReceberDialog conta={receberTarget} onClose={() => setReceberTarget(null)} />
+      )}
       {cancelTarget && (
-        <CancelarFinanceiroDialog tipo="receber" id={cancelTarget.id} titulo={`${cancelTarget.cliente} — ${cancelTarget.descricao}`} onClose={() => setCancelTarget(null)} />
+        <CancelarFinanceiroDialog
+          tipo="receber"
+          id={cancelTarget.id}
+          titulo={`${cancelTarget.cliente} — ${cancelTarget.descricao}`}
+          onClose={() => setCancelTarget(null)}
+        />
       )}
     </div>
   );
@@ -609,7 +866,10 @@ function ContasReceberTab({ can }: { can: ReturnType<typeof useAccess>["can"] })
 
 function FluxoTab() {
   const from = todayManausISO();
-  const to = useMemo(() => new Date(Date.parse(from) + 29 * 86_400_000).toISOString().slice(0, 10), [from]);
+  const to = useMemo(
+    () => new Date(Date.parse(from) + 29 * 86_400_000).toISOString().slice(0, 10),
+    [from],
+  );
 
   const fluxoQuery = useQuery({
     queryKey: ["financeiro", "fluxo", from, to],
@@ -637,8 +897,10 @@ function FluxoTab() {
     return { pontos, primeiroNegativo, d7: ate(7), d15: ate(15), d30: ate(30) };
   }, [fluxo]);
 
-  if (fluxoQuery.isLoading) return <p className="text-sm text-muted-foreground">Carregando fluxo…</p>;
-  if (!fluxo || !projecao) return <p className="text-sm text-muted-foreground">Sem dados de projeção.</p>;
+  if (fluxoQuery.isLoading)
+    return <p className="text-sm text-muted-foreground">Carregando fluxo…</p>;
+  if (!fluxo || !projecao)
+    return <p className="text-sm text-muted-foreground">Sem dados de projeção.</p>;
 
   const { pontos, primeiroNegativo, d7, d15, d30 } = projecao;
   const W = 600;
@@ -647,20 +909,34 @@ function FluxoTab() {
   const maxAbs = Math.max(1, ...pontos.map((p) => Math.abs(p.saldo)));
   const range = maxAbs - minVal || 1;
   const yOf = (v: number) => H - ((v - minVal) / range) * H;
-  const line = pontos.map((p, i) => `${(i / Math.max(1, pontos.length - 1)) * W},${yOf(p.saldo)}`).join(" ");
+  const line = pontos
+    .map((p, i) => `${(i / Math.max(1, pontos.length - 1)) * W},${yOf(p.saldo)}`)
+    .join(" ");
 
   return (
     <div className="space-y-4">
       {primeiroNegativo && (
         <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-foreground">
           <strong>Atenção:</strong> projeção de caixa negativa em{" "}
-          <strong>{formatDateOnlyISO((primeiroNegativo as { data: string }).data)}</strong> — saldo projetado de{" "}
-          <strong className="text-destructive">{money((primeiroNegativo as { saldo: number }).saldo)}</strong>.
+          <strong>{formatDateOnlyISO((primeiroNegativo as { data: string }).data)}</strong> — saldo
+          projetado de{" "}
+          <strong className="text-destructive">
+            {money((primeiroNegativo as { saldo: number }).saldo)}
+          </strong>
+          .
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <KpiCard label="Saldo inicial (hoje)" value={money(fluxo.saldo_inicial)} sub="Receita líquida acumulada do Caixa" />
-        {[{ l: "7 dias", v: d7 }, { l: "15 dias", v: d15 }, { l: "30 dias", v: d30 }].map(({ l, v }) => (
+        <KpiCard
+          label="Saldo inicial (hoje)"
+          value={money(fluxo.saldo_inicial)}
+          sub="Receita líquida acumulada do Caixa"
+        />
+        {[
+          { l: "7 dias", v: d7 },
+          { l: "15 dias", v: d15 },
+          { l: "30 dias", v: d30 },
+        ].map(({ l, v }) => (
           <KpiCard
             key={l}
             label={`Saldo em ${l}`}
@@ -672,10 +948,31 @@ function FluxoTab() {
       </div>
 
       <div className="rounded-xl border border-border bg-card p-4">
-        <h3 className="font-display text-sm font-bold text-foreground">Saldo projetado — próximos 30 dias</h3>
-        <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 w-full" role="img" aria-label="Evolução do saldo projetado">
-          <line x1={0} y1={yOf(0)} x2={W} y2={yOf(0)} stroke="var(--destructive)" strokeDasharray="4 3" strokeWidth={1} />
-          <polyline points={line} fill="none" stroke="var(--primary)" strokeWidth={2} strokeLinejoin="round" />
+        <h3 className="font-display text-sm font-bold text-foreground">
+          Saldo projetado — próximos 30 dias
+        </h3>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="mt-3 w-full"
+          role="img"
+          aria-label="Evolução do saldo projetado"
+        >
+          <line
+            x1={0}
+            y1={yOf(0)}
+            x2={W}
+            y2={yOf(0)}
+            stroke="var(--destructive)"
+            strokeDasharray="4 3"
+            strokeWidth={1}
+          />
+          <polyline
+            points={line}
+            fill="none"
+            stroke="var(--primary)"
+            strokeWidth={2}
+            strokeLinejoin="round"
+          />
         </svg>
         <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
           <span>{formatDateOnlyISO(pontos[0]?.data ?? from)}</span>
@@ -695,11 +992,22 @@ function FluxoTab() {
           </thead>
           <tbody>
             {pontos.map((p) => (
-              <tr key={p.data} className={cn("border-b border-border last:border-0", p.saldo < 0 && "bg-destructive/5")}>
+              <tr
+                key={p.data}
+                className={cn(
+                  "border-b border-border last:border-0",
+                  p.saldo < 0 && "bg-destructive/5",
+                )}
+              >
                 <td className="px-4 py-1.5">{formatDateOnlyISO(p.data)}</td>
                 <td className="px-4 py-1.5 text-right text-primary">{money(p.entradas)}</td>
                 <td className="px-4 py-1.5 text-right text-destructive">{money(p.saidas)}</td>
-                <td className={cn("px-4 py-1.5 text-right font-semibold", p.saldo < 0 ? "text-destructive" : "text-foreground")}>
+                <td
+                  className={cn(
+                    "px-4 py-1.5 text-right font-semibold",
+                    p.saldo < 0 ? "text-destructive" : "text-foreground",
+                  )}
+                >
                   {money(p.saldo)}
                 </td>
               </tr>

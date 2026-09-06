@@ -4,15 +4,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { labelStatus, STATUS_COLETA, type ColetaStatus, type ColetaTipo } from "@/lib/coletas";
 
-export function StatusBadgeColeta({ status, tipo = "coleta" }: { status: ColetaStatus; tipo?: ColetaTipo }) {
+export function StatusBadgeColeta({
+  status,
+  tipo = "coleta",
+}: {
+  status: ColetaStatus;
+  tipo?: ColetaTipo;
+}) {
   const s = STATUS_COLETA[status];
   return (
-    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}>
+    <span
+      className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", s.className)}
+    >
       {labelStatus(tipo, status)}
     </span>
   );
 }
-
 
 interface UsuarioBasico {
   id: string;
@@ -30,7 +37,9 @@ export function useMotoristas(enabled = true) {
       const { data, error } = await supabase.rpc("usuarios_basicos");
       if (error) throw error;
       const todos = (data ?? []) as unknown as UsuarioBasico[];
-      return todos.filter((u) => u.roles.includes("motorista") || u.roles.includes("adm_operacional"));
+      return todos.filter(
+        (u) => u.roles.includes("motorista") || u.roles.includes("adm_operacional"),
+      );
     },
   });
 }

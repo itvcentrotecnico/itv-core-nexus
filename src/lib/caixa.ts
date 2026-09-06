@@ -58,7 +58,6 @@ export interface CaixaPagamento {
   forma?: { nome: string; eh_dinheiro: boolean } | null;
 }
 
-
 export type CaixaLancamentoStatus = "ativo" | "cancelado" | "estornado";
 
 export interface CaixaLancamento {
@@ -149,7 +148,10 @@ export function round2(n: number): number {
   return Math.round((n + Number.EPSILON) * 100) / 100;
 }
 
-export const STATUS_LANCAMENTO: Record<CaixaLancamentoStatus, { label: string; className: string }> = {
+export const STATUS_LANCAMENTO: Record<
+  CaixaLancamentoStatus,
+  { label: string; className: string }
+> = {
   ativo: { label: "Ativo", className: "bg-primary/10 text-primary" },
   cancelado: { label: "Cancelado", className: "bg-destructive/10 text-destructive" },
   estornado: { label: "Estornado", className: "bg-muted text-muted-foreground" },

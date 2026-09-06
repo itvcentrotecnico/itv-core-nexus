@@ -97,7 +97,9 @@ export function DetalheColetaDialog({
       const fotos = (data ?? []) as Foto[];
       const urls = await Promise.all(
         fotos.map(async (f) => {
-          const { data: signed } = await supabase.storage.from("coletas").createSignedUrl(f.storage_path, 3600);
+          const { data: signed } = await supabase.storage
+            .from("coletas")
+            .createSignedUrl(f.storage_path, 3600);
           return { ...f, url: signed?.signedUrl ?? null };
         }),
       );
@@ -138,20 +140,29 @@ export function DetalheColetaDialog({
 
         <div className="grid grid-cols-3 gap-2">
           <Button asChild variant="outline" className="h-11 flex-col gap-0.5 text-[11px]">
-            <a href={mapsUrl(item)} target="_blank" rel="noopener noreferrer"><MapPin className="size-4" /> MAPA</a>
+            <a href={mapsUrl(item)} target="_blank" rel="noopener noreferrer">
+              <MapPin className="size-4" /> MAPA
+            </a>
           </Button>
           <Button asChild variant="outline" className="h-11 flex-col gap-0.5 text-[11px]">
-            <a href={whatsappUrl(item.whatsapp)} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" /> WHATSAPP</a>
+            <a href={whatsappUrl(item.whatsapp)} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="size-4" /> WHATSAPP
+            </a>
           </Button>
           <Button asChild variant="outline" className="h-11 flex-col gap-0.5 text-[11px]">
-            <a href={telUrl(item.whatsapp)}><Phone className="size-4" /> LIGAR</a>
+            <a href={telUrl(item.whatsapp)}>
+              <Phone className="size-4" /> LIGAR
+            </a>
           </Button>
         </div>
 
         <section>
           <h3 className="font-display text-sm font-bold text-foreground">Cliente</h3>
           <Linha rotulo="WhatsApp" valor={maskTelefone(item.whatsapp)} />
-          <Linha rotulo="Telefone alternativo" valor={item.telefone_alternativo ? maskTelefone(item.telefone_alternativo) : null} />
+          <Linha
+            rotulo="Telefone alternativo"
+            valor={item.telefone_alternativo ? maskTelefone(item.telefone_alternativo) : null}
+          />
           {permissoes.verSensiveis && (
             <div className="flex items-center justify-between gap-3 py-1.5 text-sm">
               <span className="text-muted-foreground">CPF</span>
@@ -185,7 +196,13 @@ export function DetalheColetaDialog({
           <Linha rotulo="Referência" valor={item.referencia} />
           <Linha
             rotulo="Localização"
-            valor={item.latitude != null ? `${item.latitude}, ${item.longitude}` : item.maps_url ? "Link do Maps" : null}
+            valor={
+              item.latitude != null
+                ? `${item.latitude}, ${item.longitude}`
+                : item.maps_url
+                  ? "Link do Maps"
+                  : null
+            }
           />
         </section>
 
@@ -200,27 +217,62 @@ export function DetalheColetaDialog({
         <section>
           <h3 className="font-display text-sm font-bold text-foreground">Histórico</h3>
           <Linha rotulo="Atendimento" valor={item.created_by ? usuarios[item.created_by] : null} />
-          <Linha rotulo="Link gerado em" valor={item.link_gerado_em ? formatDateTimeITV(item.link_gerado_em) : null} />
-          <Linha rotulo="Link válido até" valor={item.link_expira_em ? formatDateTimeITV(item.link_expira_em) : null} />
-          <Linha rotulo="Cliente respondeu em" valor={item.preenchido_em ? formatDateTimeITV(item.preenchido_em) : null} />
-          <Linha rotulo="Motorista" valor={item.motorista_id ? usuarios[item.motorista_id] : null} />
-          <Linha rotulo="Assumida em" valor={item.assumido_em ? formatDateTimeITV(item.assumido_em) : null} />
-          <Linha rotulo="Concluída em" valor={item.concluido_em ? formatDateTimeITV(item.concluido_em) : null} />
-          <Linha rotulo="Concluída por" valor={item.concluido_por ? usuarios[item.concluido_por] : null} />
-          <Linha rotulo="Cancelada em" valor={item.cancelado_em ? formatDateTimeITV(item.cancelado_em) : null} />
-          <Linha rotulo="Cancelada por" valor={item.cancelado_por ? usuarios[item.cancelado_por] : null} />
+          <Linha
+            rotulo="Link gerado em"
+            valor={item.link_gerado_em ? formatDateTimeITV(item.link_gerado_em) : null}
+          />
+          <Linha
+            rotulo="Link válido até"
+            valor={item.link_expira_em ? formatDateTimeITV(item.link_expira_em) : null}
+          />
+          <Linha
+            rotulo="Cliente respondeu em"
+            valor={item.preenchido_em ? formatDateTimeITV(item.preenchido_em) : null}
+          />
+          <Linha
+            rotulo="Motorista"
+            valor={item.motorista_id ? usuarios[item.motorista_id] : null}
+          />
+          <Linha
+            rotulo="Assumida em"
+            valor={item.assumido_em ? formatDateTimeITV(item.assumido_em) : null}
+          />
+          <Linha
+            rotulo="Concluída em"
+            valor={item.concluido_em ? formatDateTimeITV(item.concluido_em) : null}
+          />
+          <Linha
+            rotulo="Concluída por"
+            valor={item.concluido_por ? usuarios[item.concluido_por] : null}
+          />
+          <Linha
+            rotulo="Cancelada em"
+            valor={item.cancelado_em ? formatDateTimeITV(item.cancelado_em) : null}
+          />
+          <Linha
+            rotulo="Cancelada por"
+            valor={item.cancelado_por ? usuarios[item.cancelado_por] : null}
+          />
           <Linha rotulo="Motivo do cancelamento" valor={item.motivo_cancelamento} />
         </section>
 
         <section>
           <h3 className="font-display text-sm font-bold text-foreground">Linha do tempo</h3>
-          {historicoQuery.isLoading && <p className="py-2 text-sm text-muted-foreground">Carregando…</p>}
+          {historicoQuery.isLoading && (
+            <p className="py-2 text-sm text-muted-foreground">Carregando…</p>
+          )}
           {historicoQuery.isError && (
-            <p className="py-2 text-sm text-muted-foreground">Não foi possível carregar a linha do tempo.</p>
+            <p className="py-2 text-sm text-muted-foreground">
+              Não foi possível carregar a linha do tempo.
+            </p>
           )}
-          {!historicoQuery.isLoading && !historicoQuery.isError && (historicoQuery.data ?? []).length === 0 && (
-            <p className="py-2 text-sm text-muted-foreground">Nenhuma movimentação registrada ainda.</p>
-          )}
+          {!historicoQuery.isLoading &&
+            !historicoQuery.isError &&
+            (historicoQuery.data ?? []).length === 0 && (
+              <p className="py-2 text-sm text-muted-foreground">
+                Nenhuma movimentação registrada ainda.
+              </p>
+            )}
           <ol className="mt-2 space-y-2">
             {(historicoQuery.data ?? []).map((h) => (
               <li key={h.id} className="border-l-2 border-primary/40 pl-3 text-sm">
@@ -237,7 +289,6 @@ export function DetalheColetaDialog({
           </ol>
         </section>
 
-
         {(fotosQuery.data ?? []).length > 0 && (
           <section>
             <h3 className="font-display text-sm font-bold text-foreground">Fotos</h3>
@@ -245,7 +296,12 @@ export function DetalheColetaDialog({
               {(fotosQuery.data ?? []).map((f) =>
                 f.url ? (
                   <a key={f.id} href={f.url} target="_blank" rel="noopener noreferrer">
-                    <img src={f.url} alt="Foto da movimentação" className="h-24 w-full rounded-md object-cover" loading="lazy" />
+                    <img
+                      src={f.url}
+                      alt="Foto da movimentação"
+                      className="h-24 w-full rounded-md object-cover"
+                      loading="lazy"
+                    />
                   </a>
                 ) : null,
               )}
@@ -255,21 +311,29 @@ export function DetalheColetaDialog({
 
         {permissoes.atribuir && item.status !== "concluida" && item.status !== "cancelada" && (
           <div>
-            <label className={labelClass} htmlFor="atribuir-motorista">Motorista responsável</label>
+            <label className={labelClass} htmlFor="atribuir-motorista">
+              Motorista responsável
+            </label>
             <select
               id="atribuir-motorista"
               className={inputClass}
               value={item.motorista_id ?? ""}
               onChange={(e) =>
                 void acao(
-                  () => rpcColetas("coletas_atribuir", { p_id: item.id, p_motorista: e.target.value || null }),
+                  () =>
+                    rpcColetas("coletas_atribuir", {
+                      p_id: item.id,
+                      p_motorista: e.target.value || null,
+                    }),
                   "Motorista atualizado.",
                 )
               }
             >
               <option value="">Sem atribuição (qualquer motorista pode assumir)</option>
               {(motoristas.data ?? []).map((m) => (
-                <option key={m.id} value={m.id}>{m.full_name}</option>
+                <option key={m.id} value={m.id}>
+                  {m.full_name}
+                </option>
               ))}
             </select>
           </div>
@@ -280,10 +344,17 @@ export function DetalheColetaDialog({
             variant="outline"
             className="h-11 w-full"
             onClick={() =>
-              void rpcColetas<{ token: string; expira_em: string }>("coletas_gerar_link", { p_id: item.id })
+              void rpcColetas<{ token: string; expira_em: string }>("coletas_gerar_link", {
+                p_id: item.id,
+              })
                 .then((r) => {
                   void queryClient.invalidateQueries({ queryKey: ["coletas"] });
-                  onLink({ ...r, id: item.id, whatsapp: item.whatsapp, cliente_nome: item.cliente_nome });
+                  onLink({
+                    ...r,
+                    id: item.id,
+                    whatsapp: item.whatsapp,
+                    cliente_nome: item.cliente_nome,
+                  });
                 })
                 .catch((e: unknown) => toast.error(mensagemErro(e)))
             }
@@ -296,17 +367,27 @@ export function DetalheColetaDialog({
           <div className="rounded-md border border-destructive/40 p-3">
             {cancelando ? (
               <div className="space-y-2">
-                <label className={labelClass} htmlFor="motivo-cancel">Motivo do cancelamento</label>
-                <Textarea id="motivo-cancel" rows={2} value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+                <label className={labelClass} htmlFor="motivo-cancel">
+                  Motivo do cancelamento
+                </label>
+                <Textarea
+                  id="motivo-cancel"
+                  rows={2}
+                  value={motivo}
+                  onChange={(e) => setMotivo(e.target.value)}
+                />
                 <div className="flex gap-2">
-                  <Button variant="ghost" className="flex-1" onClick={() => setCancelando(false)}>Voltar</Button>
+                  <Button variant="ghost" className="flex-1" onClick={() => setCancelando(false)}>
+                    Voltar
+                  </Button>
                   <Button
                     variant="destructive"
                     className="flex-1"
                     onClick={() =>
-                      void acao(() => rpcColetas("coletas_cancelar", { p_id: item.id, p_motivo: motivo }), "Solicitação cancelada.").then(
-                        () => onClose(),
-                      )
+                      void acao(
+                        () => rpcColetas("coletas_cancelar", { p_id: item.id, p_motivo: motivo }),
+                        "Solicitação cancelada.",
+                      ).then(() => onClose())
                     }
                   >
                     Confirmar cancelamento
@@ -314,7 +395,11 @@ export function DetalheColetaDialog({
                 </div>
               </div>
             ) : (
-              <Button variant="ghost" className="w-full text-destructive" onClick={() => setCancelando(true)}>
+              <Button
+                variant="ghost"
+                className="w-full text-destructive"
+                onClick={() => setCancelando(true)}
+              >
                 Cancelar solicitação
               </Button>
             )}
@@ -322,7 +407,9 @@ export function DetalheColetaDialog({
         )}
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Fechar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Fechar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -10,7 +10,12 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import type { MetasRpcResult, TecnicoDesempenho } from "@/lib/metas";
 import { STATUS_META, TIPO_META_TECNICO_LABEL } from "@/lib/metas";
-import { NivelBadge, ProgressBarMeta, rpcMetas, useTecnicosDesempenho } from "@/components/metas/shared";
+import {
+  NivelBadge,
+  ProgressBarMeta,
+  rpcMetas,
+  useTecnicosDesempenho,
+} from "@/components/metas/shared";
 import { cn } from "@/lib/utils";
 
 interface MetaTecnicoRow {
@@ -45,7 +50,9 @@ export function TecnicosTab({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("metas_tecnicos")
-        .select("id, tecnico_id, tipo_meta, periodo_tipo, inicio, fim, valor_meta, quantidade_meta, status, tecnico:profiles!metas_tecnicos_tecnico_id_fkey(full_name)")
+        .select(
+          "id, tecnico_id, tipo_meta, periodo_tipo, inicio, fim, valor_meta, quantidade_meta, status, tecnico:profiles!metas_tecnicos_tecnico_id_fkey(full_name)",
+        )
         .lte("inicio", range.to)
         .gte("fim", range.from)
         .order("inicio", { ascending: false });
@@ -55,9 +62,14 @@ export function TecnicosTab({
   });
 
   async function encerrarMeta(id: string, status: "concluida" | "cancelada") {
-    const motivo = status === "cancelada" ? (window.prompt("Motivo do cancelamento (opcional):") ?? null) : null;
+    const motivo =
+      status === "cancelada" ? (window.prompt("Motivo do cancelamento (opcional):") ?? null) : null;
     try {
-      const r = await rpcMetas<MetasRpcResult>("metas_tecnico_status", { p_id: id, p_status: status, p_motivo: motivo });
+      const r = await rpcMetas<MetasRpcResult>("metas_tecnico_status", {
+        p_id: id,
+        p_status: status,
+        p_motivo: motivo,
+      });
       if (!r.ok) {
         toast.error(r.message ?? "Não foi possível alterar o status.");
         return;
@@ -72,7 +84,9 @@ export function TecnicosTab({
   return (
     <div className="space-y-6">
       <section className="space-y-3">
-        <h3 className="font-display text-sm font-semibold text-foreground">Desempenho por técnico no período</h3>
+        <h3 className="font-display text-sm font-semibold text-foreground">
+          Desempenho por técnico no período
+        </h3>
         {desempenho.isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : !desempenho.data || desempenho.data.length === 0 ? (
@@ -100,14 +114,22 @@ export function TecnicosTab({
                     <td className="px-4 py-3 font-medium text-foreground">{t.tecnico}</td>
                     <td className="px-4 py-3 text-foreground">
                       {t.validados}
-                      <span className="ml-1 text-xs text-muted-foreground">({t.registrados} registrados)</span>
+                      <span className="ml-1 text-xs text-muted-foreground">
+                        ({t.registrados} registrados)
+                      </span>
                     </td>
-                    <td className="px-4 py-3 text-foreground">{formatCurrencyBRL(t.producao_validada)}</td>
-                    <td className="px-4 py-3 text-foreground">{formatCurrencyBRL(t.ticket_medio)}</td>
+                    <td className="px-4 py-3 text-foreground">
+                      {formatCurrencyBRL(t.producao_validada)}
+                    </td>
+                    <td className="px-4 py-3 text-foreground">
+                      {formatCurrencyBRL(t.ticket_medio)}
+                    </td>
                     <td className="px-4 py-3 text-foreground">
                       {formatCurrencyBRL(t.margem_contribuicao)}
                       {t.margem_pct != null && (
-                        <span className="ml-1 text-xs text-muted-foreground">({t.margem_pct.toFixed(0)}%)</span>
+                        <span className="ml-1 text-xs text-muted-foreground">
+                          ({t.margem_pct.toFixed(0)}%)
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -116,7 +138,9 @@ export function TecnicosTab({
                           <div className="w-20">
                             <ProgressBarMeta percentual={t.meta.percentual} />
                           </div>
-                          <span className="text-xs font-semibold text-foreground">{t.meta.percentual.toFixed(0)}%</span>
+                          <span className="text-xs font-semibold text-foreground">
+                            {t.meta.percentual.toFixed(0)}%
+                          </span>
                         </div>
                       ) : (
                         <span className="text-xs text-muted-foreground">Sem meta</span>
@@ -149,11 +173,15 @@ export function TecnicosTab({
 
       {podeConfigurar && (
         <section className="space-y-3">
-          <h3 className="font-display text-sm font-semibold text-foreground">Metas dos técnicos no período</h3>
+          <h3 className="font-display text-sm font-semibold text-foreground">
+            Metas dos técnicos no período
+          </h3>
           {metasTecnicos.isLoading ? (
             <p className="text-sm text-muted-foreground">Carregando…</p>
           ) : !metasTecnicos.data || metasTecnicos.data.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nenhuma meta de técnico cadastrada no período.</p>
+            <p className="text-sm text-muted-foreground">
+              Nenhuma meta de técnico cadastrada no período.
+            </p>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-border bg-card">
               <table className="w-full min-w-[720px] text-sm">
@@ -169,10 +197,13 @@ export function TecnicosTab({
                 </thead>
                 <tbody>
                   {metasTecnicos.data.map((m) => {
-                    const st = STATUS_META[m.status as keyof typeof STATUS_META] ?? STATUS_META.ativa;
+                    const st =
+                      STATUS_META[m.status as keyof typeof STATUS_META] ?? STATUS_META.ativa;
                     return (
                       <tr key={m.id} className="border-b border-border/60 last:border-0">
-                        <td className="px-4 py-3 font-medium text-foreground">{m.tecnico?.full_name ?? "—"}</td>
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          {m.tecnico?.full_name ?? "—"}
+                        </td>
                         <td className="px-4 py-3 text-foreground">
                           {TIPO_META_TECNICO_LABEL[m.tipo_meta] ?? m.tipo_meta}
                         </td>
@@ -185,7 +216,12 @@ export function TecnicosTab({
                           {m.quantidade_meta != null && `${m.quantidade_meta} serviços`}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", st.className)}>
+                          <span
+                            className={cn(
+                              "inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                              st.className,
+                            )}
+                          >
                             {st.label}
                           </span>
                         </td>
@@ -305,18 +341,30 @@ function MetaTecnicoFormDialog({
             <label className={labelClass}>Tipo de meta</label>
             <select className={inputClass} value={tipo} onChange={(e) => setTipo(e.target.value)}>
               {Object.entries(TIPO_META_TECNICO_LABEL).map(([k, l]) => (
-                <option key={k} value={k}>{l}</option>
+                <option key={k} value={k}>
+                  {l}
+                </option>
               ))}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass}>Início</label>
-              <input type="date" className={inputClass} value={inicio} onChange={(e) => setInicio(e.target.value)} />
+              <input
+                type="date"
+                className={inputClass}
+                value={inicio}
+                onChange={(e) => setInicio(e.target.value)}
+              />
             </div>
             <div>
               <label className={labelClass}>Fim</label>
-              <input type="date" className={inputClass} value={fim} onChange={(e) => setFim(e.target.value)} />
+              <input
+                type="date"
+                className={inputClass}
+                value={fim}
+                onChange={(e) => setFim(e.target.value)}
+              />
             </div>
           </div>
           {tipo !== "quantidade" && (

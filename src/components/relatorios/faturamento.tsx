@@ -3,31 +3,54 @@ import { useQuery } from "@tanstack/react-query";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import type { RelFaturamento } from "@/lib/relatorios";
 import { labelMes } from "@/lib/relatorios";
-import { BotaoExportar, KpiRel, SecaoRel, TabelaRel, VariacaoTexto, exportarCSV, rpcRel } from "@/components/relatorios/shared";
+import {
+  BotaoExportar,
+  KpiRel,
+  SecaoRel,
+  TabelaRel,
+  VariacaoTexto,
+  exportarCSV,
+  rpcRel,
+} from "@/components/relatorios/shared";
 import { RankingBarras } from "@/components/relatorios/shared";
 
 /** Aba Faturamento: resumo, por dia, por semana, por mês, médias e comparação. */
-export function FaturamentoTab({ range, podeExportar }: { range: { from: string; to: string }; podeExportar: boolean }) {
+export function FaturamentoTab({
+  range,
+  podeExportar,
+}: {
+  range: { from: string; to: string };
+  podeExportar: boolean;
+}) {
   const q = useQuery({
     queryKey: ["relatorios", "faturamento", range.from, range.to],
-    queryFn: () => rpcRel<RelFaturamento>("relatorios_faturamento", { p_from: range.from, p_to: range.to }),
+    queryFn: () =>
+      rpcRel<RelFaturamento>("relatorios_faturamento", { p_from: range.from, p_to: range.to }),
   });
 
   if (q.isLoading) return <p className="text-sm text-muted-foreground">Carregando faturamento…</p>;
   if (q.error || !q.data?.ok) {
-    return <p className="text-sm text-destructive">{q.data?.message ?? "Falha ao carregar o relatório de faturamento."}</p>;
+    return (
+      <p className="text-sm text-destructive">
+        {q.data?.message ?? "Falha ao carregar o relatório de faturamento."}
+      </p>
+    );
   }
 
   const d = q.data;
   const r = d.resumo;
   const a = d.anterior;
-  const variacao = a.faturamento_final > 0 ? ((r.faturamento_final - a.faturamento_final) / a.faturamento_final) * 100 : null;
+  const variacao =
+    a.faturamento_final > 0
+      ? ((r.faturamento_final - a.faturamento_final) / a.faturamento_final) * 100
+      : null;
 
   const melhorDia = d.por_dia.reduce<{ data: string; faturamento: number } | null>(
     (acc, x) => (!acc || x.faturamento > acc.faturamento ? x : acc),
     null,
   );
-  const mediaDiaria = d.por_dia.length > 0 ? d.por_dia.reduce((s, x) => s + x.faturamento, 0) / d.por_dia.length : 0;
+  const mediaDiaria =
+    d.por_dia.length > 0 ? d.por_dia.reduce((s, x) => s + x.faturamento, 0) / d.por_dia.length : 0;
 
   return (
     <div className="space-y-8">
@@ -41,7 +64,12 @@ export function FaturamentoTab({ range, podeExportar }: { range: { from: string;
                 exportarCSV(
                   `faturamento-${range.from}-${range.to}.csv`,
                   ["Data", "Faturamento", "OS", "Ticket Médio"],
-                  d.por_dia.map((x) => [formatDateOnlyISO(x.data), String(x.faturamento).replace(".", ","), x.os, String(x.ticket_medio).replace(".", ",")]),
+                  d.por_dia.map((x) => [
+                    formatDateOnlyISO(x.data),
+                    String(x.faturamento).replace(".", ","),
+                    x.os,
+                    String(x.ticket_medio).replace(".", ","),
+                  ]),
                 )
               }
             />
@@ -51,12 +79,20 @@ export function FaturamentoTab({ range, podeExportar }: { range: { from: string;
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <KpiRel titulo="Faturamento bruto" valor={formatCurrencyBRL(r.faturamento_bruto)} />
           <KpiRel titulo="Descontos" valor={formatCurrencyBRL(r.descontos)} />
-          <KpiRel titulo="Receita final" valor={formatCurrencyBRL(r.faturamento_final)} sub={`variação vs período anterior: `} />
+          <KpiRel
+            titulo="Receita final"
+            valor={formatCurrencyBRL(r.faturamento_final)}
+            sub={`variação vs período anterior: `}
+          />
           <KpiRel titulo="Taxas" valor={formatCurrencyBRL(r.taxas)} />
           <KpiRel titulo="Receita líquida" valor={formatCurrencyBRL(r.receita_liquida)} />
           <KpiRel titulo="Lançamentos" valor={String(r.lancamentos)} />
           <KpiRel titulo="OS faturadas" valor={String(r.os_faturadas)} />
-          <KpiRel titulo="Ticket médio (OS)" valor={formatCurrencyBRL(r.ticket_medio_os)} sub={`Por lançamento: ${formatCurrencyBRL(r.ticket_medio)}`} />
+          <KpiRel
+            titulo="Ticket médio (OS)"
+            valor={formatCurrencyBRL(r.ticket_medio_os)}
+            sub={`Por lançamento: ${formatCurrencyBRL(r.ticket_medio)}`}
+          />
         </div>
         <div className="rounded-xl border border-border bg-card p-4 text-sm">
           <p className="text-muted-foreground">
@@ -65,7 +101,10 @@ export function FaturamentoTab({ range, podeExportar }: { range: { from: string;
             {" · "}
             <VariacaoTexto pct={variacao} />
             {" · "}
-            Diferença: <strong className="text-foreground">{formatCurrencyBRL(r.faturamento_final - a.faturamento_final)}</strong>
+            Diferença:{" "}
+            <strong className="text-foreground">
+              {formatCurrencyBRL(r.faturamento_final - a.faturamento_final)}
+            </strong>
           </p>
         </div>
       </SecaoRel>
@@ -144,7 +183,11 @@ export function FaturamentoTab({ range, podeExportar }: { range: { from: string;
           itens={[...d.por_dia]
             .sort((a, b) => b.faturamento - a.faturamento)
             .slice(0, 5)
-            .map((x) => ({ rotulo: formatDateOnlyISO(x.data), valor: x.faturamento, sub: `${x.os} OS` }))}
+            .map((x) => ({
+              rotulo: formatDateOnlyISO(x.data),
+              valor: x.faturamento,
+              sub: `${x.os} OS`,
+            }))}
         />
       </SecaoRel>
     </div>

@@ -12,23 +12,39 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { KpiCard } from "@/routes/_authenticated/caixa";
 import { RegraForm } from "@/components/comissoes/regra-form";
 import {
-  AjusteDialog, CancelarComissaoDialog, ComissaoDetalhes, MaoObraDialog, RecalcularDialog,
+  AjusteDialog,
+  CancelarComissaoDialog,
+  ComissaoDetalhes,
+  MaoObraDialog,
+  RecalcularDialog,
 } from "@/components/comissoes/comissao-actions";
 import { PagarDialog } from "@/components/comissoes/pagar-dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV, todayManausISO } from "@/lib/format";
 import {
-  STATUS_COMISSAO, TIPO_REGRA,
-  type Comissao, type ComissaoPagamento, type ComissaoTecnicoResumo,
-  type ComissoesIndicadores, type RegraComissao,
+  STATUS_COMISSAO,
+  TIPO_REGRA,
+  type Comissao,
+  type ComissaoPagamento,
+  type ComissaoTecnicoResumo,
+  type ComissoesIndicadores,
+  type RegraComissao,
 } from "@/lib/comissoes";
 
 export const Route = createFileRoute("/_authenticated/comissoes")({
@@ -37,7 +53,10 @@ export const Route = createFileRoute("/_authenticated/comissoes")({
       { title: "Comissões — GESTÃO ITV Centro Técnico" },
       { name: "description", content: "Apuração, aprovação e pagamento das comissões técnicas." },
       { property: "og:title", content: "Comissões — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Apuração, aprovação e pagamento das comissões técnicas." },
+      {
+        property: "og:description",
+        content: "Apuração, aprovação e pagamento das comissões técnicas.",
+      },
     ],
   }),
   component: ComissoesPage,
@@ -71,7 +90,10 @@ function ComissoesPage() {
   const [recalcular, setRecalcular] = useState<Comissao | null>(null);
   const [maoObra, setMaoObra] = useState<Comissao | null>(null);
   const [pagar, setPagar] = useState<{ tecnicoId: string; tecnicoNome: string } | null>(null);
-  const [regraForm, setRegraForm] = useState<{ open: boolean; regra: RegraComissao | null }>({ open: false, regra: null });
+  const [regraForm, setRegraForm] = useState<{ open: boolean; regra: RegraComissao | null }>({
+    open: false,
+    regra: null,
+  });
   const [gerando, setGerando] = useState(false);
 
   const comissoesQuery = useQuery({
@@ -98,7 +120,10 @@ function ComissoesPage() {
     queryKey: ["comissoes-indicadores", from, to],
     enabled: podeGerenciar,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("comissoes_indicadores", { p_from: from, p_to: to });
+      const { data, error } = await supabase.rpc("comissoes_indicadores", {
+        p_from: from,
+        p_to: to,
+      });
       if (error) throw error;
       return data as unknown as ComissoesIndicadores;
     },
@@ -109,7 +134,10 @@ function ComissoesPage() {
     queryKey: ["comissoes-por-tecnico", from, to],
     enabled: podeGerenciar,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("comissoes_por_tecnico", { p_from: from, p_to: to });
+      const { data, error } = await supabase.rpc("comissoes_por_tecnico", {
+        p_from: from,
+        p_to: to,
+      });
       if (error) throw error;
       const r = data as unknown as { ok: boolean; tecnicos?: ComissaoTecnicoResumo[] };
       return (r?.tecnicos ?? []) as ComissaoTecnicoResumo[];
@@ -122,7 +150,9 @@ function ComissoesPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("comissao_pagamentos")
-        .select("*, tecnico:profiles!comissao_pagamentos_tecnico_id_fkey(full_name), responsavel:profiles!comissao_pagamentos_responsavel_id_fkey(full_name), forma:formas_pagamento(nome), itens:comissao_pagamento_itens(comissao_id, valor)")
+        .select(
+          "*, tecnico:profiles!comissao_pagamentos_tecnico_id_fkey(full_name), responsavel:profiles!comissao_pagamentos_responsavel_id_fkey(full_name), forma:formas_pagamento(nome), itens:comissao_pagamento_itens(comissao_id, valor)",
+        )
         .gte("pago_em", `${from}T00:00:00`)
         .lte("pago_em", `${to}T23:59:59`)
         .order("pago_em", { ascending: false });
@@ -146,7 +176,9 @@ function ComissoesPage() {
 
   const tecnicosOpcoes = useMemo(() => {
     const mapa = new Map<string, string>();
-    comissoes.forEach((c) => { if (c.tecnico_id && c.tecnico?.full_name) mapa.set(c.tecnico_id, c.tecnico.full_name); });
+    comissoes.forEach((c) => {
+      if (c.tecnico_id && c.tecnico?.full_name) mapa.set(c.tecnico_id, c.tecnico.full_name);
+    });
     return [...mapa.entries()];
   }, [comissoes]);
 
@@ -173,15 +205,27 @@ function ComissoesPage() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">Ações</Button>
+          <Button variant="outline" size="sm">
+            Ações
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setDetalhe(c)}>Detalhes / Conferir</DropdownMenuItem>
-          {podeEditarLinha && <DropdownMenuItem onClick={() => setAjuste(c)}>Ajustar valor</DropdownMenuItem>}
-          {podeEditarLinha && <DropdownMenuItem onClick={() => setMaoObra(c)}>Mão de obra manual</DropdownMenuItem>}
-          {podeEditarLinha && <DropdownMenuItem onClick={() => setRecalcular(c)}>Recalcular pela regra</DropdownMenuItem>}
+          {podeEditarLinha && (
+            <DropdownMenuItem onClick={() => setAjuste(c)}>Ajustar valor</DropdownMenuItem>
+          )}
+          {podeEditarLinha && (
+            <DropdownMenuItem onClick={() => setMaoObra(c)}>Mão de obra manual</DropdownMenuItem>
+          )}
+          {podeEditarLinha && (
+            <DropdownMenuItem onClick={() => setRecalcular(c)}>
+              Recalcular pela regra
+            </DropdownMenuItem>
+          )}
           {podeAjustar && !["paga", "cancelada"].includes(c.status) && (
-            <DropdownMenuItem className="text-destructive" onClick={() => setCancelar(c)}>Cancelar</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive" onClick={() => setCancelar(c)}>
+              Cancelar
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
@@ -209,14 +253,21 @@ function ComissoesPage() {
 
       {podeGerenciar && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
-          <KpiCard label="Comissão Gerada" value={ind ? formatCurrencyBRL(ind.comissao_gerada) : "—"} />
+          <KpiCard
+            label="Comissão Gerada"
+            value={ind ? formatCurrencyBRL(ind.comissao_gerada) : "—"}
+          />
           <KpiCard label="Pendente" value={ind ? formatCurrencyBRL(ind.comissao_pendente) : "—"} />
           <KpiCard label="Aprovada" value={ind ? formatCurrencyBRL(ind.comissao_aprovada) : "—"} />
           <KpiCard label="Paga" value={ind ? formatCurrencyBRL(ind.comissao_paga) : "—"} />
           <KpiCard label="Técnicos" value={ind ? String(ind.tecnicos_com_comissao) : "—"} />
           <KpiCard
             label="% sobre Receita"
-            value={ind?.comissao_receita_pct != null ? `${ind.comissao_receita_pct.toLocaleString("pt-BR")}%` : "—"}
+            value={
+              ind?.comissao_receita_pct != null
+                ? `${ind.comissao_receita_pct.toLocaleString("pt-BR")}%`
+                : "—"
+            }
           />
         </div>
       )}
@@ -232,17 +283,33 @@ function ComissoesPage() {
         </div>
         <div>
           <label className={labelClass}>Status</label>
-          <select className={inputClass} value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+          <select
+            className={inputClass}
+            value={filtroStatus}
+            onChange={(e) => setFiltroStatus(e.target.value)}
+          >
             <option value="">Todos</option>
-            {Object.entries(STATUS_COMISSAO).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+            {Object.entries(STATUS_COMISSAO).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v.label}
+              </option>
+            ))}
           </select>
         </div>
         {!isTecnicoView && tecnicosOpcoes.length > 0 && (
           <div>
             <label className={labelClass}>Técnico</label>
-            <select className={inputClass} value={filtroTecnico} onChange={(e) => setFiltroTecnico(e.target.value)}>
+            <select
+              className={inputClass}
+              value={filtroTecnico}
+              onChange={(e) => setFiltroTecnico(e.target.value)}
+            >
               <option value="">Todos</option>
-              {tecnicosOpcoes.map(([id, nome]) => <option key={id} value={id}>{nome}</option>)}
+              {tecnicosOpcoes.map(([id, nome]) => (
+                <option key={id} value={id}>
+                  {nome}
+                </option>
+              ))}
             </select>
           </div>
         )}
@@ -258,7 +325,11 @@ function ComissoesPage() {
           </TabsList>
 
           <TabsContent value="comissoes" className="mt-4">
-            <TabelaComissoes comissoes={comissoes} loading={comissoesQuery.isLoading} acoes={acoes} />
+            <TabelaComissoes
+              comissoes={comissoes}
+              loading={comissoesQuery.isLoading}
+              acoes={acoes}
+            />
           </TabsContent>
 
           <TabsContent value="tecnicos" className="mt-4">
@@ -278,23 +349,42 @@ function ComissoesPage() {
                 </TableHeader>
                 <TableBody>
                   {(porTecnicoQuery.data ?? []).length === 0 && (
-                    <TableRow><TableCell colSpan={8} className="py-8 text-center text-muted-foreground">Sem dados no período.</TableCell></TableRow>
+                    <TableRow>
+                      <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                        Sem dados no período.
+                      </TableCell>
+                    </TableRow>
                   )}
                   {(porTecnicoQuery.data ?? []).map((t) => (
                     <TableRow key={t.tecnico_id}>
                       <TableCell className="font-medium">{t.tecnico}</TableCell>
                       <TableCell className="text-right">{t.qtd_os}</TableCell>
-                      <TableCell className="text-right">{formatCurrencyBRL(t.receita_liquida)}</TableCell>
-                      <TableCell className="text-right">{formatCurrencyBRL(t.custos_diretos)}</TableCell>
-                      <TableCell className="text-right">{formatCurrencyBRL(t.comissao_gerada)}</TableCell>
-                      <TableCell className="text-right">{formatCurrencyBRL(t.comissao_paga)}</TableCell>
-                      <TableCell className={`text-right font-medium ${t.margem_contribuicao >= 0 ? "text-primary" : "text-destructive"}`}>
+                      <TableCell className="text-right">
+                        {formatCurrencyBRL(t.receita_liquida)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrencyBRL(t.custos_diretos)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrencyBRL(t.comissao_gerada)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrencyBRL(t.comissao_paga)}
+                      </TableCell>
+                      <TableCell
+                        className={`text-right font-medium ${t.margem_contribuicao >= 0 ? "text-primary" : "text-destructive"}`}
+                      >
                         {formatCurrencyBRL(t.margem_contribuicao)}
                       </TableCell>
                       {podePagar && (
                         <TableCell className="text-right">
-                          <Button variant="outline" size="sm"
-                            onClick={() => setPagar({ tecnicoId: t.tecnico_id, tecnicoNome: t.tecnico })}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setPagar({ tecnicoId: t.tecnico_id, tecnicoNome: t.tecnico })
+                            }
+                          >
                             Pagar
                           </Button>
                         </TableCell>
@@ -322,19 +412,27 @@ function ComissoesPage() {
                 </TableHeader>
                 <TableBody>
                   {(pagamentosQuery.data ?? []).length === 0 && (
-                    <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">Nenhum pagamento no período.</TableCell></TableRow>
+                    <TableRow>
+                      <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                        Nenhum pagamento no período.
+                      </TableCell>
+                    </TableRow>
                   )}
                   {(pagamentosQuery.data ?? []).map((p) => (
                     <TableRow key={p.id}>
                       <TableCell>{formatDateITV(p.pago_em)}</TableCell>
                       <TableCell className="font-medium">{p.tecnico?.full_name ?? "—"}</TableCell>
                       <TableCell>
-                        {p.data_inicio ? `${formatDateITV(p.data_inicio)} a ${formatDateITV(p.data_fim ?? p.data_inicio)}` : "—"}
+                        {p.data_inicio
+                          ? `${formatDateITV(p.data_inicio)} a ${formatDateITV(p.data_fim ?? p.data_inicio)}`
+                          : "—"}
                       </TableCell>
                       <TableCell>{p.forma?.nome ?? "—"}</TableCell>
                       <TableCell>{p.responsavel?.full_name ?? "—"}</TableCell>
                       <TableCell className="text-right">{p.itens?.length ?? 0}</TableCell>
-                      <TableCell className="text-right font-medium">{formatCurrencyBRL(p.valor_total)}</TableCell>
+                      <TableCell className="text-right font-medium">
+                        {formatCurrencyBRL(p.valor_total)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -364,22 +462,48 @@ function ComissoesPage() {
                   </TableHeader>
                   <TableBody>
                     {(regrasQuery.data ?? []).length === 0 && (
-                      <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">Nenhuma regra cadastrada.</TableCell></TableRow>
+                      <TableRow>
+                        <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                          Nenhuma regra cadastrada.
+                        </TableCell>
+                      </TableRow>
                     )}
                     {(regrasQuery.data ?? []).map((r) => (
                       <TableRow key={r.id}>
                         <TableCell className="font-medium">{r.tecnico?.full_name ?? "—"}</TableCell>
-                        <TableCell>{TIPO_REGRA[r.tipo_regra]}{r.servico_descricao ? ` — ${r.servico_descricao}` : ""}</TableCell>
-                        <TableCell className="text-right">{r.percentual != null ? `${r.percentual}%` : "—"}</TableCell>
-                        <TableCell className="text-right">{r.valor_fixo != null ? formatCurrencyBRL(r.valor_fixo) : "—"}</TableCell>
-                        <TableCell>{formatDateITV(r.inicio_vigencia)}{r.fim_vigencia ? ` a ${formatDateITV(r.fim_vigencia)}` : " em diante"}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={r.ativo ? "border-primary/20 bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}>
+                          {TIPO_REGRA[r.tipo_regra]}
+                          {r.servico_descricao ? ` — ${r.servico_descricao}` : ""}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.percentual != null ? `${r.percentual}%` : "—"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.valor_fixo != null ? formatCurrencyBRL(r.valor_fixo) : "—"}
+                        </TableCell>
+                        <TableCell>
+                          {formatDateITV(r.inicio_vigencia)}
+                          {r.fim_vigencia ? ` a ${formatDateITV(r.fim_vigencia)}` : " em diante"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className={
+                              r.ativo
+                                ? "border-primary/20 bg-primary/10 text-primary"
+                                : "bg-muted text-muted-foreground"
+                            }
+                          >
                             {r.ativo ? "Ativa" : "Inativa"}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => setRegraForm({ open: true, regra: r })} aria-label="Editar regra">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setRegraForm({ open: true, regra: r })}
+                            aria-label="Editar regra"
+                          >
                             <Pencil className="size-4" />
                           </Button>
                         </TableCell>
@@ -392,14 +516,37 @@ function ComissoesPage() {
           )}
         </Tabs>
       ) : (
-        <TabelaComissoes comissoes={comissoes} loading={comissoesQuery.isLoading} acoes={acoes} tecnicoView />
+        <TabelaComissoes
+          comissoes={comissoes}
+          loading={comissoesQuery.isLoading}
+          acoes={acoes}
+          tecnicoView
+        />
       )}
 
-      <ComissaoDetalhes comissao={detalhe} open={!!detalhe} onOpenChange={(o) => !o && setDetalhe(null)} podeAprovar={podeAprovar} podeAjustar={podeAjustar} />
+      <ComissaoDetalhes
+        comissao={detalhe}
+        open={!!detalhe}
+        onOpenChange={(o) => !o && setDetalhe(null)}
+        podeAprovar={podeAprovar}
+        podeAjustar={podeAjustar}
+      />
       <AjusteDialog comissao={ajuste} open={!!ajuste} onOpenChange={(o) => !o && setAjuste(null)} />
-      <CancelarComissaoDialog comissao={cancelar} open={!!cancelar} onOpenChange={(o) => !o && setCancelar(null)} />
-      <RecalcularDialog comissao={recalcular} open={!!recalcular} onOpenChange={(o) => !o && setRecalcular(null)} />
-      <MaoObraDialog comissao={maoObra} open={!!maoObra} onOpenChange={(o) => !o && setMaoObra(null)} />
+      <CancelarComissaoDialog
+        comissao={cancelar}
+        open={!!cancelar}
+        onOpenChange={(o) => !o && setCancelar(null)}
+      />
+      <RecalcularDialog
+        comissao={recalcular}
+        open={!!recalcular}
+        onOpenChange={(o) => !o && setRecalcular(null)}
+      />
+      <MaoObraDialog
+        comissao={maoObra}
+        open={!!maoObra}
+        onOpenChange={(o) => !o && setMaoObra(null)}
+      />
       {pagar && (
         <PagarDialog
           open
@@ -409,13 +556,20 @@ function ComissoesPage() {
           comissoes={comissoes.filter((c) => c.tecnico_id === pagar.tecnicoId)}
         />
       )}
-      <RegraForm open={regraForm.open} onOpenChange={(o) => setRegraForm((p) => ({ ...p, open: o }))} regra={regraForm.regra} />
+      <RegraForm
+        open={regraForm.open}
+        onOpenChange={(o) => setRegraForm((p) => ({ ...p, open: o }))}
+        regra={regraForm.regra}
+      />
     </div>
   );
 }
 
 function TabelaComissoes({
-  comissoes, loading, acoes, tecnicoView = false,
+  comissoes,
+  loading,
+  acoes,
+  tecnicoView = false,
 }: {
   comissoes: Comissao[];
   loading: boolean;
@@ -439,18 +593,30 @@ function TabelaComissoes({
         </TableHeader>
         <TableBody>
           {loading && (
-            <TableRow><TableCell colSpan={8} className="py-8 text-center text-muted-foreground">Carregando…</TableCell></TableRow>
+            <TableRow>
+              <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                Carregando…
+              </TableCell>
+            </TableRow>
           )}
           {!loading && comissoes.length === 0 && (
-            <TableRow><TableCell colSpan={8} className="py-8 text-center text-muted-foreground">Nenhuma comissão no período.</TableCell></TableRow>
+            <TableRow>
+              <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                Nenhuma comissão no período.
+              </TableCell>
+            </TableRow>
           )}
           {comissoes.map((c) => (
             <TableRow key={c.id}>
               <TableCell>{formatDateITV(c.data_referencia)}</TableCell>
               <TableCell className="font-medium">{c.os}</TableCell>
               {!tecnicoView && <TableCell>{c.tecnico?.full_name ?? "—"}</TableCell>}
-              {!tecnicoView && <TableCell className="text-right">{formatCurrencyBRL(c.receita_liquida)}</TableCell>}
-              {!tecnicoView && <TableCell className="text-right">{formatCurrencyBRL(c.custos_diretos)}</TableCell>}
+              {!tecnicoView && (
+                <TableCell className="text-right">{formatCurrencyBRL(c.receita_liquida)}</TableCell>
+              )}
+              {!tecnicoView && (
+                <TableCell className="text-right">{formatCurrencyBRL(c.custos_diretos)}</TableCell>
+              )}
               <TableCell className="text-right font-medium">
                 {c.valor_final != null ? formatCurrencyBRL(c.valor_final) : "—"}
               </TableCell>

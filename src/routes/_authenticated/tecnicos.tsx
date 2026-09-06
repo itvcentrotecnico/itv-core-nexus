@@ -24,9 +24,15 @@ export const Route = createFileRoute("/_authenticated/tecnicos")({
   head: () => ({
     meta: [
       { title: "Validação Técnica — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Validação gerencial da produção técnica e desempenho da equipe." },
+      {
+        name: "description",
+        content: "Validação gerencial da produção técnica e desempenho da equipe.",
+      },
       { property: "og:title", content: "Validação Técnica — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Validação gerencial da produção técnica e desempenho da equipe." },
+      {
+        property: "og:description",
+        content: "Validação gerencial da produção técnica e desempenho da equipe.",
+      },
     ],
   }),
   component: TecnicosPage,
@@ -59,7 +65,9 @@ function TecnicosPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("producao_tecnica")
-        .select("*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)")
+        .select(
+          "*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)",
+        )
         .eq("status", "enviado_validacao")
         .order("enviado_em", { ascending: true });
       if (error) throw error;
@@ -73,7 +81,9 @@ function TecnicosPage() {
     queryFn: async () => {
       let q = supabase
         .from("producao_tecnica")
-        .select("*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)")
+        .select(
+          "*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)",
+        )
         .neq("status", "cancelado")
         .gte("data_execucao", from)
         .lte("data_execucao", to)
@@ -120,17 +130,34 @@ function TecnicosPage() {
 
       {fila && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <KpiCard label="Aguardando validação" value={String(fila.aguardando_validacao)}
-            sub={`Tempo médio em fila ${fila.tempo_medio_fila_horas.toFixed(1)}h`} highlight={fila.aguardando_validacao > 0} />
-          <KpiCard label="Validados hoje" value={String(fila.validados_hoje)} sub={`${fila.validados_mes} no mês`} />
-          <KpiCard label="Correções pendentes" value={String(fila.correcao_solicitada)} sub={`${fila.rejeitados_mes} rejeitados no mês`} />
-          <KpiCard label="Valor validado no mês" value={formatCurrencyBRL(fila.valor_validado_mes)} />
+          <KpiCard
+            label="Aguardando validação"
+            value={String(fila.aguardando_validacao)}
+            sub={`Tempo médio em fila ${fila.tempo_medio_fila_horas.toFixed(1)}h`}
+            highlight={fila.aguardando_validacao > 0}
+          />
+          <KpiCard
+            label="Validados hoje"
+            value={String(fila.validados_hoje)}
+            sub={`${fila.validados_mes} no mês`}
+          />
+          <KpiCard
+            label="Correções pendentes"
+            value={String(fila.correcao_solicitada)}
+            sub={`${fila.rejeitados_mes} rejeitados no mês`}
+          />
+          <KpiCard
+            label="Valor validado no mês"
+            value={formatCurrencyBRL(fila.valor_validado_mes)}
+          />
         </div>
       )}
 
       <Tabs defaultValue="fila">
         <TabsList>
-          <TabsTrigger value="fila">Fila de validação ({fila?.aguardando_validacao ?? 0})</TabsTrigger>
+          <TabsTrigger value="fila">
+            Fila de validação ({fila?.aguardando_validacao ?? 0})
+          </TabsTrigger>
           <TabsTrigger value="equipe">Produção da equipe</TabsTrigger>
           <TabsTrigger value="ranking">Desempenho</TabsTrigger>
           {podeConfigurarMetas && <TabsTrigger value="metas">Metas</TabsTrigger>}
@@ -157,14 +184,27 @@ function TecnicosPage() {
                 </thead>
                 <tbody>
                   {filaLista.map((r) => (
-                    <tr key={r.id} className="cursor-pointer border-b border-border last:border-0 hover:bg-muted/40"
-                      onClick={() => setDetalhe(r)}>
+                    <tr
+                      key={r.id}
+                      className="cursor-pointer border-b border-border last:border-0 hover:bg-muted/40"
+                      onClick={() => setDetalhe(r)}
+                    >
                       <td className="px-3 py-2 text-muted-foreground">
-                        {r.enviado_em ? new Date(r.enviado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—"}
+                        {r.enviado_em
+                          ? new Date(r.enviado_em).toLocaleString("pt-BR", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "—"}
                       </td>
-                      <td className="px-3 py-2 font-medium text-foreground">{r.tecnico?.full_name ?? "—"}</td>
+                      <td className="px-3 py-2 font-medium text-foreground">
+                        {r.tecnico?.full_name ?? "—"}
+                      </td>
                       <td className="px-3 py-2 text-foreground">{r.os}</td>
-                      <td className="max-w-[240px] truncate px-3 py-2 text-muted-foreground" title={r.servico_executado}>
+                      <td
+                        className="max-w-[240px] truncate px-3 py-2 text-muted-foreground"
+                        title={r.servico_executado}
+                      >
                         {r.tipo_servico?.nome ?? r.servico_executado}
                       </td>
                       <td className="px-3 py-2 text-right text-foreground">
@@ -176,31 +216,65 @@ function TecnicosPage() {
               </table>
             </div>
           )}
-          <p className="mt-2 text-xs text-muted-foreground">Clique em um registro para conferir detalhes, fotos e validar.</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Clique em um registro para conferir detalhes, fotos e validar.
+          </p>
         </TabsContent>
 
         <TabsContent value="equipe" className="mt-4 space-y-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div>
-              <label htmlFor="tf-from" className={labelClass}>De</label>
-              <input id="tf-from" type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={inputClass} />
+              <label htmlFor="tf-from" className={labelClass}>
+                De
+              </label>
+              <input
+                id="tf-from"
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="tf-to" className={labelClass}>Até</label>
-              <input id="tf-to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className={inputClass} />
+              <label htmlFor="tf-to" className={labelClass}>
+                Até
+              </label>
+              <input
+                id="tf-to"
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="tf-tecnico" className={labelClass}>Técnico</label>
-              <select id="tf-tecnico" value={fTecnico} onChange={(e) => setFTecnico(e.target.value)} className={inputClass}>
+              <label htmlFor="tf-tecnico" className={labelClass}>
+                Técnico
+              </label>
+              <select
+                id="tf-tecnico"
+                value={fTecnico}
+                onChange={(e) => setFTecnico(e.target.value)}
+                className={inputClass}
+              >
                 <option value="">Todos</option>
                 {tecnicos.map((t) => (
-                  <option key={t.id} value={t.id}>{t.full_name}</option>
+                  <option key={t.id} value={t.id}>
+                    {t.full_name}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label htmlFor="tf-status" className={labelClass}>Status</label>
-              <select id="tf-status" value={fStatus} onChange={(e) => setFStatus(e.target.value as typeof fStatus)} className={inputClass}>
+              <label htmlFor="tf-status" className={labelClass}>
+                Status
+              </label>
+              <select
+                id="tf-status"
+                value={fStatus}
+                onChange={(e) => setFStatus(e.target.value as typeof fStatus)}
+                className={inputClass}
+              >
                 <option value="">Todos</option>
                 <option value="rascunho">Rascunho</option>
                 <option value="enviado_validacao">Enviado p/ validação</option>
@@ -230,18 +304,30 @@ function TecnicosPage() {
                 </thead>
                 <tbody>
                   {equipe.map((r) => (
-                    <tr key={r.id} className="cursor-pointer border-b border-border last:border-0 hover:bg-muted/40"
-                      onClick={() => setDetalhe(r)}>
-                      <td className="px-3 py-2 text-muted-foreground">{formatDateOnlyISO(r.data_execucao)}</td>
-                      <td className="px-3 py-2 font-medium text-foreground">{r.tecnico?.full_name ?? "—"}</td>
+                    <tr
+                      key={r.id}
+                      className="cursor-pointer border-b border-border last:border-0 hover:bg-muted/40"
+                      onClick={() => setDetalhe(r)}
+                    >
+                      <td className="px-3 py-2 text-muted-foreground">
+                        {formatDateOnlyISO(r.data_execucao)}
+                      </td>
+                      <td className="px-3 py-2 font-medium text-foreground">
+                        {r.tecnico?.full_name ?? "—"}
+                      </td>
                       <td className="px-3 py-2 text-foreground">{r.os}</td>
-                      <td className="max-w-[220px] truncate px-3 py-2 text-muted-foreground" title={r.servico_executado}>
+                      <td
+                        className="max-w-[220px] truncate px-3 py-2 text-muted-foreground"
+                        title={r.servico_executado}
+                      >
                         {r.tipo_servico?.nome ?? r.servico_executado}
                       </td>
                       <td className="px-3 py-2 text-right text-foreground">
                         {r.valor_servico != null ? formatCurrencyBRL(r.valor_servico) : "—"}
                       </td>
-                      <td className="px-3 py-2"><StatusBadgeProducao status={r.status} /></td>
+                      <td className="px-3 py-2">
+                        <StatusBadgeProducao status={r.status} />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -274,13 +360,17 @@ function TecnicosPage() {
                       <td className="px-3 py-2 text-muted-foreground">{i + 1}</td>
                       <td className="px-3 py-2 font-medium text-foreground">{r.tecnico}</td>
                       <td className="px-3 py-2 text-right text-foreground">{r.validados}</td>
-                      <td className="px-3 py-2 text-right text-foreground">{formatCurrencyBRL(r.valor_validado)}</td>
+                      <td className="px-3 py-2 text-right text-foreground">
+                        {formatCurrencyBRL(r.valor_validado)}
+                      </td>
                       <td className="px-3 py-2 text-right text-foreground">
                         {r.percentual != null ? `${r.percentual.toFixed(1)}%` : "—"}
                       </td>
                       <td className="px-3 py-2">
                         {r.nivel ? (
-                          <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${NIVEL_BADGE[r.nivel] ?? "bg-muted text-muted-foreground"}`}>
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${NIVEL_BADGE[r.nivel] ?? "bg-muted text-muted-foreground"}`}
+                          >
                             {r.nivel}
                           </span>
                         ) : (
@@ -302,7 +392,11 @@ function TecnicosPage() {
         )}
       </Tabs>
 
-      <DetalheProducaoDialog registro={detalhe} onClose={() => setDetalhe(null)} onEditar={() => setDetalhe(null)} />
+      <DetalheProducaoDialog
+        registro={detalhe}
+        onClose={() => setDetalhe(null)}
+        onEditar={() => setDetalhe(null)}
+      />
     </div>
   );
 }

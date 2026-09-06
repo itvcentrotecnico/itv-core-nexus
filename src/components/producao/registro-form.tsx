@@ -75,8 +75,6 @@ export function RegistroProducaoDialog({
     setFotosNovas((prev) => [...prev, ...novos]);
   }
 
-
-
   useEffect(() => {
     if (open) {
       setOs(registro?.os ?? "");
@@ -118,9 +116,18 @@ export function RegistroProducaoDialog({
   }
 
   async function salvar(enviar: boolean, confirmarDup = false) {
-    if (!os.trim()) { toast.error("Informe a OS."); return; }
-    if (!servico.trim()) { toast.error("Informe o serviço executado."); return; }
-    if (!dataExecucao) { toast.error("Informe a data de execução."); return; }
+    if (!os.trim()) {
+      toast.error("Informe a OS.");
+      return;
+    }
+    if (!servico.trim()) {
+      toast.error("Informe o serviço executado.");
+      return;
+    }
+    if (!dataExecucao) {
+      toast.error("Informe a data de execução.");
+      return;
+    }
     setSaving(true);
     try {
       let producaoId: string;
@@ -193,8 +200,8 @@ export function RegistroProducaoDialog({
             {editando ? "Editar Registro de Produção" : "Registrar Produção Técnica"}
           </DialogTitle>
           <DialogDescription>
-            Registre o serviço executado e anexe evidências. Nada gera comissão ou custo automaticamente — a gerência
-            valida antes.
+            Registre o serviço executado e anexe evidências. Nada gera comissão ou custo
+            automaticamente — a gerência valida antes.
           </DialogDescription>
         </DialogHeader>
 
@@ -207,52 +214,134 @@ export function RegistroProducaoDialog({
         >
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="pr-os" className={labelClass}>OS *</label>
-              <input id="pr-os" value={os} onChange={(e) => setOs(e.target.value)} className={inputClass}
-                placeholder="Número da OS no INFOR OS" required disabled={editando} />
+              <label htmlFor="pr-os" className={labelClass}>
+                OS *
+              </label>
+              <input
+                id="pr-os"
+                value={os}
+                onChange={(e) => setOs(e.target.value)}
+                className={inputClass}
+                placeholder="Número da OS no INFOR OS"
+                required
+                disabled={editando}
+              />
             </div>
             <div>
-              <label htmlFor="pr-data" className={labelClass}>Data de Execução *</label>
-              <input id="pr-data" type="date" value={dataExecucao} max={todayManausISO()}
-                onChange={(e) => setDataExecucao(e.target.value)} className={inputClass} required />
+              <label htmlFor="pr-data" className={labelClass}>
+                Data de Execução *
+              </label>
+              <input
+                id="pr-data"
+                type="date"
+                value={dataExecucao}
+                max={todayManausISO()}
+                onChange={(e) => setDataExecucao(e.target.value)}
+                className={inputClass}
+                required
+              />
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-cliente" className={labelClass}>Cliente</label>
-              <input id="pr-cliente" value={cliente} onChange={(e) => setCliente(e.target.value)} className={inputClass} />
+              <label htmlFor="pr-cliente" className={labelClass}>
+                Cliente
+              </label>
+              <input
+                id="pr-cliente"
+                value={cliente}
+                onChange={(e) => setCliente(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="pr-marca" className={labelClass}>Marca da TV</label>
-              <input id="pr-marca" value={marcaTv} onChange={(e) => setMarcaTv(e.target.value)} className={inputClass} />
+              <label htmlFor="pr-marca" className={labelClass}>
+                Marca da TV
+              </label>
+              <input
+                id="pr-marca"
+                value={marcaTv}
+                onChange={(e) => setMarcaTv(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="pr-modelo" className={labelClass}>Modelo</label>
-              <input id="pr-modelo" value={modeloTv} onChange={(e) => setModeloTv(e.target.value)} className={inputClass} />
+              <label htmlFor="pr-modelo" className={labelClass}>
+                Modelo
+              </label>
+              <input
+                id="pr-modelo"
+                value={modeloTv}
+                onChange={(e) => setModeloTv(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="pr-pol" className={labelClass}>Polegadas</label>
-              <input id="pr-pol" type="number" min={1} max={120} value={polegadas}
-                onChange={(e) => setPolegadas(e.target.value)} className={inputClass} placeholder='Ex.: 55' />
+              <label htmlFor="pr-pol" className={labelClass}>
+                Polegadas
+              </label>
+              <input
+                id="pr-pol"
+                type="number"
+                min={1}
+                max={120}
+                value={polegadas}
+                onChange={(e) => setPolegadas(e.target.value)}
+                className={inputClass}
+                placeholder="Ex.: 55"
+              />
             </div>
             <div>
-              <label htmlFor="pr-tipo" className={labelClass}>Tipo de Serviço</label>
-              <select id="pr-tipo" value={tipoServicoId} onChange={(e) => setTipoServicoId(e.target.value)} className={inputClass}>
+              <label htmlFor="pr-tipo" className={labelClass}>
+                Tipo de Serviço
+              </label>
+              <select
+                id="pr-tipo"
+                value={tipoServicoId}
+                onChange={(e) => setTipoServicoId(e.target.value)}
+                className={inputClass}
+              >
                 <option value="">Selecione…</option>
-                {tipos.filter((t) => t.ativo).map((t) => (
-                  <option key={t.id} value={t.id}>{t.nome}</option>
-                ))}
+                {tipos
+                  .filter((t) => t.ativo)
+                  .map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.nome}
+                    </option>
+                  ))}
               </select>
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-defeito" className={labelClass}>Defeito Relatado</label>
-              <input id="pr-defeito" value={defeito} onChange={(e) => setDefeito(e.target.value)} className={inputClass} />
+              <label htmlFor="pr-defeito" className={labelClass}>
+                Defeito Relatado
+              </label>
+              <input
+                id="pr-defeito"
+                value={defeito}
+                onChange={(e) => setDefeito(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-diag" className={labelClass}>Diagnóstico</label>
-              <Textarea id="pr-diag" value={diagnostico} onChange={(e) => setDiagnostico(e.target.value)} rows={2} />
+              <label htmlFor="pr-diag" className={labelClass}>
+                Diagnóstico
+              </label>
+              <Textarea
+                id="pr-diag"
+                value={diagnostico}
+                onChange={(e) => setDiagnostico(e.target.value)}
+                rows={2}
+              />
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-servico" className={labelClass}>Serviço Executado *</label>
-              <Textarea id="pr-servico" value={servico} onChange={(e) => setServico(e.target.value)} rows={2} required />
+              <label htmlFor="pr-servico" className={labelClass}>
+                Serviço Executado *
+              </label>
+              <Textarea
+                id="pr-servico"
+                value={servico}
+                onChange={(e) => setServico(e.target.value)}
+                rows={2}
+                required
+              />
             </div>
             <div>
               <label className={labelClass}>Valor do Serviço (R$)</label>
@@ -263,13 +352,27 @@ export function RegistroProducaoDialog({
               <MoneyInput value={valorMaoObra} onChange={setValorMaoObra} />
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-pecas" className={labelClass}>Peças / Materiais Utilizados</label>
-              <Textarea id="pr-pecas" value={pecas} onChange={(e) => setPecas(e.target.value)} rows={2}
-                placeholder="Descrição livre — custos oficiais são lançados em Peças e Custos." />
+              <label htmlFor="pr-pecas" className={labelClass}>
+                Peças / Materiais Utilizados
+              </label>
+              <Textarea
+                id="pr-pecas"
+                value={pecas}
+                onChange={(e) => setPecas(e.target.value)}
+                rows={2}
+                placeholder="Descrição livre — custos oficiais são lançados em Peças e Custos."
+              />
             </div>
             <div className="col-span-2">
-              <label htmlFor="pr-obs" className={labelClass}>Observações</label>
-              <Textarea id="pr-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+              <label htmlFor="pr-obs" className={labelClass}>
+                Observações
+              </label>
+              <Textarea
+                id="pr-obs"
+                value={observacao}
+                onChange={(e) => setObservacao(e.target.value)}
+                rows={2}
+              />
             </div>
           </div>
 
@@ -303,7 +406,12 @@ export function RegistroProducaoDialog({
               <Button type="button" size="sm" onClick={() => cameraRef.current?.click()}>
                 <Camera className="mr-1.5 h-4 w-4" /> Tirar foto
               </Button>
-              <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileRef.current?.click()}
+              >
                 <ImagePlus className="mr-1.5 h-4 w-4" /> Escolher da galeria
               </Button>
               {fotosNovas.length > 0 && (
@@ -315,7 +423,10 @@ export function RegistroProducaoDialog({
             {fotosNovas.length > 0 && (
               <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {fotosNovas.map((f, i) => (
-                  <figure key={`${f.name}-${i}`} className="relative overflow-hidden rounded-lg border bg-muted">
+                  <figure
+                    key={`${f.name}-${i}`}
+                    className="relative overflow-hidden rounded-lg border bg-muted"
+                  >
                     <img
                       src={previews[i]}
                       alt={`Pré-visualização da foto ${i + 1}`}
@@ -349,13 +460,20 @@ export function RegistroProducaoDialog({
             {editando && <FotosExistentes producaoId={registro.id} />}
           </div>
 
-
           {duplicidade && (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-700">
               {duplicidade}
               <div className="mt-2">
-                <Button type="button" size="sm" variant="outline" disabled={saving}
-                  onClick={() => { setDuplicidade(null); void salvar(false, true); }}>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={saving}
+                  onClick={() => {
+                    setDuplicidade(null);
+                    void salvar(false, true);
+                  }}
+                >
                   Registrar mesmo assim
                 </Button>
               </div>
@@ -363,7 +481,9 @@ export function RegistroProducaoDialog({
           )}
 
           <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" variant="outline" disabled={saving}>
               {saving ? "Salvando…" : "Salvar rascunho"}
             </Button>
@@ -411,11 +531,18 @@ function FotosExistentes({ producaoId }: { producaoId: string }) {
   return (
     <div className="mt-2 flex flex-wrap gap-2">
       {fotos.map((f) => (
-        <span key={f.id} className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px]">
+        <span
+          key={f.id}
+          className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px]"
+        >
           Foto anexada
           {f.uploaded_by === profile?.id && (
-            <button type="button" onClick={() => void remover(f)} className="text-muted-foreground hover:text-destructive"
-              aria-label="Excluir foto anexada">
+            <button
+              type="button"
+              onClick={() => void remover(f)}
+              className="text-muted-foreground hover:text-destructive"
+              aria-label="Excluir foto anexada"
+            >
               <Trash2 className="h-3 w-3" />
             </button>
           )}

@@ -33,7 +33,11 @@ import {
   DesligarDialog,
   invalidateFolha,
 } from "@/components/folha/colaborador-form";
-import { AdiantamentoForm, BeneficiosDialog, HistoricoColaboradorDialog } from "@/components/folha/extras";
+import {
+  AdiantamentoForm,
+  BeneficiosDialog,
+  HistoricoColaboradorDialog,
+} from "@/components/folha/extras";
 import {
   AbrirCompetenciaDialog,
   CancelarLancamentoDialog,
@@ -46,9 +50,15 @@ export const Route = createFileRoute("/_authenticated/colaboradores")({
   head: () => ({
     meta: [
       { title: "Colaboradores e Folha — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Gestão de colaboradores e folha gerencial da ITV Centro Técnico." },
+      {
+        name: "description",
+        content: "Gestão de colaboradores e folha gerencial da ITV Centro Técnico.",
+      },
       { property: "og:title", content: "Colaboradores e Folha — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Gestão de colaboradores e folha gerencial da ITV Centro Técnico." },
+      {
+        property: "og:description",
+        content: "Gestão de colaboradores e folha gerencial da ITV Centro Técnico.",
+      },
     ],
   }),
   component: ColaboradoresPage,
@@ -65,7 +75,8 @@ function ColaboradoresPage() {
         <Users className="size-10 text-muted-foreground/40" />
         <h1 className="font-display text-xl font-bold text-foreground">Acesso restrito</h1>
         <p className="max-w-sm text-sm text-muted-foreground">
-          Este módulo possui controle individual de privacidade. Solicite a liberação ao administrador.
+          Este módulo possui controle individual de privacidade. Solicite a liberação ao
+          administrador.
         </p>
       </div>
     );
@@ -74,30 +85,70 @@ function ColaboradoresPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-2xl font-bold text-foreground">Colaboradores e Folha Gerencial</h1>
+        <h1 className="font-display text-2xl font-bold text-foreground">
+          Colaboradores e Folha Gerencial
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Cadastro, salários, benefícios e folha mensal gerencial. Folha gerencial interna — não substitui a folha contábil oficial.
+          Cadastro, salários, benefícios e folha mensal gerencial. Folha gerencial interna — não
+          substitui a folha contábil oficial.
         </p>
       </header>
 
       <Tabs defaultValue={podeColaboradores || isAdmin ? "colaboradores" : "folha"}>
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0">
-          {(podeColaboradores || isAdmin) && <TabsTrigger value="colaboradores" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Colaboradores</TabsTrigger>}
+          {(podeColaboradores || isAdmin) && (
+            <TabsTrigger
+              value="colaboradores"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              Colaboradores
+            </TabsTrigger>
+          )}
           {(podeFolha || isAdmin) && (
             <>
-              <TabsTrigger value="folha" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Folha Mensal</TabsTrigger>
-              <TabsTrigger value="lancamentos" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Lançamentos</TabsTrigger>
-              <TabsTrigger value="resumo" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Resumo da Folha</TabsTrigger>
-              <TabsTrigger value="historico" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Histórico</TabsTrigger>
+              <TabsTrigger
+                value="folha"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Folha Mensal
+              </TabsTrigger>
+              <TabsTrigger
+                value="lancamentos"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Lançamentos
+              </TabsTrigger>
+              <TabsTrigger
+                value="resumo"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Resumo da Folha
+              </TabsTrigger>
+              <TabsTrigger
+                value="historico"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                Histórico
+              </TabsTrigger>
             </>
           )}
         </TabsList>
 
-        <TabsContent value="colaboradores" className="mt-6"><ColaboradoresTab /></TabsContent>
-        <TabsContent value="folha" className="mt-6"><FolhaTab /></TabsContent>
-        <TabsContent value="lancamentos" className="mt-6"><LancamentosTab /></TabsContent>
-        <TabsContent value="resumo" className="mt-6"><ResumoTab /></TabsContent>
-        <TabsContent value="historico" className="mt-6"><HistoricoTab /></TabsContent>
+        <TabsContent value="colaboradores" className="mt-6">
+          <ColaboradoresTab />
+        </TabsContent>
+        <TabsContent value="folha" className="mt-6">
+          <FolhaTab />
+        </TabsContent>
+        <TabsContent value="lancamentos" className="mt-6">
+          <LancamentosTab />
+        </TabsContent>
+        <TabsContent value="resumo" className="mt-6">
+          <ResumoTab />
+        </TabsContent>
+        <TabsContent value="historico" className="mt-6">
+          <HistoricoTab />
+        </TabsContent>
       </Tabs>
     </div>
   );
@@ -143,8 +194,15 @@ function CompetenciaSelect({
 }) {
   return (
     <div>
-      <label htmlFor="comp-sel" className={labelClass}>Competência</label>
-      <select id="comp-sel" value={value} onChange={(e) => onChange(e.target.value)} className={cn(inputClass, "sm:w-56")}>
+      <label htmlFor="comp-sel" className={labelClass}>
+        Competência
+      </label>
+      <select
+        id="comp-sel"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn(inputClass, "sm:w-56")}
+      >
         <option value="">Selecione…</option>
         {competencias.map((c) => (
           <option key={c.id} value={c.id}>
@@ -182,7 +240,8 @@ function ColaboradoresTab() {
     const q = busca.trim().toLowerCase();
     return colaboradores.filter((c) => {
       if (statusFiltro === "ativos" && c.status === "desligado") return false;
-      if (statusFiltro !== "ativos" && statusFiltro !== "todos" && c.status !== statusFiltro) return false;
+      if (statusFiltro !== "ativos" && statusFiltro !== "todos" && c.status !== statusFiltro)
+        return false;
       if (!q) return true;
       return (
         c.nome.toLowerCase().includes(q) ||
@@ -203,13 +262,23 @@ function ColaboradoresTab() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiCard label="Colaboradores Ativos" value={String(ativos)} />
         <KpiCard label="Folha Base Mensal" value={formatCurrencyBRL(folhaMensal)} />
-        <KpiCard label="Em Férias/Afastados" value={String(colaboradores.filter((c) => c.status === "ferias" || c.status === "afastado").length)} />
-        <KpiCard label="Desligados (histórico)" value={String(colaboradores.filter((c) => c.status === "desligado").length)} />
+        <KpiCard
+          label="Em Férias/Afastados"
+          value={String(
+            colaboradores.filter((c) => c.status === "ferias" || c.status === "afastado").length,
+          )}
+        />
+        <KpiCard
+          label="Desligados (histórico)"
+          value={String(colaboradores.filter((c) => c.status === "desligado").length)}
+        />
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-48 flex-1">
-          <label htmlFor="cb-busca" className={labelClass}>Buscar</label>
+          <label htmlFor="cb-busca" className={labelClass}>
+            Buscar
+          </label>
           <input
             id="cb-busca"
             value={busca}
@@ -219,8 +288,15 @@ function ColaboradoresTab() {
           />
         </div>
         <div>
-          <label htmlFor="cb-status" className={labelClass}>Status</label>
-          <select id="cb-status" value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)} className={inputClass}>
+          <label htmlFor="cb-status" className={labelClass}>
+            Status
+          </label>
+          <select
+            id="cb-status"
+            value={statusFiltro}
+            onChange={(e) => setStatusFiltro(e.target.value)}
+            className={inputClass}
+          >
             <option value="ativos">Ativos</option>
             <option value="todos">Todos</option>
             <option value="ferias">Férias</option>
@@ -229,7 +305,12 @@ function ColaboradoresTab() {
           </select>
         </div>
         {(podeCriar || isAdmin) && (
-          <Button onClick={() => { setEditando(null); setFormOpen(true); }}>
+          <Button
+            onClick={() => {
+              setEditando(null);
+              setFormOpen(true);
+            }}
+          >
             <Plus className="size-4" /> Novo Colaborador
           </Button>
         )}
@@ -238,7 +319,9 @@ function ColaboradoresTab() {
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
         {filtrados.length === 0 && (
           <li className="px-4 py-10 text-center text-sm text-muted-foreground">
-            {colaboradores.length === 0 ? "Nenhum colaborador cadastrado." : "Nenhum resultado para os filtros."}
+            {colaboradores.length === 0
+              ? "Nenhum colaborador cadastrado."
+              : "Nenhum resultado para os filtros."}
           </li>
         )}
         {filtrados.map((c) => (
@@ -246,36 +329,62 @@ function ColaboradoresTab() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-medium text-foreground">{c.nome_exibicao || c.nome}</p>
-                <Badge variant="outline" className={cn("border-0", STATUS_COLABORADOR[c.status].className)}>
+                <Badge
+                  variant="outline"
+                  className={cn("border-0", STATUS_COLABORADOR[c.status].className)}
+                >
                   {STATUS_COLABORADOR[c.status].label}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
-                {[c.cargo_nome, c.setor_nome, c.tipo_vinculo].filter(Boolean).join(" · ") || "Sem cargo/setor"}
+                {[c.cargo_nome, c.setor_nome, c.tipo_vinculo].filter(Boolean).join(" · ") ||
+                  "Sem cargo/setor"}
                 {c.data_admissao ? ` · Admissão ${formatDateOnlyISO(c.data_admissao)}` : ""}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-semibold text-foreground">{formatCurrencyBRL(c.salario_atual ?? 0)}</p>
+              <p className="text-sm font-semibold text-foreground">
+                {formatCurrencyBRL(c.salario_atual ?? 0)}
+              </p>
               <p className="text-[11px] text-muted-foreground">salário atual</p>
             </div>
             <div className="flex flex-wrap gap-1">
               {(podeEditar || isAdmin) && (
                 <>
-                  <Button size="sm" variant="ghost" onClick={() => { setEditando(c); setFormOpen(true); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setEditando(c);
+                      setFormOpen(true);
+                    }}
+                  >
                     <UserPen className="size-4" /> Editar
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setSalarioDe(c)}>Salário</Button>
-                  <Button size="sm" variant="ghost" onClick={() => setStatusDe(c)}>Status</Button>
-                  <Button size="sm" variant="ghost" onClick={() => setBeneficiosDe(c)}>Benefícios</Button>
-                  <Button size="sm" variant="ghost" onClick={() => setAdiantamentoDe(c)}>Adiantamento</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setSalarioDe(c)}>
+                    Salário
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setStatusDe(c)}>
+                    Status
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setBeneficiosDe(c)}>
+                    Benefícios
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setAdiantamentoDe(c)}>
+                    Adiantamento
+                  </Button>
                 </>
               )}
               <Button size="sm" variant="ghost" onClick={() => setHistoricoDe(c)}>
                 <History className="size-4" /> Histórico
               </Button>
               {(podeDesativar || isAdmin) && c.status !== "desligado" && (
-                <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setDesligarDe(c)}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive"
+                  onClick={() => setDesligarDe(c)}
+                >
                   Desligar
                 </Button>
               )}
@@ -285,14 +394,29 @@ function ColaboradoresTab() {
       </ul>
 
       <ColaboradorForm open={formOpen} onClose={() => setFormOpen(false)} editing={editando} />
-      {salarioDe && <AlterarSalarioDialog colaborador={salarioDe} onClose={() => setSalarioDe(null)} />}
-      {statusDe && <AlterarStatusDialog colaborador={statusDe} onClose={() => setStatusDe(null)} />}
-      {desligarDe && <DesligarDialog colaborador={desligarDe} onClose={() => setDesligarDe(null)} />}
-      {beneficiosDe && <BeneficiosDialog colaborador={beneficiosDe} onClose={() => setBeneficiosDe(null)} />}
-      {adiantamentoDe && (
-        <AdiantamentoForm open colaborador={adiantamentoDe} onClose={() => setAdiantamentoDe(null)} />
+      {salarioDe && (
+        <AlterarSalarioDialog colaborador={salarioDe} onClose={() => setSalarioDe(null)} />
       )}
-      {historicoDe && <HistoricoColaboradorDialog colaborador={historicoDe} onClose={() => setHistoricoDe(null)} />}
+      {statusDe && <AlterarStatusDialog colaborador={statusDe} onClose={() => setStatusDe(null)} />}
+      {desligarDe && (
+        <DesligarDialog colaborador={desligarDe} onClose={() => setDesligarDe(null)} />
+      )}
+      {beneficiosDe && (
+        <BeneficiosDialog colaborador={beneficiosDe} onClose={() => setBeneficiosDe(null)} />
+      )}
+      {adiantamentoDe && (
+        <AdiantamentoForm
+          open
+          colaborador={adiantamentoDe}
+          onClose={() => setAdiantamentoDe(null)}
+        />
+      )}
+      {historicoDe && (
+        <HistoricoColaboradorDialog
+          colaborador={historicoDe}
+          onClose={() => setHistoricoDe(null)}
+        />
+      )}
     </div>
   );
 }
@@ -314,7 +438,11 @@ function FolhaTab() {
   const competencias = competenciasQuery.data ?? [];
   const [competenciaId, setCompetenciaId] = useState("");
   const [abrirOpen, setAbrirOpen] = useState(false);
-  const [pagarItem, setPagarItem] = useState<{ colaborador_id: string; nome: string; saldo: number } | null>(null);
+  const [pagarItem, setPagarItem] = useState<{
+    colaborador_id: string;
+    nome: string;
+    saldo: number;
+  } | null>(null);
   const [loteOpen, setLoteOpen] = useState(false);
 
   const competencia = competencias.find((c) => c.id === competenciaId) ?? null;
@@ -342,21 +470,33 @@ function FolhaTab() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3">
-        <CompetenciaSelect competencias={competencias} value={competenciaId} onChange={setCompetenciaId} />
+        <CompetenciaSelect
+          competencias={competencias}
+          value={competenciaId}
+          onChange={setCompetenciaId}
+        />
         {(can("folha", "criar") || isAdmin) && (
           <Button onClick={() => setAbrirOpen(true)}>
             <Plus className="size-4" /> Abrir Competência
           </Button>
         )}
-        {competencia && resumo && (can("folha", "pagar") || isAdmin) && competencia.status === "aprovada" && (
-          <Button variant="outline" onClick={() => setLoteOpen(true)}>Pagar em Lote</Button>
-        )}
+        {competencia &&
+          resumo &&
+          (can("folha", "pagar") || isAdmin) &&
+          competencia.status === "aprovada" && (
+            <Button variant="outline" onClick={() => setLoteOpen(true)}>
+              Pagar em Lote
+            </Button>
+          )}
       </div>
 
       {competencia && resumo && (
         <>
           <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="outline" className={cn("border-0", STATUS_COMPETENCIA[competencia.status].className)}>
+            <Badge
+              variant="outline"
+              className={cn("border-0", STATUS_COMPETENCIA[competencia.status].className)}
+            >
               {STATUS_COMPETENCIA[competencia.status].label}
             </Badge>
             <CompetenciaActions
@@ -395,33 +535,62 @@ function FolhaTab() {
                 {resumo.por_colaborador.map((c) => (
                   <tr key={c.folha_colaborador_id}>
                     <td className="px-4 py-3 font-medium text-foreground">{c.nome}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{[c.cargo, c.setor].filter(Boolean).join(" / ") || "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {[c.cargo, c.setor].filter(Boolean).join(" / ") || "—"}
+                    </td>
                     <td className="px-4 py-3">
-                      <Badge variant="outline" className={cn("border-0", STATUS_ITEM_FOLHA[c.status].className)}>
+                      <Badge
+                        variant="outline"
+                        className={cn("border-0", STATUS_ITEM_FOLHA[c.status].className)}
+                      >
                         {STATUS_ITEM_FOLHA[c.status].label}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-right text-foreground">{formatCurrencyBRL(c.proventos)}</td>
-                    <td className="px-4 py-3 text-right text-muted-foreground">{formatCurrencyBRL(c.descontos)}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-foreground">{formatCurrencyBRL(c.total)}</td>
-                    <td className="px-4 py-3 text-right text-primary">{formatCurrencyBRL(c.pago)}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-foreground">{formatCurrencyBRL(c.saldo)}</td>
+                    <td className="px-4 py-3 text-right text-foreground">
+                      {formatCurrencyBRL(c.proventos)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-muted-foreground">
+                      {formatCurrencyBRL(c.descontos)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold text-foreground">
+                      {formatCurrencyBRL(c.total)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-primary">
+                      {formatCurrencyBRL(c.pago)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold text-foreground">
+                      {formatCurrencyBRL(c.saldo)}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
                         {(can("folha", "editar") || isAdmin) &&
                           c.status === "pendente" &&
                           competencia.status !== "fechada" && (
-                            <Button size="sm" variant="ghost" onClick={() => conferir(c.colaborador_id)}>Conferir</Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => conferir(c.colaborador_id)}
+                            >
+                              Conferir
+                            </Button>
                           )}
-                        {(can("folha", "pagar") || isAdmin) && c.saldo > 0 && competencia.status === "aprovada" && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => setPagarItem({ colaborador_id: c.colaborador_id, nome: c.nome, saldo: c.saldo })}
-                          >
-                            Pagar
-                          </Button>
-                        )}
+                        {(can("folha", "pagar") || isAdmin) &&
+                          c.saldo > 0 &&
+                          competencia.status === "aprovada" && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() =>
+                                setPagarItem({
+                                  colaborador_id: c.colaborador_id,
+                                  nome: c.nome,
+                                  saldo: c.saldo,
+                                })
+                              }
+                            >
+                              Pagar
+                            </Button>
+                          )}
                       </div>
                     </td>
                   </tr>
@@ -440,10 +609,20 @@ function FolhaTab() {
 
       <AbrirCompetenciaDialog open={abrirOpen} onClose={() => setAbrirOpen(false)} />
       {pagarItem && (
-        <PagarDialog competenciaId={competenciaId} item={pagarItem} onClose={() => setPagarItem(null)} onChanged={refresh} />
+        <PagarDialog
+          competenciaId={competenciaId}
+          item={pagarItem}
+          onClose={() => setPagarItem(null)}
+          onChanged={refresh}
+        />
       )}
       {loteOpen && resumo && (
-        <PagarLoteDialog competenciaId={competenciaId} resumo={resumo} onClose={() => setLoteOpen(false)} onChanged={refresh} />
+        <PagarLoteDialog
+          competenciaId={competenciaId}
+          resumo={resumo}
+          onClose={() => setLoteOpen(false)}
+          onChanged={refresh}
+        />
       )}
     </div>
   );
@@ -484,7 +663,11 @@ function LancamentosTab() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3">
-        <CompetenciaSelect competencias={competencias} value={competenciaId} onChange={setCompetenciaId} />
+        <CompetenciaSelect
+          competencias={competencias}
+          value={competenciaId}
+          onChange={setCompetenciaId}
+        />
         {competencia && (can("folha", "criar") || isAdmin) && competencia.status !== "fechada" && (
           <Button onClick={() => setFormOpen(true)}>
             <Plus className="size-4" /> Novo Lançamento
@@ -495,10 +678,18 @@ function LancamentosTab() {
       {competenciaId && (
         <ul className="divide-y divide-border rounded-xl border border-border bg-card">
           {lancamentos.length === 0 && (
-            <li className="px-4 py-10 text-center text-sm text-muted-foreground">Nenhum lançamento nesta competência.</li>
+            <li className="px-4 py-10 text-center text-sm text-muted-foreground">
+              Nenhum lançamento nesta competência.
+            </li>
           )}
           {lancamentos.map((l) => (
-            <li key={l.id} className={cn("flex flex-wrap items-center gap-2 px-4 py-3 text-sm", l.cancelado_em && "opacity-50")}>
+            <li
+              key={l.id}
+              className={cn(
+                "flex flex-wrap items-center gap-2 px-4 py-3 text-sm",
+                l.cancelado_em && "opacity-50",
+              )}
+            >
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-foreground">
                   {l.colaborador?.nome ?? "—"} · {l.tipo?.nome ?? "Tipo"}
@@ -514,14 +705,27 @@ function LancamentosTab() {
                   {l.motivo_cancelamento ? ` · Motivo: ${l.motivo_cancelamento}` : ""}
                 </p>
               </div>
-              <span className={cn("font-semibold", l.natureza === "provento" ? "text-primary" : "text-destructive")}>
-                {l.natureza === "provento" ? "+" : "−"}{formatCurrencyBRL(l.valor)}
+              <span
+                className={cn(
+                  "font-semibold",
+                  l.natureza === "provento" ? "text-primary" : "text-destructive",
+                )}
+              >
+                {l.natureza === "provento" ? "+" : "−"}
+                {formatCurrencyBRL(l.valor)}
               </span>
-              {!l.cancelado_em && (can("folha", "cancelar") || isAdmin) && competencia?.status !== "fechada" && (
-                <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setCancelando(l)}>
-                  Cancelar
-                </Button>
-              )}
+              {!l.cancelado_em &&
+                (can("folha", "cancelar") || isAdmin) &&
+                competencia?.status !== "fechada" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive"
+                    onClick={() => setCancelando(l)}
+                  >
+                    Cancelar
+                  </Button>
+                )}
             </li>
           ))}
         </ul>
@@ -561,7 +765,17 @@ function ResumoTab() {
   function exportCsv() {
     if (!resumo || !competencia) return;
     const linhas = [
-      ["Colaborador", "Cargo", "Setor", "Status", "Proventos", "Descontos", "Líquido", "Pago", "Saldo"],
+      [
+        "Colaborador",
+        "Cargo",
+        "Setor",
+        "Status",
+        "Proventos",
+        "Descontos",
+        "Líquido",
+        "Pago",
+        "Saldo",
+      ],
       ...resumo.por_colaborador.map((c) => [
         c.nome,
         c.cargo ?? "",
@@ -574,7 +788,9 @@ function ResumoTab() {
         c.saldo.toFixed(2),
       ]),
     ];
-    const csv = linhas.map((l) => l.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(";")).join("\n");
+    const csv = linhas
+      .map((l) => l.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(";"))
+      .join("\n");
     const blob = new Blob([`﻿${csv}`], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -587,7 +803,11 @@ function ResumoTab() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3">
-        <CompetenciaSelect competencias={competencias} value={competenciaId} onChange={setCompetenciaId} />
+        <CompetenciaSelect
+          competencias={competencias}
+          value={competenciaId}
+          onChange={setCompetenciaId}
+        />
         {resumo && (can("folha", "exportar") || isAdmin) && (
           <Button variant="outline" onClick={exportCsv}>
             <Download className="size-4" /> Exportar CSV
@@ -606,17 +826,26 @@ function ResumoTab() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="rounded-xl border border-border bg-card p-4">
-              <h3 className="mb-3 font-display text-sm font-bold text-foreground">Por Tipo de Lançamento</h3>
+              <h3 className="mb-3 font-display text-sm font-bold text-foreground">
+                Por Tipo de Lançamento
+              </h3>
               <ul className="space-y-2 text-sm">
                 {resumo.por_tipo.map((t, i) => (
                   <li key={i} className="flex items-center justify-between">
                     <span className="text-muted-foreground">{t.tipo}</span>
-                    <span className={cn("font-semibold", t.natureza === "provento" ? "text-primary" : "text-destructive")}>
+                    <span
+                      className={cn(
+                        "font-semibold",
+                        t.natureza === "provento" ? "text-primary" : "text-destructive",
+                      )}
+                    >
                       {formatCurrencyBRL(t.total)}
                     </span>
                   </li>
                 ))}
-                {resumo.por_tipo.length === 0 && <li className="text-muted-foreground">Sem dados.</li>}
+                {resumo.por_tipo.length === 0 && (
+                  <li className="text-muted-foreground">Sem dados.</li>
+                )}
               </ul>
             </div>
             <div className="rounded-xl border border-border bg-card p-4">
@@ -625,10 +854,14 @@ function ResumoTab() {
                 {resumo.por_setor.map((s, i) => (
                   <li key={i} className="flex items-center justify-between">
                     <span className="text-muted-foreground">{s.setor}</span>
-                    <span className="font-semibold text-foreground">{formatCurrencyBRL(s.total)}</span>
+                    <span className="font-semibold text-foreground">
+                      {formatCurrencyBRL(s.total)}
+                    </span>
                   </li>
                 ))}
-                {resumo.por_setor.length === 0 && <li className="text-muted-foreground">Sem dados.</li>}
+                {resumo.por_setor.length === 0 && (
+                  <li className="text-muted-foreground">Sem dados.</li>
+                )}
               </ul>
             </div>
           </div>
@@ -650,10 +883,18 @@ function ResumoTab() {
                   <tr key={c.folha_colaborador_id}>
                     <td className="px-4 py-3 font-medium text-foreground">{c.nome}</td>
                     <td className="px-4 py-3 text-right">{formatCurrencyBRL(c.proventos)}</td>
-                    <td className="px-4 py-3 text-right text-muted-foreground">{formatCurrencyBRL(c.descontos)}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrencyBRL(c.total)}</td>
-                    <td className="px-4 py-3 text-right text-primary">{formatCurrencyBRL(c.pago)}</td>
-                    <td className="px-4 py-3 text-right font-semibold">{formatCurrencyBRL(c.saldo)}</td>
+                    <td className="px-4 py-3 text-right text-muted-foreground">
+                      {formatCurrencyBRL(c.descontos)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold">
+                      {formatCurrencyBRL(c.total)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-primary">
+                      {formatCurrencyBRL(c.pago)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-semibold">
+                      {formatCurrencyBRL(c.saldo)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -684,7 +925,9 @@ function HistoricoTab() {
     <div className="space-y-4">
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
         {competencias.length === 0 && (
-          <li className="px-4 py-10 text-center text-sm text-muted-foreground">Nenhuma competência registrada.</li>
+          <li className="px-4 py-10 text-center text-sm text-muted-foreground">
+            Nenhuma competência registrada.
+          </li>
         )}
         {competencias.map((c) => (
           <li key={c.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
@@ -694,11 +937,16 @@ function HistoricoTab() {
               className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-left"
             >
               <span className="font-medium text-foreground">{competenciaLabel(c.competencia)}</span>
-              <Badge variant="outline" className={cn("border-0", STATUS_COMPETENCIA[c.status].className)}>
+              <Badge
+                variant="outline"
+                className={cn("border-0", STATUS_COMPETENCIA[c.status].className)}
+              >
                 {STATUS_COMPETENCIA[c.status].label}
               </Badge>
               {c.fechada_em && (
-                <span className="text-xs text-muted-foreground">Fechada em {formatDateOnlyISO(c.fechada_em)}</span>
+                <span className="text-xs text-muted-foreground">
+                  Fechada em {formatDateOnlyISO(c.fechada_em)}
+                </span>
               )}
             </button>
           </li>
@@ -708,12 +956,23 @@ function HistoricoTab() {
       {competenciaId && resumoQuery.data && (
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <KpiCard label="Total da Folha" value={formatCurrencyBRL(resumoQuery.data.total_folha)} />
+            <KpiCard
+              label="Total da Folha"
+              value={formatCurrencyBRL(resumoQuery.data.total_folha)}
+            />
             <KpiCard label="Total Pago" value={formatCurrencyBRL(resumoQuery.data.total_pago)} />
-            <KpiCard label="Proventos" value={formatCurrencyBRL(resumoQuery.data.total_proventos)} />
-            <KpiCard label="Descontos" value={formatCurrencyBRL(resumoQuery.data.total_descontos)} />
+            <KpiCard
+              label="Proventos"
+              value={formatCurrencyBRL(resumoQuery.data.total_proventos)}
+            />
+            <KpiCard
+              label="Descontos"
+              value={formatCurrencyBRL(resumoQuery.data.total_descontos)}
+            />
           </div>
-          <h3 className="font-display text-sm font-bold text-foreground">Pagamentos da Competência</h3>
+          <h3 className="font-display text-sm font-bold text-foreground">
+            Pagamentos da Competência
+          </h3>
           <PagamentosList
             competenciaId={competenciaId}
             canEstornar={can("folha", "estornar") || isAdmin}

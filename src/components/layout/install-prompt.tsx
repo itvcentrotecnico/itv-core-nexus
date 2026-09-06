@@ -47,7 +47,9 @@ export function InstallPrompt() {
       </span>
       <span className="min-w-0 flex-1 text-sm">
         <span className="block font-semibold text-foreground">Instalar Gestão ITV</span>
-        <span className="block text-xs text-muted-foreground">Use como aplicativo neste dispositivo.</span>
+        <span className="block text-xs text-muted-foreground">
+          Use como aplicativo neste dispositivo.
+        </span>
       </span>
       <button
         type="button"

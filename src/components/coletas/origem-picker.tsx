@@ -39,7 +39,11 @@ export function OrigemPicker({
     return (
       <div className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
         Não foi possível carregar as opções.{" "}
-        <button type="button" className="font-semibold text-primary underline" onClick={() => void refetch()}>
+        <button
+          type="button"
+          className="font-semibold text-primary underline"
+          onClick={() => void refetch()}
+        >
           Tente novamente
         </button>
       </div>
@@ -62,7 +66,9 @@ export function OrigemPicker({
                 aria-pressed={ativo}
                 onClick={() => onChange({ ...valor, origem_id: o.id, origem_nome: o.nome })}
                 className={`${altura} rounded-md border px-2 text-sm font-semibold transition-colors ${
-                  ativo ? "border-primary bg-primary/10 text-primary" : "border-input text-muted-foreground"
+                  ativo
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-input text-muted-foreground"
                 }`}
               >
                 {o.nome}
@@ -74,7 +80,9 @@ export function OrigemPicker({
 
       {requerDetalhe(valor, origens) && (
         <div>
-          <label className={labelClass} htmlFor="origem-detalhe">Qual? *</label>
+          <label className={labelClass} htmlFor="origem-detalhe">
+            Qual? *
+          </label>
           <input
             id="origem-detalhe"
             className={`${inputClass} ${altura}`}
@@ -88,7 +96,9 @@ export function OrigemPicker({
       {ehIndicacao(valor, origens) && (
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div>
-            <label className={labelClass} htmlFor="origem-indicou">Quem indicou? (opcional)</label>
+            <label className={labelClass} htmlFor="origem-indicou">
+              Quem indicou? (opcional)
+            </label>
             <input
               id="origem-indicou"
               className={`${inputClass} ${altura}`}
@@ -97,13 +107,17 @@ export function OrigemPicker({
             />
           </div>
           <div>
-            <label className={labelClass} htmlFor="origem-indicou-tel">Telefone (opcional)</label>
+            <label className={labelClass} htmlFor="origem-indicou-tel">
+              Telefone (opcional)
+            </label>
             <input
               id="origem-indicou-tel"
               className={`${inputClass} ${altura}`}
               inputMode="numeric"
               value={valor.indicado_telefone}
-              onChange={(e) => onChange({ ...valor, indicado_telefone: maskTelefone(e.target.value) })}
+              onChange={(e) =>
+                onChange({ ...valor, indicado_telefone: maskTelefone(e.target.value) })
+              }
             />
           </div>
         </div>
@@ -111,7 +125,9 @@ export function OrigemPicker({
 
       {mostrarCanal && (
         <div>
-          <label className={labelClass} htmlFor="origem-canal">Entrou em contato por</label>
+          <label className={labelClass} htmlFor="origem-canal">
+            Entrou em contato por
+          </label>
           <select
             id="origem-canal"
             className={`${inputClass} ${altura}`}
@@ -119,7 +135,9 @@ export function OrigemPicker({
             onChange={(e) => onChange({ ...valor, canal: e.target.value })}
           >
             {CANAIS_CONTATO.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
           <p className="mt-1 text-[11px] text-muted-foreground">

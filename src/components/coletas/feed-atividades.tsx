@@ -33,7 +33,11 @@ export function FeedAtividades({ itens, ativo }: { itens: ColetaSolicitacao[]; a
       const texto = statusAntes
         ? `${TIPO_LABEL[item.tipo]} de ${item.cliente_nome}: ${labelStatus(item.tipo, item.status)}`
         : `Nova ${TIPO_LABEL[item.tipo].toLowerCase()} — ${item.cliente_nome}`;
-      novas.push({ id: `${item.id}-${item.status}-${Date.now()}`, texto, em: new Date().toISOString() });
+      novas.push({
+        id: `${item.id}-${item.status}-${Date.now()}`,
+        texto,
+        em: new Date().toISOString(),
+      });
     }
     if (novas.length === 0) return;
 

@@ -133,8 +133,8 @@ export function AgendaMotorista() {
 
       <p className="flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
         <Navigation className="size-3.5 shrink-0" aria-hidden="true" />
-        Sugestão de rota: paradas agrupadas por bairro, do bairro com mais paradas para o menor. Você
-        pode seguir em qualquer ordem.
+        Sugestão de rota: paradas agrupadas por bairro, do bairro com mais paradas para o menor.
+        Você pode seguir em qualquer ordem.
       </p>
 
       {agendaQuery.isLoading && <p className="text-sm text-muted-foreground">Carregando agenda…</p>}
@@ -176,7 +176,9 @@ export function AgendaMotorista() {
                       {TIPO_LABEL[item.tipo]} · {enderecoResumido(item)}
                     </p>
                     {complementoResumido(item) && (
-                      <p className="truncate text-xs text-muted-foreground">{complementoResumido(item)}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {complementoResumido(item)}
+                      </p>
                     )}
                   </div>
                   <span
@@ -189,7 +191,9 @@ export function AgendaMotorista() {
                 </div>
 
                 {item.motorista && (
-                  <p className="mt-1 text-[11px] text-muted-foreground">Motorista: {item.motorista}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Motorista: {item.motorista}
+                  </p>
                 )}
 
                 <div className="mt-3 flex flex-wrap gap-2">

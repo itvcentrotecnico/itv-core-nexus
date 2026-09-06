@@ -33,7 +33,8 @@ export const Route = createFileRoute("/_authenticated/admin/")({
       { title: "Administração — GESTÃO ITV Centro Técnico" },
       {
         name: "description",
-        content: "Parâmetros mestres, usuários, permissões, cadastros, auditoria e governança do sistema ITV.",
+        content:
+          "Parâmetros mestres, usuários, permissões, cadastros, auditoria e governança do sistema ITV.",
       },
       { property: "og:title", content: "Administração — GESTÃO ITV Centro Técnico" },
       {
@@ -61,9 +62,12 @@ function AdminPage() {
     <div className="space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight">Administração e Governança</h1>
+          <h1 className="font-display text-2xl font-bold tracking-tight">
+            Administração e Governança
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Parâmetros mestres do sistema. Toda alteração crítica exige confirmação e fica registrada na auditoria.
+            Parâmetros mestres do sistema. Toda alteração crítica exige confirmação e fica
+            registrada na auditoria.
           </p>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">

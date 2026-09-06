@@ -19,12 +19,14 @@ export const Route = createFileRoute("/_authenticated/relatorios")({
       { title: "Relatórios Gerenciais — GESTÃO ITV Centro Técnico" },
       {
         name: "description",
-        content: "Faturamento, produção, técnicos, rentabilidade, origem dos clientes e planejamento da ITV.",
+        content:
+          "Faturamento, produção, técnicos, rentabilidade, origem dos clientes e planejamento da ITV.",
       },
       { property: "og:title", content: "Relatórios Gerenciais — GESTÃO ITV Centro Técnico" },
       {
         property: "og:description",
-        content: "Faturamento, produção, técnicos, rentabilidade, origem dos clientes e planejamento da ITV.",
+        content:
+          "Faturamento, produção, técnicos, rentabilidade, origem dos clientes e planejamento da ITV.",
       },
     ],
   }),
@@ -87,7 +89,9 @@ function RelatoriosPage() {
               onClick={() => setPreset(p.key)}
               className={cn(
                 "h-9 rounded-md border px-3 text-xs font-semibold transition-colors",
-                preset === p.key ? "border-primary bg-primary/10 text-primary" : "border-input text-muted-foreground",
+                preset === p.key
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-input text-muted-foreground",
               )}
             >
               {p.label}
@@ -97,12 +101,28 @@ function RelatoriosPage() {
         {preset === "personalizado" && (
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className={labelClass} htmlFor="rel-de">De</label>
-              <input id="rel-de" type="date" className={inputClass} value={de} onChange={(e) => setDe(e.target.value)} />
+              <label className={labelClass} htmlFor="rel-de">
+                De
+              </label>
+              <input
+                id="rel-de"
+                type="date"
+                className={inputClass}
+                value={de}
+                onChange={(e) => setDe(e.target.value)}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="rel-ate">Até</label>
-              <input id="rel-ate" type="date" className={inputClass} value={ate} onChange={(e) => setAte(e.target.value)} />
+              <label className={labelClass} htmlFor="rel-ate">
+                Até
+              </label>
+              <input
+                id="rel-ate"
+                type="date"
+                className={inputClass}
+                value={ate}
+                onChange={(e) => setAte(e.target.value)}
+              />
             </div>
           </div>
         )}
@@ -116,7 +136,9 @@ function RelatoriosPage() {
             onClick={() => setAba(a.key)}
             className={cn(
               "whitespace-nowrap border-b-2 px-3 py-2 text-sm font-semibold transition-colors",
-              aba === a.key ? "border-primary text-primary" : "border-transparent text-muted-foreground",
+              aba === a.key
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground",
             )}
           >
             {a.label}
@@ -130,10 +152,14 @@ function RelatoriosPage() {
         </div>
       ) : (
         <>
-          {aba === "faturamento" && range && <FaturamentoTab range={range} podeExportar={podeExportar} />}
+          {aba === "faturamento" && range && (
+            <FaturamentoTab range={range} podeExportar={podeExportar} />
+          )}
           {aba === "producao" && range && <ProducaoTab range={range} podeExportar={podeExportar} />}
           {aba === "tecnicos" && range && <TecnicosTab range={range} podeExportar={podeExportar} />}
-          {aba === "rentabilidade" && range && <RentabilidadeTab range={range} podeExportar={podeExportar} />}
+          {aba === "rentabilidade" && range && (
+            <RentabilidadeTab range={range} podeExportar={podeExportar} />
+          )}
           {aba === "origens" && range && <OrigensTab range={range} podeExportar={podeExportar} />}
           {aba === "planejamento" && <PlanejamentoTab podeExportar={podeExportar} />}
         </>

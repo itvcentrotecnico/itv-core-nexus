@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
@@ -32,7 +36,9 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
   const [saving, setSaving] = useState(false);
   const [tecnicoId, setTecnicoId] = useState(regra?.tecnico_id ?? "");
   const [tipo, setTipo] = useState<ComissaoTipoRegra>(regra?.tipo_regra ?? "percentual_mao_obra");
-  const [percentual, setPercentual] = useState(regra?.percentual != null ? String(regra.percentual).replace(".", ",") : "");
+  const [percentual, setPercentual] = useState(
+    regra?.percentual != null ? String(regra.percentual).replace(".", ",") : "",
+  );
   const [valorFixo, setValorFixo] = useState<number | null>(regra?.valor_fixo ?? null);
   const [servico, setServico] = useState(regra?.servico_descricao ?? "");
   const [inicio, setInicio] = useState(regra?.inicio_vigencia ?? "");
@@ -87,7 +93,11 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
         const { error } = await supabase.from("regras_comissao").insert(payload);
         if (error) throw error;
       }
-      toast.success(regra ? "Regra atualizada. Comissões históricas não são alteradas." : "Regra de comissão criada.");
+      toast.success(
+        regra
+          ? "Regra atualizada. Comissões históricas não são alteradas."
+          : "Regra de comissão criada.",
+      );
       queryClient.invalidateQueries({ queryKey: ["regras-comissao"] });
       onOpenChange(false);
     } catch (e) {
@@ -103,7 +113,8 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
         <DialogHeader>
           <DialogTitle>{regra ? "Editar Regra de Comissão" : "Nova Regra de Comissão"}</DialogTitle>
           <DialogDescription>
-            A vigência define qual regra vale para cada data. Alterações não recalculam comissões históricas.
+            A vigência define qual regra vale para cada data. Alterações não recalculam comissões
+            históricas.
           </DialogDescription>
         </DialogHeader>
 
@@ -127,9 +138,15 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
 
           <div>
             <label className={labelClass}>Tipo de Comissão *</label>
-            <select className={inputClass} value={tipo} onChange={(e) => setTipo(e.target.value as ComissaoTipoRegra)}>
+            <select
+              className={inputClass}
+              value={tipo}
+              onChange={(e) => setTipo(e.target.value as ComissaoTipoRegra)}
+            >
               {Object.entries(TIPO_REGRA).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
+                <option key={k} value={k}>
+                  {v}
+                </option>
               ))}
             </select>
           </div>
@@ -137,7 +154,12 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
           {usaPercentual && (
             <div>
               <label className={labelClass}>Percentual (%) *</label>
-              <Input inputMode="decimal" placeholder="Ex.: 20" value={percentual} onChange={(e) => setPercentual(e.target.value)} />
+              <Input
+                inputMode="decimal"
+                placeholder="Ex.: 20"
+                value={percentual}
+                onChange={(e) => setPercentual(e.target.value)}
+              />
               {tipo === "percentual_mao_obra" && (
                 <p className="mt-1 text-xs text-muted-foreground">
                   Base = receita líquida da OS menos o custo de peças. Peças não são comissionadas.
@@ -156,13 +178,18 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
           {tipo === "fixo_servico" && (
             <div>
               <label className={labelClass}>Serviço</label>
-              <Input placeholder="Ex.: Troca de LED, Reparo de placa" value={servico} onChange={(e) => setServico(e.target.value)} />
+              <Input
+                placeholder="Ex.: Troca de LED, Reparo de placa"
+                value={servico}
+                onChange={(e) => setServico(e.target.value)}
+              />
             </div>
           )}
 
           {tipo === "personalizada" && (
             <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-              Regra personalizada: a comissão será gerada como "Pendente de Configuração" e exigirá definição manual do valor.
+              Regra personalizada: a comissão será gerada como "Pendente de Configuração" e exigirá
+              definição manual do valor.
             </p>
           )}
 
@@ -188,8 +215,12 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Cancelar</Button>
-            <Button onClick={salvar} disabled={saving}>{saving ? "Salvando…" : "Salvar Regra"}</Button>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+              Cancelar
+            </Button>
+            <Button onClick={salvar} disabled={saving}>
+              {saving ? "Salvando…" : "Salvar Regra"}
+            </Button>
           </div>
         </div>
       </DialogContent>
