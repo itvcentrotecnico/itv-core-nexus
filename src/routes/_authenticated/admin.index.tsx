@@ -15,6 +15,7 @@ import { AdminTaxasRecebimento } from "@/components/admin/taxas-recebimento";
 import { AdminParametros } from "@/components/admin/parametros";
 import { AdminFechamentos } from "@/components/admin/fechamentos";
 import { AdminAuditoria } from "@/components/admin/auditoria";
+import { AdminEventosSeguranca } from "@/components/admin/eventos-seguranca";
 import { AdminGeral } from "@/components/admin/geral";
 import { AdminBackup } from "@/components/admin/backup";
 import { Button } from "@/components/ui/button";
