@@ -3877,6 +3877,36 @@ export type Database = {
           },
         ]
       }
+      rate_limit_publico: {
+        Row: {
+          acao: string
+          chave: string
+          created_at: string
+          id: string
+          janela_inicio: string
+          tentativas: number
+          updated_at: string
+        }
+        Insert: {
+          acao: string
+          chave: string
+          created_at?: string
+          id?: string
+          janela_inicio?: string
+          tentativas?: number
+          updated_at?: string
+        }
+        Update: {
+          acao?: string
+          chave?: string
+          created_at?: string
+          id?: string
+          janela_inicio?: string
+          tentativas?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       regras_comissao: {
         Row: {
           ativo: boolean
@@ -5613,6 +5643,15 @@ export type Database = {
       producao_validar: {
         Args: { p_id: string; p_observacao?: string }
         Returns: Json
+      }
+      rate_limit_ok: {
+        Args: {
+          p_acao: string
+          p_chave: string
+          p_janela: string
+          p_max: number
+        }
+        Returns: boolean
       }
       registrar_auditoria: {
         Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
