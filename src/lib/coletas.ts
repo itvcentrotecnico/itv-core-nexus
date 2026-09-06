@@ -4,6 +4,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/lib/app-url";
+import { mensagemErro } from "@/lib/erros";
 
 export type ColetaTipo = "coleta" | "entrega";
 export type ColetaStatus =
@@ -95,7 +96,7 @@ export const MARCAS_TV = [
 /** RPC tipada do módulo coletas. */
 export async function rpcColetas<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

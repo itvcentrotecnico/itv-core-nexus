@@ -4,6 +4,7 @@
  * validado também no banco. Nenhum rastreamento fora do expediente.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { mensagemErro } from "@/lib/erros";
 
 export interface ExpedienteAtual {
   ativo: boolean;
@@ -46,7 +47,7 @@ export const LIMITE_DESATUALIZADO_MS = 20 * 60_000;
 
 export async function rpcEquipe<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

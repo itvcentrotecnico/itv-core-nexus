@@ -61,9 +61,9 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
         ...(observacao.trim() ? { p_observacao: observacao.trim() } : {}),
       };
       const { data, error } = await supabase.rpc("comissoes_pagar", args);
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(mensagemErro(error));
       const r = data as ComissaoRpcResult & { valor_total?: number; quantidade?: number };
-      if (!r.ok) throw new Error(r.message ?? "Não foi possível registrar o pagamento.");
+      if (!r.ok) throw new ErroNegocio(r?.message ?? "Não foi possível registrar o pagamento.");
       toast.success(`Pagamento registrado: ${r.quantidade ?? selecionadas.length} comissão(ões), ${formatCurrencyBRL(Number(r.valor_total ?? total))}.`);
       queryClient.invalidateQueries({ queryKey: ["comissoes"] });
       queryClient.invalidateQueries({ queryKey: ["comissoes-indicadores"] });

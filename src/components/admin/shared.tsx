@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { mensagemErro } from "@/lib/erros";
 
 const CODIGOS: Record<string, string> = {
   SEM_PERMISSAO: "Você não tem permissão para esta ação.",
@@ -42,7 +43,7 @@ export interface RpcResposta {
 /** Chamada padronizada às RPCs administrativas (validação server-side). */
 export async function rpcAdmin<T extends RpcResposta>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   const res = (data ?? { ok: false, code: "SEM_RESPOSTA" }) as T;
   if (!res.ok) throw new Error(CODIGOS[res.code ?? ""] ?? res.code ?? "Não foi possível concluir a operação.");
   return res;

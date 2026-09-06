@@ -113,7 +113,7 @@ export function RegistroProducaoDialog({
         tipo: "geral",
         uploaded_by: profile.id,
       } as never);
-      if (dbErr) throw new Error(dbErr.message);
+      if (dbErr) throw new Error(mensagemErro(dbErr));
     }
   }
 
@@ -396,7 +396,7 @@ function FotosExistentes({ producaoId }: { producaoId: string }) {
   async function remover(foto: ProducaoFoto) {
     try {
       const { error: sErr } = await supabase.storage.from("producao").remove([foto.storage_path]);
-      if (sErr) throw new Error(sErr.message);
+      if (sErr) throw new Error(mensagemErro(sErr));
       const { error } = await supabase.from("producao_fotos").delete().eq("id", foto.id);
       if (error) throw error;
       toast.success("Foto removida.");

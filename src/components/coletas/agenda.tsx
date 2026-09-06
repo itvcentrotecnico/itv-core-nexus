@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import {
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
   MOTIVOS_NAO_REALIZADA,
   STATUS_COLETA,
   STATUS_MOTORISTA,
@@ -56,7 +57,7 @@ export function AgendaMotorista() {
     queryKey: ["coletas", "agenda", data],
     queryFn: async () => {
       const res = await rpcColetas<Resposta>("coletas_agenda", { p_data: data });
-      if (!res?.ok) throw new Error(res?.message ?? "Não foi possível carregar a agenda.");
+      if (!res?.ok) throw new ErroNegocio(res?.message ?? "Não foi possível carregar a agenda.");
       return res.itens ?? [];
     },
   });

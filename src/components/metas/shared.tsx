@@ -12,11 +12,12 @@ import type {
 import { STATUS_META, STATUS_PROJECAO } from "@/lib/metas";
 import { NIVEL_BADGE } from "@/lib/producao";
 import { cn } from "@/lib/utils";
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 
 /** RPC tipada do módulo metas: lança erro do PostgREST. */
 export async function rpcMetas<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 
@@ -212,7 +213,7 @@ export function useMetasPainel(range: { from: string; to: string } | null) {
         p_from: range!.from,
         p_to: range!.to,
       });
-      if (!r.ok) throw new Error(r.message ?? "Falha ao carregar o painel de metas.");
+      if (!r.ok) throw new ErroNegocio(r?.message ?? "Falha ao carregar o painel de metas.");
       return r;
     },
   });
@@ -228,7 +229,7 @@ export function useTecnicosDesempenho(range: { from: string; to: string } | null
         p_from: range!.from,
         p_to: range!.to,
       });
-      if (!r.ok) throw new Error(r.message ?? "Falha ao carregar o desempenho dos técnicos.");
+      if (!r.ok) throw new ErroNegocio(r?.message ?? "Falha ao carregar o desempenho dos técnicos.");
       return r.tecnicos;
     },
   });

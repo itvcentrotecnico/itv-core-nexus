@@ -4,11 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
 import { STATUS_PRODUCAO, type ProducaoStatus, type TipoServico } from "@/lib/producao";
 import { cn } from "@/lib/utils";
+import { mensagemErro } from "@/lib/erros";
 
 /** RPC tipada do módulo produção: lança erro do PostgREST. */
 export async function rpcProd<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

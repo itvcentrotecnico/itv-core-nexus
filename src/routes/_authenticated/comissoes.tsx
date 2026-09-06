@@ -154,9 +154,9 @@ function ComissoesPage() {
     setGerando(true);
     try {
       const { data, error } = await supabase.rpc("comissoes_gerar", { p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(mensagemErro(error));
       const r = data as { ok: boolean; message?: string; geradas?: number };
-      if (!r.ok) throw new Error(r.message ?? "Não foi possível gerar as comissões.");
+      if (!r.ok) throw new ErroNegocio(r?.message ?? "Não foi possível gerar as comissões.");
       toast.success(`Apuração concluída: ${r.geradas ?? 0} comissão(ões) gerada(s).`);
       queryClient.invalidateQueries({ queryKey: ["comissoes"] });
       queryClient.invalidateQueries({ queryKey: ["comissoes-indicadores"] });

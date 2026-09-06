@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { mensagemErro } from "@/lib/erros";
 
 export interface Origem {
   id: string;
@@ -52,7 +53,7 @@ export const ORIGEM_NAO_INFORMADA = "Não informado";
 
 export async function rpcOrigens<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

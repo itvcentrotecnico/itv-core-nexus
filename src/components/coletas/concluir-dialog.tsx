@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { labelClass } from "@/lib/caixa";
 import { mensagemErro, rpcColetas, storagePathColeta, type ColetaSolicitacao } from "@/lib/coletas";
+import { mensagemErro } from "@/lib/erros";
 
 /** Conclusão da movimentação: observação opcional e foto direto da câmera. */
 export function ConcluirDialog({
@@ -41,7 +42,7 @@ export function ConcluirDialog({
         try {
           const path = storagePathColeta(item.id, file.name);
           const { error } = await supabase.storage.from("coletas").upload(path, file, { upsert: false });
-          if (error) throw new Error(error.message);
+          if (error) throw new Error(mensagemErro(error));
           await rpcColetas("coletas_foto_registrar", { p_id: item.id, p_path: path });
         } catch {
           falhas += 1;

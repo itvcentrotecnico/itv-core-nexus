@@ -4,11 +4,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { formatCurrencyBRL } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { mensagemErro } from "@/lib/erros";
 
 /** RPC tipada do módulo relatórios. */
 export async function rpcRel<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

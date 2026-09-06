@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { FormaPagamento } from "@/lib/caixa";
 import type {
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
   CategoriaFinanceira,
   CentroCusto,
   FinanceiroRpcResult,
@@ -52,8 +53,8 @@ export async function rpcFin<T extends { ok: boolean; message?: string } = Finan
 ): Promise<T> {
   const dynRpc = supabase.rpc as unknown as (this: typeof supabase, n: string, a: Record<string, unknown>) => Promise<RpcResponse>;
   const { data, error } = await dynRpc.call(supabase, fn, args);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   const r = data as T;
-  if (!r.ok) throw new Error(r.message ?? "Operação não concluída.");
+  if (!r.ok) throw new ErroNegocio(r?.message ?? "Operação não concluída.");
   return r;
 }
