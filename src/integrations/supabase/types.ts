@@ -2534,6 +2534,39 @@ export type Database = {
           },
         ]
       }
+      eventos_seguranca: {
+        Row: {
+          created_at: string
+          detalhes: Json
+          email: string | null
+          id: string
+          modulo: string | null
+          rota: string | null
+          tipo: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detalhes?: Json
+          email?: string | null
+          id?: string
+          modulo?: string | null
+          rota?: string | null
+          tipo: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detalhes?: Json
+          email?: string | null
+          id?: string
+          modulo?: string | null
+          rota?: string | null
+          tipo?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fechamentos_operacionais_semanais: {
         Row: {
           ano: number
@@ -5685,6 +5718,29 @@ export type Database = {
       relatorios_tecnicos: {
         Args: { p_from: string; p_to: string }
         Returns: Json
+      }
+      seguranca_eventos_listar: {
+        Args: { p_dias?: number; p_limite?: number; p_tipo?: string }
+        Returns: {
+          created_at: string
+          detalhes: Json
+          email: string
+          id: string
+          modulo: string
+          rota: string
+          tipo: string
+          user_id: string
+        }[]
+      }
+      seguranca_registrar_evento: {
+        Args: {
+          p_detalhes?: Json
+          p_email?: string
+          p_modulo?: string
+          p_rota?: string
+          p_tipo: string
+        }
+        Returns: undefined
       }
       taxa_recebimento_resolver: {
         Args: {
