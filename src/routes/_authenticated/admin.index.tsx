@@ -103,7 +103,12 @@ function AdminPage() {
 
       {aba === "parametros" ? <AdminParametros /> : null}
       {aba === "fechamentos" ? <AdminFechamentos /> : null}
-      {aba === "auditoria" ? <AdminAuditoria /> : null}
+      {aba === "auditoria" ? (
+        <div className="space-y-6">
+          <AdminAuditoria />
+          <AdminEventosSeguranca />
+        </div>
+      ) : null}
       {aba === "geral" ? <AdminGeral /> : null}
       {aba === "backup" ? <AdminBackup /> : null}
       {aba === "modo-tv" ? (
