@@ -13,10 +13,10 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import {
-import { mensagemErro } from "@/lib/erros";
   AJUSTE_TIPO, TIPO_REGRA,
   type Comissao, type ComissaoAjusteTipo, type ComissaoRpcResult, type ComissaoSimulacao,
 } from "@/lib/comissoes";
+import { mensagemErro } from "@/lib/erros";
 
 function invalidateComissoes(queryClient: ReturnType<typeof useQueryClient>) {
   queryClient.invalidateQueries({ queryKey: ["comissoes"] });

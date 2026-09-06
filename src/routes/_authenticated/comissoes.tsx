@@ -25,11 +25,11 @@ import { PagarDialog } from "@/components/comissoes/pagar-dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV, todayManausISO } from "@/lib/format";
 import {
-import { mensagemErro } from "@/lib/erros";
   STATUS_COMISSAO, TIPO_REGRA,
   type Comissao, type ComissaoPagamento, type ComissaoTecnicoResumo,
   type ComissoesIndicadores, type RegraComissao,
 } from "@/lib/comissoes";
+import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/comissoes")({
   head: () => ({

@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import {
-import { mensagemErro, ErroNegocio } from "@/lib/erros";
   MOTIVOS_NAO_REALIZADA,
   STATUS_COLETA,
   STATUS_MOTORISTA,
@@ -28,6 +27,7 @@ import { mensagemErro, ErroNegocio } from "@/lib/erros";
   whatsappUrl,
   type AgendaItem,
 } from "@/lib/coletas";
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 
 interface Resposta {
   ok: boolean;
