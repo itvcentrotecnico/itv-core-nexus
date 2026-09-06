@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { registrarEventoSeguranca } from "@/lib/seguranca";
 
 function Brand() {
   return (
@@ -120,6 +121,10 @@ function ContaBloqueada() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    void registrarEventoSeguranca("conta_bloqueada", { rota: window.location.pathname });
+  }, []);
+
   async function sair() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -153,6 +158,10 @@ function SemPerfilConfigurado() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    void registrarEventoSeguranca("sem_perfil", { rota: window.location.pathname });
+  }, []);
+
   async function sair() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -181,7 +190,14 @@ function SemPerfilConfigurado() {
 }
 
 /** Bloqueio por URL direta: módulo sem permissão de visualização. */
-function ModuloBloqueado() {
+function ModuloBloqueado({ modulo, rota }: { modulo?: string | null; rota?: string }) {
+  useEffect(() => {
+    void registrarEventoSeguranca("acesso_negado", {
+      modulo: modulo ?? null,
+      rota: rota ?? window.location.pathname,
+    });
+  }, [modulo, rota]);
+
   return (
     <div className="flex flex-col items-center gap-3 py-24 text-center">
       <ShieldAlert className="size-10 text-muted-foreground/40" aria-hidden="true" />
@@ -284,7 +300,7 @@ export function AppShell() {
         </header>
 
         <main className="flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
-          {podeVerModulo ? <Outlet /> : <ModuloBloqueado />}
+          {podeVerModulo ? <Outlet /> : <ModuloBloqueado modulo={moduloAtual} rota={pathname} />}
         </main>
       </div>
 

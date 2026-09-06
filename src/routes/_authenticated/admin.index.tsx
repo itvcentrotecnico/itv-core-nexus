@@ -15,6 +15,7 @@ import { AdminTaxasRecebimento } from "@/components/admin/taxas-recebimento";
 import { AdminParametros } from "@/components/admin/parametros";
 import { AdminFechamentos } from "@/components/admin/fechamentos";
 import { AdminAuditoria } from "@/components/admin/auditoria";
+import { AdminEventosSeguranca } from "@/components/admin/eventos-seguranca";
 import { AdminGeral } from "@/components/admin/geral";
 import { AdminBackup } from "@/components/admin/backup";
 import { Button } from "@/components/ui/button";
@@ -103,7 +104,12 @@ function AdminPage() {
 
       {aba === "parametros" ? <AdminParametros /> : null}
       {aba === "fechamentos" ? <AdminFechamentos /> : null}
-      {aba === "auditoria" ? <AdminAuditoria /> : null}
+      {aba === "auditoria" ? (
+        <div className="space-y-6">
+          <AdminAuditoria />
+          <AdminEventosSeguranca />
+        </div>
+      ) : null}
       {aba === "geral" ? <AdminGeral /> : null}
       {aba === "backup" ? <AdminBackup /> : null}
       {aba === "modo-tv" ? (
