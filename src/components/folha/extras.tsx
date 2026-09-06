@@ -26,6 +26,7 @@ import {
   type ColaboradorBeneficio,
 } from "@/lib/folha";
 import { invalidateFolha } from "./colaborador-form";
+import { mensagemErro } from "@/lib/erros";
 
 /* ============================= BENEFÍCIOS ============================= */
 
@@ -68,7 +69,7 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
       setDescricao("");
       invalidateFolha(queryClient);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao cadastrar benefício.");
+      toast.error(mensagemErro(err, "Falha ao cadastrar benefício."));
     } finally {
       setSaving(false);
     }
@@ -209,7 +210,7 @@ export function AdiantamentoForm({
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar adiantamento.");
+      toast.error(mensagemErro(err, "Falha ao registrar adiantamento."));
     } finally {
       setSaving(false);
     }

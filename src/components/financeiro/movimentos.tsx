@@ -25,6 +25,7 @@ import type {
   RecebimentoConta,
 } from "@/lib/financeiro";
 import { rpcFin, useFinanceiroRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 function invalidateFinanceiro(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
@@ -62,7 +63,7 @@ export function PagarDialog({ conta, onClose }: { conta: ContaPagarSaldo; onClos
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar pagamento.");
+      toast.error(mensagemErro(err, "Falha ao registrar pagamento."));
     } finally {
       setSaving(false);
     }
@@ -155,7 +156,7 @@ export function ReceberDialog({ conta, onClose }: { conta: ContaReceberSaldo; on
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar recebimento.");
+      toast.error(mensagemErro(err, "Falha ao registrar recebimento."));
     } finally {
       setSaving(false);
     }
@@ -265,7 +266,7 @@ export function EstornoMovimentoDialog({
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao estornar.");
+      toast.error(mensagemErro(err, "Falha ao estornar."));
     } finally {
       setSaving(false);
     }
@@ -337,7 +338,7 @@ export function CancelarFinanceiroDialog({
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao cancelar.");
+      toast.error(mensagemErro(err, "Falha ao cancelar."));
     } finally {
       setSaving(false);
     }

@@ -25,6 +25,7 @@ import {
   type NivelDesempenho,
 } from "@/lib/producao";
 import { invalidateProducao, useProducaoRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 export function MetasTab() {
   const { isAdmin, can, profile } = useAccess();
@@ -115,7 +116,7 @@ function MetaRow({ meta, podeConfigurar }: { meta: MetaTecnico; podeConfigurar: 
       toast.success(meta.ativo ? "Meta desativada." : "Meta reativada.");
       invalidateProducao(queryClient);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao atualizar meta.");
+      toast.error(mensagemErro(err, "Falha ao atualizar meta."));
     }
   }
   return (
@@ -204,7 +205,7 @@ function MetaFormDialog({
       invalidateProducao(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar meta.");
+      toast.error(mensagemErro(err, "Falha ao salvar meta."));
     } finally {
       setSaving(false);
     }

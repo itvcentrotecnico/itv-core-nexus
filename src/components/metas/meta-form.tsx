@@ -7,6 +7,7 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import type { FaixasProjecao, MetaEmpresaDetalhe, MetaTipo, MetasRpcResult } from "@/lib/metas";
 import { TIPO_META_EMPRESA_LABEL, TIPO_META_FONTE } from "@/lib/metas";
 import { rpcMetas } from "@/components/metas/shared";
+import { mensagemErro } from "@/lib/erros";
 
 export interface MetaPrefill {
   valor_alvo: number;
@@ -109,7 +110,7 @@ export function MetaFormDialog({ open, onOpenChange, meta, prefill }: Props) {
       await qc.invalidateQueries({ queryKey: ["metas"] });
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao salvar a meta.");
+      toast.error(mensagemErro(e, "Erro ao salvar a meta."));
     } finally {
       setSalvando(false);
     }
@@ -272,7 +273,7 @@ export function FaixasDialog({
       await qc.invalidateQueries({ queryKey: ["metas"] });
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao salvar.");
+      toast.error(mensagemErro(e, "Erro ao salvar."));
     } finally {
       setSalvando(false);
     }
@@ -351,7 +352,7 @@ export async function mudarStatusMeta(
     await qc.invalidateQueries({ queryKey: ["metas"] });
     return true;
   } catch (e) {
-    toast.error(e instanceof Error ? e.message : "Erro ao alterar status.");
+    toast.error(mensagemErro(e, "Erro ao alterar status."));
     return false;
   }
 }

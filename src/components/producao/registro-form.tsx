@@ -20,6 +20,7 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { todayManausISO } from "@/lib/format";
 import { storagePathFoto, type ProducaoFoto, type ProducaoRegistro } from "@/lib/producao";
 import { invalidateProducao, rpcProd, useProducaoRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 interface RpcResult {
   ok: boolean;
@@ -178,7 +179,7 @@ export function RegistroProducaoDialog({
       invalidateProducao(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar registro.");
+      toast.error(mensagemErro(err, "Falha ao salvar registro."));
     } finally {
       setSaving(false);
     }
@@ -401,7 +402,7 @@ function FotosExistentes({ producaoId }: { producaoId: string }) {
       toast.success("Foto removida.");
       await queryClient.invalidateQueries({ queryKey: ["producao", "fotos", producaoId] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao remover foto.");
+      toast.error(mensagemErro(err, "Falha ao remover foto."));
     }
   }
 

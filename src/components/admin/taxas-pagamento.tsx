@@ -8,6 +8,7 @@ import { useAccess } from "@/hooks/use-auth";
 import { inputClass, labelClass, type FormaPagamento, type FormaPagamentoTaxa } from "@/lib/caixa";
 import { Carregando, SecaoAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
+import { mensagemErro } from "@/lib/erros";
 
 type Mapa = Record<string, Record<number, number>>;
 
@@ -77,7 +78,7 @@ export function AdminTaxasPagamento() {
       await queryClient.invalidateQueries({ queryKey: ["admin", "formas-pagamento-taxas"] });
       await queryClient.invalidateQueries({ queryKey: ["caixa", "formas-pagamento-taxas"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar as taxas.");
+      toast.error(mensagemErro(err, "Falha ao salvar as taxas."));
     } finally {
       setSalvando(false);
     }

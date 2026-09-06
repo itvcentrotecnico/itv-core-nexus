@@ -9,6 +9,7 @@ import { useAccess, type AppRole, type PermissionAction } from "@/hooks/use-auth
 import { Badge } from "@/components/ui/badge";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
+import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/admin/permissoes")({
   head: () => ({
@@ -151,7 +152,7 @@ function PermissoesPage() {
       await queryClient.invalidateQueries({ queryKey: ["admin", "user-permissions", usuarioId] });
       await queryClient.invalidateQueries({ queryKey: ["user-access"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar permissão.");
+      toast.error(mensagemErro(err, "Falha ao salvar permissão."));
     } finally {
       setSavingKey(null);
     }

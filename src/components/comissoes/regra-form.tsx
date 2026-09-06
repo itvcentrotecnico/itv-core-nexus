@@ -13,6 +13,7 @@ import {
 import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { TIPO_REGRA, type ComissaoTipoRegra, type RegraComissao } from "@/lib/comissoes";
+import { mensagemErro } from "@/lib/erros";
 
 interface TecnicoOption {
   id: string;
@@ -90,7 +91,7 @@ export function RegraForm({ open, onOpenChange, regra }: Props) {
       queryClient.invalidateQueries({ queryKey: ["regras-comissao"] });
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível salvar a regra.");
+      toast.error(mensagemErro(e, "Não foi possível salvar a regra."));
     } finally {
       setSaving(false);
     }

@@ -25,6 +25,7 @@ import { PagarDialog } from "@/components/comissoes/pagar-dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV, todayManausISO } from "@/lib/format";
 import {
+import { mensagemErro } from "@/lib/erros";
   STATUS_COMISSAO, TIPO_REGRA,
   type Comissao, type ComissaoPagamento, type ComissaoTecnicoResumo,
   type ComissoesIndicadores, type RegraComissao,
@@ -161,7 +162,7 @@ function ComissoesPage() {
       queryClient.invalidateQueries({ queryKey: ["comissoes-indicadores"] });
       queryClient.invalidateQueries({ queryKey: ["comissoes-por-tecnico"] });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível gerar as comissões.");
+      toast.error(mensagemErro(e, "Não foi possível gerar as comissões."));
     } finally {
       setGerando(false);
     }

@@ -23,6 +23,7 @@ import {
   type Despesa,
 } from "@/lib/financeiro";
 import { rpcFin, useFinanceiroRefs, type FinanceiroRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 function invalidateFinanceiro(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
@@ -264,7 +265,7 @@ export function DespesaForm({
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar despesa.");
+      toast.error(mensagemErro(err, "Falha ao salvar despesa."));
     } finally {
       setSaving(false);
     }
@@ -471,7 +472,7 @@ export function ContaPagarForm({
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar conta.");
+      toast.error(mensagemErro(err, "Falha ao salvar conta."));
     } finally {
       setSaving(false);
     }
@@ -677,7 +678,7 @@ export function ContaReceberForm({
       invalidateFinanceiro(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar conta.");
+      toast.error(mensagemErro(err, "Falha ao salvar conta."));
     } finally {
       setSaving(false);
     }

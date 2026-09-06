@@ -13,6 +13,7 @@ import { labelClass, inputClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import type { FormaPagamento } from "@/lib/caixa";
 import type { Comissao, ComissaoRpcResult } from "@/lib/comissoes";
+import { mensagemErro } from "@/lib/erros";
 
 interface Props {
   open: boolean;
@@ -70,7 +71,7 @@ export function PagarDialog({ open, onOpenChange, tecnicoId, tecnicoNome, comiss
       queryClient.invalidateQueries({ queryKey: ["comissoes-por-tecnico"] });
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível registrar o pagamento.");
+      toast.error(mensagemErro(e, "Não foi possível registrar o pagamento."));
     } finally {
       setSaving(false);
     }

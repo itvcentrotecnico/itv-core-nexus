@@ -20,6 +20,7 @@ import { rpcFin } from "@/components/financeiro/shared";
 import type { FolhaPagamento, FolhaResumo, FolhaRpcResult } from "@/lib/folha";
 import { useFinanceiroRefs } from "@/components/financeiro/shared";
 import { invalidateFolha } from "./colaborador-form";
+import { mensagemErro } from "@/lib/erros";
 
 /* ============================= PAGAMENTO INDIVIDUAL ============================= */
 
@@ -58,7 +59,7 @@ export function PagarDialog({
       onChanged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar pagamento.");
+      toast.error(mensagemErro(err, "Falha ao registrar pagamento."));
     } finally {
       setSaving(false);
     }
@@ -163,7 +164,7 @@ export function PagarLoteDialog({
       onChanged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha no pagamento em lote.");
+      toast.error(mensagemErro(err, "Falha no pagamento em lote."));
     } finally {
       setSaving(false);
     }
@@ -275,7 +276,7 @@ export function PagamentosList({
       invalidateFolha(queryClient);
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao estornar.");
+      toast.error(mensagemErro(err, "Falha ao estornar."));
     } finally {
       setSaving(false);
     }

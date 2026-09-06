@@ -24,6 +24,7 @@ import {
   type FolhaRpcResult,
 } from "@/lib/folha";
 import { useFolhaRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 export function invalidateFolha(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: ["folha"] });
@@ -120,7 +121,7 @@ export function ColaboradorForm({
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "";
+      const msg = mensagemErro(err, "");
       toast.error(msg || "Não foi possível salvar o colaborador. Verifique os campos obrigatórios e tente novamente.", {
         description: msg ? "Corrija a informação indicada e tente novamente." : undefined,
       });
@@ -258,7 +259,7 @@ export function AlterarSalarioDialog({ colaborador, onClose }: { colaborador: Co
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao alterar salário.");
+      toast.error(mensagemErro(err, "Falha ao alterar salário."));
     } finally {
       setSaving(false);
     }
@@ -320,7 +321,7 @@ export function AlterarStatusDialog({ colaborador, onClose }: { colaborador: Col
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao alterar status.");
+      toast.error(mensagemErro(err, "Falha ao alterar status."));
     } finally {
       setSaving(false);
     }
@@ -386,7 +387,7 @@ export function DesligarDialog({ colaborador, onClose }: { colaborador: Colabora
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao desligar.");
+      toast.error(mensagemErro(err, "Falha ao desligar."));
     } finally {
       setSaving(false);
     }

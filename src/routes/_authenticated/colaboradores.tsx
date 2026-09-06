@@ -40,6 +40,7 @@ import {
   LancamentoForm,
 } from "@/components/folha/folha-actions";
 import { PagamentosList, PagarDialog, PagarLoteDialog } from "@/components/folha/pagamentos";
+import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/colaboradores")({
   head: () => ({
@@ -334,7 +335,7 @@ function FolhaTab() {
       refresh();
       toast.success("Item conferido.");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao conferir.");
+      toast.error(mensagemErro(err, "Falha ao conferir."));
     }
   }
 

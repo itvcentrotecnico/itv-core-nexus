@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { useFinanceiroRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 interface ConfigSectionProps {
   titulo: string;
@@ -46,7 +47,7 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
       setNome("");
       refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao cadastrar.");
+      toast.error(mensagemErro(err, "Falha ao cadastrar."));
     } finally {
       setSaving(false);
     }
@@ -59,7 +60,7 @@ function ConfigSection({ titulo, descricao, tabela, itens, podeConfigurar, comCa
       toast.success(ativo ? "Desativado." : "Reativado.");
       refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao atualizar.");
+      toast.error(mensagemErro(err, "Falha ao atualizar."));
     }
   }
 

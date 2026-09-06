@@ -15,6 +15,7 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import type { CustoOS, CustosRpcResult } from "@/lib/custos";
 import { formatCurrencyBRL } from "@/lib/format";
+import { mensagemErro } from "@/lib/erros";
 
 interface ActionProps {
   custo: CustoOS | null;
@@ -41,7 +42,7 @@ export function ConfirmarCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }
@@ -103,7 +104,7 @@ export function CancelarCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }
@@ -200,7 +201,7 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }

@@ -25,6 +25,7 @@ import {
   type ProducaoValidacao,
 } from "@/lib/producao";
 import { invalidateProducao, rpcProd, StatusBadgeProducao, useProducaoRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 function Info({ label, value }: { label: string; value: string | null | undefined }) {
   return (
@@ -127,7 +128,7 @@ export function DetalheProducaoDialog({
       invalidateProducao(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha na operação.");
+      toast.error(mensagemErro(err, "Falha na operação."));
     } finally {
       setSaving(false);
     }

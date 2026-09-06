@@ -7,6 +7,7 @@ import type { RelFaturamento, RelPlanejamento, RelProducao, RelRentabilidade, Re
 import { labelMes } from "@/lib/relatorios";
 import { rpcRel } from "@/components/relatorios/shared";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
+import { mensagemErro } from "@/lib/erros";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -125,7 +126,7 @@ ${plan.alertas.map((a) => `<div class="alerta">${esc(a.texto)}</div>`).join("")}
       win.document.write(html);
       win.document.close();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Falha ao gerar o resumo executivo.");
+      toast.error(mensagemErro(e, "Falha ao gerar o resumo executivo."));
     } finally {
       setGerando(false);
     }

@@ -11,6 +11,7 @@ import type { MetasRpcResult, TecnicoDesempenho } from "@/lib/metas";
 import { STATUS_META, TIPO_META_TECNICO_LABEL } from "@/lib/metas";
 import { NivelBadge, ProgressBarMeta, rpcMetas, useTecnicosDesempenho } from "@/components/metas/shared";
 import { cn } from "@/lib/utils";
+import { mensagemErro } from "@/lib/erros";
 
 interface MetaTecnicoRow {
   id: string;
@@ -64,7 +65,7 @@ export function TecnicosTab({
       toast.success("Meta atualizada.");
       await qc.invalidateQueries({ queryKey: ["metas"] });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao alterar status.");
+      toast.error(mensagemErro(e, "Erro ao alterar status."));
     }
   }
 
@@ -287,7 +288,7 @@ function MetaTecnicoFormDialog({
       await qc.invalidateQueries({ queryKey: ["metas"] });
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro ao salvar.");
+      toast.error(mensagemErro(e, "Erro ao salvar."));
     } finally {
       setSalvando(false);
     }

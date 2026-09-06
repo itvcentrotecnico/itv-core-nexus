@@ -30,6 +30,7 @@ import type {
   TipoCusto,
 } from "@/lib/custos";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import { mensagemErro } from "@/lib/erros";
 
 const NONE = "__none__";
 const NOVO_FORNECEDOR = "__novo__";
@@ -283,7 +284,7 @@ export function CustoForm({ open, onOpenChange, editing, onSaved }: CustoFormPro
       onOpenChange(false);
       onSaved();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado ao salvar.");
+      toast.error(mensagemErro(e, "Erro inesperado ao salvar."));
     } finally {
       setSaving(false);
     }

@@ -26,6 +26,7 @@ import {
 } from "@/lib/folha";
 import { invalidateFolha } from "./colaborador-form";
 import { useFolhaRefs } from "./shared";
+import { mensagemErro } from "@/lib/erros";
 
 /* ============================= ABRIR COMPETÊNCIA ============================= */
 
@@ -58,7 +59,7 @@ export function AbrirCompetenciaDialog({ open, onClose }: { open: boolean; onClo
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao abrir competência.");
+      toast.error(mensagemErro(err, "Falha ao abrir competência."));
     } finally {
       setSaving(false);
     }
@@ -144,7 +145,7 @@ export function LancamentoForm({
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao lançar.");
+      toast.error(mensagemErro(err, "Falha ao lançar."));
     } finally {
       setSaving(false);
     }
@@ -239,7 +240,7 @@ function ConfirmCompetenciaAction({
       await action(motivo);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha na operação.");
+      toast.error(mensagemErro(err, "Falha na operação."));
     } finally {
       setSaving(false);
     }
@@ -374,7 +375,7 @@ export function CancelarLancamentoDialog({
       onChanged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao cancelar.");
+      toast.error(mensagemErro(err, "Falha ao cancelar."));
     } finally {
       setSaving(false);
     }

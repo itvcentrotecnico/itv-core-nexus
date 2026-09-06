@@ -13,6 +13,7 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import {
+import { mensagemErro } from "@/lib/erros";
   AJUSTE_TIPO, TIPO_REGRA,
   type Comissao, type ComissaoAjusteTipo, type ComissaoRpcResult, type ComissaoSimulacao,
 } from "@/lib/comissoes";
@@ -71,7 +72,7 @@ export function ComissaoDetalhes({
       invalidateComissoes(queryClient);
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Operação não concluída.");
+      toast.error(mensagemErro(e, "Operação não concluída."));
     } finally {
       setLoading(null);
     }
@@ -180,7 +181,7 @@ export function AjusteDialog({ comissao, open, onOpenChange }: { comissao: Comis
       onOpenChange(false);
       setValor(null); setMotivo("");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível aplicar o ajuste.");
+      toast.error(mensagemErro(e, "Não foi possível aplicar o ajuste."));
     } finally {
       setSaving(false);
     }
@@ -239,7 +240,7 @@ export function CancelarComissaoDialog({ comissao, open, onOpenChange }: { comis
       onOpenChange(false);
       setMotivo("");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível cancelar.");
+      toast.error(mensagemErro(e, "Não foi possível cancelar."));
     } finally {
       setSaving(false);
     }
@@ -280,7 +281,7 @@ export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: C
       const r = await rpc<ComissaoSimulacao & ComissaoRpcResult>("comissoes_simular_recalculo", { p_id: comissao.id });
       setSimulacao(r);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível simular.");
+      toast.error(mensagemErro(e, "Não foi possível simular."));
     } finally {
       setLoading(false);
     }
@@ -301,7 +302,7 @@ export function RecalcularDialog({ comissao, open, onOpenChange }: { comissao: C
       setSimulacao(null);
       setMotivo("");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível recalcular.");
+      toast.error(mensagemErro(e, "Não foi possível recalcular."));
     } finally {
       setLoading(false);
     }
@@ -376,7 +377,7 @@ export function MaoObraDialog({ comissao, open, onOpenChange }: { comissao: Comi
       invalidateComissoes(queryClient);
       onOpenChange(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível definir a mão de obra.");
+      toast.error(mensagemErro(e, "Não foi possível definir a mão de obra."));
     } finally {
       setSaving(false);
     }
