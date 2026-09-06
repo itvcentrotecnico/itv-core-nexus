@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/admin/modo-tv")({
   head: () => ({
@@ -71,7 +72,7 @@ function ModoTvConfigPage() {
     setSalvando(false);
     const ok = (res as { ok?: boolean } | null)?.ok;
     if (error || !ok) {
-      toast.error("Não foi possível salvar", { description: error?.message ?? "Permissão negada." });
+      toast.error("Não foi possível salvar", { description: mensagemErro(error, "Permissão negada.") });
       return;
     }
     toast.success("Configuração do Modo TV salva");

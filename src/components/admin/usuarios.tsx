@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { mensagemErro } from "@/lib/erros";
 
 const PERFIS: AppRole[] = [
   "administrador",
@@ -115,7 +116,7 @@ function ConviteDialog({
       onConcluido();
       onOpenChange(false);
     } catch (e) {
-      toast.error("Não foi possível convidar", { description: (e as Error).message });
+      toast.error("Não foi possível convidar", { description: mensagemErro(e) });
     } finally {
       setEnviando(false);
     }
@@ -336,7 +337,7 @@ export function AdminUsuarios() {
                         if (res.ok) toast.success(res.message);
                         else toast.error("Não foi possível reenviar", { description: res.message });
                       } catch (e) {
-                        toast.error("Não foi possível reenviar", { description: (e as Error).message });
+                        toast.error("Não foi possível reenviar", { description: mensagemErro(e) });
                       } finally {
                         setReenviando(null);
                       }

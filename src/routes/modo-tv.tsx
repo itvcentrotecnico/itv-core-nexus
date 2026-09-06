@@ -36,7 +36,7 @@ export const Route = createFileRoute("/modo-tv")({
   component: ModoTvPage,
   errorComponent: ({ error }) => (
     <div role="alert" className="flex min-h-screen items-center justify-center bg-[#0B0F0D] p-8 text-center text-white/70">
-      Não foi possível carregar o painel: {error.message}
+      Não foi possível carregar o painel. Tente novamente em instantes.
     </div>
   ),
   notFoundComponent: () => (

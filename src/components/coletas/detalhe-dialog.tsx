@@ -35,6 +35,7 @@ import {
 import { OrigemBloco } from "./origem-bloco";
 import { StatusBadgeColeta, useMotoristas } from "./shared";
 import type { LinkGerado } from "./link-dialog";
+import { mensagemErro } from "@/lib/erros";
 
 interface Foto {
   id: string;
@@ -165,7 +166,7 @@ export function DetalheColetaDialog({
                   onClick={() =>
                     void rpcColetas<string | null>("coletas_cpf", { p_id: item.id })
                       .then((v) => setCpf(v ?? "não informado"))
-                      .catch((e: Error) => toast.error(e.message))
+                      .catch((e: unknown) => toast.error(mensagemErro(e)))
                   }
                 >
                   <Eye className="mr-1 size-3.5" /> Revelar CPF
@@ -285,7 +286,7 @@ export function DetalheColetaDialog({
                   void queryClient.invalidateQueries({ queryKey: ["coletas"] });
                   onLink({ ...r, id: item.id, whatsapp: item.whatsapp, cliente_nome: item.cliente_nome });
                 })
-                .catch((e: Error) => toast.error(e.message))
+                .catch((e: unknown) => toast.error(mensagemErro(e)))
             }
           >
             <Link2 className="mr-2 size-4" /> Gerar / reenviar link

@@ -11,6 +11,7 @@ import { TecnicosTab } from "@/components/metas/tecnicos-tab";
 import { IndicadoresTab, RankingTab } from "@/components/metas/indicadores-ranking";
 import { HistoricoTab } from "@/components/metas/historico";
 import { TecnicoPainel } from "@/components/metas/tecnico-painel";
+import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/metas")({
   head: () => ({
@@ -113,7 +114,7 @@ function MetasPage() {
       ) : painel.error ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
           <p className="text-sm text-destructive">
-            {painel.error instanceof Error ? painel.error.message : "Falha ao carregar metas."}
+            {mensagemErro(painel.error, "Falha ao carregar metas.")}
           </p>
         </div>
       ) : painel.data ? (
