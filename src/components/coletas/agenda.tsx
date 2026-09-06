@@ -1,3 +1,4 @@
+import { ErroNegocio } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, MapPin, MessageCircle, Navigation, RefreshCw } from "lucide-react";
