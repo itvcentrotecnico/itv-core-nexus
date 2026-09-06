@@ -27,13 +27,17 @@ export async function registrarEventoSeguranca(
   contexto: Contexto = {},
 ): Promise<void> {
   try {
-    await supabase.rpc("seguranca_registrar_evento", {
-      p_tipo: tipo,
-      p_email: contexto.email ?? undefined,
-      p_modulo: contexto.modulo ?? undefined,
-      p_rota: contexto.rota ?? undefined,
-      p_detalhes: (contexto.detalhes ?? {}) as never,
-    });
+    const args: {
+      p_tipo: string;
+      p_email?: string;
+      p_modulo?: string;
+      p_rota?: string;
+      p_detalhes?: never;
+    } = { p_tipo: tipo, p_detalhes: (contexto.detalhes ?? {}) as never };
+    if (contexto.email) args.p_email = contexto.email;
+    if (contexto.modulo) args.p_modulo = contexto.modulo;
+    if (contexto.rota) args.p_rota = contexto.rota;
+    await supabase.rpc("seguranca_registrar_evento", args);
   } catch {
     // Silencioso por design.
   }
