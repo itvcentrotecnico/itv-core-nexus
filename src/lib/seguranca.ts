@@ -29,9 +29,9 @@ export async function registrarEventoSeguranca(
   try {
     await supabase.rpc("seguranca_registrar_evento", {
       p_tipo: tipo,
-      p_email: contexto.email ?? null,
-      p_modulo: contexto.modulo ?? null,
-      p_rota: contexto.rota ?? null,
+      p_email: contexto.email ?? undefined,
+      p_modulo: contexto.modulo ?? undefined,
+      p_rota: contexto.rota ?? undefined,
       p_detalhes: (contexto.detalhes ?? {}) as never,
     });
   } catch {
