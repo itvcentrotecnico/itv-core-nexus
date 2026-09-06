@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-auth";
+import { registrarEventoSeguranca } from "@/lib/seguranca";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
