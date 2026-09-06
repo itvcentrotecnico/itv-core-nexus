@@ -120,6 +120,10 @@ function ContaBloqueada() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    void registrarEventoSeguranca("conta_bloqueada", { rota: window.location.pathname });
+  }, []);
+
   async function sair() {
     await queryClient.cancelQueries();
     queryClient.clear();
