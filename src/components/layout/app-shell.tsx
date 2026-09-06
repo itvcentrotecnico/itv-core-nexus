@@ -158,6 +158,10 @@ function SemPerfilConfigurado() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    void registrarEventoSeguranca("sem_perfil", { rota: window.location.pathname });
+  }, []);
+
   async function sair() {
     await queryClient.cancelQueries();
     queryClient.clear();
