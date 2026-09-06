@@ -58,6 +58,16 @@ function AuthPage() {
           password,
         });
         if (signInError) {
+          void registrarEventoSeguranca("login_falho", {
+            email: email.trim(),
+            rota: "/auth",
+            detalhes: {
+              motivo:
+                signInError.message === "Invalid login credentials"
+                  ? "credenciais_invalidas"
+                  : "erro_autenticacao",
+            },
+          });
           setError(
             signInError.message === "Invalid login credentials"
               ? "E-mail ou senha incorretos."
@@ -77,6 +87,10 @@ function AuthPage() {
         setError("Não foi possível enviar o e-mail de recuperação. Tente novamente.");
         return;
       }
+      void registrarEventoSeguranca("reset_senha_solicitado", {
+        email: email.trim(),
+        rota: "/auth",
+      });
       setNotice("Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.");
       setMode("login");
     } finally {
