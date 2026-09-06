@@ -190,7 +190,14 @@ function SemPerfilConfigurado() {
 }
 
 /** Bloqueio por URL direta: módulo sem permissão de visualização. */
-function ModuloBloqueado() {
+function ModuloBloqueado({ modulo, rota }: { modulo?: string | null; rota?: string }) {
+  useEffect(() => {
+    void registrarEventoSeguranca("acesso_negado", {
+      modulo: modulo ?? null,
+      rota: rota ?? window.location.pathname,
+    });
+  }, [modulo, rota]);
+
   return (
     <div className="flex flex-col items-center gap-3 py-24 text-center">
       <ShieldAlert className="size-10 text-muted-foreground/40" aria-hidden="true" />
