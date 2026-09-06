@@ -300,7 +300,7 @@ export function AppShell() {
         </header>
 
         <main className="flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
-          {podeVerModulo ? <Outlet /> : <ModuloBloqueado />}
+          {podeVerModulo ? <Outlet /> : <ModuloBloqueado modulo={moduloAtual} rota={pathname} />}
         </main>
       </div>
 
