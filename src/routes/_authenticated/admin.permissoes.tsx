@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -9,7 +10,6 @@ import { useAccess, type AppRole, type PermissionAction } from "@/hooks/use-auth
 import { Badge } from "@/components/ui/badge";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
-import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/admin/permissoes")({
   head: () => ({

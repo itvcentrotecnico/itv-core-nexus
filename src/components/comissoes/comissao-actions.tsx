@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -16,7 +17,6 @@ import {
   AJUSTE_TIPO, TIPO_REGRA,
   type Comissao, type ComissaoAjusteTipo, type ComissaoRpcResult, type ComissaoSimulacao,
 } from "@/lib/comissoes";
-import { mensagemErro } from "@/lib/erros";
 
 function invalidateComissoes(queryClient: ReturnType<typeof useQueryClient>) {
   queryClient.invalidateQueries({ queryKey: ["comissoes"] });

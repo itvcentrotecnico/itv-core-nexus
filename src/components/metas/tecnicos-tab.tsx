@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -11,7 +12,6 @@ import type { MetasRpcResult, TecnicoDesempenho } from "@/lib/metas";
 import { STATUS_META, TIPO_META_TECNICO_LABEL } from "@/lib/metas";
 import { NivelBadge, ProgressBarMeta, rpcMetas, useTecnicosDesempenho } from "@/components/metas/shared";
 import { cn } from "@/lib/utils";
-import { mensagemErro } from "@/lib/erros";
 
 interface MetaTecnicoRow {
   id: string;

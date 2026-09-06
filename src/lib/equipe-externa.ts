@@ -3,8 +3,8 @@
  * Regra oficial: posições só são registradas entre 08:00 e 18:00 (America/Manaus),
  * validado também no banco. Nenhum rastreamento fora do expediente.
  */
-import { supabase } from "@/integrations/supabase/client";
 import { mensagemErro } from "@/lib/erros";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ExpedienteAtual {
   ativo: boolean;

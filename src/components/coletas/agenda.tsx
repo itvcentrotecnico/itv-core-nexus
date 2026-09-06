@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, MapPin, MessageCircle, Navigation, RefreshCw } from "lucide-react";
@@ -27,7 +28,6 @@ import {
   whatsappUrl,
   type AgendaItem,
 } from "@/lib/coletas";
-import { mensagemErro, ErroNegocio } from "@/lib/erros";
 
 interface Resposta {
   ok: boolean;

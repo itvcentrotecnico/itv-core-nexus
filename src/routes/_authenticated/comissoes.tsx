@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,7 +30,6 @@ import {
   type Comissao, type ComissaoPagamento, type ComissaoTecnicoResumo,
   type ComissoesIndicadores, type RegraComissao,
 } from "@/lib/comissoes";
-import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/comissoes")({
   head: () => ({

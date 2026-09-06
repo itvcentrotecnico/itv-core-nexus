@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -25,7 +26,6 @@ import {
   type ProducaoValidacao,
 } from "@/lib/producao";
 import { invalidateProducao, rpcProd, StatusBadgeProducao, useProducaoRefs } from "./shared";
-import { mensagemErro } from "@/lib/erros";
 
 function Info({ label, value }: { label: string; value: string | null | undefined }) {
   return (

@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useState, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { mensagemErro } from "@/lib/erros";
 
 const CODIGOS: Record<string, string> = {
   SEM_PERMISSAO: "Você não tem permissão para esta ação.",

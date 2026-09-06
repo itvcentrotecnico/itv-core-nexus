@@ -7,11 +7,11 @@
  *
  * A origem é dimensão analítica: nunca altera valor, taxa, comissão ou receita líquida.
  */
+import { mensagemErro } from "@/lib/erros";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
-import { mensagemErro } from "@/lib/erros";
 
 export interface Origem {
   id: string;

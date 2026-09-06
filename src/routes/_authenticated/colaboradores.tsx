@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,7 +41,6 @@ import {
   LancamentoForm,
 } from "@/components/folha/folha-actions";
 import { PagamentosList, PagarDialog, PagarLoteDialog } from "@/components/folha/pagamentos";
-import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/colaboradores")({
   head: () => ({

@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, Loader2, Search } from "lucide-react";
@@ -30,7 +31,6 @@ import type {
   TipoCusto,
 } from "@/lib/custos";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
-import { mensagemErro } from "@/lib/erros";
 
 const NONE = "__none__";
 const NOVO_FORNECEDOR = "__novo__";

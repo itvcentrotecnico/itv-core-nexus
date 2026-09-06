@@ -1,10 +1,10 @@
+import { mensagemErro } from "@/lib/erros";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { formatCurrencyBRL } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { mensagemErro } from "@/lib/erros";
 
 /** RPC tipada do módulo relatórios. */
 export async function rpcRel<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {

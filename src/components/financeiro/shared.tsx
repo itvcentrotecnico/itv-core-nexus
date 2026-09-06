@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,6 @@ import type {
   FinanceiroRpcResult,
   SubcategoriaFinanceira,
 } from "@/lib/financeiro";
-import { mensagemErro, ErroNegocio } from "@/lib/erros";
 
 export interface FinanceiroRefs {
   categorias: CategoriaFinanceira[];

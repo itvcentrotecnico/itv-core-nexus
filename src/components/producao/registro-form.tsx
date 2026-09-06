@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, ImagePlus, Trash2 } from "lucide-react";
@@ -20,7 +21,6 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { todayManausISO } from "@/lib/format";
 import { storagePathFoto, type ProducaoFoto, type ProducaoRegistro } from "@/lib/producao";
 import { invalidateProducao, rpcProd, useProducaoRefs } from "./shared";
-import { mensagemErro } from "@/lib/erros";
 
 interface RpcResult {
   ok: boolean;

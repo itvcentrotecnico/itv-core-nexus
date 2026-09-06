@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RotateCcw } from "lucide-react";
@@ -25,7 +26,6 @@ import type {
   RecebimentoConta,
 } from "@/lib/financeiro";
 import { rpcFin, useFinanceiroRefs } from "./shared";
-import { mensagemErro } from "@/lib/erros";
 
 function invalidateFinanceiro(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: ["financeiro"] });

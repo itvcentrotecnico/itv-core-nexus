@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useState } from "react";
 import { FileText } from "lucide-react";
 import { toast } from "sonner";
@@ -7,7 +8,6 @@ import type { RelFaturamento, RelPlanejamento, RelProducao, RelRentabilidade, Re
 import { labelMes } from "@/lib/relatorios";
 import { rpcRel } from "@/components/relatorios/shared";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
-import { mensagemErro } from "@/lib/erros";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

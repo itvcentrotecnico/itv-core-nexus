@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -15,7 +16,6 @@ import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import type { CustoOS, CustosRpcResult } from "@/lib/custos";
 import { formatCurrencyBRL } from "@/lib/format";
-import { mensagemErro } from "@/lib/erros";
 
 interface ActionProps {
   custo: CustoOS | null;

@@ -4,7 +4,6 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/lib/app-url";
-import { mensagemErro } from "@/lib/erros";
 
 export type ColetaTipo = "coleta" | "entrega";
 export type ColetaStatus =

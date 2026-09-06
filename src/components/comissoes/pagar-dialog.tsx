@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import { labelClass, inputClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateITV } from "@/lib/format";
 import type { FormaPagamento } from "@/lib/caixa";
 import type { Comissao, ComissaoRpcResult } from "@/lib/comissoes";
-import { mensagemErro } from "@/lib/erros";
 
 interface Props {
   open: boolean;

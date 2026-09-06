@@ -1,3 +1,4 @@
+import { mensagemErro, ErroNegocio } from "@/lib/erros";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,6 @@ import type {
 import { STATUS_META, STATUS_PROJECAO } from "@/lib/metas";
 import { NIVEL_BADGE } from "@/lib/producao";
 import { cn } from "@/lib/utils";
-import { mensagemErro, ErroNegocio } from "@/lib/erros";
 
 /** RPC tipada do módulo metas: lança erro do PostgREST. */
 export async function rpcMetas<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {

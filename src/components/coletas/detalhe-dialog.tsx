@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Eye, Link2, MapPin, MessageCircle, Phone } from "lucide-react";
@@ -35,7 +36,6 @@ import {
 import { OrigemBloco } from "./origem-bloco";
 import { StatusBadgeColeta, useMotoristas } from "./shared";
 import type { LinkGerado } from "./link-dialog";
-import { mensagemErro } from "@/lib/erros";
 
 interface Foto {
   id: string;

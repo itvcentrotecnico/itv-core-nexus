@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save } from "lucide-react";
@@ -8,7 +9,6 @@ import { useAccess } from "@/hooks/use-auth";
 import { inputClass, labelClass, type FormaPagamento, type FormaPagamentoTaxa } from "@/lib/caixa";
 import { Carregando, SecaoAdmin } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
-import { mensagemErro } from "@/lib/erros";
 
 type Mapa = Record<string, Record<number, number>>;
 

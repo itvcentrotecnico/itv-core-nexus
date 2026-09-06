@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -14,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/admin/modo-tv")({
   head: () => ({

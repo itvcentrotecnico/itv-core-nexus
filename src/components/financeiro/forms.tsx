@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -23,7 +24,6 @@ import {
   type Despesa,
 } from "@/lib/financeiro";
 import { rpcFin, useFinanceiroRefs, type FinanceiroRefs } from "./shared";
-import { mensagemErro } from "@/lib/erros";
 
 function invalidateFinanceiro(queryClient: ReturnType<typeof useQueryClient>) {
   void queryClient.invalidateQueries({ queryKey: ["financeiro"] });

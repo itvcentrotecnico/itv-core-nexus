@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -7,7 +8,6 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import type { FaixasProjecao, MetaEmpresaDetalhe, MetaTipo, MetasRpcResult } from "@/lib/metas";
 import { TIPO_META_EMPRESA_LABEL, TIPO_META_FONTE } from "@/lib/metas";
 import { rpcMetas } from "@/components/metas/shared";
-import { mensagemErro } from "@/lib/erros";
 
 export interface MetaPrefill {
   valor_alvo: number;

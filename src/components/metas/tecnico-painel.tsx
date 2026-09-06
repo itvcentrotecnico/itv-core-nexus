@@ -1,3 +1,4 @@
+import { ErroNegocio } from "@/lib/erros";
 import { useQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
@@ -7,7 +8,6 @@ import type { MetasTecnicoPainelResult } from "@/lib/metas";
 import { STATUS_META, TIPO_META_TECNICO_LABEL } from "@/lib/metas";
 import { NivelBadge, ProgressBarMeta, rpcMetas } from "@/components/metas/shared";
 import { cn } from "@/lib/utils";
-import { ErroNegocio } from "@/lib/erros";
 
 /** Painel individual do técnico: meta atual, ritmo, projeção e qualidade. */
 export function TecnicoPainel({ tecnicoId, range }: { tecnicoId: string; range: { from: string; to: string } }) {

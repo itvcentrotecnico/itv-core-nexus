@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
@@ -11,7 +12,6 @@ import { TecnicosTab } from "@/components/metas/tecnicos-tab";
 import { IndicadoresTab, RankingTab } from "@/components/metas/indicadores-ranking";
 import { HistoricoTab } from "@/components/metas/historico";
 import { TecnicoPainel } from "@/components/metas/tecnico-painel";
-import { mensagemErro } from "@/lib/erros";
 
 export const Route = createFileRoute("/_authenticated/metas")({
   head: () => ({

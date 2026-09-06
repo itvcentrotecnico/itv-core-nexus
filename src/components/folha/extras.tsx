@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -26,7 +27,6 @@ import {
   type ColaboradorBeneficio,
 } from "@/lib/folha";
 import { invalidateFolha } from "./colaborador-form";
-import { mensagemErro } from "@/lib/erros";
 
 /* ============================= BENEFÍCIOS ============================= */
 

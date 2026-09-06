@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import {
 import { MoneyInput } from "@/components/caixa/money-input";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { TIPO_REGRA, type ComissaoTipoRegra, type RegraComissao } from "@/lib/comissoes";
-import { mensagemErro } from "@/lib/erros";
 
 interface TecnicoOption {
   id: string;

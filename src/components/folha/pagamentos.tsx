@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -20,7 +21,6 @@ import { rpcFin } from "@/components/financeiro/shared";
 import type { FolhaPagamento, FolhaResumo, FolhaRpcResult } from "@/lib/folha";
 import { useFinanceiroRefs } from "@/components/financeiro/shared";
 import { invalidateFolha } from "./colaborador-form";
-import { mensagemErro } from "@/lib/erros";
 
 /* ============================= PAGAMENTO INDIVIDUAL ============================= */
 

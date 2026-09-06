@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -25,7 +26,6 @@ import {
   type NivelDesempenho,
 } from "@/lib/producao";
 import { invalidateProducao, useProducaoRefs } from "./shared";
-import { mensagemErro } from "@/lib/erros";
 
 export function MetasTab() {
   const { isAdmin, can, profile } = useAccess();
