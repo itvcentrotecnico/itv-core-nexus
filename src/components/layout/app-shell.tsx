@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import logoColor from "@/assets/itv-logo-color.png.asset.json";
 import logoMark from "@/assets/itv-logo-mark.png.asset.json";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { registrarEventoSeguranca } from "@/lib/seguranca";
 
 function Brand() {
   return (
