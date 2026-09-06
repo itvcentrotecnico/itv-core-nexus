@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -58,7 +59,7 @@ export function PagarDialog({
       onChanged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar pagamento.");
+      toast.error(mensagemErro(err, "Falha ao registrar pagamento."));
     } finally {
       setSaving(false);
     }
@@ -70,35 +71,66 @@ export function PagarDialog({
         <DialogHeader>
           <DialogTitle>Pagar — {item.nome}</DialogTitle>
           <DialogDescription>
-            Saldo em aberto: <strong>{formatCurrencyBRL(item.saldo)}</strong>. Pagamentos parciais são permitidos.
+            Saldo em aberto: <strong>{formatCurrencyBRL(item.saldo)}</strong>. Pagamentos parciais
+            são permitidos.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="pg-data" className={labelClass}>Data *</label>
-              <input id="pg-data" type="date" value={data} onChange={(e) => setData(e.target.value)} className={inputClass} />
+              <label htmlFor="pg-data" className={labelClass}>
+                Data *
+              </label>
+              <input
+                id="pg-data"
+                type="date"
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="pg-valor" className={labelClass}>Valor *</label>
+              <label htmlFor="pg-valor" className={labelClass}>
+                Valor *
+              </label>
               <MoneyInput id="pg-valor" value={valor} onChange={setValor} />
             </div>
           </div>
           <div>
-            <label htmlFor="pg-forma" className={labelClass}>Forma de Pagamento</label>
-            <select id="pg-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
+            <label htmlFor="pg-forma" className={labelClass}>
+              Forma de Pagamento
+            </label>
+            <select
+              id="pg-forma"
+              value={formaId}
+              onChange={(e) => setFormaId(e.target.value)}
+              className={inputClass}
+            >
               <option value="">—</option>
-              {(formas.data?.formas ?? []).filter((f) => f.ativo).map((f) => (
-                <option key={f.id} value={f.id}>{f.nome}</option>
-              ))}
+              {(formas.data?.formas ?? [])
+                .filter((f) => f.ativo)
+                .map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.nome}
+                  </option>
+                ))}
             </select>
           </div>
           <div>
-            <label htmlFor="pg-obs" className={labelClass}>Observação</label>
-            <Textarea id="pg-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="pg-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="pg-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || !valor || valor <= 0}>
               {saving ? "Registrando…" : "Registrar pagamento"}
             </Button>
@@ -127,8 +159,12 @@ export function PagarLoteDialog({
   const [data, setData] = useState(todayManausISO());
   const [formaId, setFormaId] = useState("");
   const [observacao, setObservacao] = useState("");
-  const elegiveis = resumo.por_colaborador.filter((c) => c.saldo > 0 && (c.status === "aprovado" || c.status === "parcialmente_pago"));
-  const [selecionados, setSelecionados] = useState<Set<string>>(new Set(elegiveis.map((c) => c.colaborador_id)));
+  const elegiveis = resumo.por_colaborador.filter(
+    (c) => c.saldo > 0 && (c.status === "aprovado" || c.status === "parcialmente_pago"),
+  );
+  const [selecionados, setSelecionados] = useState<Set<string>>(
+    new Set(elegiveis.map((c) => c.colaborador_id)),
+  );
 
   useEffect(() => {
     setSelecionados(new Set(elegiveis.map((c) => c.colaborador_id)));
@@ -163,7 +199,7 @@ export function PagarLoteDialog({
       onChanged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha no pagamento em lote.");
+      toast.error(mensagemErro(err, "Falha no pagamento em lote."));
     } finally {
       setSaving(false);
     }
@@ -181,7 +217,9 @@ export function PagarLoteDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <ul className="divide-y divide-border rounded-lg border border-border">
             {elegiveis.length === 0 && (
-              <li className="px-3 py-3 text-sm text-muted-foreground">Nenhum colaborador com saldo a pagar.</li>
+              <li className="px-3 py-3 text-sm text-muted-foreground">
+                Nenhum colaborador com saldo a pagar.
+              </li>
             )}
             {elegiveis.map((c) => (
               <li key={c.colaborador_id} className="flex items-center gap-3 px-3 py-2">
@@ -192,7 +230,10 @@ export function PagarLoteDialog({
                   onChange={() => toggle(c.colaborador_id)}
                   className="size-4 accent-primary"
                 />
-                <label htmlFor={`lote-${c.colaborador_id}`} className="flex flex-1 items-center justify-between text-sm">
+                <label
+                  htmlFor={`lote-${c.colaborador_id}`}
+                  className="flex flex-1 items-center justify-between text-sm"
+                >
                   <span className="font-medium text-foreground">{c.nome}</span>
                   <span className="font-semibold text-primary">{formatCurrencyBRL(c.saldo)}</span>
                 </label>
@@ -201,29 +242,58 @@ export function PagarLoteDialog({
           </ul>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="pl-data" className={labelClass}>Data *</label>
-              <input id="pl-data" type="date" value={data} onChange={(e) => setData(e.target.value)} className={inputClass} />
+              <label htmlFor="pl-data" className={labelClass}>
+                Data *
+              </label>
+              <input
+                id="pl-data"
+                type="date"
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="pl-forma" className={labelClass}>Forma de Pagamento</label>
-              <select id="pl-forma" value={formaId} onChange={(e) => setFormaId(e.target.value)} className={inputClass}>
+              <label htmlFor="pl-forma" className={labelClass}>
+                Forma de Pagamento
+              </label>
+              <select
+                id="pl-forma"
+                value={formaId}
+                onChange={(e) => setFormaId(e.target.value)}
+                className={inputClass}
+              >
                 <option value="">—</option>
-                {(formas.data?.formas ?? []).filter((f) => f.ativo).map((f) => (
-                  <option key={f.id} value={f.id}>{f.nome}</option>
-                ))}
+                {(formas.data?.formas ?? [])
+                  .filter((f) => f.ativo)
+                  .map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.nome}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>
           <div>
-            <label htmlFor="pl-obs" className={labelClass}>Observação</label>
-            <Textarea id="pl-obs" value={observacao} onChange={(e) => setObservacao(e.target.value)} rows={2} />
+            <label htmlFor="pl-obs" className={labelClass}>
+              Observação
+            </label>
+            <Textarea
+              id="pl-obs"
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              rows={2}
+            />
           </div>
           <p className="text-sm text-muted-foreground">
-            Total selecionado: <strong className="text-foreground">{formatCurrencyBRL(totalSelecionado)}</strong> (
+            Total selecionado:{" "}
+            <strong className="text-foreground">{formatCurrencyBRL(totalSelecionado)}</strong> (
             {selecionados.size} colaborador{selecionados.size === 1 ? "" : "es"})
           </p>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || selecionados.size === 0}>
               {saving ? "Processando…" : "Confirmar pagamento"}
             </Button>
@@ -268,14 +338,17 @@ export function PagamentosList({
     if (!estornando) return;
     setSaving(true);
     try {
-      await rpcFin<FolhaRpcResult>("folha_estornar_pagamento", { p_pagamento_id: estornando.id, p_motivo: motivo });
+      await rpcFin<FolhaRpcResult>("folha_estornar_pagamento", {
+        p_pagamento_id: estornando.id,
+        p_motivo: motivo,
+      });
       toast.success("Pagamento estornado por movimento reverso.");
       setEstornando(null);
       setMotivo("");
       invalidateFolha(queryClient);
       onChanged();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao estornar.");
+      toast.error(mensagemErro(err, "Falha ao estornar."));
     } finally {
       setSaving(false);
     }
@@ -285,7 +358,9 @@ export function PagamentosList({
     <div>
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
         {pagamentos.length === 0 && (
-          <li className="px-4 py-6 text-center text-sm text-muted-foreground">Nenhum pagamento nesta competência.</li>
+          <li className="px-4 py-6 text-center text-sm text-muted-foreground">
+            Nenhum pagamento nesta competência.
+          </li>
         )}
         {pagamentos.map((p) => {
           const ehEstorno = !!p.estorno_de_id;
@@ -295,8 +370,16 @@ export function PagamentosList({
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-foreground">
                   {p.colaborador?.nome ?? "—"}
-                  {ehEstorno && <span className="ml-2 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">Estorno</span>}
-                  {estornado && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Estornado</span>}
+                  {ehEstorno && (
+                    <span className="ml-2 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+                      Estorno
+                    </span>
+                  )}
+                  {estornado && (
+                    <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      Estornado
+                    </span>
+                  )}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {formatDateOnlyISO(p.data_pagamento)} · {p.forma?.nome ?? "Sem forma"}
@@ -304,7 +387,9 @@ export function PagamentosList({
                   {p.motivo_estorno ? ` · Motivo estorno: ${p.motivo_estorno}` : ""}
                 </p>
               </div>
-              <span className={`font-semibold ${p.valor < 0 ? "text-destructive" : "text-primary"}`}>
+              <span
+                className={`font-semibold ${p.valor < 0 ? "text-destructive" : "text-primary"}`}
+              >
                 {formatCurrencyBRL(p.valor)}
               </span>
               {canEstornar && !ehEstorno && !estornado && (
@@ -331,12 +416,31 @@ export function PagamentosList({
             </DialogDescription>
           </DialogHeader>
           <div>
-            <label htmlFor="es-motivo" className={labelClass}>Motivo *</label>
-            <Textarea id="es-motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} />
+            <label htmlFor="es-motivo" className={labelClass}>
+              Motivo *
+            </label>
+            <Textarea
+              id="es-motivo"
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              rows={2}
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setEstornando(null)} disabled={saving}>Voltar</Button>
-            <Button type="button" variant="destructive" disabled={saving || !motivo.trim()} onClick={estornar}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setEstornando(null)}
+              disabled={saving}
+            >
+              Voltar
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={saving || !motivo.trim()}
+              onClick={estornar}
+            >
               {saving ? "Estornando…" : "Confirmar estorno"}
             </Button>
           </DialogFooter>

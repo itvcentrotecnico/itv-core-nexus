@@ -53,7 +53,13 @@ export interface ModoTvIndicadores {
   ok: boolean;
   code?: string;
   referencia: string;
-  mes: { inicio: string; fim: string; dias_total: number; dias_decorridos: number; dias_restantes: number };
+  mes: {
+    inicio: string;
+    fim: string;
+    dias_total: number;
+    dias_decorridos: number;
+    dias_restantes: number;
+  };
   faturamento: {
     mes: number;
     receita_liquida: number;
@@ -62,8 +68,20 @@ export interface ModoTvIndicadores {
     mes_anterior_mesmo_periodo: number;
     evolucao_pct: number | null;
   };
-  meta: { nome: string; tipo: string; valor: number; realizado: number; percentual: number; faltante: number } | null;
-  ritmo: { atual: number; necessario: number; projecao: number; status: "acima" | "no_ritmo" | "atencao" | "sem_meta" };
+  meta: {
+    nome: string;
+    tipo: string;
+    valor: number;
+    realizado: number;
+    percentual: number;
+    faltante: number;
+  } | null;
+  ritmo: {
+    atual: number;
+    necessario: number;
+    projecao: number;
+    status: "acima" | "no_ritmo" | "atencao" | "sem_meta";
+  };
   producao: { hoje: number; semana: number; mes: number };
   tecnicos: ModoTvTecnico[];
   ranking: { tecnico: string; valor: number; servicos: number }[];

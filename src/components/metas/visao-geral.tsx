@@ -15,14 +15,18 @@ export function VisaoGeralTab({
   painel: MetasPainel;
   range: { from: string; to: string };
 }) {
-  const principal = painel.metas.find((m) => m.principal) ?? painel.metas.find((m) => m.status === "ativa") ?? null;
+  const principal =
+    painel.metas.find((m) => m.principal) ?? painel.metas.find((m) => m.status === "ativa") ?? null;
   const outras = painel.metas.filter((m) => m.id !== principal?.id);
 
   const evolucao = useQuery({
     queryKey: ["metas", "evolucao", range.from, range.to],
     enabled: !!principal,
     queryFn: async () => {
-      const r = await rpcMetas<MetasEvolucao>("metas_evolucao", { p_from: range.from, p_to: range.to });
+      const r = await rpcMetas<MetasEvolucao>("metas_evolucao", {
+        p_from: range.from,
+        p_to: range.to,
+      });
       if (!r.ok) return { ok: false, meta_principal: null, dias: [] } as MetasEvolucao;
       return r;
     },
@@ -52,17 +56,20 @@ export function VisaoGeralTab({
               <p className="text-sm text-foreground">
                 {a.tipo === "meta_superada" && (
                   <>
-                    <strong>{a.nome}</strong> superada: {a.percentual.toFixed(1).replace(".", ",")}% da meta.
+                    <strong>{a.nome}</strong> superada: {a.percentual.toFixed(1).replace(".", ",")}%
+                    da meta.
                   </>
                 )}
                 {a.tipo === "meta_em_atencao" && (
                   <>
-                    <strong>{a.nome}</strong> em atenção: projeção de {a.projecao_percentual?.toFixed(0)}% da meta.
+                    <strong>{a.nome}</strong> em atenção: projeção de{" "}
+                    {a.projecao_percentual?.toFixed(0)}% da meta.
                   </>
                 )}
                 {a.tipo === "meta_em_risco" && (
                   <>
-                    <strong>{a.nome}</strong> em risco: projeção de apenas {a.projecao_percentual?.toFixed(0)}% da meta.
+                    <strong>{a.nome}</strong> em risco: projeção de apenas{" "}
+                    {a.projecao_percentual?.toFixed(0)}% da meta.
                   </>
                 )}
               </p>
@@ -77,7 +84,8 @@ export function VisaoGeralTab({
         <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center">
           <p className="text-sm font-medium text-foreground">Nenhuma meta ativa no período</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Crie a primeira meta da empresa na aba "Metas da Empresa" para acompanhar realizado x planejado.
+            Crie a primeira meta da empresa na aba "Metas da Empresa" para acompanhar realizado x
+            planejado.
           </p>
         </div>
       )}
@@ -142,7 +150,9 @@ function ComparativoCard({
       <p className="mt-1 font-display text-xl font-bold text-card-foreground">{fmt(atual)}</p>
       <div className="mt-1 flex items-center gap-2">
         <VariacaoBadge atual={atual} anterior={anterior} />
-        <span className="text-[11px] text-muted-foreground">vs período anterior ({fmt(anterior)})</span>
+        <span className="text-[11px] text-muted-foreground">
+          vs período anterior ({fmt(anterior)})
+        </span>
       </div>
     </div>
   );
@@ -160,7 +170,9 @@ function EvolucaoChart({ evolucao }: { evolucao: MetasEvolucao }) {
   const y = (v: number) => H - pad - (v / max) * (H - pad * 2);
   const linha = (vals: (number | null)[]) =>
     vals
-      .map((v, i) => (v == null ? null : `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`))
+      .map((v, i) =>
+        v == null ? null : `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`,
+      )
       .filter(Boolean)
       .join(" ");
 
@@ -168,8 +180,12 @@ function EvolucaoChart({ evolucao }: { evolucao: MetasEvolucao }) {
     <div className="rounded-xl border border-border bg-card p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h3 className="font-display text-sm font-semibold text-card-foreground">Evolução no período</h3>
-          <p className="text-xs text-muted-foreground">Acumulado realizado vs ritmo ideal — {meta.nome}</p>
+          <h3 className="font-display text-sm font-semibold text-card-foreground">
+            Evolução no período
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            Acumulado realizado vs ritmo ideal — {meta.nome}
+          </p>
         </div>
         <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1.5">
@@ -180,10 +196,33 @@ function EvolucaoChart({ evolucao }: { evolucao: MetasEvolucao }) {
           </span>
         </div>
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" role="img" aria-label="Gráfico de evolução da meta">
-        <line x1={pad} y1={y(meta.valor_alvo)} x2={W - pad} y2={y(meta.valor_alvo)} stroke="currentColor" strokeDasharray="4 4" className="text-border" />
-        <path d={linha(dias.map((d) => d.ideal))} fill="none" strokeWidth="2" className="stroke-muted-foreground/50" />
-        <path d={linha(dias.map((d) => d.acumulado))} fill="none" strokeWidth="2.5" className="stroke-primary" />
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="mt-4 w-full"
+        role="img"
+        aria-label="Gráfico de evolução da meta"
+      >
+        <line
+          x1={pad}
+          y1={y(meta.valor_alvo)}
+          x2={W - pad}
+          y2={y(meta.valor_alvo)}
+          stroke="currentColor"
+          strokeDasharray="4 4"
+          className="text-border"
+        />
+        <path
+          d={linha(dias.map((d) => d.ideal))}
+          fill="none"
+          strokeWidth="2"
+          className="stroke-muted-foreground/50"
+        />
+        <path
+          d={linha(dias.map((d) => d.acumulado))}
+          fill="none"
+          strokeWidth="2.5"
+          className="stroke-primary"
+        />
       </svg>
       <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
         <span>{dias[0]?.data.split("-").reverse().slice(0, 2).join("/")}</span>

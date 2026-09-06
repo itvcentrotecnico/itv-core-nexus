@@ -31,15 +31,32 @@ interface RelOrigens {
   code?: string;
   message?: string;
   por_origem: LinhaOrigem[];
-  mensal: { mes: string; origem: string; atendimentos: number; clientes: number; faturamento: number }[];
-  qualidade: { atendimentos: number; com_origem: number; sem_origem: number; completude_pct: number | null };
+  mensal: {
+    mes: string;
+    origem: string;
+    atendimentos: number;
+    clientes: number;
+    faturamento: number;
+  }[];
+  qualidade: {
+    atendimentos: number;
+    com_origem: number;
+    sem_origem: number;
+    completude_pct: number | null;
+  };
 }
 
 const num = (v: number) => String(Math.round(v));
 const pct = (v: number | null) => (v == null ? "—" : `${v.toFixed(1).replace(".", ",")}%`);
 
 /** Relatório ORIGEM DOS CLIENTES — canal de aquisição x resultado financeiro. */
-export function OrigensTab({ range, podeExportar }: { range: { from: string; to: string }; podeExportar: boolean }) {
+export function OrigensTab({
+  range,
+  podeExportar,
+}: {
+  range: { from: string; to: string };
+  podeExportar: boolean;
+}) {
   const query = useQuery({
     queryKey: ["rel-origens", range.from, range.to],
     queryFn: () => rpcRel<RelOrigens>("rel_origens", { p_ini: range.from, p_fim: range.to }),
@@ -75,7 +92,8 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
     });
   }, [dados, meses]);
 
-  if (query.isLoading) return <p className="p-6 text-center text-sm text-muted-foreground">Carregando…</p>;
+  if (query.isLoading)
+    return <p className="p-6 text-center text-sm text-muted-foreground">Carregando…</p>;
   if (query.isError) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
@@ -84,7 +102,11 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
     );
   }
   if (dados && dados.ok === false) {
-    return <EstadoSemPermissao mensagem={dados.message ?? "Você não tem permissão para ver este relatório."} />;
+    return (
+      <EstadoSemPermissao
+        mensagem={dados.message ?? "Você não tem permissão para ver este relatório."}
+      />
+    );
   }
 
   const linhas = dados?.por_origem ?? [];
@@ -97,8 +119,16 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <KpiRel titulo="Clientes no período" valor={num(totalClientes)} sub="Atendimentos com origem registrada" />
-        <KpiRel titulo="Faturamento relacionado" valor={formatCurrencyBRL(totalFat)} sub="Somente lançamentos ativos" />
+        <KpiRel
+          titulo="Clientes no período"
+          valor={num(totalClientes)}
+          sub="Atendimentos com origem registrada"
+        />
+        <KpiRel
+          titulo="Faturamento relacionado"
+          valor={formatCurrencyBRL(totalFat)}
+          sub="Somente lançamentos ativos"
+        />
         <KpiRel
           titulo="Receita de clientes recorrentes"
           valor={formatCurrencyBRL(recorrentes?.faturamento ?? 0)}
@@ -120,7 +150,15 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
               onClick={() =>
                 exportarCSV(
                   `origens-${range.from}-a-${range.to}.csv`,
-                  ["Origem", "Atendimentos", "Clientes", "OS faturadas", "Faturamento", "Ticket médio", "Conversão %"],
+                  [
+                    "Origem",
+                    "Atendimentos",
+                    "Clientes",
+                    "OS faturadas",
+                    "Faturamento",
+                    "Ticket médio",
+                    "Conversão %",
+                  ],
                   linhas.map((l) => [
                     l.origem,
                     l.atendimentos,
@@ -137,9 +175,21 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
         }
       >
         <TabelaRel
-          colunas={["Origem", "Atendimentos", "Clientes", "OS faturadas", "Faturamento", "Ticket médio", "Conversão"]}
+          colunas={[
+            "Origem",
+            "Atendimentos",
+            "Clientes",
+            "OS faturadas",
+            "Faturamento",
+            "Ticket médio",
+            "Conversão",
+          ]}
           linhas={linhas.map((l) => [
-            l.origem === ORIGEM_NAO_INFORMADA ? <span className="text-muted-foreground">{l.origem}</span> : l.origem,
+            l.origem === ORIGEM_NAO_INFORMADA ? (
+              <span className="text-muted-foreground">{l.origem}</span>
+            ) : (
+              l.origem
+            ),
             num(l.atendimentos),
             num(l.clientes),
             num(l.os_faturadas),
@@ -157,7 +207,11 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
             formato="numero"
             itens={[...linhas]
               .sort((a, b) => b.clientes - a.clientes)
-              .map((l) => ({ rotulo: l.origem, valor: l.clientes, sub: `${num(l.os_faturadas)} OS faturadas` }))}
+              .map((l) => ({
+                rotulo: l.origem,
+                valor: l.clientes,
+                sub: `${num(l.os_faturadas)} OS faturadas`,
+              }))}
           />
         </SecaoRel>
         <SecaoRel titulo="Resultado — faturamento por canal">
@@ -175,7 +229,14 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
 
       <SecaoRel titulo="Comparativo mensal" descricao="Últimos dois meses do período selecionado.">
         <TabelaRel
-          colunas={["Origem", "Mês anterior", "Mês atual", "Variação", "Faturamento anterior", "Faturamento atual"]}
+          colunas={[
+            "Origem",
+            "Mês anterior",
+            "Mês atual",
+            "Variação",
+            "Faturamento anterior",
+            "Faturamento atual",
+          ]}
           linhas={comparativo.map((c) => [
             c.origem,
             `${labelMes(c.mesA)} · ${num(c.anterior)}`,
@@ -191,7 +252,10 @@ export function OrigensTab({ range, podeExportar }: { range: { from: string; to:
       <SecaoRel titulo="Indicações" descricao="Base para um futuro programa de indicação.">
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           <KpiRel titulo="Clientes indicados" valor={num(indicacao?.clientes ?? 0)} />
-          <KpiRel titulo="Faturamento por indicação" valor={formatCurrencyBRL(indicacao?.faturamento ?? 0)} />
+          <KpiRel
+            titulo="Faturamento por indicação"
+            valor={formatCurrencyBRL(indicacao?.faturamento ?? 0)}
+          />
           <KpiRel titulo="Ticket médio" valor={formatCurrencyBRL(indicacao?.ticket_medio ?? 0)} />
         </div>
       </SecaoRel>

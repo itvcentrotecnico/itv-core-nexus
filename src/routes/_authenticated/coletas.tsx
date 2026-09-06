@@ -41,14 +41,25 @@ export const Route = createFileRoute("/_authenticated/coletas")({
   head: () => ({
     meta: [
       { title: "Coletas e Entregas — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Fila de coletas e entregas de TVs: cadastro do cliente, motorista, equipe externa e relatório diário." },
+      {
+        name: "description",
+        content:
+          "Fila de coletas e entregas de TVs: cadastro do cliente, motorista, equipe externa e relatório diário.",
+      },
       { property: "og:title", content: "Coletas e Entregas — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Fila de coletas e entregas de TVs: cadastro do cliente, motorista, equipe externa e relatório diário." },
+      {
+        property: "og:description",
+        content:
+          "Fila de coletas e entregas de TVs: cadastro do cliente, motorista, equipe externa e relatório diário.",
+      },
     ],
   }),
   component: ColetasPage,
   errorComponent: () => (
-    <div role="alert" className="rounded-xl border border-border p-8 text-center text-sm text-muted-foreground">
+    <div
+      role="alert"
+      className="rounded-xl border border-border p-8 text-center text-sm text-muted-foreground"
+    >
       Não foi possível abrir Coletas e Entregas agora. Atualize a página e tente novamente.
     </div>
   ),
@@ -120,7 +131,8 @@ function ColetasPage() {
   const inicioHoje = inicioDoDiaManaus();
 
   const grupos = useMemo(() => {
-    const ativo = (c: ColetaSolicitacao) => ["pronto_coleta", "assumida", "em_rota", "no_local", "nao_realizada"].includes(c.status);
+    const ativo = (c: ColetaSolicitacao) =>
+      ["pronto_coleta", "assumida", "em_rota", "no_local", "nao_realizada"].includes(c.status);
     const concluidoHoje = (c: ColetaSolicitacao) =>
       !!c.concluido_em && new Date(c.concluido_em).getTime() >= inicioHoje;
     return {
@@ -157,7 +169,11 @@ function ColetasPage() {
       pendentes: todos.filter((t) => t.status === "pronto_coleta" && !t.motorista_id).length,
       assumidas: todos.filter((t) => t.status === "assumida" && t.motorista_id === meuId).length,
       concluidas: todos.filter(
-        (t) => t.status === "concluida" && t.motorista_id === meuId && !!t.concluido_em && new Date(t.concluido_em).getTime() >= inicioHoje,
+        (t) =>
+          t.status === "concluida" &&
+          t.motorista_id === meuId &&
+          !!t.concluido_em &&
+          new Date(t.concluido_em).getTime() >= inicioHoje,
       ).length,
     };
   }, [todos, profile?.id, inicioHoje]);
@@ -233,7 +249,10 @@ function ColetasPage() {
             ["Assumidas", resumoMotorista.assumidas],
             ["Concluídas hoje", resumoMotorista.concluidas],
           ].map(([label, valor]) => (
-            <div key={String(label)} className="rounded-xl border border-border bg-card p-3 text-center">
+            <div
+              key={String(label)}
+              className="rounded-xl border border-border bg-card p-3 text-center"
+            >
               <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
               <p className="font-display text-2xl font-bold text-foreground">{Number(valor)}</p>
             </div>
@@ -260,7 +279,9 @@ function ColetasPage() {
                   type="button"
                   onClick={() => setAba(f.chave)}
                   className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    aba === f.chave ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                    aba === f.chave
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground"
                   }`}
                 >
                   {f.label} ({grupos[f.chave].length})
@@ -268,17 +289,30 @@ function ColetasPage() {
               ))}
             </div>
             <div className="flex gap-1">
-              <Button size="sm" variant={modo === "blocos" ? "default" : "outline"} onClick={() => setModo("blocos")} aria-label="Ver em blocos">
+              <Button
+                size="sm"
+                variant={modo === "blocos" ? "default" : "outline"}
+                onClick={() => setModo("blocos")}
+                aria-label="Ver em blocos"
+              >
                 <LayoutGrid className="size-4" aria-hidden="true" />
               </Button>
-              <Button size="sm" variant={modo === "lista" ? "default" : "outline"} onClick={() => setModo("lista")} aria-label="Ver em lista">
+              <Button
+                size="sm"
+                variant={modo === "lista" ? "default" : "outline"}
+                onClick={() => setModo("lista")}
+                aria-label="Ver em lista"
+              >
                 <List className="size-4" aria-hidden="true" />
               </Button>
             </div>
           </div>
 
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               className={`${inputClass} h-11 pl-9`}
               placeholder="Buscar por cliente, telefone ou bairro"
@@ -294,7 +328,9 @@ function ColetasPage() {
             <div className="rounded-xl border border-border p-6 text-center text-sm text-muted-foreground">
               {mensagemErro(listaQuery.error, "Não foi possível carregar as movimentações.")}
               <div className="mt-3">
-                <Button size="sm" variant="outline" onClick={() => void listaQuery.refetch()}>Tentar novamente</Button>
+                <Button size="sm" variant="outline" onClick={() => void listaQuery.refetch()}>
+                  Tentar novamente
+                </Button>
               </div>
             </div>
           )}
@@ -345,24 +381,48 @@ function ColetasPage() {
                       <tr key={c.id} className="border-t border-border/60">
                         <td className="px-3 py-2">{TIPO_LABEL[c.tipo]}</td>
                         <td className="px-3 py-2">
-                          <button type="button" className="font-medium text-foreground underline-offset-2 hover:underline" onClick={() => setDetalhe(c)}>
+                          <button
+                            type="button"
+                            className="font-medium text-foreground underline-offset-2 hover:underline"
+                            onClick={() => setDetalhe(c)}
+                          >
                             {c.cliente_nome}
                           </button>
                         </td>
                         <td className="px-3 py-2">{maskTelefone(c.whatsapp)}</td>
                         <td className="px-3 py-2">{c.bairro ?? "—"}</td>
-                        <td className="px-3 py-2">{c.motorista_id ? usuarios[c.motorista_id] ?? "—" : "—"}</td>
-                        <td className="px-3 py-2"><StatusBadgeColeta status={c.status} tipo={c.tipo} /></td>
+                        <td className="px-3 py-2">
+                          {c.motorista_id ? (usuarios[c.motorista_id] ?? "—") : "—"}
+                        </td>
+                        <td className="px-3 py-2">
+                          <StatusBadgeColeta status={c.status} tipo={c.tipo} />
+                        </td>
                         <td className="px-3 py-2 text-muted-foreground">
-                          {formatDateTimeITV(c.concluido_em ?? c.assumido_em ?? c.preenchido_em ?? c.created_at)}
+                          {formatDateTimeITV(
+                            c.concluido_em ?? c.assumido_em ?? c.preenchido_em ?? c.created_at,
+                          )}
                         </td>
                         <td className="px-3 py-2 text-right">
                           <div className="flex justify-end gap-1.5">
-                            {podeCriarEntrega && c.tipo === "coleta" && c.status === "concluida" && !entregasPorOrigem.has(c.id) && (
-                              <Button size="sm" variant="outline" onClick={() => setNovaEntrega(c)}>Criar entrega</Button>
-                            )}
+                            {podeCriarEntrega &&
+                              c.tipo === "coleta" &&
+                              c.status === "concluida" &&
+                              !entregasPorOrigem.has(c.id) && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setNovaEntrega(c)}
+                                >
+                                  Criar entrega
+                                </Button>
+                              )}
                             {podeExcluirItem(c) && (
-                              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setExcluindo(c)}>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => setExcluindo(c)}
+                              >
                                 Excluir
                               </Button>
                             )}
@@ -378,7 +438,9 @@ function ColetasPage() {
 
           {aba === "concluidas" && filtrados.some((c) => c.coleta_origem_id) && (
             <div className="rounded-xl border border-border bg-card p-4">
-              <h2 className="font-display text-sm font-bold text-foreground">Tempo entre coleta e entrega</h2>
+              <h2 className="font-display text-sm font-bold text-foreground">
+                Tempo entre coleta e entrega
+              </h2>
               <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                 {filtrados
                   .filter((c) => c.coleta_origem_id && c.concluido_em)
@@ -424,7 +486,11 @@ function ColetasPage() {
         )}
       </Tabs>
 
-      <NovaSolicitacaoDialog aberto={novoOpen} onClose={() => setNovoOpen(false)} onLink={setLink} />
+      <NovaSolicitacaoDialog
+        aberto={novoOpen}
+        onClose={() => setNovoOpen(false)}
+        onLink={setLink}
+      />
       <LinkDialog dados={link} onClose={() => setLink(null)} />
       <ConcluirDialog item={concluindo} onClose={() => setConcluindo(null)} />
       <CriarEntregaDialog coleta={novaEntrega} onClose={() => setNovaEntrega(null)} />

@@ -6,15 +6,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownRight, ArrowUpRight, Minus, RefreshCw } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -139,14 +131,20 @@ export function ResumoDesempenho({
       return {
         ...item,
         label: labelMes(item.mes),
-        variacaoPct: ant && ant.faturamento ? ((item.faturamento - ant.faturamento) / ant.faturamento) * 100 : null,
+        variacaoPct:
+          ant && ant.faturamento
+            ? ((item.faturamento - ant.faturamento) / ant.faturamento) * 100
+            : null,
       };
     });
   }, [d]);
 
   if (query.isLoading) {
     return (
-      <section aria-label="Resumo de faturamento" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section
+        aria-label="Resumo de faturamento"
+        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
@@ -257,14 +255,19 @@ export function ResumoDesempenho({
             {formatCurrencyBRL(mesReferencia.faturamento)}
           </p>
           <p className="mt-1.5 text-[11px] text-muted-foreground">
-            {mesReferencia.quantidade} lançamento{mesReferencia.quantidade === 1 ? "" : "s"} · Ticket
-            médio <strong className="text-foreground">{formatCurrencyBRL(mesReferencia.ticket)}</strong>
+            {mesReferencia.quantidade} lançamento{mesReferencia.quantidade === 1 ? "" : "s"} ·
+            Ticket médio{" "}
+            <strong className="text-foreground">{formatCurrencyBRL(mesReferencia.ticket)}</strong>
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-x-2">
             <Variacao
               atual={mesReferencia.faturamento}
               anterior={mesComparado.faturamento}
-              sufixo={modoMes === "mesmo_periodo" ? "vs. mesmo período do mês anterior" : "vs. mês anterior completo"}
+              sufixo={
+                modoMes === "mesmo_periodo"
+                  ? "vs. mesmo período do mês anterior"
+                  : "vs. mês anterior completo"
+              }
             />
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
@@ -282,8 +285,10 @@ export function ResumoDesempenho({
           {meta && meta.unidade === "BRL" && (
             <div className="mt-3 border-t border-primary/20 pt-2 text-[11px] text-muted-foreground">
               <p>
-                Meta <strong className="text-foreground">{formatCurrencyBRL(meta.valor_alvo)}</strong> ·
-                Realizado <strong className="text-foreground">{formatCurrencyBRL(meta.realizado)}</strong>
+                Meta{" "}
+                <strong className="text-foreground">{formatCurrencyBRL(meta.valor_alvo)}</strong> ·
+                Realizado{" "}
+                <strong className="text-foreground">{formatCurrencyBRL(meta.realizado)}</strong>
               </p>
               <p>
                 Atingimento{" "}
@@ -313,10 +318,13 @@ export function ResumoDesempenho({
           </span>
           <span>
             Descontos{" "}
-            <strong className="text-foreground">{formatCurrencyBRL(d.mes_ate_hoje.descontos)}</strong>
+            <strong className="text-foreground">
+              {formatCurrencyBRL(d.mes_ate_hoje.descontos)}
+            </strong>
           </span>
           <span>
-            Taxas <strong className="text-foreground">{formatCurrencyBRL(d.mes_ate_hoje.taxas)}</strong>
+            Taxas{" "}
+            <strong className="text-foreground">{formatCurrencyBRL(d.mes_ate_hoje.taxas)}</strong>
           </span>
           <span>
             Custo de recebimento{" "}
@@ -327,7 +335,6 @@ export function ResumoDesempenho({
             </strong>
           </span>
         </div>
-
       )}
 
       {/* EVOLUÇÃO */}
@@ -399,7 +406,9 @@ export function ResumoDesempenho({
                 <tr key={m.mes} className="border-b border-border last:border-0">
                   <td className="px-2 py-2 font-medium text-foreground">
                     {m.label}
-                    {m.parcial && <span className="ml-1 text-[10px] text-muted-foreground">(parcial)</span>}
+                    {m.parcial && (
+                      <span className="ml-1 text-[10px] text-muted-foreground">(parcial)</span>
+                    )}
                   </td>
                   <td className="px-2 py-2 text-right text-foreground">
                     {formatCurrencyBRL(m.faturamento)}

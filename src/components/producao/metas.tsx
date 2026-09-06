@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -37,7 +38,9 @@ export function MetasTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("metas_tecnicos")
-        .select("id, tecnico_id, tipo_meta, periodo_tipo, inicio, fim, valor_meta, quantidade_meta, ativo, tecnico:profiles(full_name)")
+        .select(
+          "id, tecnico_id, tipo_meta, periodo_tipo, inicio, fim, valor_meta, quantidade_meta, ativo, tecnico:profiles(full_name)",
+        )
         .order("inicio", { ascending: false });
       if (error) throw error;
       return data as unknown as MetaTecnico[];
@@ -88,11 +91,17 @@ export function MetasTab() {
       )}
 
       <div>
-        <h3 className="mb-2 font-display text-sm font-bold text-foreground">Níveis de Desempenho</h3>
+        <h3 className="mb-2 font-display text-sm font-bold text-foreground">
+          Níveis de Desempenho
+        </h3>
         <div className="flex flex-wrap gap-2">
           {(niveisQuery.data ?? []).map((n) => (
-            <span key={n.id} className={`rounded-full px-3 py-1 text-xs font-semibold ${NIVEL_BADGE[n.nome] ?? "bg-muted text-muted-foreground"}`}>
-              {n.nome}: {n.percentual_minimo}%{n.percentual_maximo != null ? `–${n.percentual_maximo}%` : "+"}
+            <span
+              key={n.id}
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${NIVEL_BADGE[n.nome] ?? "bg-muted text-muted-foreground"}`}
+            >
+              {n.nome}: {n.percentual_minimo}%
+              {n.percentual_maximo != null ? `–${n.percentual_maximo}%` : "+"}
             </span>
           ))}
         </div>
@@ -110,28 +119,41 @@ function MetaRow({ meta, podeConfigurar }: { meta: MetaTecnico; podeConfigurar: 
   const queryClient = useQueryClient();
   async function alternar() {
     try {
-      const { error } = await supabase.from("metas_tecnicos").update({ ativo: !meta.ativo } as never).eq("id", meta.id);
+      const { error } = await supabase
+        .from("metas_tecnicos")
+        .update({ ativo: !meta.ativo } as never)
+        .eq("id", meta.id);
       if (error) throw error;
       toast.success(meta.ativo ? "Meta desativada." : "Meta reativada.");
       invalidateProducao(queryClient);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao atualizar meta.");
+      toast.error(mensagemErro(err, "Falha ao atualizar meta."));
     }
   }
   return (
     <tr className="border-b border-border last:border-0">
       <td className="px-3 py-2 font-medium text-foreground">{meta.tecnico?.full_name ?? "—"}</td>
-      <td className="px-3 py-2 text-muted-foreground">{TIPO_META_LABEL[meta.tipo_meta] ?? meta.tipo_meta}</td>
       <td className="px-3 py-2 text-muted-foreground">
-        {PERIODO_META_LABEL[meta.periodo_tipo] ?? meta.periodo_tipo} · {formatDateOnlyISO(meta.inicio)} → {formatDateOnlyISO(meta.fim)}
+        {TIPO_META_LABEL[meta.tipo_meta] ?? meta.tipo_meta}
+      </td>
+      <td className="px-3 py-2 text-muted-foreground">
+        {PERIODO_META_LABEL[meta.periodo_tipo] ?? meta.periodo_tipo} ·{" "}
+        {formatDateOnlyISO(meta.inicio)} → {formatDateOnlyISO(meta.fim)}
       </td>
       <td className="px-3 py-2 text-foreground">
-        {meta.tipo_meta !== "quantidade" && meta.valor_meta != null && <span>{formatCurrencyBRL(meta.valor_meta)}</span>}
+        {meta.tipo_meta !== "quantidade" && meta.valor_meta != null && (
+          <span>{formatCurrencyBRL(meta.valor_meta)}</span>
+        )}
         {meta.tipo_meta === "combinada" && " + "}
-        {meta.tipo_meta !== "valor" && meta.quantidade_meta != null && <span>{meta.quantidade_meta} serviços</span>}
+        {meta.tipo_meta !== "valor" && meta.quantidade_meta != null && (
+          <span>{meta.quantidade_meta} serviços</span>
+        )}
       </td>
       <td className="px-3 py-2">
-        <Badge variant="outline" className={meta.ativo ? "border-primary/30 text-primary" : "text-muted-foreground"}>
+        <Badge
+          variant="outline"
+          className={meta.ativo ? "border-primary/30 text-primary" : "text-muted-foreground"}
+        >
           {meta.ativo ? "Ativa" : "Inativa"}
         </Badge>
       </td>
@@ -183,10 +205,22 @@ function MetaFormDialog({
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    if (!tecnicoId) { toast.error("Selecione o técnico."); return; }
-    if (!inicio || !fim) { toast.error("Informe o período da meta."); return; }
-    if (tipoMeta !== "quantidade" && (!valorMeta || valorMeta <= 0)) { toast.error("Informe o valor da meta."); return; }
-    if (tipoMeta !== "valor" && (!qtdMeta || Number(qtdMeta) <= 0)) { toast.error("Informe a quantidade da meta."); return; }
+    if (!tecnicoId) {
+      toast.error("Selecione o técnico.");
+      return;
+    }
+    if (!inicio || !fim) {
+      toast.error("Informe o período da meta.");
+      return;
+    }
+    if (tipoMeta !== "quantidade" && (!valorMeta || valorMeta <= 0)) {
+      toast.error("Informe o valor da meta.");
+      return;
+    }
+    if (tipoMeta !== "valor" && (!qtdMeta || Number(qtdMeta) <= 0)) {
+      toast.error("Informe a quantidade da meta.");
+      return;
+    }
     setSaving(true);
     try {
       const { error } = await supabase.from("metas_tecnicos").insert({
@@ -204,7 +238,7 @@ function MetaFormDialog({
       invalidateProducao(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao salvar meta.");
+      toast.error(mensagemErro(err, "Falha ao salvar meta."));
     } finally {
       setSaving(false);
     }
@@ -215,42 +249,91 @@ function MetaFormDialog({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-display">Nova Meta Técnica</DialogTitle>
-          <DialogDescription>A meta alimenta o progresso, a projeção e o nível de desempenho do técnico.</DialogDescription>
+          <DialogDescription>
+            A meta alimenta o progresso, a projeção e o nível de desempenho do técnico.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={(e) => void salvar(e)} className="space-y-3">
           <div>
-            <label htmlFor="mt-tecnico" className={labelClass}>Técnico *</label>
-            <select id="mt-tecnico" value={tecnicoId} onChange={(e) => setTecnicoId(e.target.value)} className={inputClass} required>
+            <label htmlFor="mt-tecnico" className={labelClass}>
+              Técnico *
+            </label>
+            <select
+              id="mt-tecnico"
+              value={tecnicoId}
+              onChange={(e) => setTecnicoId(e.target.value)}
+              className={inputClass}
+              required
+            >
               <option value="">Selecione…</option>
               {tecnicos.map((t) => (
-                <option key={t.id} value={t.id}>{t.full_name}</option>
+                <option key={t.id} value={t.id}>
+                  {t.full_name}
+                </option>
               ))}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="mt-tipo" className={labelClass}>Tipo *</label>
-              <select id="mt-tipo" value={tipoMeta} onChange={(e) => setTipoMeta(e.target.value as typeof tipoMeta)} className={inputClass}>
+              <label htmlFor="mt-tipo" className={labelClass}>
+                Tipo *
+              </label>
+              <select
+                id="mt-tipo"
+                value={tipoMeta}
+                onChange={(e) => setTipoMeta(e.target.value as typeof tipoMeta)}
+                className={inputClass}
+              >
                 {Object.entries(TIPO_META_LABEL).map(([v, l]) => (
-                  <option key={v} value={v}>{l}</option>
+                  <option key={v} value={v}>
+                    {l}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label htmlFor="mt-periodo" className={labelClass}>Período *</label>
-              <select id="mt-periodo" value={periodoTipo} onChange={(e) => setPeriodoTipo(e.target.value as typeof periodoTipo)} className={inputClass}>
+              <label htmlFor="mt-periodo" className={labelClass}>
+                Período *
+              </label>
+              <select
+                id="mt-periodo"
+                value={periodoTipo}
+                onChange={(e) => setPeriodoTipo(e.target.value as typeof periodoTipo)}
+                className={inputClass}
+              >
                 {Object.entries(PERIODO_META_LABEL).map(([v, l]) => (
-                  <option key={v} value={v}>{l}</option>
+                  <option key={v} value={v}>
+                    {l}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label htmlFor="mt-ini" className={labelClass}>Início *</label>
-              <input id="mt-ini" type="date" value={inicio} onChange={(e) => setInicio(e.target.value)} className={inputClass} required />
+              <label htmlFor="mt-ini" className={labelClass}>
+                Início *
+              </label>
+              <input
+                id="mt-ini"
+                type="date"
+                value={inicio}
+                onChange={(e) => setInicio(e.target.value)}
+                className={inputClass}
+                required
+              />
             </div>
             <div>
-              <label htmlFor="mt-fim" className={labelClass}>Fim *</label>
-              <input id="mt-fim" type="date" value={fim} min={inicio} onChange={(e) => setFim(e.target.value)} className={inputClass} required />
+              <label htmlFor="mt-fim" className={labelClass}>
+                Fim *
+              </label>
+              <input
+                id="mt-fim"
+                type="date"
+                value={fim}
+                min={inicio}
+                onChange={(e) => setFim(e.target.value)}
+                className={inputClass}
+                required
+              />
             </div>
             {tipoMeta !== "quantidade" && (
               <div>
@@ -260,14 +343,27 @@ function MetaFormDialog({
             )}
             {tipoMeta !== "valor" && (
               <div>
-                <label htmlFor="mt-qtd" className={labelClass}>Quantidade de Serviços *</label>
-                <input id="mt-qtd" type="number" min={1} value={qtdMeta} onChange={(e) => setQtdMeta(e.target.value)} className={inputClass} />
+                <label htmlFor="mt-qtd" className={labelClass}>
+                  Quantidade de Serviços *
+                </label>
+                <input
+                  id="mt-qtd"
+                  type="number"
+                  min={1}
+                  value={qtdMeta}
+                  onChange={(e) => setQtdMeta(e.target.value)}
+                  className={inputClass}
+                />
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
-            <Button type="submit" disabled={saving}>{saving ? "Salvando…" : "Salvar meta"}</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={saving}>
+              {saving ? "Salvando…" : "Salvar meta"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

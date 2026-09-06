@@ -37,7 +37,8 @@ function valorPadrao(campo: CampoCadastro): unknown {
 
 function novoFormulario(config: CadastroConfig, registro?: Registro): Record<string, unknown> {
   const base: Record<string, unknown> = {};
-  for (const c of config.campos) base[c.nome] = registro ? (registro[c.nome] ?? valorPadrao(c)) : valorPadrao(c);
+  for (const c of config.campos)
+    base[c.nome] = registro ? (registro[c.nome] ?? valorPadrao(c)) : valorPadrao(c);
   return base;
 }
 
@@ -53,7 +54,10 @@ export function AdminCadastros() {
   const [editando, setEditando] = useState<Registro | null>(null);
   const [form, setForm] = useState<Record<string, unknown>>(() => novoFormulario(config));
   const [alvoDesativar, setAlvoDesativar] = useState<Registro | null>(null);
-  const [dependencias, setDependencias] = useState<{ total: number; detalhes: { tabela: string; registros: number }[] } | null>(null);
+  const [dependencias, setDependencias] = useState<{
+    total: number;
+    detalhes: { tabela: string; registros: number }[];
+  } | null>(null);
 
   useEffect(() => {
     setForm(novoFormulario(config));
@@ -73,7 +77,8 @@ export function AdminCadastros() {
   });
 
   const colunas = useMemo(() => config.campos.filter((c) => c.colunaLista), [config]);
-  const invalidar = () => void queryClient.invalidateQueries({ queryKey: ["admin", "cadastro", tabela] });
+  const invalidar = () =>
+    void queryClient.invalidateQueries({ queryKey: ["admin", "cadastro", tabela] });
 
   function abrirNovo() {
     setEditando(null);
@@ -90,10 +95,7 @@ export function AdminCadastros() {
   async function salvar() {
     const faltando = config.campos.find((c) => c.obrigatorio && !String(form[c.nome] ?? "").trim());
     if (faltando) {
-      await executarAcao(
-        () => Promise.reject(new Error(`Informe: ${faltando.label}`)),
-        "",
-      );
+      await executarAcao(() => Promise.reject(new Error(`Informe: ${faltando.label}`)), "");
       return;
     }
     const ok = await executarAcao(
@@ -168,7 +170,8 @@ export function AdminCadastros() {
                       ? "Sim"
                       : "Não"
                     : c.tipo === "select"
-                      ? (c.opcoes?.find((o) => o.value === r[c.nome])?.label ?? String(r[c.nome] ?? "—"))
+                      ? (c.opcoes?.find((o) => o.value === r[c.nome])?.label ??
+                        String(r[c.nome] ?? "—"))
                       : String(r[c.nome] ?? "—")}
                 </td>
               ))}
@@ -189,7 +192,12 @@ export function AdminCadastros() {
                       disabled={!podeAdministrar}
                       onClick={() =>
                         void executarAcao(
-                          () => rpcAdmin("admin_cadastro_ativo", { p_tabela: tabela, p_id: r.id, p_ativo: true }),
+                          () =>
+                            rpcAdmin("admin_cadastro_ativo", {
+                              p_tabela: tabela,
+                              p_id: r.id,
+                              p_ativo: true,
+                            }),
                           "Cadastro reativado.",
                           invalidar,
                         )
@@ -198,7 +206,11 @@ export function AdminCadastros() {
                       Reativar
                     </BotaoAcao>
                   ) : (
-                    <BotaoAcao variant="destructive" disabled={!podeAdministrar} onClick={() => void abrirDesativacao(r)}>
+                    <BotaoAcao
+                      variant="destructive"
+                      disabled={!podeAdministrar}
+                      onClick={() => void abrirDesativacao(r)}
+                    >
                       Desativar
                     </BotaoAcao>
                   )}
@@ -224,7 +236,9 @@ export function AdminCadastros() {
                   <label className="flex items-center justify-between gap-3 text-sm">
                     <span>
                       <span className="font-medium text-foreground">{c.label}</span>
-                      {c.hint ? <span className="block text-xs text-muted-foreground">{c.hint}</span> : null}
+                      {c.hint ? (
+                        <span className="block text-xs text-muted-foreground">{c.hint}</span>
+                      ) : null}
                     </span>
                     <Switch
                       checked={!!form[c.nome]}
@@ -260,7 +274,8 @@ export function AdminCadastros() {
                         onChange={(e) =>
                           setForm((f) => ({
                             ...f,
-                            [c.nome]: c.tipo === "numero" ? Number(e.target.value || 0) : e.target.value,
+                            [c.nome]:
+                              c.tipo === "numero" ? Number(e.target.value || 0) : e.target.value,
                           }))
                         }
                       />

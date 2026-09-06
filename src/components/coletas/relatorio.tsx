@@ -6,7 +6,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatDateOnlyISO, formatDateTimeITV, todayManausISO } from "@/lib/format";
-import { rpcColetas, STATUS_COLETA, TIPO_LABEL, type ColetaStatus, type ColetaTipo } from "@/lib/coletas";
+import {
+  rpcColetas,
+  STATUS_COLETA,
+  TIPO_LABEL,
+  type ColetaStatus,
+  type ColetaTipo,
+} from "@/lib/coletas";
 import { StatusBadgeColeta } from "./shared";
 
 interface Detalhe {
@@ -67,7 +73,9 @@ export function RelatorioColetas() {
     const r = rel.resumo;
     const linhas = rel.detalhes
       .map(
-        (d) => `<tr><td>${TIPO_LABEL[d.tipo]}</td><td>${d.cliente_nome}</td><td>${tvLabel(d)}</td><td>${d.bairro ?? "—"}</td>
+        (
+          d,
+        ) => `<tr><td>${TIPO_LABEL[d.tipo]}</td><td>${d.cliente_nome}</td><td>${tvLabel(d)}</td><td>${d.bairro ?? "—"}</td>
         <td>${d.motorista ?? "—"}</td><td>${hora(d.horario)}</td><td>${STATUS_COLETA[d.status].label}</td></tr>`,
       )
       .join("");
@@ -119,8 +127,16 @@ export function RelatorioColetas() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <label className={labelClass} htmlFor="rel-data">Data</label>
-          <input id="rel-data" type="date" className={inputClass} value={data} onChange={(e) => setData(e.target.value)} />
+          <label className={labelClass} htmlFor="rel-data">
+            Data
+          </label>
+          <input
+            id="rel-data"
+            type="date"
+            className={inputClass}
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+          />
         </div>
         <Button variant="outline" onClick={gerarPdf} disabled={!rel}>
           <FileText className="mr-2 size-4" /> Gerar Relatório do Dia
@@ -146,7 +162,9 @@ export function RelatorioColetas() {
       </div>
 
       <section className="rounded-xl border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">Detalhamento do dia</h2>
+        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">
+          Detalhamento do dia
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -169,11 +187,17 @@ export function RelatorioColetas() {
                   <td className="px-3 py-2">{d.bairro ?? "—"}</td>
                   <td className="px-3 py-2">{d.motorista ?? "—"}</td>
                   <td className="px-3 py-2">{hora(d.horario)}</td>
-                  <td className="px-3 py-2"><StatusBadgeColeta status={d.status} /></td>
+                  <td className="px-3 py-2">
+                    <StatusBadgeColeta status={d.status} />
+                  </td>
                 </tr>
               ))}
               {(rel?.detalhes ?? []).length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">Sem dados</td></tr>
+                <tr>
+                  <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
+                    Sem dados
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -181,7 +205,9 @@ export function RelatorioColetas() {
       </section>
 
       <section className="rounded-xl border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">Produtividade por motorista</h2>
+        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">
+          Produtividade por motorista
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -204,7 +230,11 @@ export function RelatorioColetas() {
                 </tr>
               ))}
               {(rel?.por_motorista ?? []).length === 0 && (
-                <tr><td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">Sem dados</td></tr>
+                <tr>
+                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                    Sem dados
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

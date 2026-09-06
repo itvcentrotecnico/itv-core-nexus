@@ -131,7 +131,9 @@ export function AdminTaxasRecebimento() {
       setCriando(false);
       await queryClient.invalidateQueries({ queryKey: ["taxas-recebimento"] });
     } catch {
-      toast.error("Não foi possível cadastrar a taxa. Confira se já existe uma regra igual vigente.");
+      toast.error(
+        "Não foi possível cadastrar a taxa. Confira se já existe uma regra igual vigente.",
+      );
     } finally {
       setSalvando(false);
     }
@@ -145,7 +147,12 @@ export function AdminTaxasRecebimento() {
       descricao="Percentuais cobrados pelas adquirentes (Mercado Pago Point e Link). O Caixa aplica automaticamente a regra vigente por meio de pagamento e parcelamento."
       acoes={
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" disabled={!podeEditar} onClick={() => setCriando((v) => !v)}>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!podeEditar}
+            onClick={() => setCriando((v) => !v)}
+          >
             <Plus className="mr-2 size-4" /> Nova taxa
           </Button>
           <Button size="sm" disabled={!podeEditar || salvando} onClick={() => void salvarEdicoes()}>
@@ -157,53 +164,116 @@ export function AdminTaxasRecebimento() {
       {criando && (
         <div className="mb-5 grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-3 sm:grid-cols-4">
           <div>
-            <label className={labelClass} htmlFor="tx-adq">Adquirente</label>
-            <input id="tx-adq" className={inputClass} value={nova.adquirente}
-              onChange={(e) => setNova({ ...nova, adquirente: e.target.value })} />
+            <label className={labelClass} htmlFor="tx-adq">
+              Adquirente
+            </label>
+            <input
+              id="tx-adq"
+              className={inputClass}
+              value={nova.adquirente}
+              onChange={(e) => setNova({ ...nova, adquirente: e.target.value })}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-canal">Canal</label>
-            <input id="tx-canal" className={inputClass} value={nova.canal}
-              onChange={(e) => setNova({ ...nova, canal: e.target.value })} />
+            <label className={labelClass} htmlFor="tx-canal">
+              Canal
+            </label>
+            <input
+              id="tx-canal"
+              className={inputClass}
+              value={nova.canal}
+              onChange={(e) => setNova({ ...nova, canal: e.target.value })}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-meio">Meio</label>
-            <select id="tx-meio" className={inputClass} value={nova.meio_pagamento}
-              onChange={(e) => setNova({ ...nova, meio_pagamento: e.target.value })}>
+            <label className={labelClass} htmlFor="tx-meio">
+              Meio
+            </label>
+            <select
+              id="tx-meio"
+              className={inputClass}
+              value={nova.meio_pagamento}
+              onChange={(e) => setNova({ ...nova, meio_pagamento: e.target.value })}
+            >
               {Object.entries(MEIOS_LABEL).map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
+                <option key={v} value={v}>
+                  {l}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-mod">Modalidade</label>
-            <select id="tx-mod" className={inputClass} value={nova.modalidade}
-              onChange={(e) => setNova({ ...nova, modalidade: e.target.value })}>
+            <label className={labelClass} htmlFor="tx-mod">
+              Modalidade
+            </label>
+            <select
+              id="tx-mod"
+              className={inputClass}
+              value={nova.modalidade}
+              onChange={(e) => setNova({ ...nova, modalidade: e.target.value })}
+            >
               {Object.entries(MODALIDADES_LABEL).map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
+                <option key={v} value={v}>
+                  {l}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-parc">Parcelas</label>
-            <input id="tx-parc" type="number" min={1} max={24} className={inputClass} value={nova.parcelas}
-              onChange={(e) => setNova({ ...nova, parcelas: Number(e.target.value) || 1 })} />
+            <label className={labelClass} htmlFor="tx-parc">
+              Parcelas
+            </label>
+            <input
+              id="tx-parc"
+              type="number"
+              min={1}
+              max={24}
+              className={inputClass}
+              value={nova.parcelas}
+              onChange={(e) => setNova({ ...nova, parcelas: Number(e.target.value) || 1 })}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-pct">Taxa ITV (%)</label>
-            <input id="tx-pct" type="number" min={0} step="0.01" className={inputClass} value={nova.taxa_percentual}
-              onChange={(e) => setNova({ ...nova, taxa_percentual: Number(e.target.value) || 0 })} />
+            <label className={labelClass} htmlFor="tx-pct">
+              Taxa ITV (%)
+            </label>
+            <input
+              id="tx-pct"
+              type="number"
+              min={0}
+              step="0.01"
+              className={inputClass}
+              value={nova.taxa_percentual}
+              onChange={(e) => setNova({ ...nova, taxa_percentual: Number(e.target.value) || 0 })}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-cli">Juros do cliente (%)</label>
-            <input id="tx-cli" type="number" min={0} step="0.01" className={inputClass}
+            <label className={labelClass} htmlFor="tx-cli">
+              Juros do cliente (%)
+            </label>
+            <input
+              id="tx-cli"
+              type="number"
+              min={0}
+              step="0.01"
+              className={inputClass}
               value={nova.taxa_cliente_percentual}
-              onChange={(e) => setNova({ ...nova, taxa_cliente_percentual: Number(e.target.value) || 0 })} />
+              onChange={(e) =>
+                setNova({ ...nova, taxa_cliente_percentual: Number(e.target.value) || 0 })
+              }
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="tx-vig">Vigência a partir de</label>
-            <input id="tx-vig" type="date" className={inputClass} value={nova.vigencia_inicio}
-              onChange={(e) => setNova({ ...nova, vigencia_inicio: e.target.value })} />
+            <label className={labelClass} htmlFor="tx-vig">
+              Vigência a partir de
+            </label>
+            <input
+              id="tx-vig"
+              type="date"
+              className={inputClass}
+              value={nova.vigencia_inicio}
+              onChange={(e) => setNova({ ...nova, vigencia_inicio: e.target.value })}
+            />
           </div>
           <div className="col-span-2 flex items-end sm:col-span-4">
             <Button size="sm" disabled={!podeEditar || salvando} onClick={() => void criar()}>
@@ -235,7 +305,9 @@ export function AdminTaxasRecebimento() {
                   <tbody>
                     {itens.map((t) => (
                       <tr key={t.id} className="border-t border-border">
-                        <td className="px-3 py-2">{MEIOS_LABEL[t.meio_pagamento] ?? t.meio_pagamento}</td>
+                        <td className="px-3 py-2">
+                          {MEIOS_LABEL[t.meio_pagamento] ?? t.meio_pagamento}
+                        </td>
                         <td className="px-3 py-2">{t.parcelas}x</td>
                         <td className="px-3 py-2">
                           <input
@@ -247,7 +319,10 @@ export function AdminTaxasRecebimento() {
                             className={inputClass}
                             value={edicoes[t.id] ?? t.taxa_percentual}
                             onChange={(e) =>
-                              setEdicoes((prev) => ({ ...prev, [t.id]: Number(e.target.value) || 0 }))
+                              setEdicoes((prev) => ({
+                                ...prev,
+                                [t.id]: Number(e.target.value) || 0,
+                              }))
                             }
                           />
                         </td>

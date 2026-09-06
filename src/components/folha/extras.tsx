@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -29,7 +30,13 @@ import { invalidateFolha } from "./colaborador-form";
 
 /* ============================= BENEFÍCIOS ============================= */
 
-export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colaborador; onClose: () => void }) {
+export function BeneficiosDialog({
+  colaborador,
+  onClose,
+}: {
+  colaborador: Colaborador;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
   const [tipo, setTipo] = useState<ColaboradorBeneficio["tipo"]>("vale_transporte");
   const [descricao, setDescricao] = useState("");
@@ -68,7 +75,7 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
       setDescricao("");
       invalidateFolha(queryClient);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao cadastrar benefício.");
+      toast.error(mensagemErro(err, "Falha ao cadastrar benefício."));
     } finally {
       setSaving(false);
     }
@@ -93,13 +100,19 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
         <DialogHeader>
           <DialogTitle>Benefícios — {colaborador.nome_exibicao || colaborador.nome}</DialogTitle>
           <DialogDescription>
-            Benefícios recorrentes entram automaticamente na geração da folha enquanto estiverem ativos e vigentes.
+            Benefícios recorrentes entram automaticamente na geração da folha enquanto estiverem
+            ativos e vigentes.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={adicionar} className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-secondary/30 p-3">
+        <form
+          onSubmit={adicionar}
+          className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-secondary/30 p-3"
+        >
           <div>
-            <label htmlFor="bn-tipo" className={labelClass}>Tipo *</label>
+            <label htmlFor="bn-tipo" className={labelClass}>
+              Tipo *
+            </label>
             <select
               id="bn-tipo"
               value={tipo}
@@ -107,21 +120,40 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
               className={inputClass}
             >
               {BENEFICIO_TIPOS.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="bn-valor" className={labelClass}>Valor Mensal *</label>
+            <label htmlFor="bn-valor" className={labelClass}>
+              Valor Mensal *
+            </label>
             <MoneyInput id="bn-valor" value={valor} onChange={setValor} />
           </div>
           <div>
-            <label htmlFor="bn-ini" className={labelClass}>Início da Vigência *</label>
-            <input id="bn-ini" type="date" value={inicio} onChange={(e) => setInicio(e.target.value)} className={inputClass} />
+            <label htmlFor="bn-ini" className={labelClass}>
+              Início da Vigência *
+            </label>
+            <input
+              id="bn-ini"
+              type="date"
+              value={inicio}
+              onChange={(e) => setInicio(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="bn-desc" className={labelClass}>Descrição</label>
-            <input id="bn-desc" value={descricao} onChange={(e) => setDescricao(e.target.value)} className={inputClass} />
+            <label htmlFor="bn-desc" className={labelClass}>
+              Descrição
+            </label>
+            <input
+              id="bn-desc"
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div className="col-span-2 flex justify-end">
             <Button type="submit" size="sm" disabled={saving || valor == null || !inicio}>
@@ -145,7 +177,9 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
                 {b.fim_vigencia ? ` até ${formatDateOnlyISO(b.fim_vigencia)}` : ""}
               </span>
               {!b.ativo && (
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Inativo</span>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                  Inativo
+                </span>
               )}
               <button
                 type="button"
@@ -159,7 +193,9 @@ export function BeneficiosDialog({ colaborador, onClose }: { colaborador: Colabo
         </ul>
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Fechar</Button>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Fechar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -205,11 +241,13 @@ export function AdiantamentoForm({
         motivo: motivo.trim(),
       } as never);
       if (error) throw error;
-      toast.success("Adiantamento registrado. Será sugerido como desconto na folha da competência.");
+      toast.success(
+        "Adiantamento registrado. Será sugerido como desconto na folha da competência.",
+      );
       invalidateFolha(queryClient);
       onClose();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Falha ao registrar adiantamento.");
+      toast.error(mensagemErro(err, "Falha ao registrar adiantamento."));
     } finally {
       setSaving(false);
     }
@@ -227,24 +265,52 @@ export function AdiantamentoForm({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="ad-data" className={labelClass}>Data *</label>
-              <input id="ad-data" type="date" value={data} onChange={(e) => setData(e.target.value)} className={inputClass} />
+              <label htmlFor="ad-data" className={labelClass}>
+                Data *
+              </label>
+              <input
+                id="ad-data"
+                type="date"
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label htmlFor="ad-valor" className={labelClass}>Valor *</label>
+              <label htmlFor="ad-valor" className={labelClass}>
+                Valor *
+              </label>
               <MoneyInput id="ad-valor" value={valor} onChange={setValor} />
             </div>
           </div>
           <div>
-            <label htmlFor="ad-comp" className={labelClass}>Competência do Desconto *</label>
-            <input id="ad-comp" type="month" value={competencia} onChange={(e) => setCompetencia(e.target.value)} className={inputClass} />
+            <label htmlFor="ad-comp" className={labelClass}>
+              Competência do Desconto *
+            </label>
+            <input
+              id="ad-comp"
+              type="month"
+              value={competencia}
+              onChange={(e) => setCompetencia(e.target.value)}
+              className={inputClass}
+            />
           </div>
           <div>
-            <label htmlFor="ad-motivo" className={labelClass}>Motivo *</label>
-            <Textarea id="ad-motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} required />
+            <label htmlFor="ad-motivo" className={labelClass}>
+              Motivo *
+            </label>
+            <Textarea
+              id="ad-motivo"
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+              rows={2}
+              required
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancelar
+            </Button>
             <Button type="submit" disabled={saving || !valor || !motivo.trim() || !competencia}>
               {saving ? "Registrando…" : "Registrar adiantamento"}
             </Button>
@@ -259,15 +325,37 @@ export function AdiantamentoForm({
 
 interface HistoricoData {
   ok: boolean;
-  salarios: { inicio_vigencia: string; fim_vigencia: string | null; valor: number; motivo: string | null; responsavel: string | null }[];
-  competencias: { competencia: string; status: string; proventos: number; descontos: number; total: number; pago: number }[];
+  salarios: {
+    inicio_vigencia: string;
+    fim_vigencia: string | null;
+    valor: number;
+    motivo: string | null;
+    responsavel: string | null;
+  }[];
+  competencias: {
+    competencia: string;
+    status: string;
+    proventos: number;
+    descontos: number;
+    total: number;
+    pago: number;
+  }[];
   pagamentos: { data: string; valor: number; observacao: string | null; competencia: string }[];
 }
 
-export function HistoricoColaboradorDialog({ colaborador, onClose }: { colaborador: Colaborador; onClose: () => void }) {
+export function HistoricoColaboradorDialog({
+  colaborador,
+  onClose,
+}: {
+  colaborador: Colaborador;
+  onClose: () => void;
+}) {
   const historicoQuery = useQuery({
     queryKey: ["folha", "historico", colaborador.id],
-    queryFn: () => rpcFin<HistoricoData & { message?: string }>("folha_historico_colaborador", { p_colaborador_id: colaborador.id }),
+    queryFn: () =>
+      rpcFin<HistoricoData & { message?: string }>("folha_historico_colaborador", {
+        p_colaborador_id: colaborador.id,
+      }),
   });
   const h = historicoQuery.data;
 
@@ -282,16 +370,25 @@ export function HistoricoColaboradorDialog({ colaborador, onClose }: { colaborad
         {h && (
           <div className="space-y-5">
             <section>
-              <h4 className="mb-2 font-display text-sm font-bold text-foreground">Histórico Salarial</h4>
+              <h4 className="mb-2 font-display text-sm font-bold text-foreground">
+                Histórico Salarial
+              </h4>
               <ul className="divide-y divide-border rounded-lg border border-border">
-                {h.salarios.length === 0 && <li className="px-3 py-2 text-sm text-muted-foreground">Sem registros.</li>}
+                {h.salarios.length === 0 && (
+                  <li className="px-3 py-2 text-sm text-muted-foreground">Sem registros.</li>
+                )}
                 {h.salarios.map((s, i) => (
                   <li key={i} className="flex flex-wrap items-center gap-2 px-3 py-2 text-sm">
-                    <span className="font-semibold text-foreground">{formatCurrencyBRL(s.valor)}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDateOnlyISO(s.inicio_vigencia)} → {s.fim_vigencia ? formatDateOnlyISO(s.fim_vigencia) : "vigente"}
+                    <span className="font-semibold text-foreground">
+                      {formatCurrencyBRL(s.valor)}
                     </span>
-                    {s.motivo && <span className="w-full text-xs text-muted-foreground">{s.motivo}</span>}
+                    <span className="text-xs text-muted-foreground">
+                      {formatDateOnlyISO(s.inicio_vigencia)} →{" "}
+                      {s.fim_vigencia ? formatDateOnlyISO(s.fim_vigencia) : "vigente"}
+                    </span>
+                    {s.motivo && (
+                      <span className="w-full text-xs text-muted-foreground">{s.motivo}</span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -299,15 +396,24 @@ export function HistoricoColaboradorDialog({ colaborador, onClose }: { colaborad
             <section>
               <h4 className="mb-2 font-display text-sm font-bold text-foreground">Competências</h4>
               <ul className="divide-y divide-border rounded-lg border border-border">
-                {h.competencias.length === 0 && <li className="px-3 py-2 text-sm text-muted-foreground">Nenhuma folha.</li>}
+                {h.competencias.length === 0 && (
+                  <li className="px-3 py-2 text-sm text-muted-foreground">Nenhuma folha.</li>
+                )}
                 {h.competencias.map((c, i) => (
                   <li key={i} className="flex flex-wrap items-center gap-2 px-3 py-2 text-sm">
-                    <span className="font-medium text-foreground">{formatDateOnlyISO(c.competencia).slice(3)}</span>
-                    <span className="text-xs text-muted-foreground">
-                      Proventos {formatCurrencyBRL(c.proventos)} · Descontos {formatCurrencyBRL(c.descontos)}
+                    <span className="font-medium text-foreground">
+                      {formatDateOnlyISO(c.competencia).slice(3)}
                     </span>
-                    <span className="ml-auto font-semibold text-foreground">{formatCurrencyBRL(c.total)}</span>
-                    <span className="text-xs text-muted-foreground">Pago: {formatCurrencyBRL(c.pago)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      Proventos {formatCurrencyBRL(c.proventos)} · Descontos{" "}
+                      {formatCurrencyBRL(c.descontos)}
+                    </span>
+                    <span className="ml-auto font-semibold text-foreground">
+                      {formatCurrencyBRL(c.total)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Pago: {formatCurrencyBRL(c.pago)}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -315,12 +421,18 @@ export function HistoricoColaboradorDialog({ colaborador, onClose }: { colaborad
             <section>
               <h4 className="mb-2 font-display text-sm font-bold text-foreground">Pagamentos</h4>
               <ul className="divide-y divide-border rounded-lg border border-border">
-                {h.pagamentos.length === 0 && <li className="px-3 py-2 text-sm text-muted-foreground">Nenhum pagamento.</li>}
+                {h.pagamentos.length === 0 && (
+                  <li className="px-3 py-2 text-sm text-muted-foreground">Nenhum pagamento.</li>
+                )}
                 {h.pagamentos.map((p, i) => (
                   <li key={i} className="flex flex-wrap items-center gap-2 px-3 py-2 text-sm">
-                    <span className="text-xs text-muted-foreground">{formatDateOnlyISO(p.data)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDateOnlyISO(p.data)}
+                    </span>
                     <span className="font-semibold text-primary">{formatCurrencyBRL(p.valor)}</span>
-                    {p.observacao && <span className="text-xs text-muted-foreground">{p.observacao}</span>}
+                    {p.observacao && (
+                      <span className="text-xs text-muted-foreground">{p.observacao}</span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -328,7 +440,9 @@ export function HistoricoColaboradorDialog({ colaborador, onClose }: { colaborad
           </div>
         )}
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Fechar</Button>
+          <Button type="button" variant="outline" onClick={onClose}>
+            Fechar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

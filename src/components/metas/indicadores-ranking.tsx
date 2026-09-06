@@ -2,7 +2,12 @@ import { useMemo, useState } from "react";
 
 import { formatCurrencyBRL } from "@/lib/format";
 import type { IndicadoresPeriodo, MetasPainel, TecnicoDesempenho } from "@/lib/metas";
-import { NivelBadge, ProgressBarMeta, VariacaoBadge, useTecnicosDesempenho } from "@/components/metas/shared";
+import {
+  NivelBadge,
+  ProgressBarMeta,
+  VariacaoBadge,
+  useTecnicosDesempenho,
+} from "@/components/metas/shared";
 import { cn } from "@/lib/utils";
 
 interface IndicadorDef {
@@ -13,18 +18,78 @@ interface IndicadorDef {
 }
 
 const INDICADORES: IndicadorDef[] = [
-  { key: "faturamento", titulo: "Faturamento", formato: "moeda", descricao: "Valor final dos lançamentos ativos do Caixa." },
-  { key: "receita_liquida", titulo: "Receita Líquida", formato: "moeda", descricao: "Faturamento menos taxas de pagamento." },
-  { key: "ticket_medio", titulo: "Ticket Médio", formato: "moeda", descricao: "Faturamento dividido pela quantidade de lançamentos." },
-  { key: "os_faturadas", titulo: "OS Faturadas", formato: "numero", descricao: "Ordens de serviço distintas faturadas no Caixa." },
-  { key: "custos_diretos", titulo: "Custos Diretos", formato: "moeda", descricao: "Custos confirmados de peças e serviços por OS." },
-  { key: "comissoes", titulo: "Comissões", formato: "moeda", descricao: "Comissões ativas (não canceladas) do período." },
-  { key: "margem_contribuicao", titulo: "Margem de Contribuição", formato: "moeda", descricao: "Receita líquida − custos diretos − comissões." },
-  { key: "margem_pct", titulo: "Margem %", formato: "percentual", descricao: "Margem de contribuição sobre a receita líquida." },
-  { key: "despesas_operacionais", titulo: "Despesas Operacionais", formato: "moeda", descricao: "Despesas ativas por competência." },
-  { key: "folha_gerencial", titulo: "Folha Gerencial", formato: "moeda", descricao: "Proventos menos descontos da folha." },
-  { key: "resultado_operacional", titulo: "Resultado Operacional", formato: "moeda", descricao: "Margem de contribuição − despesas − folha." },
-  { key: "producao_validada", titulo: "Produção Validada", formato: "moeda", descricao: "Serviços técnicos validados pela gerência." },
+  {
+    key: "faturamento",
+    titulo: "Faturamento",
+    formato: "moeda",
+    descricao: "Valor final dos lançamentos ativos do Caixa.",
+  },
+  {
+    key: "receita_liquida",
+    titulo: "Receita Líquida",
+    formato: "moeda",
+    descricao: "Faturamento menos taxas de pagamento.",
+  },
+  {
+    key: "ticket_medio",
+    titulo: "Ticket Médio",
+    formato: "moeda",
+    descricao: "Faturamento dividido pela quantidade de lançamentos.",
+  },
+  {
+    key: "os_faturadas",
+    titulo: "OS Faturadas",
+    formato: "numero",
+    descricao: "Ordens de serviço distintas faturadas no Caixa.",
+  },
+  {
+    key: "custos_diretos",
+    titulo: "Custos Diretos",
+    formato: "moeda",
+    descricao: "Custos confirmados de peças e serviços por OS.",
+  },
+  {
+    key: "comissoes",
+    titulo: "Comissões",
+    formato: "moeda",
+    descricao: "Comissões ativas (não canceladas) do período.",
+  },
+  {
+    key: "margem_contribuicao",
+    titulo: "Margem de Contribuição",
+    formato: "moeda",
+    descricao: "Receita líquida − custos diretos − comissões.",
+  },
+  {
+    key: "margem_pct",
+    titulo: "Margem %",
+    formato: "percentual",
+    descricao: "Margem de contribuição sobre a receita líquida.",
+  },
+  {
+    key: "despesas_operacionais",
+    titulo: "Despesas Operacionais",
+    formato: "moeda",
+    descricao: "Despesas ativas por competência.",
+  },
+  {
+    key: "folha_gerencial",
+    titulo: "Folha Gerencial",
+    formato: "moeda",
+    descricao: "Proventos menos descontos da folha.",
+  },
+  {
+    key: "resultado_operacional",
+    titulo: "Resultado Operacional",
+    formato: "moeda",
+    descricao: "Margem de contribuição − despesas − folha.",
+  },
+  {
+    key: "producao_validada",
+    titulo: "Produção Validada",
+    formato: "moeda",
+    descricao: "Serviços técnicos validados pela gerência.",
+  },
 ];
 
 function fmt(v: number, formato: IndicadorDef["formato"]): string {
@@ -42,18 +107,24 @@ export function IndicadoresTab({ painel }: { painel: MetasPainel }) {
         const anterior = painel.anterior[ind.key] ?? 0;
         return (
           <div key={ind.key} className="rounded-xl border border-border bg-card p-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{ind.titulo}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              {ind.titulo}
+            </p>
             <p
               className={cn(
                 "mt-1 font-display text-xl font-bold",
-                ind.key === "resultado_operacional" && atual < 0 ? "text-destructive" : "text-card-foreground",
+                ind.key === "resultado_operacional" && atual < 0
+                  ? "text-destructive"
+                  : "text-card-foreground",
               )}
             >
               {fmt(atual, ind.formato)}
             </p>
             <div className="mt-1 flex items-center gap-2">
               <VariacaoBadge atual={atual} anterior={anterior} />
-              <span className="text-[11px] text-muted-foreground">anterior: {fmt(anterior, ind.formato)}</span>
+              <span className="text-[11px] text-muted-foreground">
+                anterior: {fmt(anterior, ind.formato)}
+              </span>
             </div>
             <p className="mt-2 text-[11px] leading-snug text-muted-foreground">{ind.descricao}</p>
           </div>
@@ -151,7 +222,9 @@ export function RankingTab({ range }: { range: { from: string; to: string } }) {
                 <span
                   className={cn(
                     "flex size-8 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold",
-                    i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+                    i === 0
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground",
                   )}
                 >
                   {i + 1}
@@ -162,12 +235,17 @@ export function RankingTab({ range }: { range: { from: string; to: string } }) {
                     <p className="text-sm font-bold text-foreground">{fmtCriterio(v, criterio)}</p>
                   </div>
                   <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${(v / max) * 100}%` }} />
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${(v / max) * 100}%` }}
+                    />
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
                     <span>{t.validados} validados</span>
                     <span>Produção {formatCurrencyBRL(t.producao_validada)}</span>
-                    {t.meta?.percentual != null && <span>Meta {t.meta.percentual.toFixed(0)}%</span>}
+                    {t.meta?.percentual != null && (
+                      <span>Meta {t.meta.percentual.toFixed(0)}%</span>
+                    )}
                     <NivelBadge nivel={t.meta?.nivel ?? null} />
                   </div>
                 </div>

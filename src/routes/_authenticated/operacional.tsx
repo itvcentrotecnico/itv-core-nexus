@@ -35,7 +35,8 @@ function OperacionalPage() {
       <header>
         <h1 className="font-display text-xl font-bold text-foreground">Central Operacional</h1>
         <p className="text-sm text-muted-foreground">
-          Camada de controle do Gerente Operacional: fluxo das TVs, validação técnica, comissões e fechamento semanal.
+          Camada de controle do Gerente Operacional: fluxo das TVs, validação técnica, comissões e
+          fechamento semanal.
         </p>
       </header>
 

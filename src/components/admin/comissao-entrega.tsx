@@ -5,7 +5,14 @@ import { Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { Carregando, SecaoAdmin, SemDados, TabelaAdmin, executarAcao, rpcAdmin } from "@/components/admin/shared";
+import {
+  Carregando,
+  SecaoAdmin,
+  SemDados,
+  TabelaAdmin,
+  executarAcao,
+  rpcAdmin,
+} from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { CONFIG_PADRAO, type ComissaoEntregaConfig, type Entregador } from "@/lib/comissao-entrega";
@@ -14,7 +21,8 @@ import { formatCurrencyBRL } from "@/lib/format";
 export function AdminComissaoEntrega() {
   const { isAdmin, can } = useAccess();
   const queryClient = useQueryClient();
-  const podeConfigurar = isAdmin || can("comissao_entrega", "configurar") || can("admin_parametros", "configurar");
+  const podeConfigurar =
+    isAdmin || can("comissao_entrega", "configurar") || can("admin_parametros", "configurar");
 
   const [cfg, setCfg] = useState<ComissaoEntregaConfig>(CONFIG_PADRAO);
 
@@ -157,7 +165,9 @@ export function AdminComissaoEntrega() {
                           }),
                         "Colaborador atualizado.",
                         () => {
-                          void queryClient.invalidateQueries({ queryKey: ["admin", "comissao-entrega-colaboradores"] });
+                          void queryClient.invalidateQueries({
+                            queryKey: ["admin", "comissao-entrega-colaboradores"],
+                          });
                           void queryClient.invalidateQueries({ queryKey: ["comissao-entrega"] });
                         },
                       )

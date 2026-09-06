@@ -83,18 +83,27 @@ export function EmpresaTab({ painel, podeCriar, podeEditar, podeEncerrar, podeCo
                     <p className="font-medium text-foreground">{m.nome}</p>
                     <p className="text-xs text-muted-foreground">
                       {TIPO_META_EMPRESA_LABEL[m.tipo]}
-                      {m.principal && <span className="ml-1 font-semibold text-primary">· Principal</span>}
+                      {m.principal && (
+                        <span className="ml-1 font-semibold text-primary">· Principal</span>
+                      )}
                     </p>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {formatDateOnlyISO(m.data_inicio)} a {formatDateOnlyISO(m.data_fim)}
                   </td>
-                  <td className="px-4 py-3 font-medium text-foreground">{formatMetaValor(m.valor_alvo, m.unidade)}</td>
-                  <td className="px-4 py-3 text-foreground">{formatMetaValor(m.realizado, m.unidade)}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">
+                    {formatMetaValor(m.valor_alvo, m.unidade)}
+                  </td>
+                  <td className="px-4 py-3 text-foreground">
+                    {formatMetaValor(m.realizado, m.unidade)}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div className="w-24">
-                        <ProgressBarMeta percentual={m.percentual} statusProjecao={m.status_projecao} />
+                        <ProgressBarMeta
+                          percentual={m.percentual}
+                          statusProjecao={m.status_projecao}
+                        />
                       </div>
                       <span className="text-xs font-semibold text-foreground">
                         {m.percentual.toFixed(0)}%
@@ -134,7 +143,8 @@ export function EmpresaTab({ painel, podeCriar, podeEditar, podeEncerrar, podeCo
                             <button
                               type="button"
                               onClick={() => {
-                                const motivo = window.prompt("Motivo do cancelamento (opcional):") ?? undefined;
+                                const motivo =
+                                  window.prompt("Motivo do cancelamento (opcional):") ?? undefined;
                                 void mudarStatusMeta(qc, m.id, "cancelada", motivo);
                               }}
                               className="rounded-md border border-destructive/30 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/5"
@@ -155,7 +165,11 @@ export function EmpresaTab({ painel, podeCriar, podeEditar, podeEncerrar, podeCo
 
       <MetaFormDialog open={formOpen} onOpenChange={setFormOpen} meta={editando} />
       {painel.faixas_projecao && (
-        <FaixasDialog open={faixasOpen} onOpenChange={setFaixasOpen} faixas={painel.faixas_projecao} />
+        <FaixasDialog
+          open={faixasOpen}
+          onOpenChange={setFaixasOpen}
+          faixas={painel.faixas_projecao}
+        />
       )}
     </div>
   );

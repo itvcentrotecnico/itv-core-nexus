@@ -30,8 +30,21 @@ export interface RelFaturamento {
     ticket_medio: number;
   };
   por_dia: { data: string; faturamento: number; os: number; ticket_medio: number }[];
-  por_semana: { semana_inicio: string; faturamento: number; os: number; ticket_medio: number; variacao_pct: number | null }[];
-  por_mes: { mes: string; faturamento: number; receita_liquida: number; os: number; ticket_medio: number; variacao_pct: number | null }[];
+  por_semana: {
+    semana_inicio: string;
+    faturamento: number;
+    os: number;
+    ticket_medio: number;
+    variacao_pct: number | null;
+  }[];
+  por_mes: {
+    mes: string;
+    faturamento: number;
+    receita_liquida: number;
+    os: number;
+    ticket_medio: number;
+    variacao_pct: number | null;
+  }[];
   medias: { m3: number; m6: number; m12: number };
 }
 
@@ -39,13 +52,39 @@ export interface RelProducao {
   ok: boolean;
   code?: string;
   message?: string;
-  resumo: { servicos_validados: number; valor_producao: number; valor_medio: number; tecnicos_participantes: number };
+  resumo: {
+    servicos_validados: number;
+    valor_producao: number;
+    valor_medio: number;
+    tecnicos_participantes: number;
+  };
   por_dia: { data: string; servicos: number; valor: number; media: number }[];
   por_mes: { mes: string; servicos: number; valor: number; media: number }[];
-  por_tipo: { tipo: string; quantidade: number; pct: number; valor: number; ticket_medio: number; receita_associada: number }[];
-  por_marca: { marca: string; quantidade: number; pct: number; receita_associada: number; ticket_medio: number }[];
+  por_tipo: {
+    tipo: string;
+    quantidade: number;
+    pct: number;
+    valor: number;
+    ticket_medio: number;
+    receita_associada: number;
+  }[];
+  por_marca: {
+    marca: string;
+    quantidade: number;
+    pct: number;
+    receita_associada: number;
+    ticket_medio: number;
+  }[];
   marca_x_servico: { marca: string; tipo: string; quantidade: number }[];
-  por_modelo: { marca: string; modelo: string; polegadas: number | null; quantidade: number; receita_associada: number; ticket_medio: number; servicos_comuns: string | null }[];
+  por_modelo: {
+    marca: string;
+    modelo: string;
+    polegadas: number | null;
+    quantidade: number;
+    receita_associada: number;
+    ticket_medio: number;
+    servicos_comuns: string | null;
+  }[];
   modelo_x_servico: { modelo: string; tipo: string; quantidade: number }[];
   marca_x_peca: { marca: string; categoria: string; quantidade: number; custo_total: number }[];
 }
@@ -117,24 +156,35 @@ export interface RelPlanejamento {
     faixa_sugerida: { min: number; max: number };
     projecao_servicos: number;
   };
-  tecnicos: { tecnico: string; media_3m: number; melhor_mes: number; atual: number; ticket_medio: number; servicos_media: number }[];
-  marcas: { marca: string; participacao_pct: number; media_mensal: number; projecao_servicos: number }[];
+  tecnicos: {
+    tecnico: string;
+    media_3m: number;
+    melhor_mes: number;
+    atual: number;
+    ticket_medio: number;
+    servicos_media: number;
+  }[];
+  marcas: {
+    marca: string;
+    participacao_pct: number;
+    media_mensal: number;
+    projecao_servicos: number;
+  }[];
   servicos: { tipo: string; media_mensal: number; total_3m: number }[];
   modelos: { modelo: string; marca: string; media_mensal: number; total_3m: number }[];
   alertas: { tipo: string; texto: string }[];
-  snapshots: { competencia: string; faturamento: number; receita_liquida: number; os: number; ticket_medio: number; resultado: number }[];
+  snapshots: {
+    competencia: string;
+    faturamento: number;
+    receita_liquida: number;
+    os: number;
+    ticket_medio: number;
+    resultado: number;
+  }[];
 }
 
 export type PeriodoPreset =
-  | "hoje"
-  | "semana"
-  | "mes"
-  | "mes-anterior"
-  | "3m"
-  | "6m"
-  | "12m"
-  | "ano"
-  | "personalizado";
+  "hoje" | "semana" | "mes" | "mes-anterior" | "3m" | "6m" | "12m" | "ano" | "personalizado";
 
 export const PERIODO_PRESETS: { key: PeriodoPreset; label: string }[] = [
   { key: "hoje", label: "Hoje" },
@@ -153,7 +203,11 @@ function iso(dt: Date): string {
 }
 
 /** Intervalo do preset no timezone da operação (America/Manaus). */
-export function presetRange(preset: PeriodoPreset, customFrom: string, customTo: string): { from: string; to: string } | null {
+export function presetRange(
+  preset: PeriodoPreset,
+  customFrom: string,
+  customTo: string,
+): { from: string; to: string } | null {
   const hoje = new Date();
   const y = hoje.getFullYear();
   const m = hoje.getMonth();
@@ -184,7 +238,20 @@ export function presetRange(preset: PeriodoPreset, customFrom: string, customTo:
 
 /** Rótulo "Mmm/AAAA" para competência ISO. */
 export function labelMes(isoMes: string): string {
-  const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const meses = [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez",
+  ];
   const [, m] = isoMes.split("-");
   return `${meses[Number(m) - 1]}/${isoMes.slice(0, 4)}`;
 }

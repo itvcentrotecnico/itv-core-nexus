@@ -47,7 +47,8 @@ export function RelatorioPeriodoColetas() {
 
   const query = useQuery({
     queryKey: ["coletas", "relatorio-periodo", inicio, fim],
-    queryFn: () => rpcColetas<RelatorioPeriodo>("coletas_relatorio_periodo", { p_ini: inicio, p_fim: fim }),
+    queryFn: () =>
+      rpcColetas<RelatorioPeriodo>("coletas_relatorio_periodo", { p_ini: inicio, p_fim: fim }),
   });
 
   const rel = query.data;
@@ -104,12 +105,28 @@ export function RelatorioPeriodoColetas() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <label className={labelClass} htmlFor="per-ini">De</label>
-          <input id="per-ini" type="date" className={inputClass} value={inicio} onChange={(e) => setInicio(e.target.value)} />
+          <label className={labelClass} htmlFor="per-ini">
+            De
+          </label>
+          <input
+            id="per-ini"
+            type="date"
+            className={inputClass}
+            value={inicio}
+            onChange={(e) => setInicio(e.target.value)}
+          />
         </div>
         <div>
-          <label className={labelClass} htmlFor="per-fim">Até</label>
-          <input id="per-fim" type="date" className={inputClass} value={fim} onChange={(e) => setFim(e.target.value)} />
+          <label className={labelClass} htmlFor="per-fim">
+            Até
+          </label>
+          <input
+            id="per-fim"
+            type="date"
+            className={inputClass}
+            value={fim}
+            onChange={(e) => setFim(e.target.value)}
+          />
         </div>
         <div className="flex gap-2">
           {[
@@ -158,7 +175,9 @@ export function RelatorioPeriodoColetas() {
       </div>
 
       <section className="rounded-xl border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">Resumo por data</h2>
+        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">
+          Resumo por data
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -194,7 +213,11 @@ export function RelatorioPeriodoColetas() {
                 </tr>
               ))}
               {porDia.length === 0 && (
-                <tr><td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">Sem dados</td></tr>
+                <tr>
+                  <td colSpan={8} className="px-3 py-6 text-center text-muted-foreground">
+                    Sem dados
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -202,7 +225,9 @@ export function RelatorioPeriodoColetas() {
       </section>
 
       <section className="rounded-xl border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">Resumo por status</h2>
+        <h2 className="border-b border-border px-4 py-3 font-display text-sm font-bold">
+          Resumo por status
+        </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -217,7 +242,9 @@ export function RelatorioPeriodoColetas() {
             <tbody>
               {porStatus.map((s) => (
                 <tr key={s.status} className="border-t border-border/60">
-                  <td className="px-3 py-2"><StatusBadgeColeta status={s.status} /></td>
+                  <td className="px-3 py-2">
+                    <StatusBadgeColeta status={s.status} />
+                  </td>
                   <td className="px-3 py-2">{s.coletas}</td>
                   <td className="px-3 py-2">{s.entregas}</td>
                   <td className="px-3 py-2 font-semibold">{s.total}</td>
@@ -227,7 +254,11 @@ export function RelatorioPeriodoColetas() {
                 </tr>
               ))}
               {porStatus.length === 0 && (
-                <tr><td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">Sem dados</td></tr>
+                <tr>
+                  <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                    Sem dados
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

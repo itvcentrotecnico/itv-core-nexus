@@ -7,6 +7,7 @@
  *
  * A origem é dimensão analítica: nunca altera valor, taxa, comissão ou receita líquida.
  */
+import { mensagemErro } from "@/lib/erros";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -52,7 +53,7 @@ export const ORIGEM_NAO_INFORMADA = "Não informado";
 
 export async function rpcOrigens<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

@@ -1,19 +1,17 @@
 // Modelos e utilitários do módulo Produção Técnica (Prompt 8).
 
 export type ProducaoStatus =
-  | "rascunho"
-  | "enviado_validacao"
-  | "validado"
-  | "rejeitado"
-  | "correcao_solicitada"
-  | "cancelado";
+  "rascunho" | "enviado_validacao" | "validado" | "rejeitado" | "correcao_solicitada" | "cancelado";
 
 export const STATUS_PRODUCAO: Record<ProducaoStatus, { label: string; className: string }> = {
   rascunho: { label: "Rascunho", className: "bg-muted text-muted-foreground" },
   enviado_validacao: { label: "Enviado p/ Validação", className: "bg-amber-500/10 text-amber-600" },
   validado: { label: "Validado", className: "bg-primary/10 text-primary" },
   rejeitado: { label: "Rejeitado", className: "bg-destructive/10 text-destructive" },
-  correcao_solicitada: { label: "Correção Solicitada", className: "bg-orange-500/10 text-orange-600" },
+  correcao_solicitada: {
+    label: "Correção Solicitada",
+    className: "bg-orange-500/10 text-orange-600",
+  },
   cancelado: { label: "Cancelado", className: "bg-muted text-muted-foreground line-through" },
 };
 

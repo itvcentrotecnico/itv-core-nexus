@@ -37,7 +37,6 @@ import {
   type CaixaLancamento,
   type CaixaRpcResult,
   type FormaPagamento,
-  
   type TipoReceita,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
@@ -118,7 +117,6 @@ function parcelasConfiguradas(
   return [...new Set(list)].sort((a, b) => a - b);
 }
 
-
 interface LancamentoFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -128,7 +126,13 @@ interface LancamentoFormProps {
   onSaved: () => void;
 }
 
-export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSaved }: LancamentoFormProps) {
+export function LancamentoForm({
+  open,
+  onOpenChange,
+  defaultDate,
+  editing,
+  onSaved,
+}: LancamentoFormProps) {
   const [data, setData] = useState(defaultDate);
   const [os, setOs] = useState("");
   const [cliente, setCliente] = useState("");
@@ -141,9 +145,13 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
   const [rows, setRows] = useState<PagRow[]>([emptyRow()]);
   const [saving, setSaving] = useState(false);
   const [dupInfo, setDupInfo] = useState<NonNullable<CaixaRpcResult["existente"]> | null>(null);
-  const [comissaoEntrega, setComissaoEntrega] = useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
+  const [comissaoEntrega, setComissaoEntrega] =
+    useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
   const [autorizacaoId, setAutorizacaoId] = useState<string | null>(null);
-  const [alcadaInfo, setAlcadaInfo] = useState<{ percentual: number; limite: number | null } | null>(null);
+  const [alcadaInfo, setAlcadaInfo] = useState<{
+    percentual: number;
+    limite: number | null;
+  } | null>(null);
   const autorizacoesQuery = useDescontosDisponiveis(open);
   const autorizacoesDisponiveis = autorizacoesQuery.data ?? [];
 
@@ -166,8 +174,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       );
     },
   });
-
-
 
   const tiposQuery = useQuery({
     queryKey: ["caixa", "tipos-receita"],
@@ -203,8 +209,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
 
   const taxasQuery = useTaxasRecebimento(open);
   const taxas = useMemo(() => taxasQuery.data ?? [], [taxasQuery.data]);
-
-
 
   const tecnicosQuery = useQuery({
     queryKey: ["caixa", "usuarios-basicos"],
@@ -245,7 +249,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           canal: p.canal ?? "",
         })),
       );
-
     } else {
       setData(defaultDate);
       setOs("");
@@ -278,7 +281,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     );
   }, [open, editing, comissaoAtualQuery.data]);
 
-
   const valorFinal = useMemo(
     () => round2((valorBruto ?? 0) - (desconto ?? 0)),
     [valorBruto, desconto],
@@ -287,7 +289,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     () => round2(rows.reduce((acc, r) => acc + (r.valor ?? 0), 0)),
     [rows],
   );
-  const diferenca = useMemo(() => round2(valorFinal - somaPagamentos), [valorFinal, somaPagamentos]);
+  const diferenca = useMemo(
+    () => round2(valorFinal - somaPagamentos),
+    [valorFinal, somaPagamentos],
+  );
 
   /**
    * Pré-visualização da taxa por pagamento (o valor oficial é calculado no banco).
@@ -297,14 +302,29 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     const formas = formasQuery.data ?? [];
     const mapa = new Map<
       number,
-      { ok: boolean; message?: string; percentual: number; taxa: number; liquido: number; percentualCliente: number; juros: number }
+      {
+        ok: boolean;
+        message?: string;
+        percentual: number;
+        taxa: number;
+        liquido: number;
+        percentualCliente: number;
+        juros: number;
+      }
     >();
     for (const r of rows) {
       const forma = formas.find((f) => f.id === r.forma_pagamento_id);
       const meio = forma?.meio_taxa ?? null;
       const valor = r.valor ?? 0;
       if (!forma || !meio || !r.adquirente) {
-        mapa.set(r.key, { ok: true, percentual: 0, taxa: 0, liquido: round2(valor), percentualCliente: 0, juros: 0 });
+        mapa.set(r.key, {
+          ok: true,
+          percentual: 0,
+          taxa: 0,
+          liquido: round2(valor),
+          percentualCliente: 0,
+          juros: 0,
+        });
         continue;
       }
       const res = resolverTaxa(taxas, {
@@ -332,13 +352,14 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
     () => round2([...taxasLinhas.values()].reduce((a, t) => a + t.taxa, 0)),
     [taxasLinhas],
   );
-  const liquidoTotal = useMemo(() => round2(somaPagamentos - taxaTotal), [somaPagamentos, taxaTotal]);
+  const liquidoTotal = useMemo(
+    () => round2(somaPagamentos - taxaTotal),
+    [somaPagamentos, taxaTotal],
+  );
 
   function updateRow(key: number, patch: Partial<PagRow>) {
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)));
   }
-
-
 
   function addRow() {
     const restante = diferenca > 0 ? diferenca : null;
@@ -413,7 +434,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
       toast.error(r.message ?? "Comissão de entrega não registrada.");
     }
   }
-
 
   async function submit(confirmarDuplicidade: boolean) {
     // Campos opcionais são omitidos quando vazios (o banco aplica NULL/coalesce).
@@ -564,7 +584,7 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                 type="text"
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
-                placeholder="Ex.: Troca de tela TV 50&quot;"
+                placeholder='Ex.: Troca de tela TV 50"'
                 className={inputClass}
               />
             </div>
@@ -572,7 +592,10 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
               <label className={labelClass}>
                 Vendedor <span className="font-normal text-muted-foreground">(opcional)</span>
               </label>
-              <Select value={tecnicoId || NONE} onValueChange={(v) => setTecnicoId(v === NONE ? "" : v)}>
+              <Select
+                value={tecnicoId || NONE}
+                onValueChange={(v) => setTecnicoId(v === NONE ? "" : v)}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecione…" />
                 </SelectTrigger>
@@ -617,7 +640,9 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
           {/* Alçada de desconto */}
           {(desconto ?? 0) > 0 && autorizacoesDisponiveis.length > 0 && !autorizacaoId && (
             <div className="mt-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
-              <p className="font-medium text-foreground">Autorização de desconto aprovada disponível</p>
+              <p className="font-medium text-foreground">
+                Autorização de desconto aprovada disponível
+              </p>
               <ul className="mt-2 space-y-1.5">
                 {autorizacoesDisponiveis.map((a) => (
                   <li key={a.id} className="flex items-center justify-between gap-2">
@@ -686,7 +711,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                           canal: origem?.canal ?? "",
                         });
                       }}
-
                     >
                       <SelectTrigger className="w-full" aria-label={`Forma de pagamento ${i + 1}`}>
                         <SelectValue placeholder="Selecione…" />
@@ -716,7 +740,9 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                     </label>
                     {(() => {
                       const forma = formas.find((f) => f.id === r.forma_pagamento_id);
-                      const max = forma?.permite_parcelamento ? Math.max(1, forma.max_parcelas ?? 1) : 1;
+                      const max = forma?.permite_parcelamento
+                        ? Math.max(1, forma.max_parcelas ?? 1)
+                        : 1;
                       const configuradas =
                         forma?.meio_taxa && r.adquirente
                           ? parcelasConfiguradas(taxas, {
@@ -814,7 +840,8 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                       <strong className="text-primary">{formatCurrencyBRL(t.liquido)}</strong>
                       {t.percentualCliente > 0 && (
                         <span className="block">
-                          Juros pagos pelo cliente: {t.percentualCliente.toFixed(2).replace(".", ",")}% (
+                          Juros pagos pelo cliente:{" "}
+                          {t.percentualCliente.toFixed(2).replace(".", ",")}% (
                           {formatCurrencyBRL(t.juros)}) — não é custo da ITV.
                         </span>
                       )}
@@ -827,12 +854,11 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                   if (!forma || forma.liquidacao_imediata !== false) return null;
                   return (
                     <p className="mt-2 rounded-md bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-700">
-                      {forma.nome} não entra como dinheiro recebido hoje: será gerada uma conta a receber
-                      com vencimento em {forma.prazo_liquidacao_dias ?? 0} dia(s).
+                      {forma.nome} não entra como dinheiro recebido hoje: será gerada uma conta a
+                      receber com vencimento em {forma.prazo_liquidacao_dias ?? 0} dia(s).
                     </p>
                   );
                 })()}
-
               </div>
             ))}
 
@@ -861,11 +887,15 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
               <dl className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-card px-4 py-3 text-xs sm:grid-cols-4">
                 <div>
                   <dt className="text-muted-foreground">Valor bruto</dt>
-                  <dd className="font-medium text-foreground">{formatCurrencyBRL(valorBruto ?? 0)}</dd>
+                  <dd className="font-medium text-foreground">
+                    {formatCurrencyBRL(valorBruto ?? 0)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">(−) Desconto</dt>
-                  <dd className="font-medium text-foreground">{formatCurrencyBRL(desconto ?? 0)}</dd>
+                  <dd className="font-medium text-foreground">
+                    {formatCurrencyBRL(desconto ?? 0)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">(−) Taxa de recebimento</dt>
@@ -877,7 +907,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
                 </div>
               </dl>
             )}
-
           </div>
 
           <ComissaoEntregaSection
@@ -886,8 +915,6 @@ export function LancamentoForm({ open, onOpenChange, defaultDate, editing, onSav
             config={configCeQuery.data}
             entregadores={entregadoresQuery.data ?? []}
           />
-
-
 
           <div className="mt-4">
             <label htmlFor="cx-obs" className={labelClass}>

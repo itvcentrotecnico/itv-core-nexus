@@ -51,7 +51,10 @@ export function AdminParametros() {
   const settingsQuery = useQuery({
     queryKey: ["admin", "settings-parametros"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("settings").select("key, value").in("key", ["financeiro", "metas", "planejamento", "governanca"]);
+      const { data, error } = await supabase
+        .from("settings")
+        .select("key, value")
+        .in("key", ["financeiro", "metas", "planejamento", "governanca"]);
       if (error) throw error;
       const map: Record<string, Record<string, unknown>> = {};
       for (const row of data ?? []) map[row.key] = (row.value ?? {}) as Record<string, unknown>;
@@ -77,7 +80,15 @@ export function AdminParametros() {
     const f = settingsQuery.data?.["financeiro"];
     if (f) setFin({ ...FIN_PADRAO, ...(f as Partial<Financeiro>) });
     const g = settingsQuery.data?.["governanca"];
-    if (g) setGov({ ...GOVERNANCA_PADRAO, ...(g as Partial<GovernancaConfig>), alcada_desconto: { ...GOVERNANCA_PADRAO.alcada_desconto, ...((g as Partial<GovernancaConfig>).alcada_desconto ?? {}) } });
+    if (g)
+      setGov({
+        ...GOVERNANCA_PADRAO,
+        ...(g as Partial<GovernancaConfig>),
+        alcada_desconto: {
+          ...GOVERNANCA_PADRAO.alcada_desconto,
+          ...((g as Partial<GovernancaConfig>).alcada_desconto ?? {}),
+        },
+      });
     const m = settingsQuery.data?.["metas"] as { faixas_projecao?: Projecao } | undefined;
     if (m?.faixas_projecao) setProj({ ...proj, ...m.faixas_projecao });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,12 +115,17 @@ export function AdminParametros() {
                   await rpcAdmin("admin_config_salvar", { p_key: "financeiro", p_value: fin });
                   await rpcAdmin("admin_config_salvar", {
                     p_key: "custos",
-                    p_value: { margem_minima_pct: fin.margem_minima_pct, custo_elevado_pct: fin.custo_elevado_pct },
+                    p_value: {
+                      margem_minima_pct: fin.margem_minima_pct,
+                      custo_elevado_pct: fin.custo_elevado_pct,
+                    },
                   });
                 },
                 "Parâmetros financeiros salvos.",
                 () => {
-                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-parametros"] });
+                  void queryClient.invalidateQueries({
+                    queryKey: ["admin", "settings-parametros"],
+                  });
                   void queryClient.invalidateQueries({ queryKey: ["settings"] });
                 },
               )
@@ -153,13 +169,19 @@ export function AdminParametros() {
               type="number"
               className={inputClass}
               value={fin.alerta_vencimento_dias}
-              onChange={(e) => setFin((f) => ({ ...f, alerta_vencimento_dias: Number(e.target.value) }))}
+              onChange={(e) =>
+                setFin((f) => ({ ...f, alerta_vencimento_dias: Number(e.target.value) }))
+              }
             />
           </div>
           <label className="flex items-center justify-between gap-3 rounded-md border border-border p-3 text-sm sm:col-span-2">
             <span>
-              <span className="font-medium text-foreground">Bloquear lançamentos em período fechado</span>
-              <span className="block text-xs text-muted-foreground">Caixa, financeiro e folha já fechados.</span>
+              <span className="font-medium text-foreground">
+                Bloquear lançamentos em período fechado
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Caixa, financeiro e folha já fechados.
+              </span>
             </span>
             <Switch
               checked={fin.bloquear_periodo_fechado}
@@ -188,7 +210,9 @@ export function AdminParametros() {
                 () => rpcAdmin("admin_config_salvar", { p_key: "governanca", p_value: gov }),
                 "Governança financeira salva.",
                 () => {
-                  void queryClient.invalidateQueries({ queryKey: ["admin", "settings-parametros"] });
+                  void queryClient.invalidateQueries({
+                    queryKey: ["admin", "settings-parametros"],
+                  });
                   void queryClient.invalidateQueries({ queryKey: ["settings"] });
                 },
               )
@@ -207,7 +231,12 @@ export function AdminParametros() {
               id="gov-trib-metodo"
               className={inputClass}
               value={gov.tributo_metodo}
-              onChange={(e) => setGov((g) => ({ ...g, tributo_metodo: e.target.value as GovernancaConfig["tributo_metodo"] }))}
+              onChange={(e) =>
+                setGov((g) => ({
+                  ...g,
+                  tributo_metodo: e.target.value as GovernancaConfig["tributo_metodo"],
+                }))
+              }
             >
               <option value="percentual">Percentual sobre a receita</option>
               <option value="manual">Valor manual</option>
@@ -223,7 +252,9 @@ export function AdminParametros() {
               step="0.01"
               className={inputClass}
               value={gov.tributo_percentual_padrao}
-              onChange={(e) => setGov((g) => ({ ...g, tributo_percentual_padrao: Number(e.target.value) }))}
+              onChange={(e) =>
+                setGov((g) => ({ ...g, tributo_percentual_padrao: Number(e.target.value) }))
+              }
             />
           </div>
           <div>
@@ -235,7 +266,9 @@ export function AdminParametros() {
               type="number"
               className={inputClass}
               value={gov.backup_intervalo_dias}
-              onChange={(e) => setGov((g) => ({ ...g, backup_intervalo_dias: Number(e.target.value) }))}
+              onChange={(e) =>
+                setGov((g) => ({ ...g, backup_intervalo_dias: Number(e.target.value) }))
+              }
             />
           </div>
           <div>
@@ -248,7 +281,9 @@ export function AdminParametros() {
               step="0.01"
               className={inputClass}
               value={gov.alerta_desconto_pct}
-              onChange={(e) => setGov((g) => ({ ...g, alerta_desconto_pct: Number(e.target.value) }))}
+              onChange={(e) =>
+                setGov((g) => ({ ...g, alerta_desconto_pct: Number(e.target.value) }))
+              }
             />
           </div>
           <div>
@@ -262,7 +297,8 @@ export function AdminParametros() {
               onChange={(e) =>
                 setGov((g) => ({
                   ...g,
-                  comissao_entrega_reconhecimento: e.target.value as GovernancaConfig["comissao_entrega_reconhecimento"],
+                  comissao_entrega_reconhecimento: e.target
+                    .value as GovernancaConfig["comissao_entrega_reconhecimento"],
                 }))
               }
             >
@@ -272,8 +308,12 @@ export function AdminParametros() {
           </div>
           <label className="flex items-center justify-between gap-3 rounded-md border border-border p-3 text-sm">
             <span>
-              <span className="font-medium text-foreground">Exigir conferência física no fechamento</span>
-              <span className="block text-xs text-muted-foreground">Contagem da gaveta versus saldo esperado.</span>
+              <span className="font-medium text-foreground">
+                Exigir conferência física no fechamento
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Contagem da gaveta versus saldo esperado.
+              </span>
             </span>
             <Switch
               checked={gov.exige_conferencia_fisica}
@@ -288,7 +328,15 @@ export function AdminParametros() {
             Percentual máximo de desconto liberado sem autorização. Deixe em branco para sem limite.
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {(["administrador", "adm_financeiro", "adm_operacional", "vendedor", "tecnico"] as AppRole[]).map((r) => (
+            {(
+              [
+                "administrador",
+                "adm_financeiro",
+                "adm_operacional",
+                "vendedor",
+                "tecnico",
+              ] as AppRole[]
+            ).map((r) => (
               <div key={r}>
                 <label className={labelClass} htmlFor={`gov-alcada-${r}`}>
                   {formatRole(r)}
@@ -329,7 +377,13 @@ export function AdminParametros() {
               onClick={() =>
                 setNiveis((n) => [
                   ...n,
-                  { nome: "", percentual_minimo: 0, percentual_maximo: null, ordem: n.length + 1, ativo: true },
+                  {
+                    nome: "",
+                    percentual_minimo: 0,
+                    percentual_maximo: null,
+                    ordem: n.length + 1,
+                    ativo: true,
+                  },
                 ])
               }
             >
@@ -342,7 +396,10 @@ export function AdminParametros() {
                 void executarAcao(
                   () => rpcAdmin("admin_niveis_desempenho_salvar", { p_niveis: niveis }),
                   "Faixas de desempenho salvas.",
-                  () => void queryClient.invalidateQueries({ queryKey: ["admin", "niveis-desempenho"] }),
+                  () =>
+                    void queryClient.invalidateQueries({
+                      queryKey: ["admin", "niveis-desempenho"],
+                    }),
                 )
               }
             >
@@ -353,7 +410,10 @@ export function AdminParametros() {
       >
         <div className="space-y-3">
           {niveis.map((n, i) => (
-            <div key={n.id ?? `novo-${i}`} className="grid gap-3 rounded-md border border-border p-3 sm:grid-cols-5">
+            <div
+              key={n.id ?? `novo-${i}`}
+              className="grid gap-3 rounded-md border border-border p-3 sm:grid-cols-5"
+            >
               <div className="sm:col-span-2">
                 <label className={labelClass} htmlFor={`nivel-nome-${i}`}>
                   Nome
@@ -363,7 +423,9 @@ export function AdminParametros() {
                   className={inputClass}
                   value={n.nome}
                   onChange={(e) =>
-                    setNiveis((arr) => arr.map((x, j) => (j === i ? { ...x, nome: e.target.value } : x)))
+                    setNiveis((arr) =>
+                      arr.map((x, j) => (j === i ? { ...x, nome: e.target.value } : x)),
+                    )
                   }
                 />
               </div>
@@ -378,7 +440,9 @@ export function AdminParametros() {
                   value={n.percentual_minimo}
                   onChange={(e) =>
                     setNiveis((arr) =>
-                      arr.map((x, j) => (j === i ? { ...x, percentual_minimo: Number(e.target.value) } : x)),
+                      arr.map((x, j) =>
+                        j === i ? { ...x, percentual_minimo: Number(e.target.value) } : x,
+                      ),
                     )
                   }
                 />
@@ -396,7 +460,13 @@ export function AdminParametros() {
                   onChange={(e) =>
                     setNiveis((arr) =>
                       arr.map((x, j) =>
-                        j === i ? { ...x, percentual_maximo: e.target.value === "" ? null : Number(e.target.value) } : x,
+                        j === i
+                          ? {
+                              ...x,
+                              percentual_maximo:
+                                e.target.value === "" ? null : Number(e.target.value),
+                            }
+                          : x,
                       ),
                     )
                   }
@@ -406,7 +476,9 @@ export function AdminParametros() {
                 <span className="text-muted-foreground">Ativa</span>
                 <Switch
                   checked={n.ativo}
-                  onCheckedChange={(v) => setNiveis((arr) => arr.map((x, j) => (j === i ? { ...x, ativo: v } : x)))}
+                  onCheckedChange={(v) =>
+                    setNiveis((arr) => arr.map((x, j) => (j === i ? { ...x, ativo: v } : x)))
+                  }
                 />
               </label>
             </div>
@@ -423,9 +495,16 @@ export function AdminParametros() {
             disabled={!podeConfigurar}
             onClick={() =>
               void executarAcao(
-                () => rpcAdmin("admin_config_salvar", { p_key: "metas", p_value: { faixas_projecao: proj } }),
+                () =>
+                  rpcAdmin("admin_config_salvar", {
+                    p_key: "metas",
+                    p_value: { faixas_projecao: proj },
+                  }),
                 "Faixas de projeção salvas.",
-                () => void queryClient.invalidateQueries({ queryKey: ["admin", "settings-parametros"] }),
+                () =>
+                  void queryClient.invalidateQueries({
+                    queryKey: ["admin", "settings-parametros"],
+                  }),
               )
             }
           >
@@ -456,7 +535,6 @@ export function AdminParametros() {
           ))}
         </div>
       </SecaoAdmin>
-      
     </div>
   );
 }

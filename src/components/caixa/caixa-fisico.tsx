@@ -71,7 +71,10 @@ export function CaixaFisicoSection({ date, resumo, podeRegistrar, diaBloqueado }
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <KpiCard label="Saldo inicial" value={formatCurrencyBRL(resumo?.saldo_inicial ?? 0)} />
-        <KpiCard label="Entradas em dinheiro" value={formatCurrencyBRL(resumo?.entradas_dinheiro ?? 0)} />
+        <KpiCard
+          label="Entradas em dinheiro"
+          value={formatCurrencyBRL(resumo?.entradas_dinheiro ?? 0)}
+        />
         <KpiCard label="Suprimentos" value={formatCurrencyBRL(resumo?.suprimentos ?? 0)} />
         <KpiCard label="Sangrias" value={formatCurrencyBRL(resumo?.sangrias ?? 0)} />
         <KpiCard
@@ -107,7 +110,9 @@ export function CaixaFisicoSection({ date, resumo, podeRegistrar, diaBloqueado }
       {movimentos.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-card/60 p-10 text-center">
           <Wallet className="mx-auto h-8 w-8 text-muted-foreground" aria-hidden="true" />
-          <p className="mt-3 text-sm font-medium text-foreground">Nenhuma movimentação física registrada</p>
+          <p className="mt-3 text-sm font-medium text-foreground">
+            Nenhuma movimentação física registrada
+          </p>
           <p className="mt-1 text-sm text-muted-foreground">
             Saldo inicial, suprimentos e sangrias do dia aparecerão aqui.
           </p>
@@ -126,14 +131,23 @@ export function CaixaFisicoSection({ date, resumo, podeRegistrar, diaBloqueado }
             </thead>
             <tbody>
               {movimentos.map((m) => (
-                <tr key={m.id} className="border-b border-border last:border-0 hover:bg-secondary/40">
-                  <td className="px-4 py-3 text-muted-foreground">{formatDateTimeITV(m.ocorrido_em)}</td>
-                  <td className="px-4 py-3 font-medium text-foreground">{TIPO_MOVIMENTO[m.tipo].label}</td>
+                <tr
+                  key={m.id}
+                  className="border-b border-border last:border-0 hover:bg-secondary/40"
+                >
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {formatDateTimeITV(m.ocorrido_em)}
+                  </td>
+                  <td className="px-4 py-3 font-medium text-foreground">
+                    {TIPO_MOVIMENTO[m.tipo].label}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {m.motivo}
                     {m.observacao ? <p className="text-xs">{m.observacao}</p> : null}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{m.responsavel?.full_name ?? "—"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {m.responsavel?.full_name ?? "—"}
+                  </td>
                   <td
                     className={cn(
                       "px-4 py-3 text-right font-semibold",

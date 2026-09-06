@@ -82,7 +82,12 @@ const CAMPO_ORDEM: CampoCadastro = {
   padrao: 0,
   colunaLista: true,
 };
-const CAMPO_ATIVO: CampoCadastro = { nome: "ativo", label: "Ativo", tipo: "booleano", padrao: true };
+const CAMPO_ATIVO: CampoCadastro = {
+  nome: "ativo",
+  label: "Ativo",
+  tipo: "booleano",
+  padrao: true,
+};
 
 export const CADASTROS: Record<string, CadastroConfig> = {
   tipos_servico_tecnico: {
@@ -91,7 +96,13 @@ export const CADASTROS: Record<string, CadastroConfig> = {
     descricao: "Opções utilizadas pela Produção Técnica (Troca de LED, Placa Main, Fonte, BGA…).",
     campos: [
       { nome: "nome", label: "Nome", tipo: "texto", obrigatorio: true, colunaLista: true },
-      { nome: "categoria", label: "Categoria", tipo: "texto", colunaLista: true, hint: "Ex.: Hardware, Software, Display" },
+      {
+        nome: "categoria",
+        label: "Categoria",
+        tipo: "texto",
+        colunaLista: true,
+        hint: "Ex.: Hardware, Software, Display",
+      },
       CAMPO_ORDEM,
       CAMPO_ATIVO,
     ],
@@ -109,7 +120,8 @@ export const CADASTROS: Record<string, CadastroConfig> = {
   formas_pagamento: {
     tabela: "formas_pagamento",
     titulo: "Formas de Pagamento",
-    descricao: "Meios de recebimento e pagamento. A taxa é apenas sugestão: o valor do lançamento prevalece.",
+    descricao:
+      "Meios de recebimento e pagamento. A taxa é apenas sugestão: o valor do lançamento prevalece.",
     campos: [
       { nome: "nome", label: "Nome", tipo: "texto", obrigatorio: true, colunaLista: true },
       {
@@ -128,7 +140,12 @@ export const CADASTROS: Record<string, CadastroConfig> = {
           { value: "outros", label: "Outros" },
         ],
       },
-      { nome: "eh_dinheiro", label: "Conta como dinheiro em espécie", tipo: "booleano", padrao: false },
+      {
+        nome: "eh_dinheiro",
+        label: "Conta como dinheiro em espécie",
+        tipo: "booleano",
+        padrao: false,
+      },
       {
         nome: "taxa_padrao_percentual",
         label: "Taxa padrão (%)",
@@ -137,7 +154,12 @@ export const CADASTROS: Record<string, CadastroConfig> = {
         colunaLista: true,
         hint: "Sugestão aplicada ao lançamento; pode ser ajustada pelo operador autorizado.",
       },
-      { nome: "permite_parcelamento", label: "Permite parcelamento", tipo: "booleano", padrao: false },
+      {
+        nome: "permite_parcelamento",
+        label: "Permite parcelamento",
+        tipo: "booleano",
+        padrao: false,
+      },
       { nome: "max_parcelas", label: "Máximo de parcelas", tipo: "numero", padrao: 1 },
       CAMPO_ORDEM,
       CAMPO_ATIVO,

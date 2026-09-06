@@ -3,6 +3,7 @@
  * Regra oficial: posições só são registradas entre 08:00 e 18:00 (America/Manaus),
  * validado também no banco. Nenhum rastreamento fora do expediente.
  */
+import { mensagemErro } from "@/lib/erros";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ExpedienteAtual {
@@ -46,7 +47,7 @@ export const LIMITE_DESATUALIZADO_MS = 20 * 60_000;
 
 export async function rpcEquipe<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 

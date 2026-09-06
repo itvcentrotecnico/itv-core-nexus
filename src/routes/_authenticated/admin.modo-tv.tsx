@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -13,30 +14,66 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/admin/modo-tv")({
   head: () => ({
     meta: [
       { title: "Modo TV — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Configuração do painel de gestão à vista exibido nos monitores da ITV." },
+      {
+        name: "description",
+        content: "Configuração do painel de gestão à vista exibido nos monitores da ITV.",
+      },
       { property: "og:title", content: "Modo TV — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Configuração do painel de gestão à vista da ITV Centro Técnico." },
+      {
+        property: "og:description",
+        content: "Configuração do painel de gestão à vista da ITV Centro Técnico.",
+      },
     ],
   }),
   component: ModoTvConfigPage,
 });
 
 const TOGGLES: { chave: keyof ModoTvConfig; label: string; hint: string }[] = [
-  { chave: "mostrar_faturamento", label: "Faturamento do mês", hint: "Valor total faturado no período" },
+  {
+    chave: "mostrar_faturamento",
+    label: "Faturamento do mês",
+    hint: "Valor total faturado no período",
+  },
   { chave: "mostrar_meta", label: "Meta da empresa", hint: "Meta principal, realizado e faltante" },
-  { chave: "mostrar_projecao", label: "Projeção e ritmo", hint: "Ritmo atual, necessário e projeção de fechamento" },
-  { chave: "mostrar_producao", label: "Produção dos técnicos", hint: "Serviços validados por técnico vs meta" },
+  {
+    chave: "mostrar_projecao",
+    label: "Projeção e ritmo",
+    hint: "Ritmo atual, necessário e projeção de fechamento",
+  },
+  {
+    chave: "mostrar_producao",
+    label: "Produção dos técnicos",
+    hint: "Serviços validados por técnico vs meta",
+  },
   { chave: "mostrar_ranking", label: "Ranking / destaques", hint: "Top técnicos do mês" },
-  { chave: "mostrar_ticket_medio", label: "Ticket médio", hint: "Exibe ticket médio junto ao faturamento" },
-  { chave: "mostrar_tipos_servico", label: "Serviços mais executados", hint: "Distribuição por tipo de serviço" },
+  {
+    chave: "mostrar_ticket_medio",
+    label: "Ticket médio",
+    hint: "Exibe ticket médio junto ao faturamento",
+  },
+  {
+    chave: "mostrar_tipos_servico",
+    label: "Serviços mais executados",
+    hint: "Distribuição por tipo de serviço",
+  },
   { chave: "mostrar_marcas", label: "Marcas mais atendidas", hint: "Ranking de marcas de TV" },
-  { chave: "mostrar_comparacao", label: "Comparativo mensal", hint: "Mês atual vs mesmo período do mês anterior" },
+  {
+    chave: "mostrar_comparacao",
+    label: "Comparativo mensal",
+    hint: "Mês atual vs mesmo período do mês anterior",
+  },
 ];
 
 function ModoTvConfigPage() {
@@ -47,7 +84,11 @@ function ModoTvConfigPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["settings", "modo_tv"],
     queryFn: async () => {
-      const { data: row, error } = await supabase.from("settings").select("value").eq("key", "modo_tv").maybeSingle();
+      const { data: row, error } = await supabase
+        .from("settings")
+        .select("value")
+        .eq("key", "modo_tv")
+        .maybeSingle();
       if (error) throw error;
       return (row?.value ?? {}) as Partial<ModoTvConfig>;
     },
@@ -71,7 +112,9 @@ function ModoTvConfigPage() {
     setSalvando(false);
     const ok = (res as { ok?: boolean } | null)?.ok;
     if (error || !ok) {
-      toast.error("Não foi possível salvar", { description: error?.message ?? "Permissão negada." });
+      toast.error("Não foi possível salvar", {
+        description: mensagemErro(error, "Permissão negada."),
+      });
       return;
     }
     toast.success("Configuração do Modo TV salva");
@@ -92,7 +135,8 @@ function ModoTvConfigPage() {
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight">Modo TV</h1>
           <p className="text-sm text-muted-foreground">
-            Painel de gestão à vista para monitores da oficina. Nenhum dado sensível (folha, despesas, comissões ou clientes) é exibido.
+            Painel de gestão à vista para monitores da oficina. Nenhum dado sensível (folha,
+            despesas, comissões ou clientes) é exibido.
           </p>
         </div>
         <Button asChild variant="outline">
@@ -107,11 +151,16 @@ function ModoTvConfigPage() {
           <CardTitle className="flex items-center gap-2 text-base">
             <Tv className="h-4 w-4 text-primary" /> Blocos exibidos
           </CardTitle>
-          <CardDescription>Escolha quais indicadores aparecem na rotação do painel.</CardDescription>
+          <CardDescription>
+            Escolha quais indicadores aparecem na rotação do painel.
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           {TOGGLES.map((t) => (
-            <div key={t.chave} className="flex items-start justify-between gap-4 rounded-lg border p-3">
+            <div
+              key={t.chave}
+              className="flex items-start justify-between gap-4 rounded-lg border p-3"
+            >
               <div>
                 <Label htmlFor={t.chave} className="text-sm font-medium">
                   {t.label}
@@ -164,7 +213,9 @@ function ModoTvConfigPage() {
             <Select
               value={form.criterio_destaque}
               disabled={!podeConfigurar}
-              onValueChange={(v) => set("criterio_destaque", v as ModoTvConfig["criterio_destaque"])}
+              onValueChange={(v) =>
+                set("criterio_destaque", v as ModoTvConfig["criterio_destaque"])
+              }
             >
               <SelectTrigger id="criterio">
                 <SelectValue />
@@ -182,7 +233,9 @@ function ModoTvConfigPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Mensagem institucional</CardTitle>
-          <CardDescription>Texto motivacional ou aviso interno exibido no painel de produção.</CardDescription>
+          <CardDescription>
+            Texto motivacional ou aviso interno exibido no painel de produção.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between rounded-lg border p-3">
@@ -225,12 +278,18 @@ function ModoTvConfigPage() {
 
       <div className="flex justify-end">
         <Button onClick={salvar} disabled={!podeConfigurar || salvando}>
-          {salvando ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+          {salvando ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="mr-2 h-4 w-4" />
+          )}
           Salvar configuração
         </Button>
       </div>
       {!podeConfigurar && (
-        <p className="text-sm text-muted-foreground">Você não tem permissão para alterar as configurações do Modo TV.</p>
+        <p className="text-sm text-muted-foreground">
+          Você não tem permissão para alterar as configurações do Modo TV.
+        </p>
       )}
     </div>
   );

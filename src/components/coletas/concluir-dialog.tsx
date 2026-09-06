@@ -40,17 +40,25 @@ export function ConcluirDialog({
       for (const file of arquivos) {
         try {
           const path = storagePathColeta(item.id, file.name);
-          const { error } = await supabase.storage.from("coletas").upload(path, file, { upsert: false });
-          if (error) throw new Error(error.message);
+          const { error } = await supabase.storage
+            .from("coletas")
+            .upload(path, file, { upsert: false });
+          if (error) throw new Error(mensagemErro(error));
           await rpcColetas("coletas_foto_registrar", { p_id: item.id, p_path: path });
         } catch {
           falhas += 1;
         }
       }
-      await rpcColetas("coletas_concluir", { p_id: item.id, p_observacao: observacao.trim() || null });
+      await rpcColetas("coletas_concluir", {
+        p_id: item.id,
+        p_observacao: observacao.trim() || null,
+      });
       void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       toast.success(item.tipo === "coleta" ? "Coleta concluída." : "Entrega concluída.");
-      if (falhas > 0) toast.warning(`Não foi possível enviar ${falhas} foto(s). Você pode tentar novamente pelo detalhe.`);
+      if (falhas > 0)
+        toast.warning(
+          `Não foi possível enviar ${falhas} foto(s). Você pode tentar novamente pelo detalhe.`,
+        );
       setObservacao("");
       setArquivos([]);
       onClose();
@@ -61,13 +69,16 @@ export function ConcluirDialog({
     }
   }
 
-
   return (
     <Dialog open={!!item} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>{item?.tipo === "entrega" ? "Confirmar entrega" : "Confirmar coleta"}</DialogTitle>
-          <DialogDescription>{item?.cliente_nome} · {item?.bairro ?? "sem bairro"}</DialogDescription>
+          <DialogTitle>
+            {item?.tipo === "entrega" ? "Confirmar entrega" : "Confirmar coleta"}
+          </DialogTitle>
+          <DialogDescription>
+            {item?.cliente_nome} · {item?.bairro ?? "sem bairro"}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
@@ -82,22 +93,37 @@ export function ConcluirDialog({
               className="hidden"
               onChange={(e) => setArquivos(Array.from(e.target.files ?? []))}
             />
-            <Button variant="outline" className="h-12 w-full" onClick={() => inputRef.current?.click()}>
+            <Button
+              variant="outline"
+              className="h-12 w-full"
+              onClick={() => inputRef.current?.click()}
+            >
               <Camera className="mr-2 size-4" /> Adicionar foto
             </Button>
             {arquivos.length > 0 && (
-              <p className="mt-1.5 text-xs text-muted-foreground">{arquivos.length} foto(s) selecionada(s).</p>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {arquivos.length} foto(s) selecionada(s).
+              </p>
             )}
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="obs-conclusao">Observação (opcional)</label>
-            <Textarea id="obs-conclusao" rows={3} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+            <label className={labelClass} htmlFor="obs-conclusao">
+              Observação (opcional)
+            </label>
+            <Textarea
+              id="obs-conclusao"
+              rows={3}
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+            />
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Voltar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Voltar
+          </Button>
           <Button className="h-11" onClick={concluir} disabled={salvando}>
             {salvando && <Loader2 className="mr-2 size-4 animate-spin" />}
             {item?.tipo === "entrega" ? "ENTREGA CONCLUÍDA" : "TV COLETADA"}

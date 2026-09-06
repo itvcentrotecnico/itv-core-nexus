@@ -26,7 +26,11 @@ export function HistoricoOperacional() {
 
   const porTecnico = useQuery({
     queryKey: ["operacional", "tecnicos", ref],
-    queryFn: () => rpcOp<OperacionalTecnicoResumo[]>("operacional_por_tecnico", { p_ini: ref, p_fim: somaSemanasISO(ref, 1) }),
+    queryFn: () =>
+      rpcOp<OperacionalTecnicoResumo[]>("operacional_por_tecnico", {
+        p_ini: ref,
+        p_fim: somaSemanasISO(ref, 1),
+      }),
   });
 
   async function gerarRelatorio() {
@@ -77,12 +81,19 @@ export function HistoricoOperacional() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex gap-2">
           {[4, 8, 12].map((n) => (
-            <Button key={n} size="sm" variant={semanas === n ? "default" : "outline"} onClick={() => setSemanas(n)}>
+            <Button
+              key={n}
+              size="sm"
+              variant={semanas === n ? "default" : "outline"}
+              onClick={() => setSemanas(n)}
+            >
               {n} semanas
             </Button>
           ))}
         </div>
-        <Button size="sm" variant="outline" onClick={() => void gerarRelatorio()}>Relatório da semana (PDF)</Button>
+        <Button size="sm" variant="outline" onClick={() => void gerarRelatorio()}>
+          Relatório da semana (PDF)
+        </Button>
       </div>
 
       <section className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -100,15 +111,27 @@ export function HistoricoOperacional() {
           <tbody>
             {(historico.data ?? []).map((s) => (
               <tr key={s.inicio} className="border-t border-border">
-                <td className="p-3">{formatDateOnlyISO(s.inicio)} a {formatDateOnlyISO(s.fim)}</td>
+                <td className="p-3">
+                  {formatDateOnlyISO(s.inicio)} a {formatDateOnlyISO(s.fim)}
+                </td>
                 <td className="p-3 text-right">{s.entradas}</td>
                 <td className="p-3 text-right">{s.entregas}</td>
                 <td className="p-3 text-right">{Math.max(0, s.entradas - s.entregas)}</td>
-                <td className="p-3">{s.status === "fechado" ? "Fechada" : s.status === "reaberto" ? "Reaberta" : "Aberta"}</td>
+                <td className="p-3">
+                  {s.status === "fechado"
+                    ? "Fechada"
+                    : s.status === "reaberto"
+                      ? "Reaberta"
+                      : "Aberta"}
+                </td>
               </tr>
             ))}
             {(historico.data ?? []).length === 0 && (
-              <tr><td className="p-4 text-center text-muted-foreground" colSpan={5}>Sem dados de semanas anteriores.</td></tr>
+              <tr>
+                <td className="p-4 text-center text-muted-foreground" colSpan={5}>
+                  Sem dados de semanas anteriores.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -116,7 +139,9 @@ export function HistoricoOperacional() {
 
       <section className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
-          <caption className="p-3 text-left font-display text-sm font-bold text-foreground">Desempenho por técnico (semana atual)</caption>
+          <caption className="p-3 text-left font-display text-sm font-bold text-foreground">
+            Desempenho por técnico (semana atual)
+          </caption>
           <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
             <tr>
               <th className="p-3 text-left">Técnico</th>
@@ -135,11 +160,17 @@ export function HistoricoOperacional() {
                 <td className="p-3 text-right">{t.validados}</td>
                 <td className="p-3 text-right">{t.correcoes}</td>
                 <td className="p-3 text-right">{t.tvs_paradas}</td>
-                <td className="p-3 text-right">{formatCurrencyBRL(Number(t.producao_validada ?? 0))}</td>
+                <td className="p-3 text-right">
+                  {formatCurrencyBRL(Number(t.producao_validada ?? 0))}
+                </td>
               </tr>
             ))}
             {(porTecnico.data ?? []).length === 0 && (
-              <tr><td className="p-4 text-center text-muted-foreground" colSpan={6}>Sem produção registrada nesta semana.</td></tr>
+              <tr>
+                <td className="p-4 text-center text-muted-foreground" colSpan={6}>
+                  Sem produção registrada nesta semana.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

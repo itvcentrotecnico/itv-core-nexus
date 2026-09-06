@@ -43,11 +43,7 @@ function Index() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <img
-        src={logoColor.url}
-        alt="ITV Centro Técnico"
-        className="h-14 w-auto animate-pulse"
-      />
+      <img src={logoColor.url} alt="ITV Centro Técnico" className="h-14 w-auto animate-pulse" />
     </div>
   );
 }

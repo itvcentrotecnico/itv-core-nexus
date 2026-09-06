@@ -12,7 +12,14 @@ import { STATUS_COMISSAO, type Comissao, type ComissaoStatus } from "@/lib/comis
 import { rpcOp } from "@/lib/operacional";
 import { cn } from "@/lib/utils";
 
-const STATUS_OP: ComissaoStatus[] = ["gerada", "pendente_conferencia", "conferida", "devolvida", "aprovada", "paga"];
+const STATUS_OP: ComissaoStatus[] = [
+  "gerada",
+  "pendente_conferencia",
+  "conferida",
+  "devolvida",
+  "aprovada",
+  "paga",
+];
 
 /**
  * Validação e liberação de comissões pelo Operacional.
@@ -49,7 +56,10 @@ export function ComissoesOperacional() {
   const liberar = useMutation({
     mutationFn: async (ids: string[]) => {
       if (ids.length === 0) throw new Error("Selecione ao menos uma comissão.");
-      return rpcOp<{ ok?: boolean; message?: string; liberadas?: number }>("operacional_comissoes_liberar", { p_ids: ids });
+      return rpcOp<{ ok?: boolean; message?: string; liberadas?: number }>(
+        "operacional_comissoes_liberar",
+        { p_ids: ids },
+      );
     },
     onSuccess: (res) => {
       if (res?.ok === false) {
@@ -68,7 +78,10 @@ export function ComissoesOperacional() {
     mutationFn: async () => {
       if (!devolver) return;
       if (!motivo.trim()) throw new Error("Informe o motivo da devolução.");
-      return rpcOp<{ ok?: boolean; message?: string }>("comissoes_devolver", { p_id: devolver.id, p_motivo: motivo.trim() });
+      return rpcOp<{ ok?: boolean; message?: string }>("comissoes_devolver", {
+        p_id: devolver.id,
+        p_motivo: motivo.trim(),
+      });
     },
     onSuccess: (res) => {
       if (res && res.ok === false) {
@@ -93,17 +106,37 @@ export function ComissoesOperacional() {
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
-          <label className={labelClass} htmlFor="com-status">Status</label>
-          <select id="com-status" className={inputClass} value={status} onChange={(e) => { setStatus(e.target.value as ComissaoStatus | ""); setSelecionadas([]); }}>
+          <label className={labelClass} htmlFor="com-status">
+            Status
+          </label>
+          <select
+            id="com-status"
+            className={inputClass}
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value as ComissaoStatus | "");
+              setSelecionadas([]);
+            }}
+          >
             <option value="">Todos</option>
             {STATUS_OP.map((s) => (
-              <option key={s} value={s}>{STATUS_COMISSAO[s].label}</option>
+              <option key={s} value={s}>
+                {STATUS_COMISSAO[s].label}
+              </option>
             ))}
           </select>
         </div>
         <div className="sm:col-span-2">
-          <label className={labelClass} htmlFor="com-busca">Buscar por OS</label>
-          <input id="com-busca" className={inputClass} value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Número da OS" />
+          <label className={labelClass} htmlFor="com-busca">
+            Buscar por OS
+          </label>
+          <input
+            id="com-busca"
+            className={inputClass}
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Número da OS"
+          />
         </div>
       </div>
 
@@ -121,7 +154,11 @@ export function ComissoesOperacional() {
             >
               Selecionar tudo
             </Button>
-            <Button size="sm" onClick={() => liberar.mutate(selecionadas)} disabled={liberar.isPending || selecionadas.length === 0}>
+            <Button
+              size="sm"
+              onClick={() => liberar.mutate(selecionadas)}
+              disabled={liberar.isPending || selecionadas.length === 0}
+            >
               Liberar para o Financeiro
             </Button>
           </div>
@@ -145,37 +182,76 @@ export function ComissoesOperacional() {
           const marcada = selecionadas.includes(c.id);
           const badge = STATUS_COMISSAO[c.status];
           return (
-            <article key={c.id} className={cn("rounded-xl border bg-card p-4", marcada ? "border-primary" : "border-border")}>
+            <article
+              key={c.id}
+              className={cn(
+                "rounded-xl border bg-card p-4",
+                marcada ? "border-primary" : "border-border",
+              )}
+            >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="font-display text-base font-bold text-foreground">OS {c.os}</p>
                   <p className="text-xs text-muted-foreground">
-                    {formatDateOnlyISO(c.data_referencia)} · {c.tecnico?.full_name ?? "Técnico não informado"}
+                    {formatDateOnlyISO(c.data_referencia)} ·{" "}
+                    {c.tecnico?.full_name ?? "Técnico não informado"}
                   </p>
                 </div>
-                <span className={cn("rounded-full border px-2 py-0.5 text-[10px] font-semibold", badge.className)}>{badge.label}</span>
+                <span
+                  className={cn(
+                    "rounded-full border px-2 py-0.5 text-[10px] font-semibold",
+                    badge.className,
+                  )}
+                >
+                  {badge.label}
+                </span>
               </div>
               <dl className="mt-3 grid grid-cols-2 gap-1 text-xs text-muted-foreground">
-                <div><dt className="inline font-medium">Receita líquida: </dt><dd className="inline">{formatCurrencyBRL(Number(c.receita_liquida ?? 0))}</dd></div>
-                <div><dt className="inline font-medium">Peças/custos: </dt><dd className="inline">{formatCurrencyBRL(Number(c.custos_diretos ?? 0))}</dd></div>
-                <div><dt className="inline font-medium">Base: </dt><dd className="inline">{formatCurrencyBRL(Number(c.base_calculo ?? 0))}</dd></div>
-                <div><dt className="inline font-medium">Valor: </dt><dd className="inline font-semibold text-foreground">{formatCurrencyBRL(Number(c.valor_final ?? c.valor_calculado ?? 0))}</dd></div>
+                <div>
+                  <dt className="inline font-medium">Receita líquida: </dt>
+                  <dd className="inline">{formatCurrencyBRL(Number(c.receita_liquida ?? 0))}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium">Peças/custos: </dt>
+                  <dd className="inline">{formatCurrencyBRL(Number(c.custos_diretos ?? 0))}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium">Base: </dt>
+                  <dd className="inline">{formatCurrencyBRL(Number(c.base_calculo ?? 0))}</dd>
+                </div>
+                <div>
+                  <dt className="inline font-medium">Valor: </dt>
+                  <dd className="inline font-semibold text-foreground">
+                    {formatCurrencyBRL(Number(c.valor_final ?? c.valor_calculado ?? 0))}
+                  </dd>
+                </div>
               </dl>
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                {podeLiberar && (c.status === "gerada" || c.status === "pendente_conferencia" || c.status === "conferida" || c.status === "devolvida") && (
-                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <input
-                      type="checkbox"
-                      checked={marcada}
-                      onChange={(e) =>
-                        setSelecionadas((prev) => (e.target.checked ? [...prev, c.id] : prev.filter((id) => id !== c.id)))
-                      }
-                    />
-                    Selecionar para liberação
-                  </label>
-                )}
+                {podeLiberar &&
+                  (c.status === "gerada" ||
+                    c.status === "pendente_conferencia" ||
+                    c.status === "conferida" ||
+                    c.status === "devolvida") && (
+                    <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        checked={marcada}
+                        onChange={(e) =>
+                          setSelecionadas((prev) =>
+                            e.target.checked ? [...prev, c.id] : prev.filter((id) => id !== c.id),
+                          )
+                        }
+                      />
+                      Selecionar para liberação
+                    </label>
+                  )}
                 {podeDevolver && c.status !== "paga" && c.status !== "cancelada" && (
-                  <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setDevolver(c)}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive"
+                    onClick={() => setDevolver(c)}
+                  >
                     Devolver ao Operacional
                   </Button>
                 )}
@@ -193,12 +269,23 @@ export function ComissoesOperacional() {
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">OS {devolver?.os}</p>
             <div>
-              <label className={labelClass} htmlFor="dev-motivo">Motivo da devolução</label>
-              <textarea id="dev-motivo" className={`${inputClass} min-h-24`} value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+              <label className={labelClass} htmlFor="dev-motivo">
+                Motivo da devolução
+              </label>
+              <textarea
+                id="dev-motivo"
+                className={`${inputClass} min-h-24`}
+                value={motivo}
+                onChange={(e) => setMotivo(e.target.value)}
+              />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDevolver(null)}>Cancelar</Button>
-              <Button onClick={() => devolucao.mutate()} disabled={devolucao.isPending}>Confirmar devolução</Button>
+              <Button variant="outline" onClick={() => setDevolver(null)}>
+                Cancelar
+              </Button>
+              <Button onClick={() => devolucao.mutate()} disabled={devolucao.isPending}>
+                Confirmar devolução
+              </Button>
             </div>
           </div>
         </DialogContent>

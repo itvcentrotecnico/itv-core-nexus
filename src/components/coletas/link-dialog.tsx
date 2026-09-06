@@ -84,7 +84,9 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
 
   useEffect(() => {
     if (!mostrarQr || !url) return;
-    void QRCode.toDataURL(url, { width: 320, margin: 1 }).then(setQr).catch(() => setQr(null));
+    void QRCode.toDataURL(url, { width: 320, margin: 1 })
+      .then(setQr)
+      .catch(() => setQr(null));
   }, [mostrarQr, url]);
 
   async function copiar(texto: string, ok: string) {
@@ -100,7 +102,9 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
     if (!dados) return;
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
       setFalhou(true);
-      toast.error("Sem conexão. Tente abrir o WhatsApp novamente quando a internet estiver disponível.");
+      toast.error(
+        "Sem conexão. Tente abrir o WhatsApp novamente quando a internet estiver disponível.",
+      );
       return;
     }
     const janela = window.open(whatsappUrl(dados.whatsapp, textoFinal), "_blank", "noopener");
@@ -112,15 +116,20 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
     setFalhou(false);
     if (!dados.id) return;
     // Registra apenas "WhatsApp aberto" — nunca "mensagem enviada".
-    void rpcColetas<{ whatsapp_aberto_em: string; whatsapp_aberturas: number }>("coletas_whatsapp_aberto", {
-      p_id: dados.id,
-    })
+    void rpcColetas<{ whatsapp_aberto_em: string; whatsapp_aberturas: number }>(
+      "coletas_whatsapp_aberto",
+      {
+        p_id: dados.id,
+      },
+    )
       .then((r) => {
         setAbertoEm(r.whatsapp_aberto_em);
         setAberturas(r.whatsapp_aberturas);
         void queryClient.invalidateQueries({ queryKey: ["coletas"] });
       })
-      .catch((e) => toast.error(mensagemErro(e, "Não foi possível registrar a abertura do WhatsApp.")));
+      .catch((e) =>
+        toast.error(mensagemErro(e, "Não foi possível registrar a abertura do WhatsApp.")),
+      );
   }
 
   return (
@@ -139,8 +148,8 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
               <p className="font-semibold">{dados.cliente_nome}</p>
               <p className="text-muted-foreground">{maskTelefone(dados.whatsapp)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Status: <span className="font-semibold text-foreground">Aguardando cliente</span> · válido até{" "}
-                {formatDateTimeITV(dados.expira_em)}
+                Status: <span className="font-semibold text-foreground">Aguardando cliente</span> ·
+                válido até {formatDateTimeITV(dados.expira_em)}
               </p>
             </div>
           )}
@@ -151,7 +160,11 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
             </div>
           )}
 
-          <Button className="h-14 w-full text-base font-semibold" onClick={abrirWhatsapp} disabled={!url}>
+          <Button
+            className="h-14 w-full text-base font-semibold"
+            onClick={abrirWhatsapp}
+            disabled={!url}
+          >
             <Send className="mr-2 size-5" />
             {aberturas > 0 ? "Reenviar pelo WhatsApp" : "Enviar pelo WhatsApp"}
           </Button>
@@ -165,7 +178,12 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
             >
               <Copy className="mr-2 size-4" /> Copiar
             </Button>
-            <Button variant="outline" className="h-11" disabled={!url} onClick={() => setMostrarQr((v) => !v)}>
+            <Button
+              variant="outline"
+              className="h-11"
+              disabled={!url}
+              onClick={() => setMostrarQr((v) => !v)}
+            >
               <QrIcon className="mr-2 size-4" /> QR Code
             </Button>
             <Button
@@ -178,12 +196,16 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
             </Button>
           </div>
 
-
           {falhou && (
             <div className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
               <p>Não foi possível abrir o WhatsApp automaticamente. O link continua salvo.</p>
               <div className="grid grid-cols-2 gap-2">
-                <Button size="sm" variant="outline" className="h-9" onClick={() => void copiar(url, "Link copiado.")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9"
+                  onClick={() => void copiar(url, "Link copiado.")}
+                >
                   Copiar link
                 </Button>
                 <Button
@@ -214,13 +236,21 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
                 <MessageSquareText className="size-3.5" /> Mensagem (revise antes de enviar)
               </span>
             </label>
-            <Textarea id="msg-coleta" rows={6} value={mensagem} onChange={(e) => setMensagem(e.target.value)} />
+            <Textarea
+              id="msg-coleta"
+              rows={6}
+              value={mensagem}
+              onChange={(e) => setMensagem(e.target.value)}
+            />
             <p className="mt-1 text-[11px] text-muted-foreground">
-              Texto padrão definido pela Administração. Placeholders: {"{primeiro_nome}"} e {"{link}"}.
+              Texto padrão definido pela Administração. Placeholders: {"{primeiro_nome}"} e{" "}
+              {"{link}"}.
             </p>
           </div>
 
-          <p className="break-all rounded-md border border-border bg-muted/40 p-2 text-xs text-muted-foreground">{url}</p>
+          <p className="break-all rounded-md border border-border bg-muted/40 p-2 text-xs text-muted-foreground">
+            {url}
+          </p>
 
           <p className="text-[11px] text-muted-foreground">
             Link gerado: agora · WhatsApp aberto: {abertoEm ? formatDateTimeITV(abertoEm) : "—"}

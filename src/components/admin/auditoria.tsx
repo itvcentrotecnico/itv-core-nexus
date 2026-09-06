@@ -41,7 +41,9 @@ export function AdminAuditoria() {
   const usuariosQuery = useQuery({
     queryKey: ["admin", "usuarios"],
     queryFn: async () => {
-      const res = await rpcAdmin<{ ok: true; usuarios: { id: string; full_name: string }[] }>("admin_usuarios_listar");
+      const res = await rpcAdmin<{ ok: true; usuarios: { id: string; full_name: string }[] }>(
+        "admin_usuarios_listar",
+      );
       return res.usuarios ?? [];
     },
   });
@@ -212,7 +214,9 @@ export function AdminAuditoria() {
             {registros.map((r) => (
               <Fragment key={r.id}>
                 <tr>
-                  <td className="px-3 py-2 text-xs text-muted-foreground">{formatDateTimeITV(r.created_at)}</td>
+                  <td className="px-3 py-2 text-xs text-muted-foreground">
+                    {formatDateTimeITV(r.created_at)}
+                  </td>
                   <td className="px-3 py-2 text-foreground">{r.usuario}</td>
                   <td className="px-3 py-2 text-muted-foreground">{r.modulo}</td>
                   <td className="px-3 py-2 text-foreground">{r.action}</td>
@@ -222,7 +226,11 @@ export function AdminAuditoria() {
                       className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
                       onClick={() => setAberto((a) => (a === r.id ? null : r.id))}
                     >
-                      {aberto === r.id ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
+                      {aberto === r.id ? (
+                        <ChevronDown className="size-3.5" />
+                      ) : (
+                        <ChevronRight className="size-3.5" />
+                      )}
                       Ver valores
                     </button>
                   </td>
@@ -232,13 +240,17 @@ export function AdminAuditoria() {
                     <td colSpan={5} className="bg-muted/40 px-3 py-3">
                       <div className="grid gap-3 md:grid-cols-2">
                         <div>
-                          <p className="mb-1 text-xs font-medium uppercase text-muted-foreground">Valor anterior</p>
+                          <p className="mb-1 text-xs font-medium uppercase text-muted-foreground">
+                            Valor anterior
+                          </p>
                           <pre className="max-h-56 overflow-auto rounded bg-background p-2 text-xs">
                             {JSON.stringify(r.old_value ?? null, null, 2)}
                           </pre>
                         </div>
                         <div>
-                          <p className="mb-1 text-xs font-medium uppercase text-muted-foreground">Novo valor</p>
+                          <p className="mb-1 text-xs font-medium uppercase text-muted-foreground">
+                            Novo valor
+                          </p>
                           <pre className="max-h-56 overflow-auto rounded bg-background p-2 text-xs">
                             {JSON.stringify(r.new_value ?? null, null, 2)}
                           </pre>
@@ -253,10 +265,16 @@ export function AdminAuditoria() {
 
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
             <span>
-              {pagina * PAGINA + 1}–{Math.min((pagina + 1) * PAGINA, total)} de {total.toLocaleString("pt-BR")}
+              {pagina * PAGINA + 1}–{Math.min((pagina + 1) * PAGINA, total)} de{" "}
+              {total.toLocaleString("pt-BR")}
             </span>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={pagina === 0}
+                onClick={() => setPagina((p) => p - 1)}
+              >
                 Anterior
               </Button>
               <Button

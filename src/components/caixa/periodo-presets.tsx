@@ -39,14 +39,7 @@ function fimMes(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0));
 }
 
-export type PresetKey =
-  | "hoje"
-  | "semana"
-  | "mes"
-  | "mes_anterior"
-  | "3m"
-  | "6m"
-  | "personalizado";
+export type PresetKey = "hoje" | "semana" | "mes" | "mes_anterior" | "3m" | "6m" | "personalizado";
 
 export function periodoDoPreset(key: PresetKey, refISO = todayManausISO()): Periodo | null {
   const hoje = parse(refISO);
@@ -96,7 +89,11 @@ export function PeriodoPresets({
   })?.key;
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Período da listagem">
+    <div
+      className="flex flex-wrap items-center gap-1.5"
+      role="group"
+      aria-label="Período da listagem"
+    >
       {OPCOES.map((o) => (
         <button
           key={o.key}

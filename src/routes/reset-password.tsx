@@ -91,7 +91,10 @@ function ResetPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               <div>
-                <label htmlFor="new-password" className="mb-1.5 block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="new-password"
+                  className="mb-1.5 block text-sm font-medium text-foreground"
+                >
                   Nova senha
                 </label>
                 <input
@@ -107,7 +110,10 @@ function ResetPasswordPage() {
                 />
               </div>
               <div>
-                <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="confirm-password"
+                  className="mb-1.5 block text-sm font-medium text-foreground"
+                >
                   Confirmar nova senha
                 </label>
                 <input
@@ -124,7 +130,10 @@ function ResetPasswordPage() {
               </div>
 
               {error && (
-                <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                <p
+                  role="alert"
+                  className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                >
                   {error}
                 </p>
               )}

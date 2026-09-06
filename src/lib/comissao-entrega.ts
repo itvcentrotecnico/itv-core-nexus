@@ -6,11 +6,7 @@
 export type ComissaoEntregaTipo = "entrega" | "entrega_avaliacao";
 
 export type ComissaoEntregaStatus =
-  | "gerada"
-  | "pendente_validacao"
-  | "validada"
-  | "paga"
-  | "cancelada";
+  "gerada" | "pendente_validacao" | "validada" | "paga" | "cancelada";
 
 export interface ComissaoEntregaConfig {
   valor_taxa_fixa: number;

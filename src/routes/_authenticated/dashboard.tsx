@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownCircle,
+import {
+  ArrowDownCircle,
   ArrowUpCircle,
   ClipboardList,
   Landmark,
@@ -32,12 +33,14 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { title: "Visão Geral — GESTÃO ITV Centro Técnico" },
       {
         name: "description",
-        content: "Painel gerencial da ITV Centro Técnico com indicadores financeiros e operacionais.",
+        content:
+          "Painel gerencial da ITV Centro Técnico com indicadores financeiros e operacionais.",
       },
       { property: "og:title", content: "Visão Geral — GESTÃO ITV Centro Técnico" },
       {
         property: "og:description",
-        content: "Painel gerencial da ITV Centro Técnico com indicadores financeiros e operacionais.",
+        content:
+          "Painel gerencial da ITV Centro Técnico com indicadores financeiros e operacionais.",
       },
     ],
   }),
@@ -126,7 +129,12 @@ function kpiValue(
   ind: CaixaIndicadores | undefined,
   custos: CustosIndicadores | undefined,
   comissoes?: ComissoesIndicadores,
-  metaPrincipal?: { nome: string; realizado: number; valor_alvo: number; percentual: number } | null,
+  metaPrincipal?: {
+    nome: string;
+    realizado: number;
+    valor_alvo: number;
+    percentual: number;
+  } | null,
 ): { value: string; sub: string } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
@@ -146,11 +154,15 @@ function kpiValue(
     if (!comissoes?.ok) return vazio;
     return {
       value: formatCurrencyBRL(comissoes.comissao_gerada),
-      sub: comissoes.tecnicos_com_comissao === 0 ? "Sem comissões no período" : "Fonte: Comissões Técnicas",
+      sub:
+        comissoes.tecnicos_com_comissao === 0
+          ? "Sem comissões no período"
+          : "Fonte: Comissões Técnicas",
     };
   }
 
-  const deCustos = kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
+  const deCustos =
+    kpi.key === "custo-pecas" || kpi.key === "custos-diretos" || kpi.key === "margem-parcial";
   if (deCustos) {
     if (!custos?.ok) return vazio;
     const receita = custos.receita_liquida_relacionada;
@@ -190,7 +202,10 @@ function DashboardPage() {
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
 
-  const range = useMemo(() => periodRange(period, customFrom, customTo), [period, customFrom, customTo]);
+  const range = useMemo(
+    () => periodRange(period, customFrom, customTo),
+    [period, customFrom, customTo],
+  );
 
   const indicadoresQuery = useQuery({
     queryKey: ["dashboard-indicadores", range?.from, range?.to],
@@ -236,7 +251,10 @@ function DashboardPage() {
     queryKey: ["dashboard-origens", range?.from, range?.to],
     enabled: !!range && veOrigens,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("rel_origens", { p_ini: range!.from, p_fim: range!.to });
+      const { data, error } = await supabase.rpc("rel_origens", {
+        p_ini: range!.from,
+        p_fim: range!.to,
+      });
       if (error) throw error;
       const r = data as unknown as {
         ok: boolean;
@@ -275,11 +293,23 @@ function DashboardPage() {
       if (error) throw error;
       const painel = data as unknown as {
         ok: boolean;
-        metas: { id: string; nome: string; principal: boolean; status: string; realizado: number; valor_alvo: number; percentual: number; status_projecao: string | null; projecao: number | null }[];
+        metas: {
+          id: string;
+          nome: string;
+          principal: boolean;
+          status: string;
+          realizado: number;
+          valor_alvo: number;
+          percentual: number;
+          status_projecao: string | null;
+          projecao: number | null;
+        }[];
       };
       if (!painel.ok) return null;
       const principal =
-        painel.metas.find((m) => m.principal && (m.status === "ativa" || m.status === "planejada")) ??
+        painel.metas.find(
+          (m) => m.principal && (m.status === "ativa" || m.status === "planejada"),
+        ) ??
         painel.metas.find((m) => m.status === "ativa") ??
         null;
       return principal;
@@ -327,7 +357,10 @@ function DashboardPage() {
       {period === "personalizado" && (
         <div className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4">
           <div>
-            <label htmlFor="periodo-inicio" className="mb-1 block text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="periodo-inicio"
+              className="mb-1 block text-xs font-medium text-muted-foreground"
+            >
               De
             </label>
             <input
@@ -339,7 +372,10 @@ function DashboardPage() {
             />
           </div>
           <div>
-            <label htmlFor="periodo-fim" className="mb-1 block text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="periodo-fim"
+              className="mb-1 block text-xs font-medium text-muted-foreground"
+            >
               Até
             </label>
             <input
@@ -363,10 +399,12 @@ function DashboardPage() {
             <div>
               <p className="text-sm font-semibold text-foreground">
                 {filaProducao.aguardando_validacao}{" "}
-                {filaProducao.aguardando_validacao === 1 ? "serviço aguarda" : "serviços aguardam"} validação técnica
+                {filaProducao.aguardando_validacao === 1 ? "serviço aguarda" : "serviços aguardam"}{" "}
+                validação técnica
               </p>
               <p className="text-xs text-muted-foreground">
-                Tempo médio em fila: {filaProducao.tempo_medio_fila_horas.toFixed(1)}h — clique para abrir a fila
+                Tempo médio em fila: {filaProducao.tempo_medio_fila_horas.toFixed(1)}h — clique para
+                abrir a fila
               </p>
             </div>
           </div>
@@ -380,7 +418,9 @@ function DashboardPage() {
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary">Meta principal</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                Meta principal
+              </p>
               <p className="mt-0.5 text-sm font-semibold text-foreground">{metaPrincipal.nome}</p>
             </div>
             <div className="text-right">
@@ -388,8 +428,10 @@ function DashboardPage() {
                 {metaPrincipal.percentual.toFixed(1).replace(".", ",")}%
               </p>
               <p className="text-[11px] text-muted-foreground">
-                {formatCurrencyBRL(metaPrincipal.realizado)} de {formatCurrencyBRL(metaPrincipal.valor_alvo)}
-                {metaPrincipal.projecao != null && ` · projeção ${formatCurrencyBRL(metaPrincipal.projecao)}`}
+                {formatCurrencyBRL(metaPrincipal.realizado)} de{" "}
+                {formatCurrencyBRL(metaPrincipal.valor_alvo)}
+                {metaPrincipal.projecao != null &&
+                  ` · projeção ${formatCurrencyBRL(metaPrincipal.projecao)}`}
               </p>
             </div>
           </div>
@@ -432,7 +474,8 @@ function DashboardPage() {
                 <li key={o.origem} className="flex items-center justify-between text-sm">
                   <span className="font-medium text-card-foreground">{o.origem}</span>
                   <span className="text-muted-foreground">
-                    {o.clientes} cliente{o.clientes === 1 ? "" : "s"} · {formatCurrencyBRL(Number(o.faturamento))}
+                    {o.clientes} cliente{o.clientes === 1 ? "" : "s"} ·{" "}
+                    {formatCurrencyBRL(Number(o.faturamento))}
                   </span>
                 </li>
               ))}
@@ -443,10 +486,13 @@ function DashboardPage() {
 
       <div className="rounded-xl border border-dashed border-border bg-card/60 p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Despesas e Resultado Operacional são consolidados no módulo Financeiro; a Meta é acompanhada no módulo
-          Metas. A Margem Parcial ainda não desconta comissões.
+          Despesas e Resultado Operacional são consolidados no módulo Financeiro; a Meta é
+          acompanhada no módulo Metas. A Margem Parcial ainda não desconta comissões.
         </p>
-        <ArrowDownCircle className="mx-auto mt-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+        <ArrowDownCircle
+          className="mx-auto mt-3 h-4 w-4 text-muted-foreground"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

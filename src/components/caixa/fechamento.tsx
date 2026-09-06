@@ -12,7 +12,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { MoneyInput } from "@/components/caixa/money-input";
-import { inputClass, labelClass, round2, type CaixaFechamento, type CaixaRpcResult } from "@/lib/caixa";
+import {
+  inputClass,
+  labelClass,
+  round2,
+  type CaixaFechamento,
+  type CaixaRpcResult,
+} from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import type { CaixaFisicoResumo } from "@/lib/governanca";
@@ -108,7 +114,9 @@ export function FecharCaixaDialog({
         <dl className="space-y-2 rounded-lg bg-muted px-4 py-3 text-sm">
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Faturamento do dia</dt>
-            <dd className="font-semibold text-foreground">{formatCurrencyBRL(totais.faturamento)}</dd>
+            <dd className="font-semibold text-foreground">
+              {formatCurrencyBRL(totais.faturamento)}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Taxas</dt>
@@ -120,19 +128,27 @@ export function FecharCaixaDialog({
           </div>
           <div className="flex justify-between border-t border-border pt-2">
             <dt className="text-muted-foreground">Saldo inicial</dt>
-            <dd className="font-medium text-foreground">{formatCurrencyBRL(fisico?.saldo_inicial ?? 0)}</dd>
+            <dd className="font-medium text-foreground">
+              {formatCurrencyBRL(fisico?.saldo_inicial ?? 0)}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Entradas em dinheiro</dt>
-            <dd className="font-medium text-foreground">{formatCurrencyBRL(fisico?.entradas_dinheiro ?? dinheiroEsperado)}</dd>
+            <dd className="font-medium text-foreground">
+              {formatCurrencyBRL(fisico?.entradas_dinheiro ?? dinheiroEsperado)}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Suprimentos</dt>
-            <dd className="font-medium text-foreground">+ {formatCurrencyBRL(fisico?.suprimentos ?? 0)}</dd>
+            <dd className="font-medium text-foreground">
+              + {formatCurrencyBRL(fisico?.suprimentos ?? 0)}
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Sangrias</dt>
-            <dd className="font-medium text-foreground">− {formatCurrencyBRL(fisico?.sangrias ?? 0)}</dd>
+            <dd className="font-medium text-foreground">
+              − {formatCurrencyBRL(fisico?.sangrias ?? 0)}
+            </dd>
           </div>
           <div className="flex justify-between border-t border-border pt-2">
             <dt className="text-muted-foreground">Saldo físico esperado</dt>
@@ -167,7 +183,12 @@ export function FecharCaixaDialog({
 
         <div>
           <label htmlFor="cx-fechar-obs" className={labelClass}>
-            Observação {precisaObservacao ? "" : <span className="font-normal text-muted-foreground">(opcional)</span>}
+            Observação{" "}
+            {precisaObservacao ? (
+              ""
+            ) : (
+              <span className="font-normal text-muted-foreground">(opcional)</span>
+            )}
           </label>
           <textarea
             id="cx-fechar-obs"

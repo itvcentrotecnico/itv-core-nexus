@@ -27,7 +27,11 @@ export const Route = createFileRoute("/modo-tv")({
   head: () => ({
     meta: [
       { title: "Modo TV — Painel de Desempenho ITV" },
-      { name: "description", content: "Painel de gestão à vista com metas, faturamento e produção técnica da ITV Centro Técnico." },
+      {
+        name: "description",
+        content:
+          "Painel de gestão à vista com metas, faturamento e produção técnica da ITV Centro Técnico.",
+      },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Modo TV — Painel de Desempenho ITV" },
       { property: "og:description", content: "Painel de gestão à vista da ITV Centro Técnico." },
@@ -35,12 +39,17 @@ export const Route = createFileRoute("/modo-tv")({
   }),
   component: ModoTvPage,
   errorComponent: ({ error }) => (
-    <div role="alert" className="flex min-h-screen items-center justify-center bg-[#0B0F0D] p-8 text-center text-white/70">
-      Não foi possível carregar o painel: {error.message}
+    <div
+      role="alert"
+      className="flex min-h-screen items-center justify-center bg-[#0B0F0D] p-8 text-center text-white/70"
+    >
+      Não foi possível carregar o painel. Tente novamente em instantes.
     </div>
   ),
   notFoundComponent: () => (
-    <div className="flex min-h-screen items-center justify-center bg-[#0B0F0D] text-white/60">Painel indisponível.</div>
+    <div className="flex min-h-screen items-center justify-center bg-[#0B0F0D] text-white/60">
+      Painel indisponível.
+    </div>
   ),
 });
 
@@ -77,15 +86,16 @@ function ModoTvPage() {
     if (config.mostrar_meta || config.mostrar_faturamento) {
       lista.push({ chave: "meta", node: <TelaMeta d={data} config={config} /> });
     }
-    if (config.mostrar_producao) lista.push({ chave: "producao", node: <TelaProducao d={data} config={config} /> });
+    if (config.mostrar_producao)
+      lista.push({ chave: "producao", node: <TelaProducao d={data} config={config} /> });
     if (config.mostrar_tipos_servico || config.mostrar_marcas || config.mostrar_ranking) {
       lista.push({ chave: "servicos", node: <TelaServicos d={data} config={config} /> });
     }
-    if (config.mostrar_comparacao) lista.push({ chave: "comparativo", node: <TelaComparativo d={data} /> });
+    if (config.mostrar_comparacao)
+      lista.push({ chave: "comparativo", node: <TelaComparativo d={data} /> });
     if (equipe) lista.push({ chave: "equipe", node: <TelaEquipeExterna d={equipe} /> });
     return lista;
   }, [data, config, equipe]);
-
 
   const [indice, setIndice] = useState(0);
 
@@ -119,7 +129,11 @@ function ModoTvPage() {
         <div className="flex-1 px-[2vw] py-[1.2vw]">
           {isLoading ? (
             <div className="flex h-full items-center justify-center">
-              <img src={logoWhite.url} alt="Carregando painel ITV" className="h-[6vw] w-auto animate-pulse" />
+              <img
+                src={logoWhite.url}
+                alt="Carregando painel ITV"
+                className="h-[6vw] w-auto animate-pulse"
+              />
             </div>
           ) : error || !data?.ok ? (
             <div className="flex h-full flex-col items-center justify-center gap-[1vw] text-center">
@@ -144,7 +158,11 @@ function ModoTvPage() {
         <RodapeTv
           indice={Math.min(indice, Math.max(telas.length - 1, 0))}
           total={telas.length}
-          mensagem={config.mostrar_mensagem && config.mensagem_texto ? `${config.mensagem_titulo}: ${config.mensagem_texto}` : null}
+          mensagem={
+            config.mostrar_mensagem && config.mensagem_texto
+              ? `${config.mensagem_titulo}: ${config.mensagem_texto}`
+              : null
+          }
         />
       </div>
 

@@ -4,7 +4,6 @@ import { AlertTriangle, Info, TriangleAlert } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 
-
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import { NIVEL_ALERTA, rpcOp, type OperacionalDashboard } from "@/lib/operacional";
 import { cn } from "@/lib/utils";
@@ -14,7 +13,15 @@ interface Props {
   onEstoque: (motivo: string) => void;
 }
 
-function Bloco({ titulo, children, acao }: { titulo: string; children: React.ReactNode; acao?: React.ReactNode }) {
+function Bloco({
+  titulo,
+  children,
+  acao,
+}: {
+  titulo: string;
+  children: React.ReactNode;
+  acao?: React.ReactNode;
+}) {
   return (
     <section className="rounded-xl border border-border bg-card p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -93,13 +100,22 @@ function ColetasBloco() {
       }
     >
       {query.isLoading && <p className="text-sm text-muted-foreground">Carregando…</p>}
-      {query.isError && <p className="text-sm text-muted-foreground">Não foi possível carregar os indicadores de coletas.</p>}
+      {query.isError && (
+        <p className="text-sm text-muted-foreground">
+          Não foi possível carregar os indicadores de coletas.
+        </p>
+      )}
       {query.data && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Num label="Aguardando cadastro" value={String(query.data.aguardando)} onClick={ir} />
           <Num label="Coletas em aberto" value={String(query.data.coletas)} onClick={ir} />
           <Num label="Entregas em aberto" value={String(query.data.entregas)} onClick={ir} />
-          <Num label="Sem motorista" value={String(query.data.semMotorista)} destaque onClick={ir} />
+          <Num
+            label="Sem motorista"
+            value={String(query.data.semMotorista)}
+            destaque
+            onClick={ir}
+          />
         </div>
       )}
     </Bloco>
@@ -115,7 +131,11 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
   });
 
   if (query.isLoading) {
-    return <p className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">Carregando a Central Operacional…</p>;
+    return (
+      <p className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+        Carregando a Central Operacional…
+      </p>
+    );
   }
   if (query.isError) {
     return (
@@ -139,29 +159,60 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
         ) : (
           <ul className="space-y-2">
             {alertas.map((a, i) => {
-              const nivel = NIVEL_ALERTA[a.nivel] ?? { label: "Informativo", className: "bg-muted text-muted-foreground", ordem: 2 };
-              const Icon = a.nivel === "critico" ? TriangleAlert : a.nivel === "atencao" ? AlertTriangle : Info;
+              const nivel = NIVEL_ALERTA[a.nivel] ?? {
+                label: "Informativo",
+                className: "bg-muted text-muted-foreground",
+                ordem: 2,
+              };
+              const Icon =
+                a.nivel === "critico"
+                  ? TriangleAlert
+                  : a.nivel === "atencao"
+                    ? AlertTriangle
+                    : Info;
               return (
-                <li key={`${a.tipo}-${i}`} className="flex items-start gap-2 rounded-lg border border-border bg-background p-3">
+                <li
+                  key={`${a.tipo}-${i}`}
+                  className="flex items-start gap-2 rounded-lg border border-border bg-background p-3"
+                >
                   <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-foreground">{a.mensagem}</p>
-                    <span className={cn("mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold", nivel.className)}>
+                    <span
+                      className={cn(
+                        "mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                        nivel.className,
+                      )}
+                    >
                       {nivel.label}
                     </span>
                   </div>
-                  {(a.tipo === "fechamento" || a.tipo === "paradas" || a.tipo === "envelhecimento") && (
-                    <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("fechamento")}>
+                  {(a.tipo === "fechamento" ||
+                    a.tipo === "paradas" ||
+                    a.tipo === "envelhecimento") && (
+                    <button
+                      type="button"
+                      className="text-xs font-semibold text-primary"
+                      onClick={() => onIrPara("fechamento")}
+                    >
                       Abrir
                     </button>
                   )}
                   {(a.tipo === "validacao" || a.tipo === "sem_tecnico") && (
-                    <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("validacao")}>
+                    <button
+                      type="button"
+                      className="text-xs font-semibold text-primary"
+                      onClick={() => onIrPara("validacao")}
+                    >
                       Abrir
                     </button>
                   )}
                   {(a.tipo === "comissoes" || a.tipo === "devolucao") && (
-                    <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("comissoes")}>
+                    <button
+                      type="button"
+                      className="text-xs font-semibold text-primary"
+                      onClick={() => onIrPara("comissoes")}
+                    >
                       Abrir
                     </button>
                   )}
@@ -175,49 +226,101 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
       <Bloco
         titulo="Produção técnica — hoje"
         acao={
-          <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("validacao")}>
+          <button
+            type="button"
+            className="text-xs font-semibold text-primary"
+            onClick={() => onIrPara("validacao")}
+          >
             Abrir fila
           </button>
         }
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Num label="Aguardando validação" value={String(d.hoje.aguardando_validacao)} destaque onClick={() => onIrPara("validacao")} />
-          <Num label="Correções solicitadas" value={String(d.hoje.correcao_solicitada)} onClick={() => onIrPara("validacao")} />
+          <Num
+            label="Aguardando validação"
+            value={String(d.hoje.aguardando_validacao)}
+            destaque
+            onClick={() => onIrPara("validacao")}
+          />
+          <Num
+            label="Correções solicitadas"
+            value={String(d.hoje.correcao_solicitada)}
+            onClick={() => onIrPara("validacao")}
+          />
           <Num label="Validados hoje" value={String(d.hoje.validados_hoje)} />
           <Num label="Rejeitados" value={String(d.hoje.rejeitados)} />
-          <Num label="Sem técnico definido" value={String(d.hoje.sem_tecnico)} onClick={() => onIrPara("validacao")} />
-          <Num label="Sem tipo definido" value={String(d.hoje.sem_tipo)} onClick={() => onIrPara("validacao")} />
+          <Num
+            label="Sem técnico definido"
+            value={String(d.hoje.sem_tecnico)}
+            onClick={() => onIrPara("validacao")}
+          />
+          <Num
+            label="Sem tipo definido"
+            value={String(d.hoje.sem_tipo)}
+            onClick={() => onIrPara("validacao")}
+          />
         </div>
       </Bloco>
 
       <Bloco
         titulo="Comissões operacionais"
         acao={
-          <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("comissoes")}>
+          <button
+            type="button"
+            className="text-xs font-semibold text-primary"
+            onClick={() => onIrPara("comissoes")}
+          >
             Conferir e liberar
           </button>
         }
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Num label="Geradas" value={String(d.comissoes.geradas)} onClick={() => onIrPara("comissoes")} />
-          <Num label="Conferidas" value={String(d.comissoes.conferidas)} onClick={() => onIrPara("comissoes")} />
+          <Num
+            label="Geradas"
+            value={String(d.comissoes.geradas)}
+            onClick={() => onIrPara("comissoes")}
+          />
+          <Num
+            label="Conferidas"
+            value={String(d.comissoes.conferidas)}
+            onClick={() => onIrPara("comissoes")}
+          />
           <Num label="Liberadas p/ Financeiro" value={String(d.comissoes.liberadas)} destaque />
-          <Num label="Devolvidas" value={String(d.comissoes.devolvidas)} onClick={() => onIrPara("comissoes")} />
+          <Num
+            label="Devolvidas"
+            value={String(d.comissoes.devolvidas)}
+            onClick={() => onIrPara("comissoes")}
+          />
           <Num label="Pagas no mês" value={String(d.comissoes.pagas_mes)} />
-          <Num label="Valor liberado" value={formatCurrencyBRL(Number(d.comissoes.valor_liberado ?? 0))} />
+          <Num
+            label="Valor liberado"
+            value={formatCurrencyBRL(Number(d.comissoes.valor_liberado ?? 0))}
+          />
         </div>
       </Bloco>
 
       <Bloco
         titulo={`Fluxo de TVs — semana ${d.semana.semana} (${formatDateOnlyISO(d.semana.inicio)} a ${formatDateOnlyISO(d.semana.fim)})`}
         acao={
-          <button type="button" className="text-xs font-semibold text-primary" onClick={() => onIrPara("fechamento")}>
+          <button
+            type="button"
+            className="text-xs font-semibold text-primary"
+            onClick={() => onIrPara("fechamento")}
+          >
             Fechamento semanal
           </button>
         }
       >
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Num label="TVs recebidas" value={String(d.semana.entradas)} sub={d.semana.entradas_informadas ? `Fonte: ${d.semana.entradas_fonte}` : "Entradas não informadas"} />
+          <Num
+            label="TVs recebidas"
+            value={String(d.semana.entradas)}
+            sub={
+              d.semana.entradas_informadas
+                ? `Fonte: ${d.semana.entradas_fonte}`
+                : "Entradas não informadas"
+            }
+          />
           <Num label="Entregues" value={String(d.semana.entregas)} sub="Coletas/Entregas" />
           <Num label="Saldo não entregue" value={String(d.semana.saldo)} destaque />
           <Num
@@ -241,7 +344,12 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {d.estoque.map((e) => (
-              <Num key={e.motivo_id} label={e.motivo} value={String(e.total)} onClick={() => onEstoque(e.motivo_id)} />
+              <Num
+                key={e.motivo_id}
+                label={e.motivo}
+                value={String(e.total)}
+                onClick={() => onEstoque(e.motivo_id)}
+              />
             ))}
           </div>
         )}

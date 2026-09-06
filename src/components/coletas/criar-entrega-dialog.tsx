@@ -144,7 +144,9 @@ export function CriarEntregaDialog({
             <MapPin className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
             {enderecoCompleto(coleta)}
           </p>
-          {complementoTexto && <p className="mt-1 text-xs text-muted-foreground">{complementoTexto}</p>}
+          {complementoTexto && (
+            <p className="mt-1 text-xs text-muted-foreground">{complementoTexto}</p>
+          )}
         </section>
 
         <div className="grid grid-cols-2 gap-2">
@@ -170,64 +172,147 @@ export function CriarEntregaDialog({
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={labelClass} htmlFor="e-cep">CEP</label>
-                <input id="e-cep" className={`${inputClass} h-11`} inputMode="numeric" value={cep} onChange={(e) => setCep(maskCEP(e.target.value))} />
+                <label className={labelClass} htmlFor="e-cep">
+                  CEP
+                </label>
+                <input
+                  id="e-cep"
+                  className={`${inputClass} h-11`}
+                  inputMode="numeric"
+                  value={cep}
+                  onChange={(e) => setCep(maskCEP(e.target.value))}
+                />
               </div>
               <div>
-                <label className={labelClass} htmlFor="e-num">Número *</label>
-                <input id="e-num" className={`${inputClass} h-11`} value={numero} onChange={(e) => setNumero(e.target.value)} />
+                <label className={labelClass} htmlFor="e-num">
+                  Número *
+                </label>
+                <input
+                  id="e-num"
+                  className={`${inputClass} h-11`}
+                  value={numero}
+                  onChange={(e) => setNumero(e.target.value)}
+                />
               </div>
             </div>
             <div>
-              <label className={labelClass} htmlFor="e-rua">Rua *</label>
-              <input id="e-rua" className={`${inputClass} h-11`} value={rua} onChange={(e) => setRua(e.target.value)} />
+              <label className={labelClass} htmlFor="e-rua">
+                Rua *
+              </label>
+              <input
+                id="e-rua"
+                className={`${inputClass} h-11`}
+                value={rua}
+                onChange={(e) => setRua(e.target.value)}
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={labelClass} htmlFor="e-bairro">Bairro *</label>
-                <input id="e-bairro" className={`${inputClass} h-11`} value={bairro} onChange={(e) => setBairro(e.target.value)} />
+                <label className={labelClass} htmlFor="e-bairro">
+                  Bairro *
+                </label>
+                <input
+                  id="e-bairro"
+                  className={`${inputClass} h-11`}
+                  value={bairro}
+                  onChange={(e) => setBairro(e.target.value)}
+                />
               </div>
               <div>
-                <label className={labelClass} htmlFor="e-cidade">Cidade</label>
-                <input id="e-cidade" className={`${inputClass} h-11`} value={cidade} onChange={(e) => setCidade(e.target.value)} />
+                <label className={labelClass} htmlFor="e-cidade">
+                  Cidade
+                </label>
+                <input
+                  id="e-cidade"
+                  className={`${inputClass} h-11`}
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className={labelClass} htmlFor="e-cond">Condomínio</label>
-                <input id="e-cond" className={`${inputClass} h-11`} value={condominio} onChange={(e) => setCondominio(e.target.value)} />
+                <label className={labelClass} htmlFor="e-cond">
+                  Condomínio
+                </label>
+                <input
+                  id="e-cond"
+                  className={`${inputClass} h-11`}
+                  value={condominio}
+                  onChange={(e) => setCondominio(e.target.value)}
+                />
               </div>
               <div>
-                <label className={labelClass} htmlFor="e-torre">Torre / Bloco</label>
-                <input id="e-torre" className={`${inputClass} h-11`} value={torre} onChange={(e) => setTorre(e.target.value)} />
+                <label className={labelClass} htmlFor="e-torre">
+                  Torre / Bloco
+                </label>
+                <input
+                  id="e-torre"
+                  className={`${inputClass} h-11`}
+                  value={torre}
+                  onChange={(e) => setTorre(e.target.value)}
+                />
               </div>
               <div>
-                <label className={labelClass} htmlFor="e-ap">Apartamento</label>
-                <input id="e-ap" className={`${inputClass} h-11`} value={apartamento} onChange={(e) => setApartamento(e.target.value)} />
+                <label className={labelClass} htmlFor="e-ap">
+                  Apartamento
+                </label>
+                <input
+                  id="e-ap"
+                  className={`${inputClass} h-11`}
+                  value={apartamento}
+                  onChange={(e) => setApartamento(e.target.value)}
+                />
               </div>
             </div>
             <div>
-              <label className={labelClass} htmlFor="e-compl">Complemento</label>
-              <input id="e-compl" className={`${inputClass} h-11`} value={complemento} onChange={(e) => setComplemento(e.target.value)} />
+              <label className={labelClass} htmlFor="e-compl">
+                Complemento
+              </label>
+              <input
+                id="e-compl"
+                className={`${inputClass} h-11`}
+                value={complemento}
+                onChange={(e) => setComplemento(e.target.value)}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="e-ref">Ponto de referência</label>
-              <input id="e-ref" className={`${inputClass} h-11`} value={referencia} onChange={(e) => setReferencia(e.target.value)} />
+              <label className={labelClass} htmlFor="e-ref">
+                Ponto de referência
+              </label>
+              <input
+                id="e-ref"
+                className={`${inputClass} h-11`}
+                value={referencia}
+                onChange={(e) => setReferencia(e.target.value)}
+              />
             </div>
           </div>
         )}
 
         <div>
-          <label className={labelClass} htmlFor="e-obs">Observação da entrega (opcional)</label>
-          <Textarea id="e-obs" rows={2} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+          <label className={labelClass} htmlFor="e-obs">
+            Observação da entrega (opcional)
+          </label>
+          <Textarea
+            id="e-obs"
+            rows={2}
+            value={observacao}
+            onChange={(e) => setObservacao(e.target.value)}
+          />
         </div>
 
-        {erro && <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{erro}</p>}
+        {erro && (
+          <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{erro}</p>
+        )}
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
           <Button className="h-11" onClick={criar} disabled={salvando}>
-            {salvando && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />} Confirmar entrega
+            {salvando && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />}{" "}
+            Confirmar entrega
           </Button>
         </DialogFooter>
       </DialogContent>

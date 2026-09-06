@@ -21,7 +21,9 @@ export function EquipeExternaPainel() {
       <div className="rounded-xl border border-border p-6 text-center text-sm text-muted-foreground">
         {mensagemErro(query.error, "Não foi possível carregar a equipe externa.")}
         <div className="mt-3">
-          <Button variant="outline" size="sm" onClick={() => void query.refetch()}>Tentar novamente</Button>
+          <Button variant="outline" size="sm" onClick={() => void query.refetch()}>
+            Tentar novamente
+          </Button>
         </div>
       </div>
     );
@@ -59,17 +61,24 @@ export function EquipeExternaPainel() {
             </p>
             <p className="text-xs text-muted-foreground">
               {ativo && velho ? "🟡 " : ""}
-              Última atualização: {m.registrado_em ? formatDateTimeITV(m.registrado_em) : "sem registro"}
+              Última atualização:{" "}
+              {m.registrado_em ? formatDateTimeITV(m.registrado_em) : "sem registro"}
             </p>
 
             <div className="mt-3 grid grid-cols-2 gap-2 text-center">
               <div className="rounded-lg bg-muted/40 p-2">
                 <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Coletas</p>
-                <p className="font-display text-lg font-bold text-foreground">{m.coletas_atribuidas}</p>
+                <p className="font-display text-lg font-bold text-foreground">
+                  {m.coletas_atribuidas}
+                </p>
               </div>
               <div className="rounded-lg bg-muted/40 p-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Entregas</p>
-                <p className="font-display text-lg font-bold text-foreground">{m.entregas_atribuidas}</p>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                  Entregas
+                </p>
+                <p className="font-display text-lg font-bold text-foreground">
+                  {m.entregas_atribuidas}
+                </p>
               </div>
             </div>
 

@@ -60,10 +60,21 @@ export function AdminTecnicos() {
         <SemDados label="Nenhum usuário com perfil Técnico." />
       ) : (
         <TabelaAdmin
-          cabecalho={["Técnico", "Usuário", "Situação", "Especialidade", "Admissão", "Histórico", "Ações"]}
+          cabecalho={[
+            "Técnico",
+            "Usuário",
+            "Situação",
+            "Especialidade",
+            "Admissão",
+            "Histórico",
+            "Ações",
+          ]}
         >
           {(data ?? []).map((t) => {
-            const st = STATUS_COLAB[t.colaborador_status ?? ""] ?? { label: "Sem colaborador", tom: "neutro" as const };
+            const st = STATUS_COLAB[t.colaborador_status ?? ""] ?? {
+              label: "Sem colaborador",
+              tom: "neutro" as const,
+            };
             return (
               <tr key={t.user_id}>
                 <td className="px-3 py-3">
@@ -104,8 +115,9 @@ export function AdminTecnicos() {
       )}
 
       <p className="mt-4 text-xs text-muted-foreground">
-        A situação (Ativo, Férias, Afastado, Desligado) é alterada no módulo Colaboradores, mantendo um único cadastro
-        oficial. Técnicos inativos deixam de aparecer em novos lançamentos, mas o histórico é preservado.
+        A situação (Ativo, Férias, Afastado, Desligado) é alterada no módulo Colaboradores, mantendo
+        um único cadastro oficial. Técnicos inativos deixam de aparecer em novos lançamentos, mas o
+        histórico é preservado.
       </p>
 
       <Dialog open={!!editando} onOpenChange={(o) => !o && setEditando(null)}>

@@ -4,20 +4,39 @@ import { useQuery } from "@tanstack/react-query";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 import type { RelProducao } from "@/lib/relatorios";
 import { labelMes } from "@/lib/relatorios";
-import { BotaoExportar, KpiRel, RankingBarras, SecaoRel, TabelaRel, exportarCSV, rpcRel } from "@/components/relatorios/shared";
+import {
+  BotaoExportar,
+  KpiRel,
+  RankingBarras,
+  SecaoRel,
+  TabelaRel,
+  exportarCSV,
+  rpcRel,
+} from "@/components/relatorios/shared";
 import { cn } from "@/lib/utils";
 
 /** Aba Serviços: produção validada, tipos, marcas, modelos e peças. */
-export function ProducaoTab({ range, podeExportar }: { range: { from: string; to: string }; podeExportar: boolean }) {
+export function ProducaoTab({
+  range,
+  podeExportar,
+}: {
+  range: { from: string; to: string };
+  podeExportar: boolean;
+}) {
   const q = useQuery({
     queryKey: ["relatorios", "producao", range.from, range.to],
-    queryFn: () => rpcRel<RelProducao>("relatorios_producao", { p_from: range.from, p_to: range.to }),
+    queryFn: () =>
+      rpcRel<RelProducao>("relatorios_producao", { p_from: range.from, p_to: range.to }),
   });
   const [visao, setVisao] = useState<"tipos" | "marcas" | "modelos" | "pecas">("tipos");
 
   if (q.isLoading) return <p className="text-sm text-muted-foreground">Carregando produção…</p>;
   if (q.error || !q.data?.ok) {
-    return <p className="text-sm text-destructive">{q.data?.message ?? "Falha ao carregar o relatório de produção."}</p>;
+    return (
+      <p className="text-sm text-destructive">
+        {q.data?.message ?? "Falha ao carregar o relatório de produção."}
+      </p>
+    );
   }
 
   const d = q.data;
@@ -43,14 +62,26 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
         )}
       </SecaoRel>
 
-      <SecaoRel titulo="Produção por mês" descricao="Serviços validados, valor de produção e média por serviço.">
+      <SecaoRel
+        titulo="Produção por mês"
+        descricao="Serviços validados, valor de produção e média por serviço."
+      >
         <TabelaRel
           colunas={["Mês", "Serviços", "Valor Produção", "Média por Serviço"]}
-          linhas={d.por_mes.map((x) => [labelMes(x.mes), x.servicos, formatCurrencyBRL(x.valor), formatCurrencyBRL(x.media)])}
+          linhas={d.por_mes.map((x) => [
+            labelMes(x.mes),
+            x.servicos,
+            formatCurrencyBRL(x.valor),
+            formatCurrencyBRL(x.media),
+          ])}
         />
       </SecaoRel>
 
-      <div role="group" aria-label="Dimensão do relatório" className="flex flex-wrap gap-1 rounded-lg border border-border bg-card p-1">
+      <div
+        role="group"
+        aria-label="Dimensão do relatório"
+        className="flex flex-wrap gap-1 rounded-lg border border-border bg-card p-1"
+      >
         {(
           [
             ["tipos", "Tipos de Serviço"],
@@ -66,7 +97,9 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
             aria-pressed={visao === k}
             className={cn(
               "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
-              visao === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              visao === k
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground",
             )}
           >
             {l}
@@ -85,8 +118,22 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
                   onClick={() =>
                     exportarCSV(
                       `servicos-tipos-${range.from}-${range.to}.csv`,
-                      ["Serviço", "Quantidade", "%", "Valor Produção", "Ticket Médio", "Receita Associada"],
-                      d.por_tipo.map((x) => [x.tipo, x.quantidade, x.pct, String(x.valor).replace(".", ","), String(x.ticket_medio).replace(".", ","), String(x.receita_associada).replace(".", ",")]),
+                      [
+                        "Serviço",
+                        "Quantidade",
+                        "%",
+                        "Valor Produção",
+                        "Ticket Médio",
+                        "Receita Associada",
+                      ],
+                      d.por_tipo.map((x) => [
+                        x.tipo,
+                        x.quantidade,
+                        x.pct,
+                        String(x.valor).replace(".", ","),
+                        String(x.ticket_medio).replace(".", ","),
+                        String(x.receita_associada).replace(".", ","),
+                      ]),
                     )
                   }
                 />
@@ -94,7 +141,14 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
             }
           >
             <TabelaRel
-              colunas={["Serviço", "Qtd", "%", "Valor Produção", "Ticket Médio", "Receita Associada"]}
+              colunas={[
+                "Serviço",
+                "Qtd",
+                "%",
+                "Valor Produção",
+                "Ticket Médio",
+                "Receita Associada",
+              ]}
               linhas={d.por_tipo.map((x) => [
                 x.tipo,
                 x.quantidade,
@@ -109,12 +163,26 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
             <SecaoRel titulo="Top 10 por quantidade">
               <RankingBarras
                 formato="numero"
-                itens={d.por_tipo.slice(0, 10).map((x) => ({ rotulo: x.tipo, valor: x.quantidade, sub: formatCurrencyBRL(x.valor) }))}
+                itens={d.por_tipo.slice(0, 10).map((x) => ({
+                  rotulo: x.tipo,
+                  valor: x.quantidade,
+                  sub: formatCurrencyBRL(x.valor),
+                }))}
               />
             </SecaoRel>
-            <SecaoRel titulo="Top por receita" descricao="O serviço mais frequente nem sempre é o que mais fatura.">
+            <SecaoRel
+              titulo="Top por receita"
+              descricao="O serviço mais frequente nem sempre é o que mais fatura."
+            >
               <RankingBarras
-                itens={[...d.por_tipo].sort((a, b) => b.receita_associada - a.receita_associada).slice(0, 10).map((x) => ({ rotulo: x.tipo, valor: x.receita_associada, sub: `${x.quantidade} serviços` }))}
+                itens={[...d.por_tipo]
+                  .sort((a, b) => b.receita_associada - a.receita_associada)
+                  .slice(0, 10)
+                  .map((x) => ({
+                    rotulo: x.tipo,
+                    valor: x.receita_associada,
+                    sub: `${x.quantidade} serviços`,
+                  }))}
               />
             </SecaoRel>
           </div>
@@ -133,7 +201,13 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
                     exportarCSV(
                       `servicos-marcas-${range.from}-${range.to}.csv`,
                       ["Marca", "Quantidade", "%", "Receita Associada", "Ticket Médio"],
-                      d.por_marca.map((x) => [x.marca, x.quantidade, x.pct, String(x.receita_associada).replace(".", ","), String(x.ticket_medio).replace(".", ",")]),
+                      d.por_marca.map((x) => [
+                        x.marca,
+                        x.quantidade,
+                        x.pct,
+                        String(x.receita_associada).replace(".", ","),
+                        String(x.ticket_medio).replace(".", ","),
+                      ]),
                     )
                   }
                 />
@@ -171,8 +245,24 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
                   onClick={() =>
                     exportarCSV(
                       `servicos-modelos-${range.from}-${range.to}.csv`,
-                      ["Marca", "Modelo", "Polegadas", "Quantidade", "Receita Associada", "Ticket Médio", "Serviços Comuns"],
-                      d.por_modelo.map((x) => [x.marca, x.modelo, x.polegadas ?? "", x.quantidade, String(x.receita_associada).replace(".", ","), String(x.ticket_medio).replace(".", ","), x.servicos_comuns ?? ""]),
+                      [
+                        "Marca",
+                        "Modelo",
+                        "Polegadas",
+                        "Quantidade",
+                        "Receita Associada",
+                        "Ticket Médio",
+                        "Serviços Comuns",
+                      ],
+                      d.por_modelo.map((x) => [
+                        x.marca,
+                        x.modelo,
+                        x.polegadas ?? "",
+                        x.quantidade,
+                        String(x.receita_associada).replace(".", ","),
+                        String(x.ticket_medio).replace(".", ","),
+                        x.servicos_comuns ?? "",
+                      ]),
                     )
                   }
                 />
@@ -180,7 +270,15 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
             }
           >
             <TabelaRel
-              colunas={["Marca", "Modelo", 'Pol.', "Qtd", "Receita Associada", "Ticket Médio", "Serviços mais comuns"]}
+              colunas={[
+                "Marca",
+                "Modelo",
+                "Pol.",
+                "Qtd",
+                "Receita Associada",
+                "Ticket Médio",
+                "Serviços mais comuns",
+              ]}
               linhas={d.por_modelo.map((x) => [
                 x.marca,
                 x.modelo,
@@ -188,7 +286,9 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
                 x.quantidade,
                 formatCurrencyBRL(x.receita_associada),
                 formatCurrencyBRL(x.ticket_medio),
-                <span key="s" className="text-xs text-muted-foreground">{x.servicos_comuns ?? "—"}</span>,
+                <span key="s" className="text-xs text-muted-foreground">
+                  {x.servicos_comuns ?? "—"}
+                </span>,
               ])}
               minWidth={860}
             />
@@ -209,7 +309,12 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
         >
           <TabelaRel
             colunas={["Marca", "Categoria de Peça", "Quantidade", "Custo Total"]}
-            linhas={d.marca_x_peca.map((x) => [x.marca, x.categoria, x.quantidade, formatCurrencyBRL(x.custo_total)])}
+            linhas={d.marca_x_peca.map((x) => [
+              x.marca,
+              x.categoria,
+              x.quantidade,
+              formatCurrencyBRL(x.custo_total),
+            ])}
           />
         </SecaoRel>
       )}
@@ -217,7 +322,12 @@ export function ProducaoTab({ range, podeExportar }: { range: { from: string; to
       <SecaoRel titulo="Produção por dia">
         <TabelaRel
           colunas={["Data", "Serviços", "Valor Produção", "Média por Serviço"]}
-          linhas={d.por_dia.map((x) => [formatDateOnlyISO(x.data), x.servicos, formatCurrencyBRL(x.valor), formatCurrencyBRL(x.media)])}
+          linhas={d.por_dia.map((x) => [
+            formatDateOnlyISO(x.data),
+            x.servicos,
+            formatCurrencyBRL(x.valor),
+            formatCurrencyBRL(x.media),
+          ])}
         />
       </SecaoRel>
     </div>

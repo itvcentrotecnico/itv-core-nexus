@@ -31,7 +31,13 @@ function Linha({ rotulo, valor }: { rotulo: string; valor: string | null | undef
  * Mostra a origem já registrada (sem perguntar de novo) e permite correção
  * por usuário autorizado, com motivo e auditoria no banco.
  */
-export function OrigemBloco({ item, podeEditar }: { item: ColetaSolicitacao; podeEditar: boolean }) {
+export function OrigemBloco({
+  item,
+  podeEditar,
+}: {
+  item: ColetaSolicitacao;
+  podeEditar: boolean;
+}) {
   const queryClient = useQueryClient();
   const { data: origens } = useOrigens();
   const [editando, setEditando] = useState(false);
@@ -97,7 +103,10 @@ export function OrigemBloco({ item, podeEditar }: { item: ColetaSolicitacao; pod
         <>
           <Linha rotulo="Como conheceu a ITV" valor={nomeAtual ?? ORIGEM_NAO_INFORMADA} />
           <Linha rotulo="Detalhe" valor={item.origem_detalhe} />
-          <Linha rotulo="Origem original" valor={nomeOriginal && nomeOriginal !== nomeAtual ? nomeOriginal : null} />
+          <Linha
+            rotulo="Origem original"
+            valor={nomeOriginal && nomeOriginal !== nomeAtual ? nomeOriginal : null}
+          />
           <Linha rotulo="Quem indicou" valor={item.indicado_por_nome} />
           <Linha rotulo="Canal de contato" valor={item.canal_contato} />
           <Linha
@@ -111,11 +120,20 @@ export function OrigemBloco({ item, podeEditar }: { item: ColetaSolicitacao; pod
         <div className="mt-2 space-y-3">
           <OrigemPicker valor={valor} onChange={setValor} mostrarCanal compacto />
           <div>
-            <label className={labelClass} htmlFor="origem-motivo">Motivo da correção (opcional)</label>
-            <input id="origem-motivo" className={inputClass} value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+            <label className={labelClass} htmlFor="origem-motivo">
+              Motivo da correção (opcional)
+            </label>
+            <input
+              id="origem-motivo"
+              className={inputClass}
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+            />
           </div>
           <div className="flex gap-2">
-            <Button variant="ghost" className="flex-1" onClick={() => setEditando(false)}>Cancelar</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setEditando(false)}>
+              Cancelar
+            </Button>
             <Button className="flex-1" onClick={salvar} disabled={salvando}>
               {salvando && <Loader2 className="mr-2 size-4 animate-spin" />} Salvar origem
             </Button>

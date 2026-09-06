@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -41,7 +42,7 @@ export function ConfirmarCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }
@@ -53,12 +54,16 @@ export function ConfirmarCustoDialog({ custo, onClose, onDone }: ActionProps) {
         <DialogHeader>
           <DialogTitle>Confirmar custo</DialogTitle>
           <DialogDescription>
-            Confirma o custo de {formatCurrencyBRL(custo?.custo_total ?? 0)} da OS {custo?.os}? Registros
-            confirmados seguem válidos nos cálculos e indicam conferência gerencial.
+            Confirma o custo de {formatCurrencyBRL(custo?.custo_total ?? 0)} da OS {custo?.os}?
+            Registros confirmados seguem válidos nos cálculos e indicam conferência gerencial.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <button type="button" onClick={onClose} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+          >
             Voltar
           </button>
           <button
@@ -103,7 +108,7 @@ export function CancelarCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }
@@ -115,12 +120,14 @@ export function CancelarCustoDialog({ custo, onClose, onDone }: ActionProps) {
         <DialogHeader>
           <DialogTitle>Cancelar custo</DialogTitle>
           <DialogDescription>
-            O registro será mantido com status Cancelado e sairá dos cálculos. O motivo é obrigatório e fica
-            registrado em auditoria.
+            O registro será mantido com status Cancelado e sairá dos cálculos. O motivo é
+            obrigatório e fica registrado em auditoria.
           </DialogDescription>
         </DialogHeader>
         <div>
-          <label htmlFor="cancel-motivo" className={labelClass}>Motivo *</label>
+          <label htmlFor="cancel-motivo" className={labelClass}>
+            Motivo *
+          </label>
           <textarea
             id="cancel-motivo"
             value={motivo}
@@ -132,7 +139,11 @@ export function CancelarCustoDialog({ custo, onClose, onDone }: ActionProps) {
           />
         </div>
         <DialogFooter>
-          <button type="button" onClick={onClose} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+          >
             Voltar
           </button>
           <button
@@ -157,10 +168,7 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
   const [motivo, setMotivo] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const restante = useMemo(
-    () => (custo ? custo.custo_total - custo.devolvido_total : 0),
-    [custo],
-  );
+  const restante = useMemo(() => (custo ? custo.custo_total - custo.devolvido_total : 0), [custo]);
 
   useEffect(() => {
     if (custo) {
@@ -176,7 +184,14 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
   }, [quantidade]);
 
   const podeSalvar =
-    !!custo && qtd > 0 && qtd <= custo.quantidade && valor != null && valor > 0 && valor <= restante && !!motivo.trim() && !saving;
+    !!custo &&
+    qtd > 0 &&
+    qtd <= custo.quantidade &&
+    valor != null &&
+    valor > 0 &&
+    valor <= restante &&
+    !!motivo.trim() &&
+    !saving;
 
   async function handleDevolver() {
     if (!custo || !podeSalvar || valor == null) return;
@@ -200,7 +215,7 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
       onClose();
       onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erro inesperado.");
+      toast.error(mensagemErro(e, "Erro inesperado."));
     } finally {
       setSaving(false);
     }
@@ -212,26 +227,36 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
         <DialogHeader>
           <DialogTitle>Devolução / Estorno de custo</DialogTitle>
           <DialogDescription>
-            Registre o retorno total ou parcial deste custo (ex: peça devolvida ao fornecedor). O custo
-            original é mantido e o valor devolvido reduz o custo líquido.
+            Registre o retorno total ou parcial deste custo (ex: peça devolvida ao fornecedor). O
+            custo original é mantido e o valor devolvido reduz o custo líquido.
           </DialogDescription>
         </DialogHeader>
 
         {custo && (
           <div className="rounded-lg border border-border bg-muted/50 p-3 text-xs text-muted-foreground">
             <p>
-              Custo original: <strong className="text-foreground">{formatCurrencyBRL(custo.custo_total)}</strong>
+              Custo original:{" "}
+              <strong className="text-foreground">{formatCurrencyBRL(custo.custo_total)}</strong>
               {custo.devolvido_total > 0 && (
-                <> · Já devolvido: <strong className="text-foreground">{formatCurrencyBRL(custo.devolvido_total)}</strong></>
+                <>
+                  {" "}
+                  · Já devolvido:{" "}
+                  <strong className="text-foreground">
+                    {formatCurrencyBRL(custo.devolvido_total)}
+                  </strong>
+                </>
               )}
-              {" · "}Restante: <strong className="text-foreground">{formatCurrencyBRL(restante)}</strong>
+              {" · "}Restante:{" "}
+              <strong className="text-foreground">{formatCurrencyBRL(restante)}</strong>
             </p>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="dev-qtd" className={labelClass}>Quantidade *</label>
+            <label htmlFor="dev-qtd" className={labelClass}>
+              Quantidade *
+            </label>
             <input
               id="dev-qtd"
               type="text"
@@ -246,7 +271,9 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
             )}
           </div>
           <div>
-            <label htmlFor="dev-valor" className={labelClass}>Valor devolvido *</label>
+            <label htmlFor="dev-valor" className={labelClass}>
+              Valor devolvido *
+            </label>
             <MoneyInput id="dev-valor" value={valor} onChange={setValor} />
             {valor != null && valor > restante && (
               <p className="mt-1 text-xs text-destructive">Máximo: {formatCurrencyBRL(restante)}</p>
@@ -255,7 +282,9 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
         </div>
 
         <div>
-          <label htmlFor="dev-motivo" className={labelClass}>Motivo *</label>
+          <label htmlFor="dev-motivo" className={labelClass}>
+            Motivo *
+          </label>
           <textarea
             id="dev-motivo"
             value={motivo}
@@ -268,7 +297,11 @@ export function DevolverCustoDialog({ custo, onClose, onDone }: ActionProps) {
         </div>
 
         <DialogFooter>
-          <button type="button" onClick={onClose} className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+          >
             Voltar
           </button>
           <button

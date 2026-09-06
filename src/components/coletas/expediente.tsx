@@ -50,7 +50,8 @@ export function ModoExpediente({ bairroAtual }: { bairroAtual?: string | null })
           })
           .catch(() => setAviso("Não foi possível atualizar sua posição agora."));
       },
-      () => setAviso("Não foi possível acessar sua localização. Verifique a permissão do aparelho."),
+      () =>
+        setAviso("Não foi possível acessar sua localização. Verifique a permissão do aparelho."),
       { enableHighAccuracy: true, timeout: 15_000, maximumAge: 60_000 },
     );
   }, [bairroAtual, queryClient]);
@@ -105,7 +106,9 @@ export function ModoExpediente({ bairroAtual }: { bairroAtual?: string | null })
             <p className="mt-0.5 text-[11px] text-muted-foreground">
               {desatualizado ? "🟡 Localização desatualizada. " : ""}
               Última atualização:{" "}
-              {expediente?.ultima_atualizacao ? formatDateTimeITV(expediente.ultima_atualizacao) : "aguardando"}
+              {expediente?.ultima_atualizacao
+                ? formatDateTimeITV(expediente.ultima_atualizacao)
+                : "aguardando"}
             </p>
           )}
         </div>
@@ -130,7 +133,9 @@ export function ModoExpediente({ bairroAtual }: { bairroAtual?: string | null })
           </Button>
         </div>
       </div>
-      {aviso && <p className="mt-3 rounded-md bg-muted p-2.5 text-xs text-muted-foreground">{aviso}</p>}
+      {aviso && (
+        <p className="mt-3 rounded-md bg-muted p-2.5 text-xs text-muted-foreground">{aviso}</p>
+      )}
     </section>
   );
 }

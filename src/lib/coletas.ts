@@ -70,7 +70,6 @@ export interface ColetaSolicitacao {
 export const COLETA_COLUNAS =
   "id, tipo, coleta_origem_id, cliente_nome, whatsapp, telefone_alternativo, cep, rua, numero, complemento, condominio, torre_bloco, apartamento, bairro, cidade, referencia, latitude, longitude, maps_url, marca_tv, polegadas, observacao, observacao_conclusao, status, data_agendada, nao_realizada_motivo, nao_realizada_em, motorista_id, created_by, concluido_por, cancelado_por, motivo_cancelamento, link_gerado_em, link_expira_em, preenchido_em, atribuido_em, assumido_em, concluido_em, cancelado_em, created_at, updated_at, origem_id, origem_detalhe, origem_original_id, indicado_por_nome, canal_contato, origem_preenchida_em";
 
-
 export const STATUS_COLETA: Record<ColetaStatus, { label: string; className: string }> = {
   aguardando_cadastro: { label: "Aguardando cadastro", className: "bg-amber-100 text-amber-800" },
   pronto_coleta: { label: "Pronto para coleta", className: "bg-sky-100 text-sky-800" },
@@ -88,14 +87,26 @@ export const TIPO_LABEL: Record<ColetaTipo, string> = {
 };
 
 export const MARCAS_TV = [
-  "Samsung", "LG", "TCL", "Philco", "AOC", "Sony", "Panasonic", "Semp", "Toshiba",
-  "Philips", "Multilaser", "Britânia", "Hisense", "Outra",
+  "Samsung",
+  "LG",
+  "TCL",
+  "Philco",
+  "AOC",
+  "Sony",
+  "Panasonic",
+  "Semp",
+  "Toshiba",
+  "Philips",
+  "Multilaser",
+  "Britânia",
+  "Hisense",
+  "Outra",
 ];
 
 /** RPC tipada do módulo coletas. */
 export async function rpcColetas<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.rpc(fn as never, args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(mensagemErro(error));
   return data as T;
 }
 
@@ -168,7 +179,12 @@ export function enderecoResumido(s: Partial<ColetaSolicitacao>): string {
 }
 
 export function complementoResumido(s: Partial<ColetaSolicitacao>): string {
-  return [s.condominio, s.torre_bloco ? `Torre ${s.torre_bloco}` : null, s.apartamento ? `Ap ${s.apartamento}` : null, s.complemento]
+  return [
+    s.condominio,
+    s.torre_bloco ? `Torre ${s.torre_bloco}` : null,
+    s.apartamento ? `Ap ${s.apartamento}` : null,
+    s.complemento,
+  ]
     .filter(Boolean)
     .join(" · ");
 }
@@ -218,7 +234,6 @@ export function montarMensagem(template: string, nome: string, link: string): st
   return texto.includes(link) ? texto : `${texto}\n\n${link}`;
 }
 
-
 export function storagePathColeta(solicitacaoId: string, fileName: string): string {
   const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
   return `${solicitacaoId}/${crypto.randomUUID()}-${safe}`;
@@ -230,14 +245,25 @@ export function storagePathColeta(solicitacaoId: string, fileName: string): stri
  * Traduz falhas técnicas (RLS, rede, SQL) para linguagem operacional.
  * Nenhuma mensagem bruta do banco deve chegar ao usuário final.
  */
-export function mensagemErro(e: unknown, padrao = "Não foi possível concluir a ação. Tente novamente."): string {
+export function mensagemErro(
+  e: unknown,
+  padrao = "Não foi possível concluir a ação. Tente novamente.",
+): string {
   const bruto = e instanceof Error ? e.message : typeof e === "string" ? e : "";
   const t = bruto.toLowerCase();
   if (!bruto) return padrao;
-  if (t.includes("failed to fetch") || t.includes("networkerror") || t.includes("network request")) {
+  if (
+    t.includes("failed to fetch") ||
+    t.includes("networkerror") ||
+    t.includes("network request")
+  ) {
     return "Não foi possível conectar ao sistema. Verifique sua internet e tente novamente.";
   }
-  if (t.includes("row-level security") || t.includes("violates row") || t.includes("permission denied")) {
+  if (
+    t.includes("row-level security") ||
+    t.includes("violates row") ||
+    t.includes("permission denied")
+  ) {
     return "Você não possui permissão para realizar esta ação.";
   }
   if (t.includes("jwt") || t.includes("not authenticated") || t.includes("invalid token")) {
@@ -247,7 +273,12 @@ export function mensagemErro(e: unknown, padrao = "Não foi possível concluir a
     return "Este registro já existe.";
   }
   // Mensagens escritas por nós nas RPCs já são amigáveis (começam em maiúscula e sem termos técnicos).
-  if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(bruto) && !t.includes("error") && !t.includes("relation") && bruto.length < 160) {
+  if (
+    /^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(bruto) &&
+    !t.includes("error") &&
+    !t.includes("relation") &&
+    bruto.length < 160
+  ) {
     return bruto;
   }
   return padrao;
@@ -256,7 +287,10 @@ export function mensagemErro(e: unknown, padrao = "Não foi possível concluir a
 /* --------------------- exclusão controlada --------------------- */
 
 /** Situações operacionais que o motorista pode registrar em campo. */
-export const STATUS_MOTORISTA: { valor: "em_rota" | "no_local" | "nao_realizada"; label: string }[] = [
+export const STATUS_MOTORISTA: {
+  valor: "em_rota" | "no_local" | "nao_realizada";
+  label: string;
+}[] = [
   { valor: "em_rota", label: "Em rota" },
   { valor: "no_local", label: "Cheguei ao local" },
   { valor: "nao_realizada", label: "Não realizada" },

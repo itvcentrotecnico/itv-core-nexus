@@ -67,7 +67,10 @@ export interface CaixaFisicoResumo {
 
 export type DescontoStatus = "pendente" | "aprovado" | "rejeitado";
 
-export const STATUS_DESCONTO: Record<DescontoStatus, { label: string; tom: "ok" | "alerta" | "erro" }> = {
+export const STATUS_DESCONTO: Record<
+  DescontoStatus,
+  { label: string; tom: "ok" | "alerta" | "erro" }
+> = {
   pendente: { label: "Pendente", tom: "alerta" },
   aprovado: { label: "Aprovado", tom: "ok" },
   rejeitado: { label: "Rejeitado", tom: "erro" },
@@ -121,7 +124,15 @@ export const STATUS_TRIBUTO: Record<TributoStatus, { label: string; className: s
   cancelado: { label: "Cancelado", className: "bg-muted text-muted-foreground" },
 };
 
-export const TIPOS_TRIBUTO = ["Simples Nacional", "ISS", "ICMS", "IRPJ", "CSLL", "PIS/COFINS", "Outros"];
+export const TIPOS_TRIBUTO = [
+  "Simples Nacional",
+  "ISS",
+  "ICMS",
+  "IRPJ",
+  "CSLL",
+  "PIS/COFINS",
+  "Outros",
+];
 
 export interface Tributo {
   id: string;

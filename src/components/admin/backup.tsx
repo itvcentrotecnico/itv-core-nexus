@@ -54,18 +54,23 @@ export function AdminBackup() {
   async function exportar() {
     setExportando(true);
     await executarAcao(async () => {
-      const res = await rpcAdmin<{ ok: true; linhas: Record<string, unknown>[] }>("admin_exportar", {
-        p_dataset: dataset,
-        p_inicio: inicio,
-        p_fim: fim,
-      });
+      const res = await rpcAdmin<{ ok: true; linhas: Record<string, unknown>[] }>(
+        "admin_exportar",
+        {
+          p_dataset: dataset,
+          p_inicio: inicio,
+          p_fim: fim,
+        },
+      );
       const linhas = res.linhas ?? [];
       if (linhas.length === 0) throw new Error("Sem dados no período selecionado.");
       const cabecalho = Object.keys(linhas[0]!);
       exportarCSV(
         `itv-${dataset}-${inicio}-a-${fim}.csv`,
         cabecalho,
-        linhas.map((l) => cabecalho.map((c) => (l[c] === null || l[c] === undefined ? "" : String(l[c])))),
+        linhas.map((l) =>
+          cabecalho.map((c) => (l[c] === null || l[c] === undefined ? "" : String(l[c]))),
+        ),
       );
     }, "Exportação concluída.");
     setExportando(false);
@@ -82,7 +87,12 @@ export function AdminBackup() {
             <label className={labelClass} htmlFor="exp-dataset">
               Conjunto de dados
             </label>
-            <select id="exp-dataset" className={inputClass} value={dataset} onChange={(e) => setDataset(e.target.value)}>
+            <select
+              id="exp-dataset"
+              className={inputClass}
+              value={dataset}
+              onChange={(e) => setDataset(e.target.value)}
+            >
               {DATASETS_EXPORTACAO.map((d) => (
                 <option key={d.value} value={d.value}>
                   {d.label}
@@ -94,16 +104,32 @@ export function AdminBackup() {
             <label className={labelClass} htmlFor="exp-inicio">
               Início
             </label>
-            <input id="exp-inicio" type="date" className={inputClass} value={inicio} onChange={(e) => setInicio(e.target.value)} />
+            <input
+              id="exp-inicio"
+              type="date"
+              className={inputClass}
+              value={inicio}
+              onChange={(e) => setInicio(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass} htmlFor="exp-fim">
               Fim
             </label>
-            <input id="exp-fim" type="date" className={inputClass} value={fim} onChange={(e) => setFim(e.target.value)} />
+            <input
+              id="exp-fim"
+              type="date"
+              className={inputClass}
+              value={fim}
+              onChange={(e) => setFim(e.target.value)}
+            />
           </div>
         </div>
-        <Button className="mt-4" disabled={!podeExportar || exportando} onClick={() => void exportar()}>
+        <Button
+          className="mt-4"
+          disabled={!podeExportar || exportando}
+          onClick={() => void exportar()}
+        >
           <Download className="mr-2 size-4" /> {exportando ? "Exportando…" : "Exportar CSV"}
         </Button>
       </SecaoAdmin>
@@ -119,30 +145,38 @@ export function AdminBackup() {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {Object.entries(data?.volumes ?? {}).map(([k, v]) => (
                 <div key={k} className="rounded-md border border-border p-3">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground">{ROTULO_VOLUME[k] ?? k}</p>
-                  <p className="text-lg font-semibold text-foreground">{Number(v).toLocaleString("pt-BR")}</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    {ROTULO_VOLUME[k] ?? k}
+                  </p>
+                  <p className="text-lg font-semibold text-foreground">
+                    {Number(v).toLocaleString("pt-BR")}
+                  </p>
                 </div>
               ))}
             </div>
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <p className="flex items-center gap-2">
-                <Database className="size-4" /> Backup automático diário do banco gerenciado, com retenção contínua no
-                ambiente de nuvem do sistema.
+                <Database className="size-4" /> Backup automático diário do banco gerenciado, com
+                retenção contínua no ambiente de nuvem do sistema.
               </p>
               <p className="flex items-center gap-2">
-                <ShieldCheck className="size-4" /> Chaves e segredos ficam apenas no servidor — nunca são expostos ao
-                navegador nem a esta tela.
+                <ShieldCheck className="size-4" /> Chaves e segredos ficam apenas no servidor —
+                nunca são expostos ao navegador nem a esta tela.
               </p>
               <p>
                 Última exportação administrativa:{" "}
-                {data?.ultima_exportacao ? formatDateTimeITV(data.ultima_exportacao) : "nenhuma registrada"}.
+                {data?.ultima_exportacao
+                  ? formatDateTimeITV(data.ultima_exportacao)
+                  : "nenhuma registrada"}
+                .
               </p>
               <p>
-                Último evento auditado: {data?.ultimo_registro ? formatDateTimeITV(data.ultimo_registro) : "—"}.
+                Último evento auditado:{" "}
+                {data?.ultimo_registro ? formatDateTimeITV(data.ultimo_registro) : "—"}.
               </p>
               <p>
-                Recomendação: exportar mensalmente Caixa, Financeiro e Produção e guardar as cópias fora do sistema,
-                garantindo independência dos dados.
+                Recomendação: exportar mensalmente Caixa, Financeiro e Produção e guardar as cópias
+                fora do sistema, garantindo independência dos dados.
               </p>
             </div>
           </>
@@ -214,7 +248,9 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
       {st && (
         <div
           className={`mb-4 rounded-md border p-3 text-sm ${
-            st.pendente ? "border-destructive/40 bg-destructive/5 text-destructive" : "border-border text-muted-foreground"
+            st.pendente
+              ? "border-destructive/40 bg-destructive/5 text-destructive"
+              : "border-border text-muted-foreground"
           }`}
         >
           {st.ultimo
@@ -228,13 +264,24 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
           <label className={labelClass} htmlFor="bkp-data">
             Data
           </label>
-          <input id="bkp-data" type="date" className={inputClass} value={data} onChange={(e) => setData(e.target.value)} />
+          <input
+            id="bkp-data"
+            type="date"
+            className={inputClass}
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+          />
         </div>
         <div>
           <label className={labelClass} htmlFor="bkp-tipo">
             Tipo
           </label>
-          <select id="bkp-tipo" className={inputClass} value={tipo} onChange={(e) => setTipo(e.target.value)}>
+          <select
+            id="bkp-tipo"
+            className={inputClass}
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+          >
             {TIPOS_BACKUP.map((t) => (
               <option key={t.value} value={t.value}>
                 {t.label}
@@ -258,7 +305,12 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
           <label className={labelClass} htmlFor="bkp-status">
             Situação
           </label>
-          <select id="bkp-status" className={inputClass} value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            id="bkp-status"
+            className={inputClass}
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
             {STATUS_BACKUP.map((s) => (
               <option key={s.value} value={s.value}>
                 {s.label}
@@ -270,10 +322,19 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
           <label className={labelClass} htmlFor="bkp-obs">
             Observação <span className="font-normal text-muted-foreground">(opcional)</span>
           </label>
-          <input id="bkp-obs" className={inputClass} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+          <input
+            id="bkp-obs"
+            className={inputClass}
+            value={observacao}
+            onChange={(e) => setObservacao(e.target.value)}
+          />
         </div>
       </div>
-      <Button className="mt-4" disabled={!podeRegistrar || salvando || !local.trim()} onClick={() => void registrar()}>
+      <Button
+        className="mt-4"
+        disabled={!podeRegistrar || salvando || !local.trim()}
+        onClick={() => void registrar()}
+      >
         {salvando ? "Registrando…" : "Registrar backup"}
       </Button>
 
@@ -294,7 +355,9 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
             <tbody>
               {(registrosQuery.data ?? []).map((r) => (
                 <tr key={r.id} className="border-b border-border last:border-0">
-                  <td className="px-3 py-2 text-foreground">{r.data_backup.split("-").reverse().join("/")}</td>
+                  <td className="px-3 py-2 text-foreground">
+                    {r.data_backup.split("-").reverse().join("/")}
+                  </td>
                   <td className="px-3 py-2 text-muted-foreground">
                     {TIPOS_BACKUP.find((t) => t.value === r.tipo)?.label ?? r.tipo}
                   </td>
@@ -305,7 +368,9 @@ function RegistroBackup({ podeRegistrar }: { podeRegistrar: boolean }) {
                   <td className="px-3 py-2 text-muted-foreground">
                     {STATUS_BACKUP.find((s) => s.value === r.status)?.label ?? r.status}
                   </td>
-                  <td className="px-3 py-2 text-muted-foreground">{r.responsavel?.full_name ?? "—"}</td>
+                  <td className="px-3 py-2 text-muted-foreground">
+                    {r.responsavel?.full_name ?? "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>

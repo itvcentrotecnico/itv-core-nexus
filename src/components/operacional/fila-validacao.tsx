@@ -15,7 +15,13 @@ import { DetalheProducaoDialog } from "@/components/producao/detalhe-dialog";
 
 type Acao = "validar" | "correcao" | "rejeitar" | "tecnico" | "tipo";
 
-const STATUS_FILA: ProducaoStatus[] = ["enviado_validacao", "correcao_solicitada", "validado", "rejeitado", "rascunho"];
+const STATUS_FILA: ProducaoStatus[] = [
+  "enviado_validacao",
+  "correcao_solicitada",
+  "validado",
+  "rejeitado",
+  "rascunho",
+];
 
 /** Fila de validação técnica — autoridade do Gerente Operacional. */
 export function FilaValidacao() {
@@ -43,7 +49,9 @@ export function FilaValidacao() {
     queryFn: async () => {
       let q = supabase
         .from("producao_tecnica")
-        .select("*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)")
+        .select(
+          "*, tecnico:profiles!producao_tecnica_tecnico_id_fkey(full_name), tipo_servico:tipos_servico_tecnico(nome)",
+        )
         .order("enviado_em", { ascending: true, nullsFirst: false })
         .limit(200);
       if (status) q = q.eq("status", status);
@@ -51,7 +59,9 @@ export function FilaValidacao() {
       if (tipoId) q = q.eq("tipo_servico_id", tipoId);
       if (busca.trim()) {
         const t = busca.trim();
-        q = q.or(`os.ilike.%${t}%,cliente.ilike.%${t}%,marca_tv.ilike.%${t}%,modelo_tv.ilike.%${t}%`);
+        q = q.or(
+          `os.ilike.%${t}%,cliente.ilike.%${t}%,marca_tv.ilike.%${t}%,modelo_tv.ilike.%${t}%`,
+        );
       }
       const { data, error } = await q;
       if (error) throw new Error("Não foi possível carregar a fila de validação agora.");
@@ -66,7 +76,10 @@ export function FilaValidacao() {
       const r = alvo.registro;
       if (alvo.tipo === "validar") {
         if (!r.tipo_servico_id) throw new Error("Defina o tipo de serviço antes de validar.");
-        return rpcProd<{ ok?: boolean; message?: string }>("producao_validar", { p_id: r.id, p_observacao: texto || null });
+        return rpcProd<{ ok?: boolean; message?: string }>("producao_validar", {
+          p_id: r.id,
+          p_observacao: texto || null,
+        });
       }
       if (alvo.tipo === "correcao") {
         if (!texto.trim()) throw new Error("Descreva o que precisa ser corrigido.");
@@ -134,34 +147,63 @@ export function FilaValidacao() {
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className={labelClass} htmlFor="fila-status">Status</label>
-          <select id="fila-status" className={inputClass} value={status} onChange={(e) => setStatus(e.target.value as ProducaoStatus | "")}>
+          <label className={labelClass} htmlFor="fila-status">
+            Status
+          </label>
+          <select
+            id="fila-status"
+            className={inputClass}
+            value={status}
+            onChange={(e) => setStatus(e.target.value as ProducaoStatus | "")}
+          >
             <option value="">Todos</option>
             {STATUS_FILA.map((s) => (
-              <option key={s} value={s}>{STATUS_PRODUCAO[s].label}</option>
+              <option key={s} value={s}>
+                {STATUS_PRODUCAO[s].label}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass} htmlFor="fila-tecnico">Técnico</label>
-          <select id="fila-tecnico" className={inputClass} value={tecnicoId} onChange={(e) => setTecnicoId(e.target.value)}>
+          <label className={labelClass} htmlFor="fila-tecnico">
+            Técnico
+          </label>
+          <select
+            id="fila-tecnico"
+            className={inputClass}
+            value={tecnicoId}
+            onChange={(e) => setTecnicoId(e.target.value)}
+          >
             <option value="">Todos</option>
             {tecnicos.map((t) => (
-              <option key={t.id} value={t.id}>{t.full_name}</option>
+              <option key={t.id} value={t.id}>
+                {t.full_name}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass} htmlFor="fila-tipo">Tipo de serviço</label>
-          <select id="fila-tipo" className={inputClass} value={tipoId} onChange={(e) => setTipoId(e.target.value)}>
+          <label className={labelClass} htmlFor="fila-tipo">
+            Tipo de serviço
+          </label>
+          <select
+            id="fila-tipo"
+            className={inputClass}
+            value={tipoId}
+            onChange={(e) => setTipoId(e.target.value)}
+          >
             <option value="">Todos</option>
             {tipos.map((t) => (
-              <option key={t.id} value={t.id}>{t.nome}</option>
+              <option key={t.id} value={t.id}>
+                {t.nome}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass} htmlFor="fila-busca">Buscar</label>
+          <label className={labelClass} htmlFor="fila-busca">
+            Buscar
+          </label>
           <input
             id="fila-busca"
             className={inputClass}
@@ -172,7 +214,9 @@ export function FilaValidacao() {
         </div>
       </div>
 
-      {listaQuery.isLoading && <p className="text-sm text-muted-foreground">Carregando serviços…</p>}
+      {listaQuery.isLoading && (
+        <p className="text-sm text-muted-foreground">Carregando serviços…</p>
+      )}
       {listaQuery.isError && (
         <p className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
           {(listaQuery.error as Error).message}
@@ -191,41 +235,78 @@ export function FilaValidacao() {
               <div>
                 <p className="font-display text-base font-bold text-foreground">OS {r.os}</p>
                 <p className="text-xs text-muted-foreground">
-                  {formatDateOnlyISO(r.data_execucao)} · {r.tecnico?.full_name ?? "Sem técnico definido"}
+                  {formatDateOnlyISO(r.data_execucao)} ·{" "}
+                  {r.tecnico?.full_name ?? "Sem técnico definido"}
                 </p>
               </div>
               <StatusBadgeProducao status={r.status} />
             </div>
 
             <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-muted-foreground">
-              <div><dt className="inline font-medium">TV: </dt><dd className="inline">{[r.marca_tv, r.modelo_tv, r.polegadas ? `${r.polegadas}"` : null].filter(Boolean).join(" · ") || "—"}</dd></div>
-              <div><dt className="inline font-medium">Tipo: </dt><dd className="inline">{r.tipo_servico?.nome ?? <span className="text-destructive">não definido</span>}</dd></div>
-              <div><dt className="inline font-medium">Valor: </dt><dd className="inline">{formatCurrencyBRL(Number(r.valor_servico ?? 0))}</dd></div>
-              <div><dt className="inline font-medium">Mão de obra: </dt><dd className="inline">{formatCurrencyBRL(Number(r.valor_mao_obra ?? 0))}</dd></div>
+              <div>
+                <dt className="inline font-medium">TV: </dt>
+                <dd className="inline">
+                  {[r.marca_tv, r.modelo_tv, r.polegadas ? `${r.polegadas}"` : null]
+                    .filter(Boolean)
+                    .join(" · ") || "—"}
+                </dd>
+              </div>
+              <div>
+                <dt className="inline font-medium">Tipo: </dt>
+                <dd className="inline">
+                  {r.tipo_servico?.nome ?? <span className="text-destructive">não definido</span>}
+                </dd>
+              </div>
+              <div>
+                <dt className="inline font-medium">Valor: </dt>
+                <dd className="inline">{formatCurrencyBRL(Number(r.valor_servico ?? 0))}</dd>
+              </div>
+              <div>
+                <dt className="inline font-medium">Mão de obra: </dt>
+                <dd className="inline">{formatCurrencyBRL(Number(r.valor_mao_obra ?? 0))}</dd>
+              </div>
             </dl>
             <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{r.servico_executado}</p>
 
             <div className="mt-3 flex flex-wrap gap-2">
-              <Button size="sm" variant="outline" onClick={() => setDetalhe(r)}>Detalhes e fotos</Button>
+              <Button size="sm" variant="outline" onClick={() => setDetalhe(r)}>
+                Detalhes e fotos
+              </Button>
               {podeValidar && r.status !== "validado" && (
-                <Button size="sm" onClick={() => abrir("validar", r)}>Validar</Button>
+                <Button size="sm" onClick={() => abrir("validar", r)}>
+                  Validar
+                </Button>
               )}
               {podeValidar && r.status !== "validado" && (
-                <Button size="sm" variant="outline" onClick={() => abrir("correcao", r)}>Solicitar correção</Button>
+                <Button size="sm" variant="outline" onClick={() => abrir("correcao", r)}>
+                  Solicitar correção
+                </Button>
               )}
               {podeAlterarTecnico && r.status !== "validado" && (
-                <Button size="sm" variant="outline" onClick={() => abrir("tecnico", r)}>Alterar técnico</Button>
+                <Button size="sm" variant="outline" onClick={() => abrir("tecnico", r)}>
+                  Alterar técnico
+                </Button>
               )}
               {podeEditar && r.status !== "validado" && (
-                <Button size="sm" variant="outline" onClick={() => abrir("tipo", r)}>Tipo de serviço</Button>
+                <Button size="sm" variant="outline" onClick={() => abrir("tipo", r)}>
+                  Tipo de serviço
+                </Button>
               )}
               {podeValidar && r.status !== "validado" && (
-                <Button size="sm" variant="ghost" className="text-destructive" onClick={() => abrir("rejeitar", r)}>Rejeitar</Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive"
+                  onClick={() => abrir("rejeitar", r)}
+                >
+                  Rejeitar
+                </Button>
               )}
             </div>
             {r.status === "enviado_validacao" && r.enviado_em && (
               <p className="mt-2 text-[11px] text-muted-foreground">
-                Na fila desde {formatDateOnlyISO(r.enviado_em.slice(0, 10))} · hoje {formatDateOnlyISO(hoje)}
+                Na fila desde {formatDateOnlyISO(r.enviado_em.slice(0, 10))} · hoje{" "}
+                {formatDateOnlyISO(hoje)}
               </p>
             )}
           </article>
@@ -233,7 +314,11 @@ export function FilaValidacao() {
       </div>
 
       {detalhe && (
-        <DetalheProducaoDialog registro={detalhe} onClose={() => setDetalhe(null)} onEditar={() => setDetalhe(null)} />
+        <DetalheProducaoDialog
+          registro={detalhe}
+          onClose={() => setDetalhe(null)}
+          onEditar={() => setDetalhe(null)}
+        />
       )}
 
       <Dialog open={!!acao} onOpenChange={(v) => !v && setAcao(null)}>
@@ -252,11 +337,20 @@ export function FilaValidacao() {
 
             {acao?.tipo === "tecnico" && (
               <div>
-                <label className={labelClass} htmlFor="acao-tecnico">Técnico que executou</label>
-                <select id="acao-tecnico" className={inputClass} value={novoTecnico} onChange={(e) => setNovoTecnico(e.target.value)}>
+                <label className={labelClass} htmlFor="acao-tecnico">
+                  Técnico que executou
+                </label>
+                <select
+                  id="acao-tecnico"
+                  className={inputClass}
+                  value={novoTecnico}
+                  onChange={(e) => setNovoTecnico(e.target.value)}
+                >
                   <option value="">Selecione</option>
                   {tecnicos.map((t) => (
-                    <option key={t.id} value={t.id}>{t.full_name}</option>
+                    <option key={t.id} value={t.id}>
+                      {t.full_name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -264,12 +358,23 @@ export function FilaValidacao() {
 
             {acao?.tipo === "tipo" && (
               <div>
-                <label className={labelClass} htmlFor="acao-tipo">Tipo de serviço</label>
-                <select id="acao-tipo" className={inputClass} value={novoTipo} onChange={(e) => setNovoTipo(e.target.value)}>
+                <label className={labelClass} htmlFor="acao-tipo">
+                  Tipo de serviço
+                </label>
+                <select
+                  id="acao-tipo"
+                  className={inputClass}
+                  value={novoTipo}
+                  onChange={(e) => setNovoTipo(e.target.value)}
+                >
                   <option value="">Selecione</option>
-                  {tipos.filter((t) => t.ativo).map((t) => (
-                    <option key={t.id} value={t.id}>{t.nome}</option>
-                  ))}
+                  {tipos
+                    .filter((t) => t.ativo)
+                    .map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.nome}
+                      </option>
+                    ))}
                 </select>
               </div>
             )}
@@ -295,8 +400,12 @@ export function FilaValidacao() {
             )}
 
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setAcao(null)}>Cancelar</Button>
-              <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>Confirmar</Button>
+              <Button variant="outline" onClick={() => setAcao(null)}>
+                Cancelar
+              </Button>
+              <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+                Confirmar
+              </Button>
             </div>
           </div>
         </DialogContent>

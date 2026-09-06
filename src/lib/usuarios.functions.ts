@@ -19,9 +19,7 @@ function resolverOrigem(origem?: string | null): string {
     const url = new URL(origem);
     const host = url.hostname;
     const permitido =
-      host === "localhost" ||
-      host.endsWith(".lovable.app") ||
-      host.endsWith(".lovableproject.com");
+      host === "localhost" || host.endsWith(".lovable.app") || host.endsWith(".lovableproject.com");
     return permitido ? url.origin : SITE_URL_PADRAO;
   } catch {
     return SITE_URL_PADRAO;
@@ -32,7 +30,15 @@ const conviteSchema = z.object({
   nome: z.string().trim().min(2),
   email: z.string().trim().email(),
   colaboradorId: z.string().uuid().nullable().optional(),
-  role: z.enum(["administrador", "adm_financeiro", "adm_operacional", "vendedor", "tecnico", "tv_display", "motorista"]),
+  role: z.enum([
+    "administrador",
+    "adm_financeiro",
+    "adm_operacional",
+    "vendedor",
+    "tecnico",
+    "tv_display",
+    "motorista",
+  ]),
   origem: z.string().optional(),
 });
 
@@ -50,8 +56,10 @@ export const convidarUsuario = createServerFn({ method: "POST" })
       _user_id: context.userId,
       _role: "administrador",
     });
-    if (erroAdmin) return { ok: false as const, message: "Não foi possível validar sua permissão." };
-    if (!ehAdmin) return { ok: false as const, message: "Somente administradores podem convidar usuários." };
+    if (erroAdmin)
+      return { ok: false as const, message: "Não foi possível validar sua permissão." };
+    if (!ehAdmin)
+      return { ok: false as const, message: "Somente administradores podem convidar usuários." };
 
     const email = data.email.toLowerCase();
     const redirectTo = `${resolverOrigem(data.origem)}/reset-password`;
@@ -89,7 +97,10 @@ export const convidarUsuario = createServerFn({ method: "POST" })
       p_acao: jaExistia ? "usuario_vinculado" : "convite_enviado",
       ...(data.colaboradorId ? { p_colaborador_id: data.colaboradorId } : {}),
     };
-    const { data: prov, error: erroProv } = await context.supabase.rpc("admin_usuario_provisionar", argsProv);
+    const { data: prov, error: erroProv } = await context.supabase.rpc(
+      "admin_usuario_provisionar",
+      argsProv,
+    );
     if (erroProv) return { ok: false as const, message: erroProv.message };
     const res = prov as unknown as RpcOk;
     if (!res?.ok) {
@@ -126,7 +137,8 @@ export const reenviarConvite = createServerFn({ method: "POST" })
       _user_id: context.userId,
       _role: "administrador",
     });
-    if (!ehAdmin) return { ok: false as const, message: "Somente administradores podem reenviar convites." };
+    if (!ehAdmin)
+      return { ok: false as const, message: "Somente administradores podem reenviar convites." };
 
     const redirectTo = `${resolverOrigem(data.origem)}/reset-password`;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

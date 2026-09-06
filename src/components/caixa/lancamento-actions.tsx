@@ -19,7 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { inputClass, labelClass, type CaixaLancamento, type CaixaRpcResult, type FormaPagamento } from "@/lib/caixa";
+import {
+  inputClass,
+  labelClass,
+  type CaixaLancamento,
+  type CaixaRpcResult,
+  type FormaPagamento,
+} from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO } from "@/lib/format";
 
@@ -57,7 +63,11 @@ interface CancelarDialogProps {
   onDone: () => void;
 }
 
-export function CancelarLancamentoDialog({ lancamento, onOpenChange, onDone }: CancelarDialogProps) {
+export function CancelarLancamentoDialog({
+  lancamento,
+  onOpenChange,
+  onDone,
+}: CancelarDialogProps) {
   const [motivo, setMotivo] = useState("");
   const [saving, setSaving] = useState(false);
   const open = !!lancamento;
@@ -143,7 +153,11 @@ interface EstornarDialogProps {
   onDone: () => void;
 }
 
-export function EstornarLancamentoDialog({ lancamento, onOpenChange, onDone }: EstornarDialogProps) {
+export function EstornarLancamentoDialog({
+  lancamento,
+  onOpenChange,
+  onDone,
+}: EstornarDialogProps) {
   const [motivo, setMotivo] = useState("");
   const [formaEstorno, setFormaEstorno] = useState("");
   const [observacao, setObservacao] = useState("");
@@ -231,9 +245,13 @@ export function EstornarLancamentoDialog({ lancamento, onOpenChange, onDone }: E
           </div>
           <div>
             <label className={labelClass}>
-              Forma de devolução <span className="font-normal text-muted-foreground">(opcional)</span>
+              Forma de devolução{" "}
+              <span className="font-normal text-muted-foreground">(opcional)</span>
             </label>
-            <Select value={formaEstorno || NONE} onValueChange={(v) => setFormaEstorno(v === NONE ? "" : v)}>
+            <Select
+              value={formaEstorno || NONE}
+              onValueChange={(v) => setFormaEstorno(v === NONE ? "" : v)}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecione…" />
               </SelectTrigger>

@@ -22,10 +22,17 @@ export const Route = createFileRoute("/cadastro-coleta/$token")({
   head: () => ({
     meta: [
       { title: "Ficha de Cadastro — Coleta de TV | ITV Centro Técnico" },
-      { name: "description", content: "Preencha seus dados para agendarmos a coleta ou entrega da sua TV. Leva menos de 1 minuto." },
+      {
+        name: "description",
+        content:
+          "Preencha seus dados para agendarmos a coleta ou entrega da sua TV. Leva menos de 1 minuto.",
+      },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Ficha de Cadastro — Coleta de TV" },
-      { property: "og:description", content: "Preencha seus dados para agendarmos a coleta ou entrega da sua TV." },
+      {
+        property: "og:description",
+        content: "Preencha seus dados para agendarmos a coleta ou entrega da sua TV.",
+      },
     ],
   }),
   component: CadastroColetaPage,
@@ -130,7 +137,10 @@ function CadastroColetaPage() {
     setBuscandoLocal(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setCoords({ lat: Number(pos.coords.latitude.toFixed(7)), lng: Number(pos.coords.longitude.toFixed(7)) });
+        setCoords({
+          lat: Number(pos.coords.latitude.toFixed(7)),
+          lng: Number(pos.coords.longitude.toFixed(7)),
+        });
         setLocalNegado(false);
         setBuscandoLocal(false);
       },
@@ -155,34 +165,37 @@ function CadastroColetaPage() {
     if (!confirmado) return setErro("Confirme que os dados estão corretos.");
 
     setEnviando(true);
-    const { data, error } = await supabase.rpc("coletas_publico_enviar" as never, {
-      p_token: token,
-      p_dados: {
-        cliente_nome: nome,
-        cpf,
-        whatsapp,
-        telefone_alternativo: telefone2 || null,
-        cep,
-        rua,
-        numero,
-        complemento,
-        condominio,
-        torre_bloco: torre,
-        apartamento,
-        bairro,
-        cidade,
-        referencia,
-        latitude: coords?.lat ?? null,
-        longitude: coords?.lng ?? null,
-        maps_url: mapsUrlManual || null,
-        marca_tv: marca,
-        polegadas: polegadas || null,
-        observacao_tv: obsTv,
-        origem_id: origem.origem_id,
-        origem_detalhe: origem.detalhe,
-        indicado_por_nome: origem.indicado_nome,
-      },
-    } as never);
+    const { data, error } = await supabase.rpc(
+      "coletas_publico_enviar" as never,
+      {
+        p_token: token,
+        p_dados: {
+          cliente_nome: nome,
+          cpf,
+          whatsapp,
+          telefone_alternativo: telefone2 || null,
+          cep,
+          rua,
+          numero,
+          complemento,
+          condominio,
+          torre_bloco: torre,
+          apartamento,
+          bairro,
+          cidade,
+          referencia,
+          latitude: coords?.lat ?? null,
+          longitude: coords?.lng ?? null,
+          maps_url: mapsUrlManual || null,
+          marca_tv: marca,
+          polegadas: polegadas || null,
+          observacao_tv: obsTv,
+          origem_id: origem.origem_id,
+          origem_detalhe: origem.detalhe,
+          indicado_por_nome: origem.indicado_nome,
+        },
+      } as never,
+    );
     setEnviando(false);
 
     if (error) return setErro("Não foi possível enviar. Tente novamente.");
@@ -204,7 +217,9 @@ function CadastroColetaPage() {
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background px-6 text-center">
         <img src={logoColor.url} alt="ITV Centro Técnico" className="h-12 w-auto" />
         <h1 className="font-display text-xl font-bold text-foreground">Link indisponível</h1>
-        <p className="max-w-sm text-sm text-muted-foreground">{ERROS[abertura?.erro ?? "invalido"]}</p>
+        <p className="max-w-sm text-sm text-muted-foreground">
+          {ERROS[abertura?.erro ?? "invalido"]}
+        </p>
       </main>
     );
   }
@@ -237,20 +252,54 @@ function CadastroColetaPage() {
         <section className="space-y-3 rounded-xl border border-border bg-card p-4">
           <h2 className="font-display text-sm font-bold text-foreground">Seus dados</h2>
           <div>
-            <label className={labelClass} htmlFor="c-nome">Nome completo *</label>
-            <input id="c-nome" className={`${inputClass} h-12`} value={nome} onChange={(e) => setNome(e.target.value)} autoComplete="name" />
+            <label className={labelClass} htmlFor="c-nome">
+              Nome completo *
+            </label>
+            <input
+              id="c-nome"
+              className={`${inputClass} h-12`}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              autoComplete="name"
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-cpf">CPF *</label>
-            <input id="c-cpf" className={`${inputClass} h-12`} inputMode="numeric" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(maskCPF(e.target.value))} />
+            <label className={labelClass} htmlFor="c-cpf">
+              CPF *
+            </label>
+            <input
+              id="c-cpf"
+              className={`${inputClass} h-12`}
+              inputMode="numeric"
+              placeholder="000.000.000-00"
+              value={cpf}
+              onChange={(e) => setCpf(maskCPF(e.target.value))}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-zap">WhatsApp *</label>
-            <input id="c-zap" className={`${inputClass} h-12`} inputMode="numeric" placeholder="(92) 99999-9999" value={whatsapp} onChange={(e) => setWhatsapp(maskTelefone(e.target.value))} />
+            <label className={labelClass} htmlFor="c-zap">
+              WhatsApp *
+            </label>
+            <input
+              id="c-zap"
+              className={`${inputClass} h-12`}
+              inputMode="numeric"
+              placeholder="(92) 99999-9999"
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(maskTelefone(e.target.value))}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-tel2">Telefone alternativo</label>
-            <input id="c-tel2" className={`${inputClass} h-12`} inputMode="numeric" value={telefone2} onChange={(e) => setTelefone2(maskTelefone(e.target.value))} />
+            <label className={labelClass} htmlFor="c-tel2">
+              Telefone alternativo
+            </label>
+            <input
+              id="c-tel2"
+              className={`${inputClass} h-12`}
+              inputMode="numeric"
+              value={telefone2}
+              onChange={(e) => setTelefone2(maskTelefone(e.target.value))}
+            />
           </div>
         </section>
 
@@ -258,65 +307,148 @@ function CadastroColetaPage() {
           <h2 className="font-display text-sm font-bold text-foreground">Endereço</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass} htmlFor="c-cep">CEP</label>
-              <input id="c-cep" className={`${inputClass} h-12`} inputMode="numeric" value={cep} onChange={(e) => setCep(maskCEP(e.target.value))} />
+              <label className={labelClass} htmlFor="c-cep">
+                CEP
+              </label>
+              <input
+                id="c-cep"
+                className={`${inputClass} h-12`}
+                inputMode="numeric"
+                value={cep}
+                onChange={(e) => setCep(maskCEP(e.target.value))}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="c-num">Número *</label>
-              <input id="c-num" className={`${inputClass} h-12`} value={numero} onChange={(e) => setNumero(e.target.value)} />
+              <label className={labelClass} htmlFor="c-num">
+                Número *
+              </label>
+              <input
+                id="c-num"
+                className={`${inputClass} h-12`}
+                value={numero}
+                onChange={(e) => setNumero(e.target.value)}
+              />
             </div>
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-rua">Rua *</label>
-            <input id="c-rua" className={`${inputClass} h-12`} value={rua} onChange={(e) => setRua(e.target.value)} />
+            <label className={labelClass} htmlFor="c-rua">
+              Rua *
+            </label>
+            <input
+              id="c-rua"
+              className={`${inputClass} h-12`}
+              value={rua}
+              onChange={(e) => setRua(e.target.value)}
+            />
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-bairro">Bairro *</label>
-            <input id="c-bairro" className={`${inputClass} h-12`} value={bairro} onChange={(e) => setBairro(e.target.value)} />
+            <label className={labelClass} htmlFor="c-bairro">
+              Bairro *
+            </label>
+            <input
+              id="c-bairro"
+              className={`${inputClass} h-12`}
+              value={bairro}
+              onChange={(e) => setBairro(e.target.value)}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass} htmlFor="c-cidade">Cidade</label>
-              <input id="c-cidade" className={`${inputClass} h-12`} value={cidade} onChange={(e) => setCidade(e.target.value)} />
+              <label className={labelClass} htmlFor="c-cidade">
+                Cidade
+              </label>
+              <input
+                id="c-cidade"
+                className={`${inputClass} h-12`}
+                value={cidade}
+                onChange={(e) => setCidade(e.target.value)}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="c-compl">Complemento</label>
-              <input id="c-compl" className={`${inputClass} h-12`} value={complemento} onChange={(e) => setComplemento(e.target.value)} />
+              <label className={labelClass} htmlFor="c-compl">
+                Complemento
+              </label>
+              <input
+                id="c-compl"
+                className={`${inputClass} h-12`}
+                value={complemento}
+                onChange={(e) => setComplemento(e.target.value)}
+              />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className={labelClass} htmlFor="c-cond">Condomínio</label>
-              <input id="c-cond" className={`${inputClass} h-12`} value={condominio} onChange={(e) => setCondominio(e.target.value)} />
+              <label className={labelClass} htmlFor="c-cond">
+                Condomínio
+              </label>
+              <input
+                id="c-cond"
+                className={`${inputClass} h-12`}
+                value={condominio}
+                onChange={(e) => setCondominio(e.target.value)}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="c-torre">Torre / Bloco</label>
-              <input id="c-torre" className={`${inputClass} h-12`} value={torre} onChange={(e) => setTorre(e.target.value)} />
+              <label className={labelClass} htmlFor="c-torre">
+                Torre / Bloco
+              </label>
+              <input
+                id="c-torre"
+                className={`${inputClass} h-12`}
+                value={torre}
+                onChange={(e) => setTorre(e.target.value)}
+              />
             </div>
             <div>
-              <label className={labelClass} htmlFor="c-ap">Apartamento</label>
-              <input id="c-ap" className={`${inputClass} h-12`} value={apartamento} onChange={(e) => setApartamento(e.target.value)} />
+              <label className={labelClass} htmlFor="c-ap">
+                Apartamento
+              </label>
+              <input
+                id="c-ap"
+                className={`${inputClass} h-12`}
+                value={apartamento}
+                onChange={(e) => setApartamento(e.target.value)}
+              />
             </div>
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-ref">Ponto de referência</label>
-            <input id="c-ref" className={`${inputClass} h-12`} value={referencia} onChange={(e) => setReferencia(e.target.value)} />
+            <label className={labelClass} htmlFor="c-ref">
+              Ponto de referência
+            </label>
+            <input
+              id="c-ref"
+              className={`${inputClass} h-12`}
+              value={referencia}
+              onChange={(e) => setReferencia(e.target.value)}
+            />
           </div>
         </section>
 
         <section className="space-y-3 rounded-xl border border-border bg-card p-4">
           <h2 className="font-display text-sm font-bold text-foreground">Localização</h2>
-          <Button type="button" className="h-12 w-full" onClick={usarLocalizacao} disabled={buscandoLocal}>
-            {buscandoLocal ? <Loader2 className="mr-2 size-4 animate-spin" /> : <MapPin className="mr-2 size-4" />}
+          <Button
+            type="button"
+            className="h-12 w-full"
+            onClick={usarLocalizacao}
+            disabled={buscandoLocal}
+          >
+            {buscandoLocal ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <MapPin className="mr-2 size-4" />
+            )}
             Usar minha localização atual
           </Button>
           {coords && (
-            <p className="text-xs text-primary">Localização registrada ({coords.lat}, {coords.lng}).</p>
+            <p className="text-xs text-primary">
+              Localização registrada ({coords.lat}, {coords.lng}).
+            </p>
           )}
           {localNegado && (
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">
-                Sem problema — você pode colar o link do Google Maps ou seguir apenas com o endereço.
+                Sem problema — você pode colar o link do Google Maps ou seguir apenas com o
+                endereço.
               </p>
               <input
                 className={`${inputClass} h-12`}
@@ -332,20 +464,46 @@ function CadastroColetaPage() {
           <h2 className="font-display text-sm font-bold text-foreground">Dados da TV</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass} htmlFor="c-marca">Marca</label>
-              <select id="c-marca" className={`${inputClass} h-12`} value={marca} onChange={(e) => setMarca(e.target.value)}>
+              <label className={labelClass} htmlFor="c-marca">
+                Marca
+              </label>
+              <select
+                id="c-marca"
+                className={`${inputClass} h-12`}
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+              >
                 <option value="">Selecione</option>
-                {MARCAS_TV.map((m) => <option key={m} value={m}>{m}</option>)}
+                {MARCAS_TV.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
-              <label className={labelClass} htmlFor="c-pol">Polegadas</label>
-              <input id="c-pol" className={`${inputClass} h-12`} inputMode="numeric" value={polegadas} onChange={(e) => setPolegadas(somenteDigitos(e.target.value).slice(0, 3))} />
+              <label className={labelClass} htmlFor="c-pol">
+                Polegadas
+              </label>
+              <input
+                id="c-pol"
+                className={`${inputClass} h-12`}
+                inputMode="numeric"
+                value={polegadas}
+                onChange={(e) => setPolegadas(somenteDigitos(e.target.value).slice(0, 3))}
+              />
             </div>
           </div>
           <div>
-            <label className={labelClass} htmlFor="c-obs">Observação da TV</label>
-            <Textarea id="c-obs" rows={2} value={obsTv} onChange={(e) => setObsTv(e.target.value)} />
+            <label className={labelClass} htmlFor="c-obs">
+              Observação da TV
+            </label>
+            <Textarea
+              id="c-obs"
+              rows={2}
+              value={obsTv}
+              onChange={(e) => setObsTv(e.target.value)}
+            />
           </div>
         </section>
 
@@ -357,16 +515,24 @@ function CadastroColetaPage() {
         )}
 
         <label className="flex items-start gap-2 rounded-xl border border-border bg-card p-4 text-sm">
-          <input type="checkbox" className="mt-0.5 size-5" checked={confirmado} onChange={(e) => setConfirmado(e.target.checked)} />
+          <input
+            type="checkbox"
+            className="mt-0.5 size-5"
+            checked={confirmado}
+            onChange={(e) => setConfirmado(e.target.checked)}
+          />
           <span>Confirmo que os dados informados estão corretos.</span>
         </label>
 
         <p className="text-[11px] text-muted-foreground">
-          Seus dados são usados apenas para realizar a {abertura.tipo === "entrega" ? "entrega" : "coleta"} da sua TV e ficam
-          protegidos no sistema interno da ITV Centro Técnico.
+          Seus dados são usados apenas para realizar a{" "}
+          {abertura.tipo === "entrega" ? "entrega" : "coleta"} da sua TV e ficam protegidos no
+          sistema interno da ITV Centro Técnico.
         </p>
 
-        {erro && <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{erro}</p>}
+        {erro && (
+          <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{erro}</p>
+        )}
 
         <Button className="h-14 w-full text-base" onClick={enviar} disabled={enviando}>
           {enviando && <Loader2 className="mr-2 size-4 animate-spin" />} Enviar cadastro

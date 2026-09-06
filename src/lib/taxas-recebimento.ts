@@ -69,7 +69,13 @@ function vigente(t: TaxaRecebimento, data: string): boolean {
 /** Espelho da função `taxa_recebimento_resolver` do banco (apenas pré-visualização). */
 export function resolverTaxa(
   taxas: TaxaRecebimento[],
-  args: { adquirente: string | null; canal: string | null; meio: string | null; parcelas: number; data: string },
+  args: {
+    adquirente: string | null;
+    canal: string | null;
+    meio: string | null;
+    parcelas: number;
+    data: string;
+  },
 ): TaxaResolvida {
   const { adquirente, canal, meio, data } = args;
   const parcelas = Math.max(1, args.parcelas || 1);

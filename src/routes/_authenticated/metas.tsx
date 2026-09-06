@@ -1,3 +1,4 @@
+import { mensagemErro } from "@/lib/erros";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
@@ -16,9 +17,15 @@ export const Route = createFileRoute("/_authenticated/metas")({
   head: () => ({
     meta: [
       { title: "Metas e Desempenho — GESTÃO ITV Centro Técnico" },
-      { name: "description", content: "Metas da empresa e dos técnicos, projeções e indicadores gerenciais da ITV." },
+      {
+        name: "description",
+        content: "Metas da empresa e dos técnicos, projeções e indicadores gerenciais da ITV.",
+      },
       { property: "og:title", content: "Metas e Desempenho — GESTÃO ITV Centro Técnico" },
-      { property: "og:description", content: "Metas da empresa e dos técnicos, projeções e indicadores gerenciais da ITV." },
+      {
+        property: "og:description",
+        content: "Metas da empresa e dos técnicos, projeções e indicadores gerenciais da ITV.",
+      },
     ],
   }),
   component: MetasPage,
@@ -73,7 +80,9 @@ function MetasPage() {
           </p>
         </div>
         <div>
-          <label htmlFor="competencia" className={cn(labelClass, "mb-1 text-xs")}>Competência</label>
+          <label htmlFor="competencia" className={cn(labelClass, "mb-1 text-xs")}>
+            Competência
+          </label>
           <input
             id="competencia"
             type="month"
@@ -84,7 +93,11 @@ function MetasPage() {
         </div>
       </div>
 
-      <div role="tablist" aria-label="Áreas de metas" className="flex flex-wrap gap-1 rounded-lg border border-border bg-card p-1">
+      <div
+        role="tablist"
+        aria-label="Áreas de metas"
+        className="flex flex-wrap gap-1 rounded-lg border border-border bg-card p-1"
+      >
         {abas.map((a) => (
           <button
             key={a.key}
@@ -113,7 +126,7 @@ function MetasPage() {
       ) : painel.error ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
           <p className="text-sm text-destructive">
-            {painel.error instanceof Error ? painel.error.message : "Falha ao carregar metas."}
+            {mensagemErro(painel.error, "Falha ao carregar metas.")}
           </p>
         </div>
       ) : painel.data ? (
@@ -129,11 +142,18 @@ function MetasPage() {
             />
           )}
           {abaAtiva === "tecnicos" && (
-            <TecnicosTab range={range} podeConfigurar={isAdmin || can("metas", "configurar_metas") || can("producao", "configurar_metas")} />
+            <TecnicosTab
+              range={range}
+              podeConfigurar={
+                isAdmin || can("metas", "configurar_metas") || can("producao", "configurar_metas")
+              }
+            />
           )}
           {abaAtiva === "indicadores" && <IndicadoresTab painel={painel.data} />}
           {abaAtiva === "ranking" && <RankingTab range={range} />}
-          {abaAtiva === "historico" && <HistoricoTab painel={painel.data} range={range} mes={mes} />}
+          {abaAtiva === "historico" && (
+            <HistoricoTab painel={painel.data} range={range} mes={mes} />
+          )}
         </>
       ) : null}
     </div>

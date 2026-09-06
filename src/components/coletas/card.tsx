@@ -39,7 +39,9 @@ export function ColetaCard({
   onCriarEntrega?: (item: ColetaSolicitacao) => void;
   onExcluir?: (item: ColetaSolicitacao) => void;
 }) {
-  const tv = [item.marca_tv, item.polegadas ? `${item.polegadas}"` : null].filter(Boolean).join(" ");
+  const tv = [item.marca_tv, item.polegadas ? `${item.polegadas}"` : null]
+    .filter(Boolean)
+    .join(" ");
   const complemento = complementoResumido(item);
   const emAndamento = item.status === "pronto_coleta" || item.status === "assumida";
   const mostrarCriarEntrega =
@@ -50,7 +52,9 @@ export function ColetaCard({
       <button type="button" onClick={() => onAbrir(item)} className="w-full text-left">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-display text-base font-bold text-foreground">{item.cliente_nome}</h3>
+            <h3 className="font-display text-base font-bold text-foreground">
+              {item.cliente_nome}
+            </h3>
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">
               {TIPO_LABEL[item.tipo]}
               {item.coleta_origem_id ? " · da coleta" : ""}
@@ -107,7 +111,11 @@ export function ColetaCard({
       {(mostrarCriarEntrega || (podeExcluir && onExcluir)) && (
         <div className="mt-2 flex gap-2">
           {mostrarCriarEntrega && (
-            <Button variant="outline" className="h-11 flex-1" onClick={() => onCriarEntrega?.(item)}>
+            <Button
+              variant="outline"
+              className="h-11 flex-1"
+              onClick={() => onCriarEntrega?.(item)}
+            >
               <PackagePlus className="mr-1.5 size-4" aria-hidden="true" /> Criar entrega
             </Button>
           )}
