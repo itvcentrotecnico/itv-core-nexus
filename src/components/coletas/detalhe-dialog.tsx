@@ -1,4 +1,3 @@
-import { mensagemErro } from "@/lib/erros";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Eye, Link2, MapPin, MessageCircle, Phone } from "lucide-react";
