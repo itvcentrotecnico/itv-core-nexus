@@ -18,6 +18,12 @@ import {
   type LinhaEntrada,
   type PreviaLote,
 } from "@/lib/terceirizados";
+import {
+  EWERTON_COMPETENCIA,
+  EWERTON_DESCRICAO,
+  EWERTON_TOTAL_ESPERADO,
+  linhasEwerton,
+} from "@/lib/terceirizados-ewerton";
 import { cn } from "@/lib/utils";
 
 export interface PrestadorOpcao {
