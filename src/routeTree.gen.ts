@@ -32,6 +32,19 @@ import { Route as CadastroColetaTokenRouteImport } from './routes/cadastro-colet
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminModoTvRouteImport } from './routes/_authenticated/admin.modo-tv'
 import { Route as AuthenticatedAdminPermissoesRouteImport } from './routes/_authenticated/admin.permissoes'
+import { Route as AuthenticatedGerenciaOperacionalIndexRouteImport } from './routes/_authenticated/gerencia-operacional.index'
+import { Route as AuthenticatedGerenciaOperacionalCaixaEntradaRouteImport } from './routes/_authenticated/gerencia-operacional.caixa-entrada'
+import { Route as AuthenticatedGerenciaOperacionalColetasRouteImport } from './routes/_authenticated/gerencia-operacional.coletas'
+import { Route as AuthenticatedGerenciaOperacionalComissoesRouteImport } from './routes/_authenticated/gerencia-operacional.comissoes'
+import { Route as AuthenticatedGerenciaOperacionalEquipeExternaRouteImport } from './routes/_authenticated/gerencia-operacional.equipe-externa'
+import { Route as AuthenticatedGerenciaOperacionalFechamentoRouteImport } from './routes/_authenticated/gerencia-operacional.fechamento'
+import { Route as AuthenticatedGerenciaOperacionalFluxoRouteImport } from './routes/_authenticated/gerencia-operacional.fluxo'
+import { Route as AuthenticatedGerenciaOperacionalPendenciasRouteImport } from './routes/_authenticated/gerencia-operacional.pendencias'
+import { Route as AuthenticatedGerenciaOperacionalProducaoRouteImport } from './routes/_authenticated/gerencia-operacional.producao'
+import { Route as AuthenticatedGerenciaOperacionalRelatoriosRouteImport } from './routes/_authenticated/gerencia-operacional.relatorios'
+import { Route as AuthenticatedGerenciaOperacionalTecnicosRouteImport } from './routes/_authenticated/gerencia-operacional.tecnicos'
+import { Route as AuthenticatedGerenciaOperacionalTerceirizadosRouteImport } from './routes/_authenticated/gerencia-operacional.terceirizados'
+import { Route as AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport } from './routes/_authenticated/gerencia-operacional.validacao-tecnica'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -153,6 +166,84 @@ const AuthenticatedAdminPermissoesRoute =
     path: '/admin/permissoes',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGerenciaOperacionalIndexRoute =
+  AuthenticatedGerenciaOperacionalIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalCaixaEntradaRoute =
+  AuthenticatedGerenciaOperacionalCaixaEntradaRouteImport.update({
+    id: '/caixa-entrada',
+    path: '/caixa-entrada',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalColetasRoute =
+  AuthenticatedGerenciaOperacionalColetasRouteImport.update({
+    id: '/coletas',
+    path: '/coletas',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalComissoesRoute =
+  AuthenticatedGerenciaOperacionalComissoesRouteImport.update({
+    id: '/comissoes',
+    path: '/comissoes',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalEquipeExternaRoute =
+  AuthenticatedGerenciaOperacionalEquipeExternaRouteImport.update({
+    id: '/equipe-externa',
+    path: '/equipe-externa',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalFechamentoRoute =
+  AuthenticatedGerenciaOperacionalFechamentoRouteImport.update({
+    id: '/fechamento',
+    path: '/fechamento',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalFluxoRoute =
+  AuthenticatedGerenciaOperacionalFluxoRouteImport.update({
+    id: '/fluxo',
+    path: '/fluxo',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalPendenciasRoute =
+  AuthenticatedGerenciaOperacionalPendenciasRouteImport.update({
+    id: '/pendencias',
+    path: '/pendencias',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalProducaoRoute =
+  AuthenticatedGerenciaOperacionalProducaoRouteImport.update({
+    id: '/producao',
+    path: '/producao',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalRelatoriosRoute =
+  AuthenticatedGerenciaOperacionalRelatoriosRouteImport.update({
+    id: '/relatorios',
+    path: '/relatorios',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalTecnicosRoute =
+  AuthenticatedGerenciaOperacionalTecnicosRouteImport.update({
+    id: '/tecnicos',
+    path: '/tecnicos',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalTerceirizadosRoute =
+  AuthenticatedGerenciaOperacionalTerceirizadosRouteImport.update({
+    id: '/terceirizados',
+    path: '/terceirizados',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
+const AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute =
+  AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport.update({
+    id: '/validacao-tecnica',
+    path: '/validacao-tecnica',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -166,7 +257,7 @@ export interface FileRoutesByFullPath {
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRoute
+  '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/metas': typeof AuthenticatedMetasRoute
   '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
@@ -176,7 +267,20 @@ export interface FileRoutesByFullPath {
   '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
+  '/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
+  '/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
+  '/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
+  '/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
+  '/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
+  '/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
+  '/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
+  '/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
+  '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
+  '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/gerencia-operacional/': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -190,7 +294,6 @@ export interface FileRoutesByTo {
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRoute
   '/metas': typeof AuthenticatedMetasRoute
   '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
@@ -200,7 +303,20 @@ export interface FileRoutesByTo {
   '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
+  '/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
+  '/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
+  '/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
+  '/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
+  '/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
+  '/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
+  '/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
+  '/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
+  '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
+  '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -216,7 +332,7 @@ export interface FileRoutesById {
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
-  '/_authenticated/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRoute
+  '/_authenticated/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
   '/_authenticated/operacional': typeof AuthenticatedOperacionalRoute
   '/_authenticated/pecas': typeof AuthenticatedPecasRoute
@@ -226,7 +342,20 @@ export interface FileRoutesById {
   '/cadastro-coleta/$token': typeof CadastroColetaTokenRoute
   '/_authenticated/admin/modo-tv': typeof AuthenticatedAdminModoTvRoute
   '/_authenticated/admin/permissoes': typeof AuthenticatedAdminPermissoesRoute
+  '/_authenticated/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
+  '/_authenticated/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
+  '/_authenticated/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/_authenticated/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
+  '/_authenticated/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
+  '/_authenticated/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
+  '/_authenticated/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
+  '/_authenticated/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
+  '/_authenticated/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/_authenticated/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
+  '/_authenticated/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
+  '/_authenticated/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/gerencia-operacional/': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -252,7 +381,20 @@ export interface FileRouteTypes {
     | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
+    | '/gerencia-operacional/caixa-entrada'
+    | '/gerencia-operacional/coletas'
+    | '/gerencia-operacional/comissoes'
+    | '/gerencia-operacional/equipe-externa'
+    | '/gerencia-operacional/fechamento'
+    | '/gerencia-operacional/fluxo'
+    | '/gerencia-operacional/pendencias'
+    | '/gerencia-operacional/producao'
+    | '/gerencia-operacional/relatorios'
+    | '/gerencia-operacional/tecnicos'
+    | '/gerencia-operacional/terceirizados'
+    | '/gerencia-operacional/validacao-tecnica'
     | '/admin/'
+    | '/gerencia-operacional/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -266,7 +408,6 @@ export interface FileRouteTypes {
     | '/comissoes'
     | '/dashboard'
     | '/financeiro'
-    | '/gerencia-operacional'
     | '/metas'
     | '/operacional'
     | '/pecas'
@@ -276,7 +417,20 @@ export interface FileRouteTypes {
     | '/cadastro-coleta/$token'
     | '/admin/modo-tv'
     | '/admin/permissoes'
+    | '/gerencia-operacional/caixa-entrada'
+    | '/gerencia-operacional/coletas'
+    | '/gerencia-operacional/comissoes'
+    | '/gerencia-operacional/equipe-externa'
+    | '/gerencia-operacional/fechamento'
+    | '/gerencia-operacional/fluxo'
+    | '/gerencia-operacional/pendencias'
+    | '/gerencia-operacional/producao'
+    | '/gerencia-operacional/relatorios'
+    | '/gerencia-operacional/tecnicos'
+    | '/gerencia-operacional/terceirizados'
+    | '/gerencia-operacional/validacao-tecnica'
     | '/admin'
+    | '/gerencia-operacional'
   id:
     | '__root__'
     | '/'
@@ -301,7 +455,20 @@ export interface FileRouteTypes {
     | '/cadastro-coleta/$token'
     | '/_authenticated/admin/modo-tv'
     | '/_authenticated/admin/permissoes'
+    | '/_authenticated/gerencia-operacional/caixa-entrada'
+    | '/_authenticated/gerencia-operacional/coletas'
+    | '/_authenticated/gerencia-operacional/comissoes'
+    | '/_authenticated/gerencia-operacional/equipe-externa'
+    | '/_authenticated/gerencia-operacional/fechamento'
+    | '/_authenticated/gerencia-operacional/fluxo'
+    | '/_authenticated/gerencia-operacional/pendencias'
+    | '/_authenticated/gerencia-operacional/producao'
+    | '/_authenticated/gerencia-operacional/relatorios'
+    | '/_authenticated/gerencia-operacional/tecnicos'
+    | '/_authenticated/gerencia-operacional/terceirizados'
+    | '/_authenticated/gerencia-operacional/validacao-tecnica'
     | '/_authenticated/admin/'
+    | '/_authenticated/gerencia-operacional/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -476,8 +643,150 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPermissoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/gerencia-operacional/': {
+      id: '/_authenticated/gerencia-operacional/'
+      path: '/'
+      fullPath: '/gerencia-operacional/'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalIndexRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/caixa-entrada': {
+      id: '/_authenticated/gerencia-operacional/caixa-entrada'
+      path: '/caixa-entrada'
+      fullPath: '/gerencia-operacional/caixa-entrada'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalCaixaEntradaRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/coletas': {
+      id: '/_authenticated/gerencia-operacional/coletas'
+      path: '/coletas'
+      fullPath: '/gerencia-operacional/coletas'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalColetasRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/comissoes': {
+      id: '/_authenticated/gerencia-operacional/comissoes'
+      path: '/comissoes'
+      fullPath: '/gerencia-operacional/comissoes'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalComissoesRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/equipe-externa': {
+      id: '/_authenticated/gerencia-operacional/equipe-externa'
+      path: '/equipe-externa'
+      fullPath: '/gerencia-operacional/equipe-externa'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalEquipeExternaRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/fechamento': {
+      id: '/_authenticated/gerencia-operacional/fechamento'
+      path: '/fechamento'
+      fullPath: '/gerencia-operacional/fechamento'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalFechamentoRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/fluxo': {
+      id: '/_authenticated/gerencia-operacional/fluxo'
+      path: '/fluxo'
+      fullPath: '/gerencia-operacional/fluxo'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalFluxoRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/pendencias': {
+      id: '/_authenticated/gerencia-operacional/pendencias'
+      path: '/pendencias'
+      fullPath: '/gerencia-operacional/pendencias'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalPendenciasRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/producao': {
+      id: '/_authenticated/gerencia-operacional/producao'
+      path: '/producao'
+      fullPath: '/gerencia-operacional/producao'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalProducaoRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/relatorios': {
+      id: '/_authenticated/gerencia-operacional/relatorios'
+      path: '/relatorios'
+      fullPath: '/gerencia-operacional/relatorios'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/tecnicos': {
+      id: '/_authenticated/gerencia-operacional/tecnicos'
+      path: '/tecnicos'
+      fullPath: '/gerencia-operacional/tecnicos'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalTecnicosRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/terceirizados': {
+      id: '/_authenticated/gerencia-operacional/terceirizados'
+      path: '/terceirizados'
+      fullPath: '/gerencia-operacional/terceirizados'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalTerceirizadosRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
+    '/_authenticated/gerencia-operacional/validacao-tecnica': {
+      id: '/_authenticated/gerencia-operacional/validacao-tecnica'
+      path: '/validacao-tecnica'
+      fullPath: '/gerencia-operacional/validacao-tecnica'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
   }
 }
+
+interface AuthenticatedGerenciaOperacionalRouteChildren {
+  AuthenticatedGerenciaOperacionalCaixaEntradaRoute: typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
+  AuthenticatedGerenciaOperacionalColetasRoute: typeof AuthenticatedGerenciaOperacionalColetasRoute
+  AuthenticatedGerenciaOperacionalComissoesRoute: typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  AuthenticatedGerenciaOperacionalEquipeExternaRoute: typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
+  AuthenticatedGerenciaOperacionalFechamentoRoute: typeof AuthenticatedGerenciaOperacionalFechamentoRoute
+  AuthenticatedGerenciaOperacionalFluxoRoute: typeof AuthenticatedGerenciaOperacionalFluxoRoute
+  AuthenticatedGerenciaOperacionalPendenciasRoute: typeof AuthenticatedGerenciaOperacionalPendenciasRoute
+  AuthenticatedGerenciaOperacionalProducaoRoute: typeof AuthenticatedGerenciaOperacionalProducaoRoute
+  AuthenticatedGerenciaOperacionalRelatoriosRoute: typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  AuthenticatedGerenciaOperacionalTecnicosRoute: typeof AuthenticatedGerenciaOperacionalTecnicosRoute
+  AuthenticatedGerenciaOperacionalTerceirizadosRoute: typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
+  AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute: typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
+  AuthenticatedGerenciaOperacionalIndexRoute: typeof AuthenticatedGerenciaOperacionalIndexRoute
+}
+
+const AuthenticatedGerenciaOperacionalRouteChildren: AuthenticatedGerenciaOperacionalRouteChildren =
+  {
+    AuthenticatedGerenciaOperacionalCaixaEntradaRoute:
+      AuthenticatedGerenciaOperacionalCaixaEntradaRoute,
+    AuthenticatedGerenciaOperacionalColetasRoute:
+      AuthenticatedGerenciaOperacionalColetasRoute,
+    AuthenticatedGerenciaOperacionalComissoesRoute:
+      AuthenticatedGerenciaOperacionalComissoesRoute,
+    AuthenticatedGerenciaOperacionalEquipeExternaRoute:
+      AuthenticatedGerenciaOperacionalEquipeExternaRoute,
+    AuthenticatedGerenciaOperacionalFechamentoRoute:
+      AuthenticatedGerenciaOperacionalFechamentoRoute,
+    AuthenticatedGerenciaOperacionalFluxoRoute:
+      AuthenticatedGerenciaOperacionalFluxoRoute,
+    AuthenticatedGerenciaOperacionalPendenciasRoute:
+      AuthenticatedGerenciaOperacionalPendenciasRoute,
+    AuthenticatedGerenciaOperacionalProducaoRoute:
+      AuthenticatedGerenciaOperacionalProducaoRoute,
+    AuthenticatedGerenciaOperacionalRelatoriosRoute:
+      AuthenticatedGerenciaOperacionalRelatoriosRoute,
+    AuthenticatedGerenciaOperacionalTecnicosRoute:
+      AuthenticatedGerenciaOperacionalTecnicosRoute,
+    AuthenticatedGerenciaOperacionalTerceirizadosRoute:
+      AuthenticatedGerenciaOperacionalTerceirizadosRoute,
+    AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute:
+      AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute,
+    AuthenticatedGerenciaOperacionalIndexRoute:
+      AuthenticatedGerenciaOperacionalIndexRoute,
+  }
+
+const AuthenticatedGerenciaOperacionalRouteWithChildren =
+  AuthenticatedGerenciaOperacionalRoute._addFileChildren(
+    AuthenticatedGerenciaOperacionalRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
@@ -487,7 +796,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
-  AuthenticatedGerenciaOperacionalRoute: typeof AuthenticatedGerenciaOperacionalRoute
+  AuthenticatedGerenciaOperacionalRoute: typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
   AuthenticatedOperacionalRoute: typeof AuthenticatedOperacionalRoute
   AuthenticatedPecasRoute: typeof AuthenticatedPecasRoute
@@ -507,7 +816,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
-  AuthenticatedGerenciaOperacionalRoute: AuthenticatedGerenciaOperacionalRoute,
+  AuthenticatedGerenciaOperacionalRoute:
+    AuthenticatedGerenciaOperacionalRouteWithChildren,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
   AuthenticatedOperacionalRoute: AuthenticatedOperacionalRoute,
   AuthenticatedPecasRoute: AuthenticatedPecasRoute,

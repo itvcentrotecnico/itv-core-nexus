@@ -9,9 +9,16 @@ import { NIVEL_ALERTA, rpcOp, type OperacionalDashboard } from "@/lib/operaciona
 import { cn } from "@/lib/utils";
 
 interface Props {
-  onIrPara: (aba: string) => void;
-  onEstoque: (motivo: string) => void;
+  onIrPara?: (aba: string) => void;
+  onEstoque?: (motivo: string) => void;
 }
+
+/** Destinos padrão dentro da Gerência Operacional (usados quando não há abas). */
+const DESTINO: Record<string, string> = {
+  validacao: "/gerencia-operacional/validacao-tecnica",
+  comissoes: "/gerencia-operacional/comissoes",
+  fechamento: "/gerencia-operacional/fechamento",
+};
 
 function Bloco({
   titulo,
@@ -123,7 +130,16 @@ function ColetasBloco() {
 }
 
 /** Dashboard do ADM Operacional: prioriza ação (pendências → validação → comissões → fluxo). */
-export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
+export function OperacionalDashboardView({ onIrPara, onEstoque }: Props = {}) {
+  const navigate = useNavigate();
+  const irPara = (aba: string) => {
+    if (onIrPara) return onIrPara(aba);
+    void navigate({ to: DESTINO[aba] ?? "/gerencia-operacional" });
+  };
+  const irEstoque = (motivo: string) => {
+    if (onEstoque) return onEstoque(motivo);
+    void navigate({ to: "/gerencia-operacional/pendencias" });
+  };
   const query = useQuery({
     queryKey: ["operacional", "dashboard"],
     queryFn: () => rpcOp<OperacionalDashboard>("operacional_dashboard"),
@@ -193,7 +209,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
                     <button
                       type="button"
                       className="text-xs font-semibold text-primary"
-                      onClick={() => onIrPara("fechamento")}
+                      onClick={() => irPara("fechamento")}
                     >
                       Abrir
                     </button>
@@ -202,7 +218,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
                     <button
                       type="button"
                       className="text-xs font-semibold text-primary"
-                      onClick={() => onIrPara("validacao")}
+                      onClick={() => irPara("validacao")}
                     >
                       Abrir
                     </button>
@@ -211,7 +227,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
                     <button
                       type="button"
                       className="text-xs font-semibold text-primary"
-                      onClick={() => onIrPara("comissoes")}
+                      onClick={() => irPara("comissoes")}
                     >
                       Abrir
                     </button>
@@ -229,7 +245,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
           <button
             type="button"
             className="text-xs font-semibold text-primary"
-            onClick={() => onIrPara("validacao")}
+            onClick={() => irPara("validacao")}
           >
             Abrir fila
           </button>
@@ -240,24 +256,24 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
             label="Aguardando validação"
             value={String(d.hoje.aguardando_validacao)}
             destaque
-            onClick={() => onIrPara("validacao")}
+            onClick={() => irPara("validacao")}
           />
           <Num
             label="Correções solicitadas"
             value={String(d.hoje.correcao_solicitada)}
-            onClick={() => onIrPara("validacao")}
+            onClick={() => irPara("validacao")}
           />
           <Num label="Validados hoje" value={String(d.hoje.validados_hoje)} />
           <Num label="Rejeitados" value={String(d.hoje.rejeitados)} />
           <Num
             label="Sem técnico definido"
             value={String(d.hoje.sem_tecnico)}
-            onClick={() => onIrPara("validacao")}
+            onClick={() => irPara("validacao")}
           />
           <Num
             label="Sem tipo definido"
             value={String(d.hoje.sem_tipo)}
-            onClick={() => onIrPara("validacao")}
+            onClick={() => irPara("validacao")}
           />
         </div>
       </Bloco>
@@ -268,7 +284,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
           <button
             type="button"
             className="text-xs font-semibold text-primary"
-            onClick={() => onIrPara("comissoes")}
+            onClick={() => irPara("comissoes")}
           >
             Conferir e liberar
           </button>
@@ -278,18 +294,18 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
           <Num
             label="Geradas"
             value={String(d.comissoes.geradas)}
-            onClick={() => onIrPara("comissoes")}
+            onClick={() => irPara("comissoes")}
           />
           <Num
             label="Conferidas"
             value={String(d.comissoes.conferidas)}
-            onClick={() => onIrPara("comissoes")}
+            onClick={() => irPara("comissoes")}
           />
           <Num label="Liberadas p/ Financeiro" value={String(d.comissoes.liberadas)} destaque />
           <Num
             label="Devolvidas"
             value={String(d.comissoes.devolvidas)}
-            onClick={() => onIrPara("comissoes")}
+            onClick={() => irPara("comissoes")}
           />
           <Num label="Pagas no mês" value={String(d.comissoes.pagas_mes)} />
           <Num
@@ -305,7 +321,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
           <button
             type="button"
             className="text-xs font-semibold text-primary"
-            onClick={() => onIrPara("fechamento")}
+            onClick={() => irPara("fechamento")}
           >
             Fechamento semanal
           </button>
@@ -348,7 +364,7 @@ export function OperacionalDashboardView({ onIrPara, onEstoque }: Props) {
                 key={e.motivo_id}
                 label={e.motivo}
                 value={String(e.total)}
-                onClick={() => onEstoque(e.motivo_id)}
+                onClick={() => irEstoque(e.motivo_id)}
               />
             ))}
           </div>
