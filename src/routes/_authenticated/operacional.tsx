@@ -66,6 +66,9 @@ function OperacionalPage() {
         <TabsContent value="comissoes" className="mt-4">
           <ComissoesOperacional />
         </TabsContent>
+        <TabsContent value="terceirizados" className="mt-4">
+          <ServicosTerceirizados />
+        </TabsContent>
         <TabsContent value="fechamento" className="mt-4">
           {motivoFiltro && (
             <button
