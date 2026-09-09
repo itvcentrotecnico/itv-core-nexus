@@ -14,7 +14,7 @@ import {
   parsearColagem,
   rpcTerc,
   SITUACAO_ITEM,
-  type Fornecedor as _F,
+  
   type LinhaEntrada,
   type PreviaLote,
 } from "@/lib/terceirizados";
