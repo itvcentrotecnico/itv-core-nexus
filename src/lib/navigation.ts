@@ -3,17 +3,12 @@ import {
   ClipboardList,
   LayoutDashboard,
   Package,
-  Bike,
-  Percent,
   Radar,
   Settings,
-  ShieldCheck,
   Target,
-  Truck,
   Tv,
   Users,
   Wallet,
-  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,6 +18,8 @@ export interface NavItem {
   label: string;
   to: string;
   icon: LucideIcon;
+  /** Quando informado, o item só aparece para estes perfis. */
+  roles?: string[];
 }
 
 export interface NavSection {
@@ -30,24 +27,31 @@ export interface NavSection {
   items: NavItem[];
 }
 
+/**
+ * Menu principal enxuto: cada perfil enxerga o seu centro de trabalho.
+ * Produção, Técnicos, Central Operacional, Terceirizados e Comissões Técnicas
+ * passaram a viver dentro da Gerência Operacional.
+ */
 export const NAV_SECTIONS: NavSection[] = [
   {
     items: [
       { moduleKey: "dashboard", label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
-      { moduleKey: "operacional", label: "Central Operacional", to: "/operacional", icon: Radar },
-      { moduleKey: "caixa", label: "Caixa Diário", to: "/caixa", icon: Wallet },
-      { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
-      { moduleKey: "comissoes", label: "Comissões", to: "/comissoes", icon: Percent },
       {
-        moduleKey: "comissao_entrega",
-        label: "Comissão de Entrega",
-        to: "/comissao-entrega",
-        icon: Bike,
+        moduleKey: "operacional",
+        label: "Gerência Operacional",
+        to: "/gerencia-operacional",
+        icon: Radar,
       },
+      { moduleKey: "caixa", label: "Caixa Diário", to: "/caixa", icon: Wallet },
+      {
+        moduleKey: "producao",
+        label: "Minha Produção",
+        to: "/producao",
+        icon: ClipboardList,
+        roles: ["tecnico"],
+      },
+      { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "financeiro", label: "Financeiro", to: "/financeiro", icon: BarChart3 },
-      { moduleKey: "coletas", label: "Coletas e Entregas", to: "/coletas", icon: Truck },
-      { moduleKey: "producao", label: "Produção", to: "/producao", icon: ClipboardList },
-      { moduleKey: "tecnicos", label: "Técnicos", to: "/tecnicos", icon: Wrench },
       { moduleKey: "colaboradores", label: "Colaboradores", to: "/colaboradores", icon: Users },
       { moduleKey: "metas", label: "Metas", to: "/metas", icon: Target },
       { moduleKey: "modo_tv", label: "Modo TV", to: "/admin/modo-tv", icon: Tv },
@@ -63,10 +67,19 @@ export const NAV_SECTIONS: NavSection[] = [
 /**
  * Mapa rota → módulo. Usado para bloquear acesso por URL direta.
  * Reforço de interface: a segurança real continua sendo RLS + RPCs no banco.
+ * As rotas mais específicas vêm primeiro.
  */
 export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
+  { prefix: "/gerencia-operacional/coletas", moduleKey: "coletas" },
+  { prefix: "/gerencia-operacional/equipe-externa", moduleKey: "coletas" },
+  { prefix: "/gerencia-operacional/comissoes", moduleKey: "comissoes" },
+  { prefix: "/gerencia-operacional/producao", moduleKey: "producao" },
+  { prefix: "/gerencia-operacional/validacao-tecnica", moduleKey: "producao" },
+  { prefix: "/gerencia-operacional/tecnicos", moduleKey: "tecnicos" },
+  { prefix: "/gerencia-operacional", moduleKey: "operacional" },
   { prefix: "/admin", moduleKey: "admin" },
   { prefix: "/operacional", moduleKey: "operacional" },
+  { prefix: "/central-operacional", moduleKey: "operacional" },
   { prefix: "/caixa", moduleKey: "caixa" },
   { prefix: "/pecas", moduleKey: "pecas" },
   { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
