@@ -18,6 +18,12 @@ import {
   type LinhaEntrada,
   type PreviaLote,
 } from "@/lib/terceirizados";
+import {
+  EWERTON_COMPETENCIA,
+  EWERTON_DESCRICAO,
+  EWERTON_TOTAL_ESPERADO,
+  linhasEwerton,
+} from "@/lib/terceirizados-ewerton";
 import { cn } from "@/lib/utils";
 
 export interface PrestadorOpcao {
@@ -269,6 +275,38 @@ export function LoteDialog({
               Este é um lote de teste (homologação)
             </label>
 
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-3">
+              <p className="text-sm font-semibold">Planilha Ewerton — Agosto/2026</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Preenche os 39 serviços do Ewerton (total esperado R$ 3.030,00) para conferência.
+                Nada é gravado: depois é preciso validar, revisar a prévia e confirmar.
+              </p>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="mt-2"
+                onClick={() => {
+                  const ew = prestadores.find((p) => p.nome.trim().toUpperCase() === "EWERTON");
+                  if (!ew) {
+                    toast.error("O prestador Ewerton não foi encontrado no cadastro.");
+                    return;
+                  }
+                  setPrestadorId(ew.id);
+                  setCompetencia(EWERTON_COMPETENCIA);
+                  setDescricao(EWERTON_DESCRICAO);
+                  setOrigem("planilha");
+                  setTotalEsperado(EWERTON_TOTAL_ESPERADO);
+                  setTeste(false);
+                  setLinhas(linhasEwerton());
+                  setPrevia(null);
+                  toast.success("39 serviços carregados para conferência.");
+                }}
+              >
+                Carregar planilha Ewerton — Agosto/2026
+              </Button>
+            </div>
+
             <div className="rounded-xl border border-border bg-muted/30 p-3">
               <label className={labelClass} htmlFor="lote-colagem">
                 Colar serviços (uma linha por serviço; colunas separadas por TAB ou ponto e vírgula)
@@ -385,6 +423,14 @@ export function LoteDialog({
                       placeholder="Descrição do serviço"
                       aria-label="Descrição do serviço"
                     />
+                    <input
+                      className={cn(inputClass, "sm:col-span-4")}
+                      value={l.observacao}
+                      onChange={(e) => atualizar(l.id, "observacao", e.target.value)}
+                      placeholder="Observação (opcional)"
+                      aria-label="Observação"
+                    />
+
                   </div>
                 </div>
               ))}
