@@ -36,7 +36,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       {NAV_SECTIONS.map((section, i) => {
         const items = section.items.filter(
           (item) =>
-            podeVer(item.moduleKey) && (!item.roles || item.roles.some((r) => roles.includes(r))),
+            podeVer(item.moduleKey) &&
+            (!item.roles || (roles as string[]).some((r) => item.roles!.includes(r))),
         );
         if (items.length === 0 && !isLoading) return null;
         return (
