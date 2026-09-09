@@ -7,6 +7,7 @@ import { OperacionalDashboardView } from "@/components/operacional/dashboard";
 import { FechamentoSemanal } from "@/components/operacional/fechamento-semanal";
 import { FilaValidacao } from "@/components/operacional/fila-validacao";
 import { HistoricoOperacional } from "@/components/operacional/historico";
+import { ServicosTerceirizados } from "@/components/operacional/terceirizados";
 
 const TITULO = "Central Operacional — GESTÃO ITV Centro Técnico";
 const DESCRICAO =
@@ -45,6 +46,7 @@ function OperacionalPage() {
           <TabsTrigger value="visao">Visão geral</TabsTrigger>
           <TabsTrigger value="validacao">Validação</TabsTrigger>
           <TabsTrigger value="comissoes">Comissões</TabsTrigger>
+          <TabsTrigger value="terceirizados">Serviços terceirizados</TabsTrigger>
           <TabsTrigger value="fechamento">Fechamento</TabsTrigger>
           <TabsTrigger value="historico">Histórico</TabsTrigger>
         </TabsList>
