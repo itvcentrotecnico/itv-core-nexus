@@ -38,7 +38,17 @@ function Index() {
     }
     // Perfil exclusivo de TV vai direto para o painel de desempenho.
     const somenteTv = roles.includes("tv_display") && !roles.some((r) => r !== "tv_display");
-    navigate({ to: somenteTv ? "/modo-tv" : "/dashboard", replace: true });
+    if (somenteTv) {
+      navigate({ to: "/modo-tv", replace: true });
+      return;
+    }
+    // Cada perfil abre no seu centro de trabalho.
+    const destino = roles.includes("adm_operacional")
+      ? "/gerencia-operacional"
+      : roles.includes("motorista")
+        ? "/coletas"
+        : "/dashboard";
+    navigate({ to: destino, replace: true });
   }, [isAuthenticated, loading, roles, rolesLoading, navigate]);
 
   return (

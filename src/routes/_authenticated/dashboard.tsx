@@ -391,7 +391,7 @@ function DashboardPage() {
 
       {ehGerencia && filaProducao && filaProducao.aguardando_validacao > 0 && (
         <Link
-          to="/tecnicos"
+          to="/gerencia-operacional/validacao-tecnica"
           className="flex items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/5 p-4 transition-colors hover:bg-amber-500/10"
         >
           <div className="flex items-center gap-3">

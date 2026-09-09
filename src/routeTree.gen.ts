@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ModoTvRouteImport } from './routes/modo-tv'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCaixaRouteImport } from './routes/_authenticated/caixa'
+import { Route as AuthenticatedCentralOperacionalRouteImport } from './routes/_authenticated/central-operacional'
 import { Route as AuthenticatedColaboradoresRouteImport } from './routes/_authenticated/colaboradores'
 import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticated/coletas'
 import { Route as AuthenticatedComissaoEntregaRouteImport } from './routes/_authenticated/comissao-entrega'
@@ -75,6 +76,12 @@ const AuthenticatedCaixaRoute = AuthenticatedCaixaRouteImport.update({
   path: '/caixa',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCentralOperacionalRoute =
+  AuthenticatedCentralOperacionalRouteImport.update({
+    id: '/central-operacional',
+    path: '/central-operacional',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedColaboradoresRoute =
   AuthenticatedColaboradoresRouteImport.update({
     id: '/colaboradores',
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
+  '/central-operacional': typeof AuthenticatedCentralOperacionalRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
@@ -288,6 +296,7 @@ export interface FileRoutesByTo {
   '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/caixa': typeof AuthenticatedCaixaRoute
+  '/central-operacional': typeof AuthenticatedCentralOperacionalRoute
   '/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/coletas': typeof AuthenticatedColetasRoute
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
@@ -326,6 +335,7 @@ export interface FileRoutesById {
   '/modo-tv': typeof ModoTvRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/caixa': typeof AuthenticatedCaixaRoute
+  '/_authenticated/central-operacional': typeof AuthenticatedCentralOperacionalRoute
   '/_authenticated/colaboradores': typeof AuthenticatedColaboradoresRoute
   '/_authenticated/coletas': typeof AuthenticatedColetasRoute
   '/_authenticated/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/modo-tv'
     | '/reset-password'
     | '/caixa'
+    | '/central-operacional'
     | '/colaboradores'
     | '/coletas'
     | '/comissao-entrega'
@@ -402,6 +413,7 @@ export interface FileRouteTypes {
     | '/modo-tv'
     | '/reset-password'
     | '/caixa'
+    | '/central-operacional'
     | '/colaboradores'
     | '/coletas'
     | '/comissao-entrega'
@@ -439,6 +451,7 @@ export interface FileRouteTypes {
     | '/modo-tv'
     | '/reset-password'
     | '/_authenticated/caixa'
+    | '/_authenticated/central-operacional'
     | '/_authenticated/colaboradores'
     | '/_authenticated/coletas'
     | '/_authenticated/comissao-entrega'
@@ -522,6 +535,13 @@ declare module '@tanstack/react-router' {
       path: '/caixa'
       fullPath: '/caixa'
       preLoaderRoute: typeof AuthenticatedCaixaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/central-operacional': {
+      id: '/_authenticated/central-operacional'
+      path: '/central-operacional'
+      fullPath: '/central-operacional'
+      preLoaderRoute: typeof AuthenticatedCentralOperacionalRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/colaboradores': {
@@ -790,6 +810,7 @@ const AuthenticatedGerenciaOperacionalRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCaixaRoute: typeof AuthenticatedCaixaRoute
+  AuthenticatedCentralOperacionalRoute: typeof AuthenticatedCentralOperacionalRoute
   AuthenticatedColaboradoresRoute: typeof AuthenticatedColaboradoresRoute
   AuthenticatedColetasRoute: typeof AuthenticatedColetasRoute
   AuthenticatedComissaoEntregaRoute: typeof AuthenticatedComissaoEntregaRoute
@@ -810,6 +831,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCaixaRoute: AuthenticatedCaixaRoute,
+  AuthenticatedCentralOperacionalRoute: AuthenticatedCentralOperacionalRoute,
   AuthenticatedColaboradoresRoute: AuthenticatedColaboradoresRoute,
   AuthenticatedColetasRoute: AuthenticatedColetasRoute,
   AuthenticatedComissaoEntregaRoute: AuthenticatedComissaoEntregaRoute,

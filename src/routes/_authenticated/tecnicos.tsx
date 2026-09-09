@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ClipboardCheck } from "lucide-react";
 
@@ -35,6 +35,9 @@ export const Route = createFileRoute("/_authenticated/tecnicos")({
       },
     ],
   }),
+  beforeLoad: () => {
+    throw redirect({ to: "/gerencia-operacional/validacao-tecnica", replace: true });
+  },
   component: TecnicosPage,
 });
 

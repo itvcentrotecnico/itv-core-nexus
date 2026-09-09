@@ -21,7 +21,7 @@ function Brand() {
 }
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
-  const { can, isLoading } = useAccess();
+  const { can, isLoading, roles } = useAccess();
 
   // Menu dinâmico: um item aparece quando o perfil (ou uma exceção individual)
   // permite alguma forma de visualização daquele módulo.
@@ -34,7 +34,10 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="Navegação principal">
       {NAV_SECTIONS.map((section, i) => {
-        const items = section.items.filter((item) => podeVer(item.moduleKey));
+        const items = section.items.filter(
+          (item) =>
+            podeVer(item.moduleKey) && (!item.roles || item.roles.some((r) => roles.includes(r))),
+        );
         if (items.length === 0 && !isLoading) return null;
         return (
           <div key={section.title ?? i}>
