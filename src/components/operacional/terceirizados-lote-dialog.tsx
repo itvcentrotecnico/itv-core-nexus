@@ -423,6 +423,14 @@ export function LoteDialog({
                       placeholder="Descrição do serviço"
                       aria-label="Descrição do serviço"
                     />
+                    <input
+                      className={cn(inputClass, "sm:col-span-4")}
+                      value={l.observacao}
+                      onChange={(e) => atualizar(l.id, "observacao", e.target.value)}
+                      placeholder="Observação (opcional)"
+                      aria-label="Observação"
+                    />
+
                   </div>
                 </div>
               ))}
