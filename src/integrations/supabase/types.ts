@@ -4249,6 +4249,187 @@ export type Database = {
           },
         ]
       }
+      terceirizados_lote_itens: {
+        Row: {
+          ajuste_manual: boolean
+          created_at: string
+          data_execucao: string | null
+          descricao_servico: string
+          duplicidade_autorizada: boolean
+          id: string
+          lote_id: string
+          marca: string | null
+          modelo: string | null
+          motivo_duplicidade: string | null
+          observacao: string | null
+          os: string | null
+          polegadas: number | null
+          prestador_id: string
+          referencia: string | null
+          status: string
+          tipo_servico: string | null
+          updated_at: string
+          valor_devido_prestador: number
+        }
+        Insert: {
+          ajuste_manual?: boolean
+          created_at?: string
+          data_execucao?: string | null
+          descricao_servico: string
+          duplicidade_autorizada?: boolean
+          id?: string
+          lote_id: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_duplicidade?: string | null
+          observacao?: string | null
+          os?: string | null
+          polegadas?: number | null
+          prestador_id: string
+          referencia?: string | null
+          status?: string
+          tipo_servico?: string | null
+          updated_at?: string
+          valor_devido_prestador?: number
+        }
+        Update: {
+          ajuste_manual?: boolean
+          created_at?: string
+          data_execucao?: string | null
+          descricao_servico?: string
+          duplicidade_autorizada?: boolean
+          id?: string
+          lote_id?: string
+          marca?: string | null
+          modelo?: string | null
+          motivo_duplicidade?: string | null
+          observacao?: string | null
+          os?: string | null
+          polegadas?: number | null
+          prestador_id?: string
+          referencia?: string | null
+          status?: string
+          tipo_servico?: string | null
+          updated_at?: string
+          valor_devido_prestador?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "terceirizados_lote_itens_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "terceirizados_lotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "terceirizados_lote_itens_prestador_id_fkey"
+            columns: ["prestador_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      terceirizados_lotes: {
+        Row: {
+          arquivo_original: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          competencia: string
+          confirmed_at: string | null
+          confirmed_by: string | null
+          conta_pagar_id: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          idempotency_key: string | null
+          origem_lote: string
+          prestador_id: string
+          quantidade_itens: number
+          released_to_finance_at: string | null
+          released_to_finance_by: string | null
+          status: Database["public"]["Enums"]["terceirizado_lote_status"]
+          teste: boolean
+          total_esperado: number | null
+          updated_at: string
+          valor_total: number
+        }
+        Insert: {
+          arquivo_original?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          competencia: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          conta_pagar_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          idempotency_key?: string | null
+          origem_lote?: string
+          prestador_id: string
+          quantidade_itens?: number
+          released_to_finance_at?: string | null
+          released_to_finance_by?: string | null
+          status?: Database["public"]["Enums"]["terceirizado_lote_status"]
+          teste?: boolean
+          total_esperado?: number | null
+          updated_at?: string
+          valor_total?: number
+        }
+        Update: {
+          arquivo_original?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          competencia?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          conta_pagar_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          idempotency_key?: string | null
+          origem_lote?: string
+          prestador_id?: string
+          quantidade_itens?: number
+          released_to_finance_at?: string | null
+          released_to_finance_by?: string | null
+          status?: Database["public"]["Enums"]["terceirizado_lote_status"]
+          teste?: boolean
+          total_esperado?: number | null
+          updated_at?: string
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "terceirizados_lotes_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "terceirizados_lotes_conta_pagar_id_fkey"
+            columns: ["conta_pagar_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar_saldos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "terceirizados_lotes_prestador_id_fkey"
+            columns: ["prestador_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tipos_custo: {
         Row: {
           ativo: boolean
@@ -5752,6 +5933,49 @@ export type Database = {
         }
         Returns: Json
       }
+      terceirizados_lote_cancelar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      terceirizados_lote_confirmar: {
+        Args: {
+          p_competencia: string
+          p_descricao?: string
+          p_duplicidades?: Json
+          p_idempotency_key: string
+          p_itens: Json
+          p_origem_lote?: string
+          p_prestador_id: string
+          p_teste?: boolean
+          p_total_esperado?: number
+        }
+        Returns: Json
+      }
+      terceirizados_lote_detalhe: { Args: { p_id: string }; Returns: Json }
+      terceirizados_lote_liberar: {
+        Args: { p_id: string; p_vencimento?: string }
+        Returns: Json
+      }
+      terceirizados_lote_validar: {
+        Args: {
+          p_competencia: string
+          p_itens: Json
+          p_prestador_id: string
+          p_total_esperado?: number
+        }
+        Returns: Json
+      }
+      terceirizados_lotes_listar: {
+        Args: {
+          p_competencia?: string
+          p_fim?: string
+          p_inicio?: string
+          p_prestador_id?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      terceirizados_pode: { Args: { _action: string }; Returns: boolean }
       tributos_salvar: {
         Args: {
           p_base: number
@@ -5895,6 +6119,15 @@ export type Database = {
         | "validado"
         | "rejeitado"
         | "correcao_solicitada"
+        | "cancelado"
+      terceirizado_lote_status:
+        | "rascunho"
+        | "em_validacao"
+        | "aguardando_confirmacao"
+        | "confirmado"
+        | "liberado_financeiro"
+        | "parcialmente_pago"
+        | "pago"
         | "cancelado"
       tributo_metodo: "manual" | "percentual"
       tributo_status: "previsto" | "confirmado" | "pago" | "cancelado"
@@ -6146,6 +6379,16 @@ export const Constants = {
         "validado",
         "rejeitado",
         "correcao_solicitada",
+        "cancelado",
+      ],
+      terceirizado_lote_status: [
+        "rascunho",
+        "em_validacao",
+        "aguardando_confirmacao",
+        "confirmado",
+        "liberado_financeiro",
+        "parcialmente_pago",
+        "pago",
         "cancelado",
       ],
       tributo_metodo: ["manual", "percentual"],
