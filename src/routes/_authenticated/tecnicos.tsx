@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ClipboardCheck } from "lucide-react";
 
@@ -35,10 +35,19 @@ export const Route = createFileRoute("/_authenticated/tecnicos")({
       },
     ],
   }),
+  beforeLoad: () => {
+    throw redirect({ to: "/gerencia-operacional/validacao-tecnica", replace: true });
+  },
   component: TecnicosPage,
 });
 
-function TecnicosPage() {
+export function TecnicosPage({
+  abaInicial = "fila",
+  semTitulo = false,
+}: {
+  abaInicial?: string;
+  semTitulo?: boolean;
+} = {}) {
   const { isAdmin, can } = useAccess();
   const { ehGerencia, tecnicos } = useProducaoRefs();
   const podeConfigurarMetas = isAdmin || can("producao", "configurar_metas");
@@ -121,12 +130,14 @@ function TecnicosPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="font-display text-2xl font-bold text-foreground">Validação Técnica</h1>
-        <p className="text-sm text-muted-foreground">
-          Confira, valide, solicite correções ou rejeite os serviços registrados pela equipe.
-        </p>
-      </header>
+      {!semTitulo && (
+        <header>
+          <h1 className="font-display text-2xl font-bold text-foreground">Validação Técnica</h1>
+          <p className="text-sm text-muted-foreground">
+            Confira, valide, solicite correções ou rejeite os serviços registrados pela equipe.
+          </p>
+        </header>
+      )}
 
       {fila && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -153,7 +164,7 @@ function TecnicosPage() {
         </div>
       )}
 
-      <Tabs defaultValue="fila">
+      <Tabs defaultValue={abaInicial}>
         <TabsList>
           <TabsTrigger value="fila">
             Fila de validação ({fila?.aguardando_validacao ?? 0})

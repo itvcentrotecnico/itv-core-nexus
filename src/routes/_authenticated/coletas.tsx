@@ -76,7 +76,7 @@ function inicioDoDiaManaus(): number {
   return new Date(`${dia}T00:00:00-04:00`).getTime();
 }
 
-function ColetasPage() {
+export function ColetasPage() {
   const { can, isAdmin, profile } = useAccess();
   const queryClient = useQueryClient();
 

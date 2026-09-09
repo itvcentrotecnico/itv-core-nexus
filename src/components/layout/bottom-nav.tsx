@@ -6,14 +6,14 @@ import { cn } from "@/lib/utils";
 
 /** Ordem de atalhos por tipo de perfil (o primeiro perfil encontrado vence). */
 const PRIORIDADE: Record<string, string[]> = {
-  tecnico: ["dashboard", "producao", "tecnicos", "metas", "relatorios"],
-  vendedor: ["dashboard", "caixa", "coletas", "comissao_entrega", "relatorios"],
+  tecnico: ["dashboard", "producao", "metas", "relatorios"],
+  vendedor: ["dashboard", "caixa", "coletas", "relatorios"],
   motorista: ["coletas", "dashboard"],
-  adm_financeiro: ["dashboard", "caixa", "financeiro", "relatorios", "metas"],
-  adm_operacional: ["dashboard", "coletas", "producao", "caixa", "relatorios"],
+  adm_financeiro: ["dashboard", "caixa", "financeiro", "relatorios"],
+  adm_operacional: ["operacional", "dashboard", "caixa", "relatorios"],
 };
 
-const PADRAO = ["dashboard", "caixa", "producao", "metas", "relatorios"];
+const PADRAO = ["dashboard", "operacional", "caixa", "relatorios"];
 
 const TODOS: NavItem[] = NAV_SECTIONS.flatMap((s) => s.items);
 
