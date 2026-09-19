@@ -143,6 +143,9 @@ export interface LoteResumo {
   status: LoteStatus;
   teste: boolean;
   conta_pagar_id: string | null;
+  financeiro_status: FinanceiroStatus;
+  devolvido_motivo?: string | null;
+  devolvido_em?: string | null;
   created_at: string;
 }
 
@@ -170,11 +173,13 @@ export interface LoteDetalhe {
     criado_por: string | null;
     confirmado_por: string | null;
     liberado_por: string | null;
+    devolvido_por_nome: string | null;
     released_to_finance_at: string | null;
     confirmed_at: string | null;
     cancel_reason: string | null;
   };
   itens: LoteItem[];
+  historico: EventoLote[];
 }
 
 /** Chamada às rotinas de terceirizados com mensagem amigável (nunca expõe SQL/RLS). */
