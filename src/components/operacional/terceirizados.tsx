@@ -445,6 +445,21 @@ export function ServicosTerceirizados() {
                 </table>
               </div>
 
+              {liberacao?.ok && liberacao.prestador && (
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm">
+                  <p className="font-semibold text-primary">✅ LIBERADO PARA O FINANCEIRO</p>
+                  <p>
+                    {liberacao.prestador} · {liberacao.quantidade} serviço(s) ·{" "}
+                    {formatCurrencyBRL(Number(liberacao.valor ?? 0))}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Liberado por {liberacao.liberado_por ?? "—"}
+                    {liberacao.liberado_em ? ` · ${formatDateTimeITV(liberacao.liberado_em)}` : ""} ·
+                    Aguardando validação financeira
+                  </p>
+                </div>
+              )}
+
               {cancelando ? (
                 <div className="space-y-2 rounded-xl border border-destructive/30 p-3">
                   <label className={labelClass} htmlFor="t-motivo">
@@ -470,12 +485,43 @@ export function ServicosTerceirizados() {
                     </Button>
                   </div>
                 </div>
+              ) : devolvendo ? (
+                <div className="space-y-2 rounded-xl border border-orange-500/30 p-3">
+                  <label className={labelClass} htmlFor="t-devolucao">
+                    Motivo da devolução ao Operacional
+                  </label>
+                  <input
+                    id="t-devolucao"
+                    className={inputClass}
+                    value={motivoDevolucao}
+                    onChange={(e) => setMotivoDevolucao(e.target.value)}
+                    placeholder="Ex.: Valor divergente da planilha"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setDevolvendo(false)}>
+                      Voltar
+                    </Button>
+                    <Button
+                      disabled={devolver.isPending || motivoDevolucao.trim().length < 3}
+                      onClick={() => devolver.mutate(lote.id)}
+                    >
+                      {devolver.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+                      Devolver para o Operacional
+                    </Button>
+                  </div>
+                </div>
               ) : (
                 <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-3">
                   {podeCancelar &&
                     !["cancelado", "pago", "parcialmente_pago"].includes(lote.status) && (
                       <Button variant="outline" onClick={() => setCancelando(true)}>
                         Cancelar lote
+                      </Button>
+                    )}
+                  {podeDevolver &&
+                    ["em_analise", "liberado"].includes(lote.financeiro_status ?? "") && (
+                      <Button variant="outline" onClick={() => setDevolvendo(true)}>
+                        Devolver para o Operacional
                       </Button>
                     )}
                   {podeLiberar && lote.status === "confirmado" && (
@@ -486,6 +532,7 @@ export function ServicosTerceirizados() {
                   )}
                 </div>
               )}
+
             </div>
           )}
         </DialogContent>
