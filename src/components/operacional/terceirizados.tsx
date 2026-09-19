@@ -300,6 +300,9 @@ export function ServicosTerceirizados() {
                       {STATUS_LOTE[l.status].label}
                     </span>
                   </td>
+                  <td className="px-3 py-2">
+                    <BadgeFinanceiro status={l.financeiro_status} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -359,6 +362,12 @@ export function ServicosTerceirizados() {
                 <div className="flex justify-between sm:block">
                   <dt className="text-muted-foreground">Financeiro</dt>
                   <dd className="font-medium">
+                    <BadgeFinanceiro status={lote.financeiro_status} />
+                  </dd>
+                </div>
+                <div className="flex justify-between sm:block">
+                  <dt className="text-muted-foreground">Liberado por</dt>
+                  <dd className="font-medium">
                     {lote.released_to_finance_at
                       ? `${lote.liberado_por ?? "—"} · ${formatDateTimeITV(lote.released_to_finance_at)}`
                       : "Ainda não liberado"}
@@ -370,11 +379,42 @@ export function ServicosTerceirizados() {
                 </div>
               </dl>
 
+              {lote.devolvido_em && !lote.released_to_finance_at && (
+                <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 text-sm text-orange-700">
+                  <p className="font-semibold">⚠️ Devolvido pelo Financeiro</p>
+                  <p>Motivo: {lote.devolvido_motivo ?? "—"}</p>
+                  <p className="text-xs">
+                    {lote.devolvido_por_nome ?? "Financeiro"} ·{" "}
+                    {formatDateTimeITV(lote.devolvido_em)}
+                  </p>
+                </div>
+              )}
+
               {lote.cancel_reason && (
                 <p className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
                   Cancelado: {lote.cancel_reason}
                 </p>
               )}
+
+              <section className="rounded-xl border border-border p-3">
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Histórico
+                </h3>
+                <ol className="space-y-2">
+                  {(detalhe.data?.historico ?? []).map((e, idx) => (
+                    <li key={`${e.em}-${idx}`} className="border-l-2 border-primary/40 pl-3">
+                      <p className="text-xs text-muted-foreground">{formatDateTimeITV(e.em)}</p>
+                      <p className="text-sm font-medium text-foreground">{e.titulo}</p>
+                      {(e.quem || e.detalhe) && (
+                        <p className="text-xs text-muted-foreground">
+                          {[e.quem, e.detalhe].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
 
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full min-w-[640px] text-sm">
