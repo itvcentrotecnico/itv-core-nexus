@@ -169,6 +169,39 @@ export function FilaValidacao() {
 
   return (
     <div className="space-y-4">
+      <section className="rounded-xl border border-border bg-card p-4">
+        <h2 className="font-display text-sm font-bold text-foreground">
+          Aguardando sua validação
+        </h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {contadores.validacao} serviço(s) aguardam sua validação técnica · {contadores.correcoes}{" "}
+          em correção · {contadores.validadosHoje} validados hoje.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setStatus("enviado_validacao")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Aguardando ({contadores.validacao})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus("correcao_solicitada")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Correções ({contadores.correcoes})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus("validado")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Validados hoje ({contadores.validadosHoje})
+          </button>
+        </div>
+      </section>
+
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label className={labelClass} htmlFor="fila-status">
@@ -259,8 +292,12 @@ export function FilaValidacao() {
               <div>
                 <p className="font-display text-base font-bold text-foreground">OS {r.os}</p>
                 <p className="text-xs text-muted-foreground">
-                  {formatDateOnlyISO(r.data_execucao)} ·{" "}
+                  {formatDateOnlyISO(r.data_execucao)} · Técnico:{" "}
                   {r.tecnico?.full_name ?? "Sem técnico definido"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Lançado por: {r.tecnico?.full_name ?? "—"}
+                  {r.enviado_em ? ` · ${formatDateTimeITV(r.enviado_em)}` : ""}
                 </p>
               </div>
               <StatusBadgeProducao status={r.status} />
