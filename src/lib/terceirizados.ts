@@ -28,6 +28,46 @@ export const STATUS_LOTE: Record<LoteStatus, { label: string; className: string 
   cancelado: { label: "Cancelado", className: "bg-destructive/10 text-destructive" },
 };
 
+/** Situação do lote dentro do Financeiro — sempre visível na lista e no detalhe. */
+export type FinanceiroStatus =
+  | "nao_liberado"
+  | "liberado"
+  | "em_analise"
+  | "devolvido"
+  | "em_pagamento"
+  | "pago"
+  | "cancelado";
+
+export const STATUS_FINANCEIRO: Record<FinanceiroStatus, { label: string; className: string }> = {
+  nao_liberado: { label: "Ainda não liberado", className: "bg-muted text-muted-foreground" },
+  liberado: { label: "Liberado para o Financeiro", className: "bg-blue-500/10 text-blue-600" },
+  em_analise: { label: "Em análise financeira", className: "bg-blue-500/10 text-blue-600" },
+  devolvido: { label: "Devolvido para correção", className: "bg-orange-500/10 text-orange-600" },
+  em_pagamento: { label: "Pagamento parcial", className: "bg-amber-500/10 text-amber-600" },
+  pago: { label: "Pago", className: "bg-primary/10 text-primary" },
+  cancelado: { label: "Cancelado", className: "bg-destructive/10 text-destructive" },
+};
+
+export interface EventoLote {
+  em: string;
+  titulo: string;
+  quem?: string | null;
+  detalhe?: string | null;
+}
+
+/** Retorno da liberação: tudo que o gerente precisa ver confirmado na hora. */
+export interface LiberacaoResultado {
+  ok: boolean;
+  message?: string;
+  repetido?: boolean;
+  prestador?: string;
+  competencia?: string;
+  quantidade?: number;
+  valor?: number;
+  liberado_por?: string | null;
+  liberado_em?: string | null;
+}
+
 export const SITUACAO_ITEM: Record<SituacaoItem, { label: string; className: string }> = {
   ok: { label: "OK", className: "bg-primary/10 text-primary" },
   atencao: { label: "Atenção", className: "bg-amber-500/10 text-amber-600" },
@@ -103,6 +143,9 @@ export interface LoteResumo {
   status: LoteStatus;
   teste: boolean;
   conta_pagar_id: string | null;
+  financeiro_status: FinanceiroStatus;
+  devolvido_motivo?: string | null;
+  devolvido_em?: string | null;
   created_at: string;
 }
 
@@ -130,11 +173,13 @@ export interface LoteDetalhe {
     criado_por: string | null;
     confirmado_por: string | null;
     liberado_por: string | null;
+    devolvido_por_nome: string | null;
     released_to_finance_at: string | null;
     confirmed_at: string | null;
     cancel_reason: string | null;
   };
   itens: LoteItem[];
+  historico: EventoLote[];
 }
 
 /** Chamada às rotinas de terceirizados com mensagem amigável (nunca expõe SQL/RLS). */

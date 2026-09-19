@@ -7,7 +7,13 @@ import { useAccess } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import {
+  formatCurrencyBRL,
+  formatDateOnlyISO,
+  formatDateTimeITV,
+  todayManausISO,
+} from "@/lib/format";
+import { useGerenciaResumo } from "@/lib/gerencia";
 import { rpcOp } from "@/lib/operacional";
 import { STATUS_PRODUCAO, type ProducaoRegistro, type ProducaoStatus } from "@/lib/producao";
 import { rpcProd, StatusBadgeProducao, useProducaoRefs } from "@/components/producao/shared";
@@ -30,6 +36,7 @@ export function FilaValidacao() {
   const { tipos, tecnicos } = useProducaoRefs();
   const podeValidar = isAdmin || can("operacional", "validar") || can("producao", "validar");
   const podeAlterarTecnico = isAdmin || can("operacional", "atribuir");
+  const { contadores } = useGerenciaResumo();
   const podeEditar = isAdmin || can("operacional", "editar") || can("producao", "editar");
 
   const [status, setStatus] = useState<ProducaoStatus | "">("enviado_validacao");
@@ -123,13 +130,37 @@ export function FilaValidacao() {
         toast.error(r.message ?? "Não foi possível concluir a ação.");
         return;
       }
-      toast.success("Ação registrada.");
+      const alvo = acao;
+      const reg = alvo?.registro;
+      const quem = reg?.tecnico?.full_name ?? "Técnico";
+      const os = reg?.os ? `OS ${reg.os}` : "Serviço";
+      if (alvo?.tipo === "validar") {
+        toast.success("✅ Serviço validado", {
+          description: `${os} — ${quem}. O serviço agora faz parte da produção oficial. Próxima etapa: cálculo e liberação da comissão.`,
+          duration: 7000,
+        });
+      } else if (alvo?.tipo === "correcao") {
+        toast.success("Correção solicitada", {
+          description: `${os} — ${quem}. Próximo responsável: o técnico deve corrigir e reenviar.`,
+        });
+      } else if (alvo?.tipo === "rejeitar") {
+        toast.success("Serviço rejeitado", {
+          description: `${os} — ${quem}. O registro sai da fila de validação.`,
+        });
+      } else if (alvo?.tipo === "tecnico") {
+        toast.success("Técnico responsável alterado", {
+          description: `${os}. A alteração foi registrada no histórico.`,
+        });
+      } else {
+        toast.success("Tipo de serviço definido", { description: `${os}. Já pode ser validado.` });
+      }
       setAcao(null);
       setTexto("");
       setNovoTecnico("");
       setNovoTipo("");
       void queryClient.invalidateQueries({ queryKey: ["operacional"] });
       void queryClient.invalidateQueries({ queryKey: ["producao"] });
+      void queryClient.invalidateQueries({ queryKey: ["gerencia"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -145,6 +176,39 @@ export function FilaValidacao() {
 
   return (
     <div className="space-y-4">
+      <section className="rounded-xl border border-border bg-card p-4">
+        <h2 className="font-display text-sm font-bold text-foreground">
+          Aguardando sua validação
+        </h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {contadores.validacao} serviço(s) aguardam sua validação técnica · {contadores.correcoes}{" "}
+          em correção · {contadores.validadosHoje} validados hoje.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setStatus("enviado_validacao")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Aguardando ({contadores.validacao})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus("correcao_solicitada")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Correções ({contadores.correcoes})
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus("validado")}
+            className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"
+          >
+            Validados hoje ({contadores.validadosHoje})
+          </button>
+        </div>
+      </section>
+
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label className={labelClass} htmlFor="fila-status">
@@ -235,8 +299,12 @@ export function FilaValidacao() {
               <div>
                 <p className="font-display text-base font-bold text-foreground">OS {r.os}</p>
                 <p className="text-xs text-muted-foreground">
-                  {formatDateOnlyISO(r.data_execucao)} ·{" "}
+                  {formatDateOnlyISO(r.data_execucao)} · Técnico:{" "}
                   {r.tecnico?.full_name ?? "Sem técnico definido"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Lançado por: {r.tecnico?.full_name ?? "—"}
+                  {r.enviado_em ? ` · ${formatDateTimeITV(r.enviado_em)}` : ""}
                 </p>
               </div>
               <StatusBadgeProducao status={r.status} />

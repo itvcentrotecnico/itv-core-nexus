@@ -35,6 +35,16 @@ export function PrecisaDaSuaAcao({ compacto = false }: { compacto?: boolean }) {
       valor: contadores.comissoes,
       destino: `${GERENCIA_BASE}/comissoes`,
     },
+    {
+      label: "Lotes prontos para o Financeiro",
+      valor: contadores.lotesProntos,
+      destino: `${GERENCIA_BASE}/terceirizados`,
+    },
+    {
+      label: "Devolvidos pelo Financeiro",
+      valor: contadores.lotesDevolvidos,
+      destino: `${GERENCIA_BASE}/terceirizados`,
+    },
     { label: "TVs críticas", valor: contadores.criticas, destino: `${GERENCIA_BASE}/pendencias` },
     {
       label: "TVs sem movimentação",

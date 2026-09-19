@@ -11,13 +11,25 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV } from "@/lib/format";
 import {
   rpcTerc,
+  STATUS_FINANCEIRO,
   STATUS_LOTE,
+  type FinanceiroStatus,
+  type LiberacaoResultado,
   type LoteDetalhe,
   type LoteResumo,
   type LoteStatus,
 } from "@/lib/terceirizados";
 import { cn } from "@/lib/utils";
 import { LoteDialog, type PrestadorOpcao } from "./terceirizados-lote-dialog";
+
+function BadgeFinanceiro({ status }: { status: FinanceiroStatus | undefined }) {
+  const s = STATUS_FINANCEIRO[status ?? "nao_liberado"] ?? STATUS_FINANCEIRO.nao_liberado;
+  return (
+    <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", s.className)}>
+      {s.label}
+    </span>
+  );
+}
 
 /** Serviços terceirizados: lotes por prestador, confirmação e liberação ao Financeiro. */
 export function ServicosTerceirizados() {
@@ -26,6 +38,7 @@ export function ServicosTerceirizados() {
   const podeCriar = isAdmin || can("terceirizados", "criar");
   const podeLiberar = isAdmin || can("terceirizados", "aprovar");
   const podeCancelar = isAdmin || can("terceirizados", "cancelar");
+  const podeDevolver = isAdmin || can("financeiro", "editar");
 
   const [novo, setNovo] = useState(false);
   const [detalheId, setDetalheId] = useState<string | null>(null);
@@ -36,6 +49,9 @@ export function ServicosTerceirizados() {
   const [fFim, setFFim] = useState("");
   const [cancelando, setCancelando] = useState(false);
   const [motivoCancel, setMotivoCancel] = useState("");
+  const [devolvendo, setDevolvendo] = useState(false);
+  const [motivoDevolucao, setMotivoDevolucao] = useState("");
+  const [liberacao, setLiberacao] = useState<LiberacaoResultado | null>(null);
 
   const prestadores = useQuery({
     queryKey: ["terceirizados", "prestadores"],
@@ -80,19 +96,45 @@ export function ServicosTerceirizados() {
 
   const liberar = useMutation({
     mutationFn: async (id: string) => {
-      const res = await rpcTerc<{ ok: boolean; message?: string }>("terceirizados_lote_liberar", {
-        p_id: id,
-      });
+      const res = await rpcTerc<LiberacaoResultado>("terceirizados_lote_liberar", { p_id: id });
       if (!res.ok) throw new Error(res.message ?? "Não foi possível liberar o lote.");
       return res;
     },
-    onSuccess: () => {
-      toast.success("Lote liberado para o Financeiro.");
+    onSuccess: (res) => {
+      setLiberacao(res);
+      toast.success("LIBERADO PARA O FINANCEIRO", {
+        description: `${res.prestador ?? "Prestador"} · ${res.quantidade ?? 0} serviço(s) · ${formatCurrencyBRL(
+          Number(res.valor ?? 0),
+        )} · Próxima etapa: validação financeira.`,
+        duration: 8000,
+      });
       void queryClient.invalidateQueries({ queryKey: ["terceirizados"] });
       void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const devolver = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await rpcTerc<{ ok: boolean; message?: string }>("terceirizados_lote_devolver", {
+        p_id: id,
+        p_motivo: motivoDevolucao.trim(),
+      });
+      if (!res.ok) throw new Error(res.message ?? "Não foi possível devolver o lote.");
+      return res;
+    },
+    onSuccess: () => {
+      toast.success("Lote devolvido ao Operacional", {
+        description: "O Gerente Operacional verá o motivo no detalhe do lote.",
+      });
+      setDevolvendo(false);
+      setMotivoDevolucao("");
+      void queryClient.invalidateQueries({ queryKey: ["terceirizados"] });
+      void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   const cancelar = useMutation({
     mutationFn: async (id: string) => {
@@ -228,6 +270,7 @@ export function ServicosTerceirizados() {
                 <th className="px-3 py-2">Serviços</th>
                 <th className="px-3 py-2">Total</th>
                 <th className="px-3 py-2">Status</th>
+                <th className="px-3 py-2">Financeiro</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -256,6 +299,9 @@ export function ServicosTerceirizados() {
                     >
                       {STATUS_LOTE[l.status].label}
                     </span>
+                  </td>
+                  <td className="px-3 py-2">
+                    <BadgeFinanceiro status={l.financeiro_status} />
                   </td>
                 </tr>
               ))}
@@ -316,6 +362,12 @@ export function ServicosTerceirizados() {
                 <div className="flex justify-between sm:block">
                   <dt className="text-muted-foreground">Financeiro</dt>
                   <dd className="font-medium">
+                    <BadgeFinanceiro status={lote.financeiro_status} />
+                  </dd>
+                </div>
+                <div className="flex justify-between sm:block">
+                  <dt className="text-muted-foreground">Liberado por</dt>
+                  <dd className="font-medium">
                     {lote.released_to_finance_at
                       ? `${lote.liberado_por ?? "—"} · ${formatDateTimeITV(lote.released_to_finance_at)}`
                       : "Ainda não liberado"}
@@ -327,11 +379,42 @@ export function ServicosTerceirizados() {
                 </div>
               </dl>
 
+              {lote.devolvido_em && !lote.released_to_finance_at && (
+                <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 text-sm text-orange-700">
+                  <p className="font-semibold">⚠️ Devolvido pelo Financeiro</p>
+                  <p>Motivo: {lote.devolvido_motivo ?? "—"}</p>
+                  <p className="text-xs">
+                    {lote.devolvido_por_nome ?? "Financeiro"} ·{" "}
+                    {formatDateTimeITV(lote.devolvido_em)}
+                  </p>
+                </div>
+              )}
+
               {lote.cancel_reason && (
                 <p className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
                   Cancelado: {lote.cancel_reason}
                 </p>
               )}
+
+              <section className="rounded-xl border border-border p-3">
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Histórico
+                </h3>
+                <ol className="space-y-2">
+                  {(detalhe.data?.historico ?? []).map((e, idx) => (
+                    <li key={`${e.em}-${idx}`} className="border-l-2 border-primary/40 pl-3">
+                      <p className="text-xs text-muted-foreground">{formatDateTimeITV(e.em)}</p>
+                      <p className="text-sm font-medium text-foreground">{e.titulo}</p>
+                      {(e.quem || e.detalhe) && (
+                        <p className="text-xs text-muted-foreground">
+                          {[e.quem, e.detalhe].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
 
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full min-w-[640px] text-sm">
@@ -362,6 +445,21 @@ export function ServicosTerceirizados() {
                 </table>
               </div>
 
+              {liberacao?.ok && liberacao.prestador && (
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm">
+                  <p className="font-semibold text-primary">✅ LIBERADO PARA O FINANCEIRO</p>
+                  <p>
+                    {liberacao.prestador} · {liberacao.quantidade} serviço(s) ·{" "}
+                    {formatCurrencyBRL(Number(liberacao.valor ?? 0))}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Liberado por {liberacao.liberado_por ?? "—"}
+                    {liberacao.liberado_em ? ` · ${formatDateTimeITV(liberacao.liberado_em)}` : ""} ·
+                    Aguardando validação financeira
+                  </p>
+                </div>
+              )}
+
               {cancelando ? (
                 <div className="space-y-2 rounded-xl border border-destructive/30 p-3">
                   <label className={labelClass} htmlFor="t-motivo">
@@ -387,12 +485,43 @@ export function ServicosTerceirizados() {
                     </Button>
                   </div>
                 </div>
+              ) : devolvendo ? (
+                <div className="space-y-2 rounded-xl border border-orange-500/30 p-3">
+                  <label className={labelClass} htmlFor="t-devolucao">
+                    Motivo da devolução ao Operacional
+                  </label>
+                  <input
+                    id="t-devolucao"
+                    className={inputClass}
+                    value={motivoDevolucao}
+                    onChange={(e) => setMotivoDevolucao(e.target.value)}
+                    placeholder="Ex.: Valor divergente da planilha"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setDevolvendo(false)}>
+                      Voltar
+                    </Button>
+                    <Button
+                      disabled={devolver.isPending || motivoDevolucao.trim().length < 3}
+                      onClick={() => devolver.mutate(lote.id)}
+                    >
+                      {devolver.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+                      Devolver para o Operacional
+                    </Button>
+                  </div>
+                </div>
               ) : (
                 <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-3">
                   {podeCancelar &&
                     !["cancelado", "pago", "parcialmente_pago"].includes(lote.status) && (
                       <Button variant="outline" onClick={() => setCancelando(true)}>
                         Cancelar lote
+                      </Button>
+                    )}
+                  {podeDevolver &&
+                    ["em_analise", "liberado"].includes(lote.financeiro_status ?? "") && (
+                      <Button variant="outline" onClick={() => setDevolvendo(true)}>
+                        Devolver para o Operacional
                       </Button>
                     )}
                   {podeLiberar && lote.status === "confirmado" && (
@@ -403,6 +532,7 @@ export function ServicosTerceirizados() {
                   )}
                 </div>
               )}
+
             </div>
           )}
         </DialogContent>

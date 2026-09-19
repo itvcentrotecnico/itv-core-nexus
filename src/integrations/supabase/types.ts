@@ -4343,6 +4343,9 @@ export type Database = {
           created_at: string
           created_by: string | null
           descricao: string | null
+          devolvido_em: string | null
+          devolvido_motivo: string | null
+          devolvido_por: string | null
           id: string
           idempotency_key: string | null
           origem_lote: string
@@ -4368,6 +4371,9 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          devolvido_em?: string | null
+          devolvido_motivo?: string | null
+          devolvido_por?: string | null
           id?: string
           idempotency_key?: string | null
           origem_lote?: string
@@ -4393,6 +4399,9 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          devolvido_em?: string | null
+          devolvido_motivo?: string | null
+          devolvido_por?: string | null
           id?: string
           idempotency_key?: string | null
           origem_lote?: string
@@ -4419,6 +4428,13 @@ export type Database = {
             columns: ["conta_pagar_id"]
             isOneToOne: false
             referencedRelation: "contas_pagar_saldos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "terceirizados_lotes_devolvido_por_fkey"
+            columns: ["devolvido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -5952,6 +5968,11 @@ export type Database = {
         Returns: Json
       }
       terceirizados_lote_detalhe: { Args: { p_id: string }; Returns: Json }
+      terceirizados_lote_devolver: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      terceirizados_lote_historico: { Args: { p_id: string }; Returns: Json }
       terceirizados_lote_liberar: {
         Args: { p_id: string; p_vencimento?: string }
         Returns: Json
@@ -5976,6 +5997,12 @@ export type Database = {
         Returns: Json
       }
       terceirizados_pode: { Args: { _action: string }; Returns: boolean }
+      terceirizados_status_financeiro: {
+        Args: {
+          _lote: Database["public"]["Tables"]["terceirizados_lotes"]["Row"]
+        }
+        Returns: string
+      }
       tributos_salvar: {
         Args: {
           p_base: number
