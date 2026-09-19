@@ -11,13 +11,25 @@ import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO, formatDateTimeITV } from "@/lib/format";
 import {
   rpcTerc,
+  STATUS_FINANCEIRO,
   STATUS_LOTE,
+  type FinanceiroStatus,
+  type LiberacaoResultado,
   type LoteDetalhe,
   type LoteResumo,
   type LoteStatus,
 } from "@/lib/terceirizados";
 import { cn } from "@/lib/utils";
 import { LoteDialog, type PrestadorOpcao } from "./terceirizados-lote-dialog";
+
+function BadgeFinanceiro({ status }: { status: FinanceiroStatus | undefined }) {
+  const s = STATUS_FINANCEIRO[status ?? "nao_liberado"] ?? STATUS_FINANCEIRO.nao_liberado;
+  return (
+    <span className={cn("rounded-full px-2 py-0.5 text-xs font-semibold", s.className)}>
+      {s.label}
+    </span>
+  );
+}
 
 /** Serviços terceirizados: lotes por prestador, confirmação e liberação ao Financeiro. */
 export function ServicosTerceirizados() {
@@ -26,6 +38,7 @@ export function ServicosTerceirizados() {
   const podeCriar = isAdmin || can("terceirizados", "criar");
   const podeLiberar = isAdmin || can("terceirizados", "aprovar");
   const podeCancelar = isAdmin || can("terceirizados", "cancelar");
+  const podeDevolver = isAdmin || can("financeiro", "editar");
 
   const [novo, setNovo] = useState(false);
   const [detalheId, setDetalheId] = useState<string | null>(null);
@@ -36,6 +49,9 @@ export function ServicosTerceirizados() {
   const [fFim, setFFim] = useState("");
   const [cancelando, setCancelando] = useState(false);
   const [motivoCancel, setMotivoCancel] = useState("");
+  const [devolvendo, setDevolvendo] = useState(false);
+  const [motivoDevolucao, setMotivoDevolucao] = useState("");
+  const [liberacao, setLiberacao] = useState<LiberacaoResultado | null>(null);
 
   const prestadores = useQuery({
     queryKey: ["terceirizados", "prestadores"],
