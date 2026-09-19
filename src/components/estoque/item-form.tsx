@@ -112,12 +112,23 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
   }
 
   async function salvar(ignorarDuplicidade = false) {
-    if (!marcaId) return toast.error("Selecione a marca.");
-    if (!modelo.trim())
-      return toast.error(tipo === "kit_led" ? "Informe o modelo." : "Informe o modelo da TV.");
-    if (tipo === "kit_led" && !polegadaFinal) return toast.error("Informe a polegada.");
-    if (tipo === "placa_main" && !codigoPlaca.trim()) return toast.error("Informe o código da placa.");
-    if (!localizacaoId) return toast.error("Selecione a gaveta.");
+    const faltando = !marcaId
+      ? "Selecione a marca."
+      : !modelo.trim()
+        ? tipo === "kit_led"
+          ? "Informe o modelo."
+          : "Informe o modelo da TV."
+        : tipo === "kit_led" && !polegadaFinal
+          ? "Informe a polegada."
+          : tipo === "placa_main" && !codigoPlaca.trim()
+            ? "Informe o código da placa."
+            : !localizacaoId
+              ? "Selecione a gaveta."
+              : null;
+    if (faltando) {
+      toast.error(faltando);
+      return;
+    }
 
     if (!ignorarDuplicidade && (await verificarDuplicidade())) return;
 
