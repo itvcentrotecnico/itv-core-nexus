@@ -7,7 +7,13 @@ import { useAccess } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import {
+  formatCurrencyBRL,
+  formatDateOnlyISO,
+  formatDateTimeITV,
+  todayManausISO,
+} from "@/lib/format";
+import { useGerenciaResumo } from "@/lib/gerencia";
 import { rpcOp } from "@/lib/operacional";
 import { STATUS_PRODUCAO, type ProducaoRegistro, type ProducaoStatus } from "@/lib/producao";
 import { rpcProd, StatusBadgeProducao, useProducaoRefs } from "@/components/producao/shared";
@@ -30,6 +36,7 @@ export function FilaValidacao() {
   const { tipos, tecnicos } = useProducaoRefs();
   const podeValidar = isAdmin || can("operacional", "validar") || can("producao", "validar");
   const podeAlterarTecnico = isAdmin || can("operacional", "atribuir");
+  const { contadores } = useGerenciaResumo();
   const podeEditar = isAdmin || can("operacional", "editar") || can("producao", "editar");
 
   const [status, setStatus] = useState<ProducaoStatus | "">("enviado_validacao");
