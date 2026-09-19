@@ -50,6 +50,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: ClipboardList,
         roles: ["tecnico"],
       },
+      { moduleKey: "estoque", label: "Estoque Técnico", to: "/estoque", icon: Boxes },
       { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "financeiro", label: "Financeiro", to: "/financeiro", icon: BarChart3 },
       { moduleKey: "colaboradores", label: "Colaboradores", to: "/colaboradores", icon: Users },
