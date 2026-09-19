@@ -96,19 +96,45 @@ export function ServicosTerceirizados() {
 
   const liberar = useMutation({
     mutationFn: async (id: string) => {
-      const res = await rpcTerc<{ ok: boolean; message?: string }>("terceirizados_lote_liberar", {
-        p_id: id,
-      });
+      const res = await rpcTerc<LiberacaoResultado>("terceirizados_lote_liberar", { p_id: id });
       if (!res.ok) throw new Error(res.message ?? "Não foi possível liberar o lote.");
       return res;
     },
-    onSuccess: () => {
-      toast.success("Lote liberado para o Financeiro.");
+    onSuccess: (res) => {
+      setLiberacao(res);
+      toast.success("LIBERADO PARA O FINANCEIRO", {
+        description: `${res.prestador ?? "Prestador"} · ${res.quantidade ?? 0} serviço(s) · ${formatCurrencyBRL(
+          Number(res.valor ?? 0),
+        )} · Próxima etapa: validação financeira.`,
+        duration: 8000,
+      });
       void queryClient.invalidateQueries({ queryKey: ["terceirizados"] });
       void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const devolver = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await rpcTerc<{ ok: boolean; message?: string }>("terceirizados_lote_devolver", {
+        p_id: id,
+        p_motivo: motivoDevolucao.trim(),
+      });
+      if (!res.ok) throw new Error(res.message ?? "Não foi possível devolver o lote.");
+      return res;
+    },
+    onSuccess: () => {
+      toast.success("Lote devolvido ao Operacional", {
+        description: "O Gerente Operacional verá o motivo no detalhe do lote.",
+      });
+      setDevolvendo(false);
+      setMotivoDevolucao("");
+      void queryClient.invalidateQueries({ queryKey: ["terceirizados"] });
+      void queryClient.invalidateQueries({ queryKey: ["financeiro"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   const cancelar = useMutation({
     mutationFn: async (id: string) => {
