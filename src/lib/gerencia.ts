@@ -113,6 +113,7 @@ export const GERENCIA_ICON = Users;
 export interface GerenciaContadores {
   validacao: number;
   correcoes: number;
+  validadosHoje: number;
   comissoes: number;
   criticas: number;
   paradas: number;
@@ -120,6 +121,8 @@ export interface GerenciaContadores {
   semMotorista: number;
   naoRealizadas: number;
   pendencias: number;
+  lotesProntos: number;
+  lotesDevolvidos: number;
   total: number;
 }
 
@@ -189,6 +192,24 @@ export function useGerenciaResumo() {
 
   const pendencias = usePendenciasAbertas();
 
+  const lotes = useQuery({
+    queryKey: ["gerencia", "lotes-terceirizados"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("terceirizados_lotes")
+        .select("status, conta_pagar_id, devolvido_em")
+        .in("status", ["confirmado", "em_validacao", "aguardando_confirmacao"])
+        .eq("teste", false)
+        .limit(200);
+      if (error) return { prontos: 0, devolvidos: 0 };
+      const linhas = data ?? [];
+      return {
+        prontos: linhas.filter((l) => l.status === "confirmado" && !l.conta_pagar_id).length,
+        devolvidos: linhas.filter((l) => !!l.devolvido_em && !l.conta_pagar_id).length,
+      };
+    },
+  });
+
   const hoje = todayManausISO();
   const linhas = pendencias.data ?? [];
   const criticas = linhas.filter((p) => diasNaItv(p.data_entrada, hoje) >= 8).length;
@@ -200,6 +221,7 @@ export function useGerenciaResumo() {
   const contadores: GerenciaContadores = {
     validacao: d?.hoje.aguardando_validacao ?? 0,
     correcoes: d?.hoje.correcao_solicitada ?? 0,
+    validadosHoje: d?.hoje.validados_hoje ?? 0,
     comissoes: (d?.comissoes.geradas ?? 0) + (d?.comissoes.conferidas ?? 0),
     criticas,
     paradas,
@@ -207,6 +229,8 @@ export function useGerenciaResumo() {
     semMotorista: coletas.data?.semMotorista ?? 0,
     naoRealizadas: coletas.data?.naoRealizadas ?? 0,
     pendencias: linhas.length,
+    lotesProntos: lotes.data?.prontos ?? 0,
+    lotesDevolvidos: lotes.data?.devolvidos ?? 0,
     total: 0,
   };
   contadores.total =
@@ -216,7 +240,9 @@ export function useGerenciaResumo() {
     contadores.criticas +
     contadores.fechamento +
     contadores.semMotorista +
-    contadores.naoRealizadas;
+    contadores.naoRealizadas +
+    contadores.lotesProntos +
+    contadores.lotesDevolvidos;
 
   return {
     contadores,
