@@ -123,13 +123,37 @@ export function FilaValidacao() {
         toast.error(r.message ?? "Não foi possível concluir a ação.");
         return;
       }
-      toast.success("Ação registrada.");
+      const alvo = acao;
+      const reg = alvo?.registro;
+      const quem = reg?.tecnico?.full_name ?? "Técnico";
+      const os = reg?.os ? `OS ${reg.os}` : "Serviço";
+      if (alvo?.tipo === "validar") {
+        toast.success("✅ Serviço validado", {
+          description: `${os} — ${quem}. O serviço agora faz parte da produção oficial. Próxima etapa: cálculo e liberação da comissão.`,
+          duration: 7000,
+        });
+      } else if (alvo?.tipo === "correcao") {
+        toast.success("Correção solicitada", {
+          description: `${os} — ${quem}. Próximo responsável: o técnico deve corrigir e reenviar.`,
+        });
+      } else if (alvo?.tipo === "rejeitar") {
+        toast.success("Serviço rejeitado", {
+          description: `${os} — ${quem}. O registro sai da fila de validação.`,
+        });
+      } else if (alvo?.tipo === "tecnico") {
+        toast.success("Técnico responsável alterado", {
+          description: `${os}. A alteração foi registrada no histórico.`,
+        });
+      } else {
+        toast.success("Tipo de serviço definido", { description: `${os}. Já pode ser validado.` });
+      }
       setAcao(null);
       setTexto("");
       setNovoTecnico("");
       setNovoTipo("");
       void queryClient.invalidateQueries({ queryKey: ["operacional"] });
       void queryClient.invalidateQueries({ queryKey: ["producao"] });
+      void queryClient.invalidateQueries({ queryKey: ["gerencia"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
