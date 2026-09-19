@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Boxes,
   ClipboardList,
   LayoutDashboard,
   Package,
@@ -82,6 +83,7 @@ export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
   { prefix: "/operacional", moduleKey: "operacional" },
   { prefix: "/central-operacional", moduleKey: "operacional" },
   { prefix: "/caixa", moduleKey: "caixa" },
+  { prefix: "/estoque", moduleKey: "estoque" },
   { prefix: "/pecas", moduleKey: "pecas" },
   { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
   { prefix: "/comissoes", moduleKey: "comissoes" },
