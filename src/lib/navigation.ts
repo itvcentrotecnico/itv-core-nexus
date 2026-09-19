@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Boxes,
   ClipboardList,
   LayoutDashboard,
   Package,
@@ -50,6 +51,7 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: ClipboardList,
         roles: ["tecnico"],
       },
+      { moduleKey: "estoque", label: "Estoque Técnico", to: "/estoque", icon: Boxes },
       { moduleKey: "pecas", label: "Peças e Custos", to: "/pecas", icon: Package },
       { moduleKey: "financeiro", label: "Financeiro", to: "/financeiro", icon: BarChart3 },
       { moduleKey: "colaboradores", label: "Colaboradores", to: "/colaboradores", icon: Users },
@@ -81,6 +83,7 @@ export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
   { prefix: "/operacional", moduleKey: "operacional" },
   { prefix: "/central-operacional", moduleKey: "operacional" },
   { prefix: "/caixa", moduleKey: "caixa" },
+  { prefix: "/estoque", moduleKey: "estoque" },
   { prefix: "/pecas", moduleKey: "pecas" },
   { prefix: "/comissao-entrega", moduleKey: "comissao_entrega" },
   { prefix: "/comissoes", moduleKey: "comissoes" },

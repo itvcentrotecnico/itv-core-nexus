@@ -2534,6 +2534,182 @@ export type Database = {
           },
         ]
       }
+      estoque_compatibilidades: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          item_id: string
+          modelo: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id: string
+          modelo: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id?: string
+          modelo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_compatibilidades_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estoque_itens: {
+        Row: {
+          ativo: boolean
+          codigo_placa: string | null
+          created_at: string
+          created_by: string | null
+          estoque_minimo: number
+          id: string
+          localizacao_id: string
+          marca_id: string
+          modelo: string
+          observacao: string | null
+          polegada: string | null
+          quantidade: number
+          quantidade_reservada: number
+          teste: boolean
+          tipo: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          codigo_placa?: string | null
+          created_at?: string
+          created_by?: string | null
+          estoque_minimo?: number
+          id?: string
+          localizacao_id: string
+          marca_id: string
+          modelo: string
+          observacao?: string | null
+          polegada?: string | null
+          quantidade?: number
+          quantidade_reservada?: number
+          teste?: boolean
+          tipo: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          codigo_placa?: string | null
+          created_at?: string
+          created_by?: string | null
+          estoque_minimo?: number
+          id?: string
+          localizacao_id?: string
+          marca_id?: string
+          modelo?: string
+          observacao?: string | null
+          polegada?: string | null
+          quantidade?: number
+          quantidade_reservada?: number
+          teste?: boolean
+          tipo?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_itens_localizacao_id_fkey"
+            columns: ["localizacao_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_localizacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_itens_marca_id_fkey"
+            columns: ["marca_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_marcas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estoque_localizacoes: {
+        Row: {
+          ativo: boolean
+          codigo: string
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          grupo: string
+          id: string
+          numero: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          codigo: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          grupo: string
+          id?: string
+          numero: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          codigo?: string
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          grupo?: string
+          id?: string
+          numero?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      estoque_marcas: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string | null
+          id: string
+          nome: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       eventos_seguranca: {
         Row: {
           created_at: string
@@ -5551,6 +5727,50 @@ export type Database = {
       dre_gerencial: { Args: { p_from: string; p_to: string }; Returns: Json }
       equipe_externa_painel: { Args: never; Returns: Json }
       equipe_externa_tv: { Args: never; Returns: Json }
+      estoque_buscar: {
+        Args: {
+          p_busca?: string
+          p_disponibilidade?: string
+          p_limit?: number
+          p_localizacao_id?: string
+          p_marca_id?: string
+          p_offset?: number
+          p_polegada?: string
+          p_tipo?: string
+        }
+        Returns: Json
+      }
+      estoque_duplicidade: {
+        Args: {
+          p_codigo_placa?: string
+          p_id?: string
+          p_marca_id: string
+          p_modelo?: string
+          p_polegada?: string
+          p_tipo: string
+        }
+        Returns: Json
+      }
+      estoque_gaveta_detalhe: { Args: { p_id: string }; Returns: Json }
+      estoque_item_salvar: {
+        Args: { p_compatibilidades?: string[]; p_dados: Json; p_id?: string }
+        Returns: Json
+      }
+      estoque_localizacao_salvar: {
+        Args: {
+          p_ativo?: boolean
+          p_descricao?: string
+          p_grupo: string
+          p_id?: string
+          p_numero: number
+        }
+        Returns: Json
+      }
+      estoque_marca_salvar: {
+        Args: { p_ativo?: boolean; p_id?: string; p_nome: string }
+        Returns: Json
+      }
+      estoque_norm: { Args: { p: string }; Returns: string }
       expediente_atual: { Args: never; Returns: Json }
       expediente_encerrar: { Args: never; Returns: undefined }
       expediente_iniciar: { Args: never; Returns: Json }

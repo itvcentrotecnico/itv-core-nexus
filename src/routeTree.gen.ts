@@ -21,6 +21,7 @@ import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedComissaoEntregaRouteImport } from './routes/_authenticated/comissao-entrega'
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedGerenciaOperacionalRouteImport } from './routes/_authenticated/gerencia-operacional'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
@@ -107,6 +108,11 @@ const AuthenticatedComissoesRoute = AuthenticatedComissoesRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/metas': typeof AuthenticatedMetasRoute
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
   '/operacional': typeof AuthenticatedOperacionalRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/_authenticated/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
@@ -381,6 +390,7 @@ export interface FileRouteTypes {
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
+    | '/estoque'
     | '/financeiro'
     | '/gerencia-operacional'
     | '/metas'
@@ -419,6 +429,7 @@ export interface FileRouteTypes {
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
+    | '/estoque'
     | '/financeiro'
     | '/metas'
     | '/operacional'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/_authenticated/comissao-entrega'
     | '/_authenticated/comissoes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/estoque'
     | '/_authenticated/financeiro'
     | '/_authenticated/gerencia-operacional'
     | '/_authenticated/metas'
@@ -577,6 +589,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/estoque': {
+      id: '/_authenticated/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof AuthenticatedEstoqueRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/financeiro': {
@@ -816,6 +835,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedComissaoEntregaRoute: typeof AuthenticatedComissaoEntregaRoute
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGerenciaOperacionalRoute: typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
@@ -837,6 +857,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedComissaoEntregaRoute: AuthenticatedComissaoEntregaRoute,
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGerenciaOperacionalRoute:
     AuthenticatedGerenciaOperacionalRouteWithChildren,
