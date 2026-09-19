@@ -270,6 +270,7 @@ export function ServicosTerceirizados() {
                 <th className="px-3 py-2">Serviços</th>
                 <th className="px-3 py-2">Total</th>
                 <th className="px-3 py-2">Status</th>
+                <th className="px-3 py-2">Financeiro</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
