@@ -201,6 +201,9 @@ function EstoquePage() {
   const podeCriar = isAdmin || can("estoque", "criar");
   const podeEditar = isAdmin || can("estoque", "editar");
   const podeAdministrar = isAdmin || can("estoque", "administrar");
+  const podeMovimentar = isAdmin || can("estoque", "movimentar");
+  const podeEstornar = isAdmin || can("estoque", "estornar");
+  const podeReservar = isAdmin || can("estoque", "reservar");
 
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState<"" | EstoqueTipo>("");
@@ -211,6 +214,11 @@ function EstoquePage() {
   const [formTipo, setFormTipo] = useState<EstoqueTipo | null>(null);
   const [editando, setEditando] = useState<EstoqueItem | null>(null);
   const [gavetaAberta, setGavetaAberta] = useState<string | null>(null);
+  const [baixaItem, setBaixaItem] = useState<EstoqueItem | null>(null);
+  const [baixaReserva, setBaixaReserva] = useState<string | null>(null);
+  const [entradaItem, setEntradaItem] = useState<EstoqueItem | null>(null);
+  const [reservaItem, setReservaItem] = useState<EstoqueItem | null>(null);
+  const [historicoItem, setHistoricoItem] = useState<EstoqueItem | null>(null);
 
   const marcasQuery = useQuery({
     queryKey: ["estoque", "marcas"],
@@ -408,10 +416,19 @@ function EstoquePage() {
                 key={i.id}
                 item={i}
                 podeEditar={podeEditar}
+                podeMovimentar={podeMovimentar}
+                podeReservar={podeReservar}
                 onEditar={() => {
                   setEditando(i);
                   setFormTipo(i.tipo);
                 }}
+                onBaixa={() => {
+                  setBaixaReserva(null);
+                  setBaixaItem(i);
+                }}
+                onEntrada={() => setEntradaItem(i)}
+                onReservar={() => setReservaItem(i)}
+                onHistorico={() => setHistoricoItem(i)}
               />
             ))}
           </div>
