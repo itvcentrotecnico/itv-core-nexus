@@ -687,7 +687,9 @@ export function HistoricoDialog({
                       variant="outline"
                       className="mt-2"
                       disabled={estornando === m.id}
-                      onClick={() => void estornar(m.id)}
+                      onClick={() =>
+                        setEstornoAlvo({ id: m.id, temReserva: !!m.reserva_id })
+                      }
                     >
                       <Undo2 className="mr-1.5 size-3.5" /> Estornar
                     </Button>
@@ -703,6 +705,84 @@ export function HistoricoDialog({
             <History className="mr-1.5 size-4" /> Fechar
           </Button>
         </DialogFooter>
+
+        <Dialog open={!!estornoAlvo} onOpenChange={(o) => !o && setEstornoAlvo(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Estornar movimentação</DialogTitle>
+              <DialogDescription>
+                O registro original é preservado: o estorno entra como uma nova movimentação.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <label className={labelClass} htmlFor="estorno-motivo">
+                  Motivo *
+                </label>
+                <input
+                  id="estorno-motivo"
+                  className={inputClass}
+                  value={motivo}
+                  onChange={(e) => setMotivo(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              {estornoAlvo?.temReserva ? (
+                <label className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                    checked={restaurarReserva}
+                    onChange={(e) => setRestaurarReserva(e.target.checked)}
+                  />
+                  <span>Restaurar também a reserva desta OS.</span>
+                </label>
+              ) : null}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEstornoAlvo(null)}>
+                Cancelar
+              </Button>
+              <Button disabled={motivo.trim().length < 3} onClick={() => void estornar()}>
+                Estornar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={!!liberarAlvo} onOpenChange={(o) => !o && setLiberarAlvo(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Liberar reserva</DialogTitle>
+              <DialogDescription>
+                A peça volta a ficar disponível. Nenhuma entrada física é criada.
+              </DialogDescription>
+            </DialogHeader>
+            <div>
+              <label className={labelClass} htmlFor="liberar-motivo">
+                Motivo *
+              </label>
+              <input
+                id="liberar-motivo"
+                className={inputClass}
+                value={motivoLiberar}
+                onChange={(e) => setMotivoLiberar(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setLiberarAlvo(null)}>
+                Cancelar
+              </Button>
+              <Button
+                disabled={motivoLiberar.trim().length < 3}
+                onClick={() => void liberarReserva()}
+              >
+                Liberar reserva
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   );
