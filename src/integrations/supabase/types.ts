@@ -2631,6 +2631,7 @@ export type Database = {
         Row: {
           ativo: boolean
           codigo_placa: string | null
+          condicao: string | null
           created_at: string
           created_by: string | null
           custo_unitario: number | null
@@ -2651,6 +2652,7 @@ export type Database = {
         Insert: {
           ativo?: boolean
           codigo_placa?: string | null
+          condicao?: string | null
           created_at?: string
           created_by?: string | null
           custo_unitario?: number | null
@@ -2671,6 +2673,7 @@ export type Database = {
         Update: {
           ativo?: boolean
           codigo_placa?: string | null
+          condicao?: string | null
           created_at?: string
           created_by?: string | null
           custo_unitario?: number | null
@@ -6096,6 +6099,7 @@ export type Database = {
         Returns: Json
       }
       estoque_gaveta_detalhe: { Args: { p_id: string }; Returns: Json }
+      estoque_gavetas_painel: { Args: never; Returns: Json }
       estoque_inventario_gaveta: {
         Args: { p_localizacao_id: string }
         Returns: Json
@@ -6118,16 +6122,10 @@ export type Database = {
         Returns: Json
       }
       estoque_item_historico: { Args: { p_item_id: string }; Returns: Json }
-      estoque_item_salvar:
-        | { Args: { p_dados: Json }; Returns: Json }
-        | {
-            Args: {
-              p_compatibilidades?: string[]
-              p_dados: Json
-              p_id?: string
-            }
-            Returns: Json
-          }
+      estoque_item_salvar: {
+        Args: { p_compatibilidades?: string[]; p_dados: Json; p_id?: string }
+        Returns: Json
+      }
       estoque_localizacao_salvar: {
         Args: {
           p_ativo?: boolean
@@ -6146,11 +6144,34 @@ export type Database = {
         Args: { p_id: string; p_motivo: string; p_restaurar_reserva?: boolean }
         Returns: Json
       }
-      estoque_norm: { Args: { p: string }; Returns: string }
-      estoque_relatorio: {
-        Args: { p_familia?: string; p_tipo?: string }
+      estoque_movimentos_listar: {
+        Args: {
+          p_busca?: string
+          p_familia?: string
+          p_fim?: string
+          p_inicio?: string
+          p_limit?: number
+          p_localizacao_id?: string
+          p_marca_id?: string
+          p_offset?: number
+          p_os?: string
+          p_responsavel_id?: string
+          p_tecnico_id?: string
+          p_tipo?: string
+        }
         Returns: Json
       }
+      estoque_norm: { Args: { p: string }; Returns: string }
+      estoque_relatorio: {
+        Args: {
+          p_familia?: string
+          p_fim?: string
+          p_inicio?: string
+          p_tipo?: string
+        }
+        Returns: Json
+      }
+      estoque_reposicao: { Args: { p_familia?: string }; Returns: Json }
       estoque_reserva_cancelar: {
         Args: { p_id: string; p_motivo?: string }
         Returns: Json
