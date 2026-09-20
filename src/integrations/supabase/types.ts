@@ -2566,13 +2566,74 @@ export type Database = {
           },
         ]
       }
+      estoque_inventarios: {
+        Row: {
+          conferido_por: string | null
+          created_at: string
+          diferenca: number
+          id: string
+          item_id: string
+          localizacao_id: string
+          observacao: string | null
+          quantidade_contada: number
+          quantidade_sistema: number
+          updated_at: string
+        }
+        Insert: {
+          conferido_por?: string | null
+          created_at?: string
+          diferenca: number
+          id?: string
+          item_id: string
+          localizacao_id: string
+          observacao?: string | null
+          quantidade_contada: number
+          quantidade_sistema: number
+          updated_at?: string
+        }
+        Update: {
+          conferido_por?: string | null
+          created_at?: string
+          diferenca?: number
+          id?: string
+          item_id?: string
+          localizacao_id?: string
+          observacao?: string | null
+          quantidade_contada?: number
+          quantidade_sistema?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_inventarios_conferido_por_fkey"
+            columns: ["conferido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_inventarios_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_inventarios_localizacao_id_fkey"
+            columns: ["localizacao_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_localizacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       estoque_itens: {
         Row: {
           ativo: boolean
           codigo_placa: string | null
           created_at: string
           created_by: string | null
-          custo_unitario: number
+          custo_unitario: number | null
           estoque_minimo: number
           id: string
           localizacao_id: string
@@ -2592,7 +2653,7 @@ export type Database = {
           codigo_placa?: string | null
           created_at?: string
           created_by?: string | null
-          custo_unitario?: number
+          custo_unitario?: number | null
           estoque_minimo?: number
           id?: string
           localizacao_id: string
@@ -2612,7 +2673,7 @@ export type Database = {
           codigo_placa?: string | null
           created_at?: string
           created_by?: string | null
-          custo_unitario?: number
+          custo_unitario?: number | null
           estoque_minimo?: number
           id?: string
           localizacao_id?: string
@@ -2718,12 +2779,13 @@ export type Database = {
           created_at: string
           created_by: string | null
           custo_os_id: string | null
-          custo_unitario: number
+          custo_unitario: number | null
           destinatario: string | null
           estornado_em: string | null
           estorno_de: string | null
           id: string
           item_id: string
+          lote: string | null
           motivo: string
           observacao: string | null
           os: string | null
@@ -2738,12 +2800,13 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           custo_os_id?: string | null
-          custo_unitario?: number
+          custo_unitario?: number | null
           destinatario?: string | null
           estornado_em?: string | null
           estorno_de?: string | null
           id?: string
           item_id: string
+          lote?: string | null
           motivo: string
           observacao?: string | null
           os?: string | null
@@ -2758,12 +2821,13 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           custo_os_id?: string | null
-          custo_unitario?: number
+          custo_unitario?: number | null
           destinatario?: string | null
           estornado_em?: string | null
           estorno_de?: string | null
           id?: string
           item_id?: string
+          lote?: string | null
           motivo?: string
           observacao?: string | null
           os?: string | null
