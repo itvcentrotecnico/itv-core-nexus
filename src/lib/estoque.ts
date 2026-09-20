@@ -347,6 +347,12 @@ const CODIGOS: Record<string, string> = {
   QUANTIDADE_ACIMA_RESERVA: "Quantidade maior que a quantidade reservada.",
   JA_ESTORNADO: "Esta movimentação já foi estornada.",
   MOVIMENTO_NAO_ESTORNAVEL: "Um estorno não pode ser estornado.",
+  SEM_DISPONIBILIDADE: "Esta peça não possui mais quantidade disponível suficiente.",
+  SOLICITACAO_DUPLICADA: "Você já tem uma solicitação igual aguardando a Gerência.",
+  SOLICITACAO_NAO_PENDENTE:
+    "Esta solicitação já foi analisada pela Gerência e não pode mais ser alterada.",
+  QUANTIDADE_ACIMA_SOLICITADA: "Quantidade maior que a solicitada pelo técnico.",
+  LOCALIZACAO_IGUAL: "Escolha uma gaveta diferente da atual.",
 };
 
 /** Chamada padronizada às RPCs do Estoque, com mensagens amigáveis. */
