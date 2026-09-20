@@ -492,15 +492,35 @@ function EstoquePage() {
         ) : null}
       </div>
 
-      {podeAdministrar ? (
-        <Tabs defaultValue="consulta">
-          <TabsList>
-            <TabsTrigger value="consulta">Consultar peça</TabsTrigger>
-            <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger>
-          </TabsList>
-          <TabsContent value="consulta" className="mt-4">
-            {consulta}
+      <Tabs defaultValue="consulta">
+        <TabsList className="flex w-full flex-wrap justify-start">
+          <TabsTrigger value="consulta">Consultar peça</TabsTrigger>
+          {podeReservar ? (
+            <TabsTrigger value="solicitacoes">Solicitações de peças</TabsTrigger>
+          ) : podeSolicitar ? (
+            <TabsTrigger value="minhas">Minhas solicitações</TabsTrigger>
+          ) : null}
+          {podeReservar ? <TabsTrigger value="reservas">Reservas ativas</TabsTrigger> : null}
+          {podeAdministrar ? <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger> : null}
+        </TabsList>
+        <TabsContent value="consulta" className="mt-4">
+          {consulta}
+        </TabsContent>
+        {podeReservar ? (
+          <>
+            <TabsContent value="solicitacoes" className="mt-4">
+              <SolicitacoesLista escopo="todas" podeAnalisar />
+            </TabsContent>
+            <TabsContent value="reservas" className="mt-4">
+              <ReservasLista podeGerenciar />
+            </TabsContent>
+          </>
+        ) : podeSolicitar ? (
+          <TabsContent value="minhas" className="mt-4">
+            <SolicitacoesLista escopo="minhas" podeAnalisar={false} />
           </TabsContent>
+        ) : null}
+        {podeAdministrar ? (
           <TabsContent value="cadastros" className="mt-4 space-y-4">
             <MarcasCard marcas={marcas} podeAdministrar={podeAdministrar} />
             <GavetasCard
@@ -509,10 +529,10 @@ function EstoquePage() {
               onAbrirGaveta={setGavetaAberta}
             />
           </TabsContent>
-        </Tabs>
-      ) : (
-        consulta
-      )}
+        ) : null}
+      </Tabs>
+
+      <SolicitarDialog item={solicitarItem} onClose={() => setSolicitarItem(null)} />
 
       <BaixaDialog
         item={baixaItem}
