@@ -239,6 +239,7 @@ export const MOTIVO_LABEL: Record<string, string> = {
   entrada_compra: "Entrada / compra",
   devolucao_tecnico: "Devolução do técnico",
   estorno: "Estorno",
+  saldo_abertura: "Saldo de abertura",
 };
 
 export interface MovimentoEstoque {
