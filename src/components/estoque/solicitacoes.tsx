@@ -354,8 +354,8 @@ function MotivoDialog({
 }: {
   aberto: boolean;
   titulo: string;
-  descricao?: string;
-  sugestoes?: string[];
+  descricao?: string | undefined;
+  sugestoes?: string[] | undefined;
   rotulo: string;
   onConfirmar: (motivo: string) => Promise<void>;
   onClose: () => void;
