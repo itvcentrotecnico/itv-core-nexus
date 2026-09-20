@@ -239,6 +239,7 @@ export const MOTIVO_LABEL: Record<string, string> = {
   entrada_compra: "Entrada / compra",
   devolucao_tecnico: "Devolução do técnico",
   estorno: "Estorno",
+  saldo_abertura: "Saldo de abertura",
 };
 
 export interface MovimentoEstoque {
@@ -354,6 +355,16 @@ const CODIGOS: Record<string, string> = {
     "Esta solicitação já foi analisada pela Gerência e não pode mais ser alterada.",
   QUANTIDADE_ACIMA_SOLICITADA: "Quantidade maior que a solicitada pelo técnico.",
   LOCALIZACAO_IGUAL: "Escolha uma gaveta diferente da atual.",
+  LOTE_OBRIGATORIO: "Informe o lote do inventário inicial.",
+  SEM_ITENS: "Nenhum item informado.",
+  LOTE_JA_IMPORTADO:
+    "Este inventário inicial já foi gravado. Nada foi duplicado. Consulte o histórico das peças.",
+  DIVERGENCIA:
+    "⚠️ Divergência no Inventário Inicial. Revise os dados antes da confirmação — nada foi gravado.",
+  SALDO_EXISTENTE:
+    "Existem peças com saldo diferente de zero. A carga foi bloqueada para não somar quantidades.",
+  MARCA_NAO_ENCONTRADA: "Marca não cadastrada. Cadastre a marca antes da carga.",
+  GAVETA_NAO_ENCONTRADA: "Gaveta não cadastrada.",
 };
 
 /** Chamada padronizada às RPCs do Estoque, com mensagens amigáveis. */

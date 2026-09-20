@@ -53,6 +53,11 @@ import {
   SolicitacoesLista,
   SolicitarDialog,
 } from "@/components/estoque/solicitacoes";
+import {
+  CargaInicialCard,
+  ConferenciaGavetaCard,
+  RelatoriosEstoqueCard,
+} from "@/components/estoque/inventario";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
@@ -506,6 +511,7 @@ function EstoquePage() {
             <TabsTrigger value="minhas">Minhas solicitações</TabsTrigger>
           ) : null}
           {podeReservar ? <TabsTrigger value="reservas">Reservas ativas</TabsTrigger> : null}
+          {podeMovimentar ? <TabsTrigger value="inventario">Inventário</TabsTrigger> : null}
           {podeAdministrar ? <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger> : null}
         </TabsList>
         <TabsContent value="consulta" className="mt-4">
@@ -523,6 +529,13 @@ function EstoquePage() {
         ) : podeSolicitar ? (
           <TabsContent value="minhas" className="mt-4">
             <SolicitacoesLista escopo="minhas" podeAnalisar={false} />
+          </TabsContent>
+        ) : null}
+        {podeMovimentar ? (
+          <TabsContent value="inventario" className="mt-4 space-y-4">
+            {podeAdministrar ? <CargaInicialCard /> : null}
+            <ConferenciaGavetaCard localizacoes={locais} />
+            <RelatoriosEstoqueCard />
           </TabsContent>
         ) : null}
         {podeAdministrar ? (
