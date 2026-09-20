@@ -54,7 +54,9 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
   const [localizacaoId, setLocalizacaoId] = useState("");
   const [quantidade, setQuantidade] = useState("0");
   const [minimo, setMinimo] = useState("0");
-  const [custo, setCusto] = useState("0");
+  const [custo, setCusto] = useState("");
+  const [condicao, setCondicao] = useState("");
+  const [motivoInicial, setMotivoInicial] = useState("entrada_inicial");
   const [observacao, setObservacao] = useState("");
   const [compat, setCompat] = useState<string[]>([]);
   const [novoCompat, setNovoCompat] = useState("");
@@ -72,7 +74,9 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
     setLocalizacaoId(item?.localizacao_id ?? gavetas[0]?.id ?? "");
     setQuantidade(String(item?.quantidade ?? 0));
     setMinimo(String(item?.estoque_minimo ?? 0));
-    setCusto(String(item?.custo_unitario ?? 0));
+    setCusto(item?.custo_unitario == null ? "" : String(item.custo_unitario));
+    setCondicao(item?.condicao ?? "");
+    setMotivoInicial("entrada_inicial");
     setObservacao(item?.observacao ?? "");
     setCompat(item?.compatibilidades ?? []);
     setNovoCompat("");
