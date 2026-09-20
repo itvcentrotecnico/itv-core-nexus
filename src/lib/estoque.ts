@@ -95,7 +95,111 @@ export interface EstoqueItem {
   custo_unitario: number | null;
   compatibilidades: string[];
   status: EstoqueStatus;
+  /** Quantidade reservada para o próprio usuário (técnico) — nunca expõe OS de terceiros. */
+  minha_reserva?: number;
+  minha_reserva_os?: string | null;
 }
+
+export type StatusSolicitacao =
+  | "aguardando"
+  | "reservada"
+  | "parcialmente_atendida"
+  | "entregue"
+  | "rejeitada"
+  | "cancelada";
+
+export const STATUS_SOLICITACAO: Record<StatusSolicitacao, { label: string; classe: string }> = {
+  aguardando: {
+    label: "AGUARDANDO GERÊNCIA",
+    classe: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+  },
+  reservada: { label: "RESERVADA", classe: "bg-primary/10 text-primary border-primary/30" },
+  parcialmente_atendida: {
+    label: "PARCIALMENTE ATENDIDA",
+    classe: "bg-sky-500/10 text-sky-600 border-sky-500/30",
+  },
+  entregue: {
+    label: "ENTREGUE / UTILIZADA",
+    classe: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+  },
+  rejeitada: {
+    label: "REJEITADA",
+    classe: "bg-destructive/10 text-destructive border-destructive/30",
+  },
+  cancelada: { label: "CANCELADA", classe: "bg-muted text-muted-foreground border-border" },
+};
+
+export interface SolicitacaoEstoque {
+  id: string;
+  item_id: string;
+  os: string;
+  quantidade: number;
+  quantidade_reservada: number;
+  quantidade_entregue: number;
+  status: StatusSolicitacao;
+  observacao: string | null;
+  motivo_rejeicao: string | null;
+  created_at: string;
+  analisado_em: string | null;
+  analisado_por_nome: string | null;
+  tecnico_id: string;
+  tecnico_nome: string | null;
+  tipo: EstoqueTipo;
+  marca_nome: string;
+  modelo: string;
+  polegada: string | null;
+  codigo_placa: string | null;
+  gaveta_label: string;
+  fisico: number;
+  reservado: number;
+  disponivel: number;
+}
+
+export interface ReservaAtiva {
+  id: string;
+  item_id: string;
+  quantidade: number;
+  quantidade_entregue: number;
+  status: "ativa" | "parcialmente_utilizada";
+  os: string | null;
+  tecnico_id: string | null;
+  tecnico_nome: string | null;
+  observacao: string | null;
+  created_at: string;
+  dias: number;
+  reservado_por: string | null;
+  tipo: EstoqueTipo;
+  marca_nome: string;
+  modelo: string;
+  codigo_placa: string | null;
+  gaveta_label: string;
+  fisico: number;
+  reservado_item: number;
+  disponivel: number;
+  solicitacao_id: string | null;
+}
+
+export interface EstoqueResumo {
+  ok: true;
+  solicitacoes_pendentes: number;
+  minhas_solicitacoes_pendentes: number;
+  reservas_ativas: number;
+  reservas_antigas: number;
+  entregas_hoje: number;
+  baixas_hoje: number;
+  itens_sem_disponibilidade: number;
+}
+
+/** Motivos padronizados para liberar uma reserva sem baixa física. */
+export const MOTIVOS_LIBERACAO = [
+  "Reparo cancelado",
+  "Cliente não aprovou",
+  "Diagnóstico alterado",
+  "Peça incompatível",
+  "Peça não será utilizada",
+  "OS encerrada",
+  "Outro",
+];
 
 export type MotivoSaida =
   | "uso_os"
