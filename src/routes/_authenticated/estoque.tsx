@@ -221,6 +221,7 @@ function EstoquePage() {
   const podeMovimentar = isAdmin || can("estoque", "movimentar");
   const podeEstornar = isAdmin || can("estoque", "estornar");
   const podeReservar = isAdmin || can("estoque", "reservar");
+  const podeSolicitar = isAdmin || can("estoque", "solicitar");
 
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState<"" | EstoqueTipo>("");
@@ -235,6 +236,7 @@ function EstoquePage() {
   const [baixaReserva, setBaixaReserva] = useState<string | null>(null);
   const [entradaItem, setEntradaItem] = useState<EstoqueItem | null>(null);
   const [reservaItem, setReservaItem] = useState<EstoqueItem | null>(null);
+  const [solicitarItem, setSolicitarItem] = useState<EstoqueItem | null>(null);
   const [historicoItem, setHistoricoItem] = useState<EstoqueItem | null>(null);
 
   const marcasQuery = useQuery({
