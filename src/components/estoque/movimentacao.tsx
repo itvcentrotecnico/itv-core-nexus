@@ -636,12 +636,8 @@ export function HistoricoDialog({
                         Entregar e dar baixa
                       </Button>
                     ) : null}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => void cancelarReserva(r.id)}
-                    >
-                      Cancelar reserva
+                    <Button size="sm" variant="outline" onClick={() => setLiberarAlvo(r.id)}>
+                      Liberar reserva
                     </Button>
                   </div>
                 </li>
