@@ -52,6 +52,7 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
   const [localizacaoId, setLocalizacaoId] = useState("");
   const [quantidade, setQuantidade] = useState("0");
   const [minimo, setMinimo] = useState("0");
+  const [custo, setCusto] = useState("0");
   const [observacao, setObservacao] = useState("");
   const [compat, setCompat] = useState<string[]>([]);
   const [novoCompat, setNovoCompat] = useState("");
@@ -69,6 +70,7 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
     setLocalizacaoId(item?.localizacao_id ?? gavetas[0]?.id ?? "");
     setQuantidade(String(item?.quantidade ?? 0));
     setMinimo(String(item?.estoque_minimo ?? 0));
+    setCusto(String(item?.custo_unitario ?? 0));
     setObservacao(item?.observacao ?? "");
     setCompat(item?.compatibilidades ?? []);
     setNovoCompat("");
@@ -142,8 +144,9 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
           modelo: modelo.trim(),
           codigo_placa: tipo === "placa_main" ? codigoPlaca.trim() : null,
           localizacao_id: localizacaoId,
-          quantidade: Number(quantidade || 0),
+          quantidade: item ? undefined : Number(quantidade || 0),
           estoque_minimo: Number(minimo || 0),
+          custo_unitario: Number(custo || 0),
           observacao: observacao.trim(),
         },
         p_compatibilidades: compat,
@@ -349,19 +352,27 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelClass} htmlFor="estoque-qtd">
-                {item ? "Quantidade atual *" : "Quantidade inicial *"}
-              </label>
-              <input
-                id="estoque-qtd"
-                type="number"
-                min={0}
-                className={inputClass}
-                value={quantidade}
-                onChange={(e) => setQuantidade(e.target.value)}
-              />
-            </div>
+            {item ? (
+              <div className="rounded-md bg-muted p-3 text-xs text-muted-foreground">
+                Saldo atual: <span className="font-medium text-foreground">{item.quantidade}</span>.
+                A quantidade não muda por aqui — use &quot;Dar baixa&quot; ou &quot;Entrada&quot;
+                para que a movimentação fique registrada.
+              </div>
+            ) : (
+              <div>
+                <label className={labelClass} htmlFor="estoque-qtd">
+                  Quantidade inicial *
+                </label>
+                <input
+                  id="estoque-qtd"
+                  type="number"
+                  min={0}
+                  className={inputClass}
+                  value={quantidade}
+                  onChange={(e) => setQuantidade(e.target.value)}
+                />
+              </div>
+            )}
             <div>
               <label className={labelClass} htmlFor="estoque-min">
                 Alerta de estoque baixo
@@ -375,6 +386,25 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
                 onChange={(e) => setMinimo(e.target.value)}
               />
             </div>
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="estoque-custo">
+              Custo unitário (R$)
+            </label>
+            <input
+              id="estoque-custo"
+              type="number"
+              min={0}
+              step="0.01"
+              className={inputClass}
+              value={custo}
+              onChange={(e) => setCusto(e.target.value)}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Usado para lançar o custo direto na OS quando a baixa for por uso em OS. O técnico não
+              visualiza este valor.
+            </p>
           </div>
 
           <div>
