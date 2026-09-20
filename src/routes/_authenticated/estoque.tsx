@@ -79,10 +79,12 @@ interface AcoesItem {
   podeEditar: boolean;
   podeMovimentar: boolean;
   podeReservar: boolean;
+  podeSolicitar: boolean;
   onEditar: () => void;
   onBaixa: () => void;
   onEntrada: () => void;
   onReservar: () => void;
+  onSolicitar: () => void;
   onHistorico: () => void;
 }
 
@@ -91,10 +93,12 @@ function ItemCard({
   podeEditar,
   podeMovimentar,
   podeReservar,
+  podeSolicitar,
   onEditar,
   onBaixa,
   onEntrada,
   onReservar,
+  onSolicitar,
   onHistorico,
 }: { item: EstoqueItem } & AcoesItem) {
   return (
