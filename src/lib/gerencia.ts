@@ -128,6 +128,8 @@ export interface GerenciaContadores {
   reservasAntigas: number;
   entregasEstoqueHoje: number;
   baixasEstoqueHoje: number;
+  estoqueAbaixoMinimo: number;
+  divergenciasInventario: number;
   total: number;
 }
 
@@ -259,6 +261,8 @@ export function useGerenciaResumo() {
     reservasAntigas: estoque.data?.reservas_antigas ?? 0,
     entregasEstoqueHoje: estoque.data?.entregas_hoje ?? 0,
     baixasEstoqueHoje: estoque.data?.baixas_hoje ?? 0,
+    estoqueAbaixoMinimo: estoque.data?.itens_abaixo_minimo ?? 0,
+    divergenciasInventario: estoque.data?.divergencias_inventario ?? 0,
     total: 0,
   };
   contadores.total =
