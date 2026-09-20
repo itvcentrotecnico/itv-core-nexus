@@ -2572,6 +2572,7 @@ export type Database = {
           codigo_placa: string | null
           created_at: string
           created_by: string | null
+          custo_unitario: number
           estoque_minimo: number
           id: string
           localizacao_id: string
@@ -2591,6 +2592,7 @@ export type Database = {
           codigo_placa?: string | null
           created_at?: string
           created_by?: string | null
+          custo_unitario?: number
           estoque_minimo?: number
           id?: string
           localizacao_id: string
@@ -2610,6 +2612,7 @@ export type Database = {
           codigo_placa?: string | null
           created_at?: string
           created_by?: string | null
+          custo_unitario?: number
           estoque_minimo?: number
           id?: string
           localizacao_id?: string
@@ -2709,6 +2712,168 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      estoque_movimentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          custo_os_id: string | null
+          custo_unitario: number
+          destinatario: string | null
+          estornado_em: string | null
+          estorno_de: string | null
+          id: string
+          item_id: string
+          motivo: string
+          observacao: string | null
+          os: string | null
+          quantidade: number
+          reserva_id: string | null
+          saldo_anterior: number
+          saldo_posterior: number
+          tecnico_id: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          custo_os_id?: string | null
+          custo_unitario?: number
+          destinatario?: string | null
+          estornado_em?: string | null
+          estorno_de?: string | null
+          id?: string
+          item_id: string
+          motivo: string
+          observacao?: string | null
+          os?: string | null
+          quantidade: number
+          reserva_id?: string | null
+          saldo_anterior: number
+          saldo_posterior: number
+          tecnico_id?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          custo_os_id?: string | null
+          custo_unitario?: number
+          destinatario?: string | null
+          estornado_em?: string | null
+          estorno_de?: string | null
+          id?: string
+          item_id?: string
+          motivo?: string
+          observacao?: string | null
+          os?: string | null
+          quantidade?: number
+          reserva_id?: string | null
+          saldo_anterior?: number
+          saldo_posterior?: number
+          tecnico_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_movimentos_custo_os_id_fkey"
+            columns: ["custo_os_id"]
+            isOneToOne: false
+            referencedRelation: "custos_os"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_movimentos_estorno_de_fkey"
+            columns: ["estorno_de"]
+            isOneToOne: false
+            referencedRelation: "estoque_movimentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_movimentos_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_movimentos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estoque_reservas: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          item_id: string
+          motivo_cancelamento: string | null
+          movimento_id: string | null
+          observacao: string | null
+          os: string | null
+          quantidade: number
+          status: string
+          tecnico_id: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id: string
+          motivo_cancelamento?: string | null
+          movimento_id?: string | null
+          observacao?: string | null
+          os?: string | null
+          quantidade: number
+          status?: string
+          tecnico_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id?: string
+          motivo_cancelamento?: string | null
+          movimento_id?: string | null
+          observacao?: string | null
+          os?: string | null
+          quantidade?: number
+          status?: string
+          tecnico_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_reservas_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_reservas_movimento_id_fkey"
+            columns: ["movimento_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_movimentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_reservas_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       eventos_seguranca: {
         Row: {
@@ -5727,6 +5892,18 @@ export type Database = {
       dre_gerencial: { Args: { p_from: string; p_to: string }; Returns: Json }
       equipe_externa_painel: { Args: never; Returns: Json }
       equipe_externa_tv: { Args: never; Returns: Json }
+      estoque_baixar: {
+        Args: {
+          p_item_id: string
+          p_motivo: string
+          p_observacao?: string
+          p_os?: string
+          p_quantidade: number
+          p_reserva_id?: string
+          p_tecnico_id?: string
+        }
+        Returns: Json
+      }
       estoque_buscar: {
         Args: {
           p_busca?: string
@@ -5751,7 +5928,17 @@ export type Database = {
         }
         Returns: Json
       }
+      estoque_entrada: {
+        Args: {
+          p_item_id: string
+          p_motivo?: string
+          p_observacao?: string
+          p_quantidade: number
+        }
+        Returns: Json
+      }
       estoque_gaveta_detalhe: { Args: { p_id: string }; Returns: Json }
+      estoque_item_historico: { Args: { p_item_id: string }; Returns: Json }
       estoque_item_salvar: {
         Args: { p_compatibilidades?: string[]; p_dados: Json; p_id?: string }
         Returns: Json
@@ -5770,7 +5957,24 @@ export type Database = {
         Args: { p_ativo?: boolean; p_id?: string; p_nome: string }
         Returns: Json
       }
+      estoque_movimento_estornar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
       estoque_norm: { Args: { p: string }; Returns: string }
+      estoque_reserva_cancelar: {
+        Args: { p_id: string; p_motivo?: string }
+        Returns: Json
+      }
+      estoque_reservar: {
+        Args: {
+          p_item_id: string
+          p_observacao?: string
+          p_os?: string
+          p_quantidade: number
+        }
+        Returns: Json
+      }
       expediente_atual: { Args: never; Returns: Json }
       expediente_encerrar: { Args: never; Returns: undefined }
       expediente_iniciar: { Args: never; Returns: Json }
