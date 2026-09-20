@@ -215,6 +215,22 @@ export function useGerenciaResumo() {
     },
   });
 
+  const estoque = useQuery({
+    queryKey: ["estoque", "resumo"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("estoque_resumo");
+      if (error) return null;
+      return data as unknown as {
+        ok: boolean;
+        solicitacoes_pendentes?: number;
+        reservas_ativas?: number;
+        reservas_antigas?: number;
+        entregas_hoje?: number;
+        baixas_hoje?: number;
+      } | null;
+    },
+  });
+
   const hoje = todayManausISO();
   const linhas = pendencias.data ?? [];
   const criticas = linhas.filter((p) => diasNaItv(p.data_entrada, hoje) >= 8).length;
