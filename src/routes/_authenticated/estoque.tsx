@@ -435,6 +435,7 @@ function EstoquePage() {
                 podeEditar={podeEditar}
                 podeMovimentar={podeMovimentar}
                 podeReservar={podeReservar}
+                podeSolicitar={podeSolicitar}
                 onEditar={() => {
                   setEditando(i);
                   setFormTipo(i.tipo);
@@ -445,6 +446,7 @@ function EstoquePage() {
                 }}
                 onEntrada={() => setEntradaItem(i)}
                 onReservar={() => setReservaItem(i)}
+                onSolicitar={() => setSolicitarItem(i)}
                 onHistorico={() => setHistoricoItem(i)}
               />
             ))}
