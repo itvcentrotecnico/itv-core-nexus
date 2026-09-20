@@ -60,15 +60,28 @@ function StatusBadge({ item }: { item: EstoqueItem }) {
   );
 }
 
+interface AcoesItem {
+  podeEditar: boolean;
+  podeMovimentar: boolean;
+  podeReservar: boolean;
+  onEditar: () => void;
+  onBaixa: () => void;
+  onEntrada: () => void;
+  onReservar: () => void;
+  onHistorico: () => void;
+}
+
 function ItemCard({
   item,
   podeEditar,
+  podeMovimentar,
+  podeReservar,
   onEditar,
-}: {
-  item: EstoqueItem;
-  podeEditar: boolean;
-  onEditar: () => void;
-}) {
+  onBaixa,
+  onEntrada,
+  onReservar,
+  onHistorico,
+}: { item: EstoqueItem } & AcoesItem) {
   return (
     <Card>
       <CardContent className="space-y-3 p-4">
