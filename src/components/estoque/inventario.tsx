@@ -369,39 +369,61 @@ export function ConferenciaGavetaCard({
   );
 }
 
+const RELATORIOS = [
+  ["marca", "Por marca"],
+  ["gaveta", "Por gaveta"],
+  ["categoria", "Por categoria"],
+  ["minimo", "Estoque baixo"],
+  ["sem_estoque", "Sem disponibilidade"],
+  ["saidas", "Saídas"],
+  ["entradas", "Entradas"],
+  ["os", "Por OS"],
+  ["tecnico", "Por técnico"],
+  ["divergencias", "Divergências de inventário"],
+] as const;
+
 export function RelatoriosEstoqueCard() {
-  const [tipo, setTipo] = useState<"marca" | "gaveta">("marca");
+  const [tipo, setTipo] = useState<(typeof RELATORIOS)[number][0]>("marca");
+  const [familia, setFamilia] = useState("");
 
   const relQuery = useQuery({
-    queryKey: ["estoque", "relatorio", tipo],
+    queryKey: ["estoque", "relatorio", tipo, familia],
     queryFn: async () =>
       rpcEstoque<{
         ok: true;
         total: number;
         linhas: {
+          rotulo?: string;
           marca?: string;
-          total: number;
-          posicoes?: number;
           grupo_label?: string;
+          gaveta?: string;
+          total?: number;
+          posicoes?: number;
+          disponivel?: number;
+          minimo?: number;
+          movimentos?: number;
+          sistema?: number;
+          contado?: number;
+          diferenca?: number;
+          responsavel?: string | null;
           itens?: { marca: string; modelo: string; quantidade: number }[];
         }[];
-      }>("estoque_relatorio", { p_tipo: tipo, p_familia: "kit_led" }),
+      }>("estoque_relatorio", { p_tipo: tipo, p_familia: familia || null }),
   });
+
+  const linhas = relQuery.data?.linhas ?? [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Relatório de Kits de LED</CardTitle>
-        <CardDescription>Visão por marca ou por gaveta.</CardDescription>
+        <CardTitle className="text-base">Relatórios do estoque</CardTitle>
+        <CardDescription>
+          Visões gerenciais por marca, gaveta, OS, técnico e conferência física.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex gap-2">
-          {(
-            [
-              ["marca", "Por marca"],
-              ["gaveta", "Por gaveta"],
-            ] as const
-          ).map(([v, label]) => (
+        <div className="flex flex-wrap gap-2">
+          {RELATORIOS.map(([v, label]) => (
             <button
               key={v}
               type="button"
@@ -418,25 +440,58 @@ export function RelatoriosEstoqueCard() {
           ))}
         </div>
 
+        <select
+          className={cn(inputClass, "sm:max-w-xs")}
+          value={familia}
+          onChange={(e) => setFamilia(e.target.value)}
+          aria-label="Família"
+        >
+          <option value="">Kits e placas</option>
+          <option value="kit_led">Kits de LED</option>
+          <option value="placa_main">Placas Main</option>
+        </select>
+
         {relQuery.isLoading ? (
           <p className="py-6 text-center text-sm text-muted-foreground">Carregando…</p>
-        ) : (relQuery.data?.linhas ?? []).length === 0 ? (
+        ) : linhas.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            Nenhum Kit de LED cadastrado.
+            Sem dados para este relatório.
           </p>
         ) : (
           <ul className="divide-y divide-border rounded-lg border border-border">
-            {(relQuery.data?.linhas ?? []).map((l, idx) => (
-              <li key={l.marca ?? l.grupo_label ?? idx} className="px-3 py-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="font-medium text-foreground">{l.marca ?? l.grupo_label}</span>
-                  <span className="tabular-nums">{l.total} kits</span>
+            {linhas.map((l, idx) => (
+              <li key={l.rotulo ?? l.marca ?? l.grupo_label ?? idx} className="px-3 py-2 text-sm">
+                <div className="flex justify-between gap-2">
+                  <span className="font-medium text-foreground">
+                    {l.rotulo ?? l.marca ?? l.grupo_label}
+                  </span>
+                  <span className="tabular-nums">
+                    {l.diferenca != null
+                      ? `${l.diferenca > 0 ? "+" : ""}${l.diferenca}`
+                      : (l.total ?? 0)}
+                  </span>
                 </div>
+                {l.gaveta || l.posicoes != null || l.minimo != null || l.sistema != null ? (
+                  <p className="text-xs text-muted-foreground">
+                    {[
+                      l.gaveta,
+                      l.posicoes != null ? `${l.posicoes} posição(ões)` : null,
+                      l.disponivel != null ? `Disponível ${l.disponivel}` : null,
+                      l.minimo != null ? `Alerta ${l.minimo}` : null,
+                      l.sistema != null ? `Sistema ${l.sistema}` : null,
+                      l.contado != null ? `Contado ${l.contado}` : null,
+                      l.movimentos != null ? `${l.movimentos} movimento(s)` : null,
+                      l.responsavel ?? null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                ) : null}
                 {l.itens ? (
                   <ul className="mt-1 space-y-0.5">
-                    {l.itens.map((i) => (
+                    {l.itens.map((i, j) => (
                       <li
-                        key={`${i.marca}-${i.modelo}`}
+                        key={`${i.marca}-${i.modelo}-${j}`}
                         className="flex justify-between text-xs text-muted-foreground"
                       >
                         <span className="font-mono">
@@ -452,7 +507,7 @@ export function RelatoriosEstoqueCard() {
           </ul>
         )}
         <p className="text-sm font-semibold text-foreground">
-          Total: {relQuery.data?.total ?? 0} Kits de LED
+          Total em estoque: {relQuery.data?.total ?? 0} peça(s)
         </p>
       </CardContent>
     </Card>
