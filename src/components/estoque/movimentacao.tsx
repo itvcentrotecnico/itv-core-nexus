@@ -123,18 +123,25 @@ export function BaixaDialog({
         p_observacao: observacao.trim() || null,
         p_reserva_id: reservaId ?? null,
       });
-      toast.success("✅ Baixa registrada", {
+      const linhas = [
+        `${res.peca} · ${res.gaveta}`,
+        `${res.quantidade} ${unidade(item, res.quantidade)} · ${MOTIVO_LABEL[motivo] ?? motivo}`,
+        res.os ? `OS ${res.os}` : null,
+        res.tecnico ? `Recebido por: ${res.tecnico}` : null,
+        `Saldo anterior: ${res.saldo_anterior} → saldo atual: ${res.saldo_posterior}`,
+        res.custo_os_id ? "Custo direto lançado na OS." : null,
+      ].filter((l): l is string => !!l);
+      toast.success("Baixa registrada", {
         duration: 9000,
-        description: [
-          `${res.peca} · ${res.gaveta}`,
-          `${res.quantidade} ${unidade(item, res.quantidade)} · ${MOTIVO_LABEL[motivo] ?? motivo}`,
-          res.os ? `OS ${res.os}` : null,
-          res.tecnico ? `Recebido por: ${res.tecnico}` : null,
-          `Saldo anterior: ${res.saldo_anterior} → Saldo atual: ${res.saldo_posterior}`,
-          res.custo_os_id ? "Custo direto lançado na OS." : null,
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        description: (
+          <span className="block space-y-0.5">
+            {linhas.map((l) => (
+              <span key={l} className="block">
+                {l}
+              </span>
+            ))}
+          </span>
+        ),
       });
       void queryClient.invalidateQueries({ queryKey: ["estoque"] });
       void queryClient.invalidateQueries({ queryKey: ["custos"] });
