@@ -531,6 +531,11 @@ export function HistoricoDialog({
 }) {
   const queryClient = useQueryClient();
   const [estornando, setEstornando] = useState<string | null>(null);
+  const [estornoAlvo, setEstornoAlvo] = useState<{ id: string; temReserva: boolean } | null>(null);
+  const [motivo, setMotivo] = useState("");
+  const [restaurarReserva, setRestaurarReserva] = useState(false);
+  const [liberarAlvo, setLiberarAlvo] = useState<string | null>(null);
+  const [motivoLiberar, setMotivoLiberar] = useState("");
 
   const historico = useQuery({
     queryKey: ["estoque", "historico", item?.id],
@@ -541,20 +546,33 @@ export function HistoricoDialog({
 
   if (!item) return null;
 
-  async function estornar(id: string) {
-    const motivo = window.prompt("Motivo do estorno (obrigatório):")?.trim();
-    if (!motivo) return;
-    setEstornando(id);
+  async function estornar() {
+    if (!estornoAlvo || motivo.trim().length < 3) return;
+    setEstornando(estornoAlvo.id);
     try {
-      const res = await rpcEstoque<{ ok: true; saldo_anterior: number; saldo_posterior: number }>(
-        "estoque_movimento_estornar",
-        { p_id: id, p_motivo: motivo },
-      );
-      toast.success("✅ Movimentação estornada", {
-        description: `Saldo anterior: ${res.saldo_anterior} → Saldo atual: ${res.saldo_posterior}. O histórico original foi mantido.`,
+      const res = await rpcEstoque<{
+        ok: true;
+        saldo_anterior: number;
+        saldo_posterior: number;
+        reserva_restaurada: boolean;
+      }>("estoque_movimento_estornar", {
+        p_id: estornoAlvo.id,
+        p_motivo: motivo.trim(),
+        p_restaurar_reserva: restaurarReserva,
+      });
+      toast.success("Movimentação estornada", {
+        duration: 9000,
+        description: `Saldo anterior: ${res.saldo_anterior} → saldo atual: ${res.saldo_posterior}. ${
+          res.reserva_restaurada
+            ? "A reserva para a OS foi restaurada."
+            : "A reserva não foi restaurada."
+        } O histórico original foi mantido.`,
       });
       void queryClient.invalidateQueries({ queryKey: ["estoque"] });
       void queryClient.invalidateQueries({ queryKey: ["custos"] });
+      setEstornoAlvo(null);
+      setMotivo("");
+      setRestaurarReserva(false);
     } catch (e) {
       toast.error("Não foi possível estornar", { description: (e as Error).message });
     } finally {
@@ -562,13 +580,22 @@ export function HistoricoDialog({
     }
   }
 
-  async function cancelarReserva(id: string) {
+  async function liberarReserva() {
+    if (!liberarAlvo || motivoLiberar.trim().length < 3) return;
     try {
-      await rpcEstoque("estoque_reserva_cancelar", { p_id: id, p_motivo: "Cancelada pelo usuário" });
-      toast.success("Reserva cancelada.", { description: "O saldo disponível voltou ao normal." });
+      await rpcEstoque("estoque_reserva_liberar", {
+        p_id: liberarAlvo,
+        p_motivo: motivoLiberar.trim(),
+      });
+      toast.success("Reserva liberada", {
+        description:
+          "A peça voltou a ficar disponível. Ela nunca saiu da gaveta, então nenhuma entrada foi criada.",
+      });
       void queryClient.invalidateQueries({ queryKey: ["estoque"] });
+      setLiberarAlvo(null);
+      setMotivoLiberar("");
     } catch (e) {
-      toast.error("Não foi possível cancelar", { description: (e as Error).message });
+      toast.error("Não foi possível liberar", { description: (e as Error).message });
     }
   }
 
