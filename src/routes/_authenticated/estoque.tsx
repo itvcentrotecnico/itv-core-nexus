@@ -136,6 +136,17 @@ function ItemCard({
                 Código da placa: {item.codigo_placa}
               </p>
             ) : null}
+            {item.condicao ? (
+              <span
+                className={cn(
+                  "mt-1 inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold",
+                  CONDICOES.find((c) => c.value === item.condicao)?.classe ??
+                    "border-border bg-muted text-muted-foreground",
+                )}
+              >
+                {CONDICOES.find((c) => c.value === item.condicao)?.label}
+              </span>
+            ) : null}
           </div>
           <StatusBadge item={item} />
         </div>
@@ -517,6 +528,13 @@ function EstoquePage() {
             <TabsTrigger value="minhas">Minhas solicitações</TabsTrigger>
           ) : null}
           {podeReservar ? <TabsTrigger value="reservas">Reservas ativas</TabsTrigger> : null}
+          {podeMovimentar ? (
+            <>
+              <TabsTrigger value="movimentacoes">Movimentações</TabsTrigger>
+              <TabsTrigger value="reposicao">Reposição</TabsTrigger>
+            </>
+          ) : null}
+          <TabsTrigger value="gavetas">Gavetas</TabsTrigger>
           {podeMovimentar ? <TabsTrigger value="inventario">Inventário</TabsTrigger> : null}
           {podeAdministrar ? <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger> : null}
         </TabsList>
@@ -537,6 +555,19 @@ function EstoquePage() {
             <SolicitacoesLista escopo="minhas" podeAnalisar={false} />
           </TabsContent>
         ) : null}
+        {podeMovimentar ? (
+          <>
+            <TabsContent value="movimentacoes" className="mt-4">
+              <MovimentacoesCard marcas={marcas} localizacoes={locais} />
+            </TabsContent>
+            <TabsContent value="reposicao" className="mt-4">
+              <ReposicaoCard />
+            </TabsContent>
+          </>
+        ) : null}
+        <TabsContent value="gavetas" className="mt-4">
+          <PainelGavetasCard onAbrir={setGavetaAberta} />
+        </TabsContent>
         {podeMovimentar ? (
           <TabsContent value="inventario" className="mt-4 space-y-4">
             {podeAdministrar ? <CargaInicialCard /> : null}
