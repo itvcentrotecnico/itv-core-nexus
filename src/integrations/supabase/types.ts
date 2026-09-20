@@ -6096,11 +6096,38 @@ export type Database = {
         Returns: Json
       }
       estoque_gaveta_detalhe: { Args: { p_id: string }; Returns: Json }
-      estoque_item_historico: { Args: { p_item_id: string }; Returns: Json }
-      estoque_item_salvar: {
-        Args: { p_compatibilidades?: string[]; p_dados: Json; p_id?: string }
+      estoque_inventario_gaveta: {
+        Args: { p_localizacao_id: string }
         Returns: Json
       }
+      estoque_inventario_inicial: {
+        Args: {
+          p_confirmar?: boolean
+          p_esperado: Json
+          p_itens: Json
+          p_lote: string
+        }
+        Returns: Json
+      }
+      estoque_inventario_registrar: {
+        Args: {
+          p_contagens: Json
+          p_localizacao_id: string
+          p_observacao?: string
+        }
+        Returns: Json
+      }
+      estoque_item_historico: { Args: { p_item_id: string }; Returns: Json }
+      estoque_item_salvar:
+        | { Args: { p_dados: Json }; Returns: Json }
+        | {
+            Args: {
+              p_compatibilidades?: string[]
+              p_dados: Json
+              p_id?: string
+            }
+            Returns: Json
+          }
       estoque_localizacao_salvar: {
         Args: {
           p_ativo?: boolean
@@ -6120,6 +6147,10 @@ export type Database = {
         Returns: Json
       }
       estoque_norm: { Args: { p: string }; Returns: string }
+      estoque_relatorio: {
+        Args: { p_familia?: string; p_tipo?: string }
+        Returns: Json
+      }
       estoque_reserva_cancelar: {
         Args: { p_id: string; p_motivo?: string }
         Returns: Json
