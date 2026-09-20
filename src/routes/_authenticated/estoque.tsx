@@ -1,7 +1,16 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Info, Package, Pencil, Plus, Search } from "lucide-react";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  History,
+  Info,
+  Package,
+  Pencil,
+  Plus,
+  Search,
+} from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
@@ -125,14 +134,17 @@ function ItemCard({
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Disponível</p>
             <p className="font-medium text-foreground">
-              {item.quantidade}
+              {item.quantidade_disponivel}
               {item.tipo === "kit_led"
-                ? item.quantidade === 1
+                ? item.quantidade_disponivel === 1
                   ? " kit"
                   : " kits"
-                : item.quantidade === 1
+                : item.quantidade_disponivel === 1
                   ? " placa"
                   : " placas"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Físico: {item.quantidade} · Reservado: {item.quantidade_reservada}
             </p>
           </div>
         </div>
@@ -143,11 +155,41 @@ function ItemCard({
           </p>
         ) : null}
 
-        {podeEditar ? (
-          <Button size="sm" variant="outline" onClick={onEditar}>
-            <Pencil className="mr-1.5 size-3.5" /> Editar cadastro
+        <div className="flex flex-wrap gap-2">
+          {podeMovimentar ? (
+            <>
+              <Button size="sm" onClick={onBaixa} disabled={item.quantidade_disponivel <= 0}>
+                <ArrowDownCircle className="mr-1.5 size-3.5" /> Dar baixa
+              </Button>
+              <Button size="sm" variant="outline" onClick={onEntrada}>
+                <ArrowUpCircle className="mr-1.5 size-3.5" /> Entrada
+              </Button>
+            </>
+          ) : null}
+          {podeReservar && !podeMovimentar ? (
+            <Button size="sm" onClick={onReservar} disabled={item.quantidade_disponivel <= 0}>
+              Reservar para OS
+            </Button>
+          ) : null}
+          {podeReservar && podeMovimentar ? (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onReservar}
+              disabled={item.quantidade_disponivel <= 0}
+            >
+              Reservar
+            </Button>
+          ) : null}
+          <Button size="sm" variant="ghost" onClick={onHistorico}>
+            <History className="mr-1.5 size-3.5" /> Histórico
           </Button>
-        ) : null}
+          {podeEditar ? (
+            <Button size="sm" variant="ghost" onClick={onEditar}>
+              <Pencil className="mr-1.5 size-3.5" /> Editar cadastro
+            </Button>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );
