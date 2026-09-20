@@ -47,7 +47,9 @@ export type PermissionAction =
   | "restaurar"
   | "localizacao_ativar"
   | "localizacao_visualizar"
-  | "localizacao_historico";
+  | "localizacao_historico"
+  | "movimentar"
+  | "reservar";
 
 export interface UserProfile {
   id: string;
