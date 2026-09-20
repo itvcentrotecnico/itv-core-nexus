@@ -253,6 +253,7 @@ export interface MovimentoEstoque {
   saldo_posterior: number;
   custo_unitario: number | null;
   custo_os_id: string | null;
+  reserva_id?: string | null;
   estornado_em: string | null;
   estorno_de: string | null;
   created_at: string;
