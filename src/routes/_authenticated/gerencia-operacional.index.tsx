@@ -52,12 +52,63 @@ function CardValidacao() {
   );
 }
 
+function CardEstoque() {
+  const { contadores, isLoading } = useGerenciaResumo();
+  const v = (n: number) => (isLoading ? "…" : n);
+  return (
+    <Link
+      to="/estoque"
+      className="block rounded-xl border border-border bg-card p-4 transition hover:border-primary/50"
+    >
+      <h2 className="font-display text-sm font-bold text-foreground">Estoque Técnico</h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Solicitações dos técnicos, peças reservadas e saídas do dia.
+      </p>
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <div className="rounded-lg bg-primary/5 p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.solicitacoesEstoque)}
+          </p>
+          <p className="text-xs text-muted-foreground">Aguardando análise</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.reservasEstoque)}
+          </p>
+          <p className="text-xs text-muted-foreground">Reservas ativas</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.reservasAntigas)}
+          </p>
+          <p className="text-xs text-muted-foreground">Reservas antigas</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.entregasEstoqueHoje)}
+          </p>
+          <p className="text-xs text-muted-foreground">Entregues hoje</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.baixasEstoqueHoje)}
+          </p>
+          <p className="text-xs text-muted-foreground">Baixas hoje</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 function VisaoGeral() {
   return (
     <div className="space-y-4">
       <PrecisaDaSuaAcao />
 
       <CardValidacao />
+
+      <CardEstoque />
+
 
       <section className="rounded-xl border border-border bg-card p-4">
         <h2 className="mb-3 font-display text-sm font-bold text-foreground">Ações rápidas</h2>

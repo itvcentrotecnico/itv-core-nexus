@@ -48,6 +48,9 @@ export type PermissionAction =
   | "localizacao_ativar"
   | "localizacao_visualizar"
   | "localizacao_historico"
+  | "solicitar"
+  | "liberar_reserva"
+  | "entregar_reserva"
   | "movimentar"
   | "reservar";
 

@@ -2809,6 +2809,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          encerrada_em: string | null
           id: string
           item_id: string
           motivo_cancelamento: string | null
@@ -2816,6 +2817,9 @@ export type Database = {
           observacao: string | null
           os: string | null
           quantidade: number
+          quantidade_entregue: number
+          quantidade_original: number | null
+          solicitacao_id: string | null
           status: string
           tecnico_id: string | null
           updated_at: string
@@ -2824,6 +2828,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          encerrada_em?: string | null
           id?: string
           item_id: string
           motivo_cancelamento?: string | null
@@ -2831,6 +2836,9 @@ export type Database = {
           observacao?: string | null
           os?: string | null
           quantidade: number
+          quantidade_entregue?: number
+          quantidade_original?: number | null
+          solicitacao_id?: string | null
           status?: string
           tecnico_id?: string | null
           updated_at?: string
@@ -2839,6 +2847,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          encerrada_em?: string | null
           id?: string
           item_id?: string
           motivo_cancelamento?: string | null
@@ -2846,6 +2855,9 @@ export type Database = {
           observacao?: string | null
           os?: string | null
           quantidade?: number
+          quantidade_entregue?: number
+          quantidade_original?: number | null
+          solicitacao_id?: string | null
           status?: string
           tecnico_id?: string | null
           updated_at?: string
@@ -2867,7 +2879,89 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "estoque_reservas_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_solicitacoes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "estoque_reservas_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estoque_solicitacoes: {
+        Row: {
+          analisado_em: string | null
+          analisado_por: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          item_id: string
+          motivo_rejeicao: string | null
+          observacao: string | null
+          os: string
+          quantidade: number
+          quantidade_entregue: number
+          quantidade_reservada: number
+          status: string
+          tecnico_id: string
+          teste: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          analisado_em?: string | null
+          analisado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id: string
+          motivo_rejeicao?: string | null
+          observacao?: string | null
+          os: string
+          quantidade: number
+          quantidade_entregue?: number
+          quantidade_reservada?: number
+          status?: string
+          tecnico_id: string
+          teste?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          analisado_em?: string | null
+          analisado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_id?: string
+          motivo_rejeicao?: string | null
+          observacao?: string | null
+          os?: string
+          quantidade?: number
+          quantidade_entregue?: number
+          quantidade_reservada?: number
+          status?: string
+          tecnico_id?: string
+          teste?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_solicitacoes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estoque_solicitacoes_tecnico_id_fkey"
             columns: ["tecnico_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -5958,7 +6052,7 @@ export type Database = {
         Returns: Json
       }
       estoque_movimento_estornar: {
-        Args: { p_id: string; p_motivo: string }
+        Args: { p_id: string; p_motivo: string; p_restaurar_reserva?: boolean }
         Returns: Json
       }
       estoque_norm: { Args: { p: string }; Returns: string }
@@ -5966,11 +6060,53 @@ export type Database = {
         Args: { p_id: string; p_motivo?: string }
         Returns: Json
       }
+      estoque_reserva_entregar: {
+        Args: { p_id: string; p_observacao?: string; p_quantidade?: number }
+        Returns: Json
+      }
+      estoque_reserva_liberar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
       estoque_reservar: {
         Args: {
           p_item_id: string
           p_observacao?: string
           p_os?: string
+          p_quantidade: number
+          p_solicitacao_id?: string
+          p_tecnico_id?: string
+        }
+        Returns: Json
+      }
+      estoque_reservas_listar: { Args: { p_status?: string }; Returns: Json }
+      estoque_resumo: { Args: never; Returns: Json }
+      estoque_solicitacao_cancelar: {
+        Args: { p_id: string; p_motivo?: string }
+        Returns: Json
+      }
+      estoque_solicitacao_rejeitar: {
+        Args: { p_id: string; p_motivo: string }
+        Returns: Json
+      }
+      estoque_solicitacoes_listar: {
+        Args: { p_escopo?: string; p_status?: string }
+        Returns: Json
+      }
+      estoque_solicitar: {
+        Args: {
+          p_item_id: string
+          p_observacao?: string
+          p_os: string
+          p_quantidade: number
+        }
+        Returns: Json
+      }
+      estoque_transferir: {
+        Args: {
+          p_item_id: string
+          p_localizacao_id: string
+          p_observacao?: string
           p_quantidade: number
         }
         Returns: Json
@@ -6566,6 +6702,9 @@ export type Database = {
         | "localizacao_historico"
         | "movimentar"
         | "reservar"
+        | "solicitar"
+        | "liberar_reserva"
+        | "entregar_reserva"
       producao_status:
         | "rascunho"
         | "enviado_validacao"
@@ -6827,6 +6966,9 @@ export const Constants = {
         "localizacao_historico",
         "movimentar",
         "reservar",
+        "solicitar",
+        "liberar_reserva",
+        "entregar_reserva",
       ],
       producao_status: [
         "rascunho",

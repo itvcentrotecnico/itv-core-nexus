@@ -123,6 +123,11 @@ export interface GerenciaContadores {
   pendencias: number;
   lotesProntos: number;
   lotesDevolvidos: number;
+  solicitacoesEstoque: number;
+  reservasEstoque: number;
+  reservasAntigas: number;
+  entregasEstoqueHoje: number;
+  baixasEstoqueHoje: number;
   total: number;
 }
 
@@ -210,6 +215,22 @@ export function useGerenciaResumo() {
     },
   });
 
+  const estoque = useQuery({
+    queryKey: ["estoque", "resumo"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("estoque_resumo");
+      if (error) return null;
+      return data as unknown as {
+        ok: boolean;
+        solicitacoes_pendentes?: number;
+        reservas_ativas?: number;
+        reservas_antigas?: number;
+        entregas_hoje?: number;
+        baixas_hoje?: number;
+      } | null;
+    },
+  });
+
   const hoje = todayManausISO();
   const linhas = pendencias.data ?? [];
   const criticas = linhas.filter((p) => diasNaItv(p.data_entrada, hoje) >= 8).length;
@@ -231,6 +252,11 @@ export function useGerenciaResumo() {
     pendencias: linhas.length,
     lotesProntos: lotes.data?.prontos ?? 0,
     lotesDevolvidos: lotes.data?.devolvidos ?? 0,
+    solicitacoesEstoque: estoque.data?.solicitacoes_pendentes ?? 0,
+    reservasEstoque: estoque.data?.reservas_ativas ?? 0,
+    reservasAntigas: estoque.data?.reservas_antigas ?? 0,
+    entregasEstoqueHoje: estoque.data?.entregas_hoje ?? 0,
+    baixasEstoqueHoje: estoque.data?.baixas_hoje ?? 0,
     total: 0,
   };
   contadores.total =
@@ -242,7 +268,8 @@ export function useGerenciaResumo() {
     contadores.semMotorista +
     contadores.naoRealizadas +
     contadores.lotesProntos +
-    contadores.lotesDevolvidos;
+    contadores.lotesDevolvidos +
+    contadores.solicitacoesEstoque;
 
   return {
     contadores,

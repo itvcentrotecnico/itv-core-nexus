@@ -4,6 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   ArrowDownCircle,
   ArrowUpCircle,
+  ClipboardList,
   History,
   Info,
   Package,
@@ -47,6 +48,11 @@ import {
   HistoricoDialog,
   ReservaDialog,
 } from "@/components/estoque/movimentacao";
+import {
+  ReservasLista,
+  SolicitacoesLista,
+  SolicitarDialog,
+} from "@/components/estoque/solicitacoes";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
@@ -79,10 +85,12 @@ interface AcoesItem {
   podeEditar: boolean;
   podeMovimentar: boolean;
   podeReservar: boolean;
+  podeSolicitar: boolean;
   onEditar: () => void;
   onBaixa: () => void;
   onEntrada: () => void;
   onReservar: () => void;
+  onSolicitar: () => void;
   onHistorico: () => void;
 }
 
@@ -91,10 +99,12 @@ function ItemCard({
   podeEditar,
   podeMovimentar,
   podeReservar,
+  podeSolicitar,
   onEditar,
   onBaixa,
   onEntrada,
   onReservar,
+  onSolicitar,
   onHistorico,
 }: { item: EstoqueItem } & AcoesItem) {
   return (
@@ -152,6 +162,12 @@ function ItemCard({
             <p className="text-xs text-muted-foreground">
               Físico: {item.quantidade} · Reservado: {item.quantidade_reservada}
             </p>
+            {item.minha_reserva && item.minha_reserva > 0 ? (
+              <p className="text-xs font-medium text-primary">
+                Reservado para a sua OS{item.minha_reserva_os ? ` ${item.minha_reserva_os}` : ""}:{" "}
+                {item.minha_reserva}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -172,15 +188,15 @@ function ItemCard({
               </Button>
             </>
           ) : null}
-          {podeReservar && !podeMovimentar ? (
-            <Button size="sm" onClick={onReservar} disabled={item.quantidade_disponivel <= 0}>
-              Reservar para OS
+          {podeSolicitar && !podeReservar ? (
+            <Button size="sm" onClick={onSolicitar} disabled={item.quantidade_disponivel <= 0}>
+              <ClipboardList className="mr-1.5 size-3.5" /> Solicitar para OS
             </Button>
           ) : null}
-          {podeReservar && podeMovimentar ? (
+          {podeReservar ? (
             <Button
               size="sm"
-              variant="outline"
+              variant={podeMovimentar ? "outline" : "default"}
               onClick={onReservar}
               disabled={item.quantidade_disponivel <= 0}
             >
@@ -210,6 +226,7 @@ function EstoquePage() {
   const podeMovimentar = isAdmin || can("estoque", "movimentar");
   const podeEstornar = isAdmin || can("estoque", "estornar");
   const podeReservar = isAdmin || can("estoque", "reservar");
+  const podeSolicitar = isAdmin || can("estoque", "solicitar");
 
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState<"" | EstoqueTipo>("");
@@ -224,6 +241,7 @@ function EstoquePage() {
   const [baixaReserva, setBaixaReserva] = useState<string | null>(null);
   const [entradaItem, setEntradaItem] = useState<EstoqueItem | null>(null);
   const [reservaItem, setReservaItem] = useState<EstoqueItem | null>(null);
+  const [solicitarItem, setSolicitarItem] = useState<EstoqueItem | null>(null);
   const [historicoItem, setHistoricoItem] = useState<EstoqueItem | null>(null);
 
   const marcasQuery = useQuery({
@@ -424,6 +442,7 @@ function EstoquePage() {
                 podeEditar={podeEditar}
                 podeMovimentar={podeMovimentar}
                 podeReservar={podeReservar}
+                podeSolicitar={podeSolicitar}
                 onEditar={() => {
                   setEditando(i);
                   setFormTipo(i.tipo);
@@ -434,6 +453,7 @@ function EstoquePage() {
                 }}
                 onEntrada={() => setEntradaItem(i)}
                 onReservar={() => setReservaItem(i)}
+                onSolicitar={() => setSolicitarItem(i)}
                 onHistorico={() => setHistoricoItem(i)}
               />
             ))}
@@ -477,15 +497,35 @@ function EstoquePage() {
         ) : null}
       </div>
 
-      {podeAdministrar ? (
-        <Tabs defaultValue="consulta">
-          <TabsList>
-            <TabsTrigger value="consulta">Consultar peça</TabsTrigger>
-            <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger>
-          </TabsList>
-          <TabsContent value="consulta" className="mt-4">
-            {consulta}
+      <Tabs defaultValue="consulta">
+        <TabsList className="flex w-full flex-wrap justify-start">
+          <TabsTrigger value="consulta">Consultar peça</TabsTrigger>
+          {podeReservar ? (
+            <TabsTrigger value="solicitacoes">Solicitações de peças</TabsTrigger>
+          ) : podeSolicitar ? (
+            <TabsTrigger value="minhas">Minhas solicitações</TabsTrigger>
+          ) : null}
+          {podeReservar ? <TabsTrigger value="reservas">Reservas ativas</TabsTrigger> : null}
+          {podeAdministrar ? <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger> : null}
+        </TabsList>
+        <TabsContent value="consulta" className="mt-4">
+          {consulta}
+        </TabsContent>
+        {podeReservar ? (
+          <>
+            <TabsContent value="solicitacoes" className="mt-4">
+              <SolicitacoesLista escopo="todas" podeAnalisar />
+            </TabsContent>
+            <TabsContent value="reservas" className="mt-4">
+              <ReservasLista podeGerenciar />
+            </TabsContent>
+          </>
+        ) : podeSolicitar ? (
+          <TabsContent value="minhas" className="mt-4">
+            <SolicitacoesLista escopo="minhas" podeAnalisar={false} />
           </TabsContent>
+        ) : null}
+        {podeAdministrar ? (
           <TabsContent value="cadastros" className="mt-4 space-y-4">
             <MarcasCard marcas={marcas} podeAdministrar={podeAdministrar} />
             <GavetasCard
@@ -494,10 +534,10 @@ function EstoquePage() {
               onAbrirGaveta={setGavetaAberta}
             />
           </TabsContent>
-        </Tabs>
-      ) : (
-        consulta
-      )}
+        ) : null}
+      </Tabs>
+
+      <SolicitarDialog item={solicitarItem} onClose={() => setSolicitarItem(null)} />
 
       <BaixaDialog
         item={baixaItem}
