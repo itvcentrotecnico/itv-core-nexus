@@ -227,6 +227,8 @@ export function useGerenciaResumo() {
         reservas_antigas?: number;
         entregas_hoje?: number;
         baixas_hoje?: number;
+        itens_abaixo_minimo?: number;
+        divergencias_inventario?: number;
       } | null;
     },
   });
