@@ -252,6 +252,11 @@ export function useGerenciaResumo() {
     pendencias: linhas.length,
     lotesProntos: lotes.data?.prontos ?? 0,
     lotesDevolvidos: lotes.data?.devolvidos ?? 0,
+    solicitacoesEstoque: estoque.data?.solicitacoes_pendentes ?? 0,
+    reservasEstoque: estoque.data?.reservas_ativas ?? 0,
+    reservasAntigas: estoque.data?.reservas_antigas ?? 0,
+    entregasEstoqueHoje: estoque.data?.entregas_hoje ?? 0,
+    baixasEstoqueHoje: estoque.data?.baixas_hoje ?? 0,
     total: 0,
   };
   contadores.total =
