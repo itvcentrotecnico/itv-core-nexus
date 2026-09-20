@@ -302,6 +302,12 @@ export interface EstoqueResumo {
   entregas_hoje: number;
   baixas_hoje: number;
   itens_sem_disponibilidade: number;
+  itens_abaixo_minimo: number;
+  divergencias_inventario: number;
+  familias?: Record<
+    string,
+    { fisico: number; reservado: number; disponivel: number; modelos: number; gavetas: number }
+  >;
 }
 
 /** Motivos padronizados para liberar uma reserva sem baixa física. */

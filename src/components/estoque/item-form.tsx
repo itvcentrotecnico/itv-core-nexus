@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { inputClass, labelClass } from "@/lib/caixa";
 import {
+  CONDICOES,
+  MOTIVOS_INICIAIS,
   POLEGADAS,
   TIPO_LABEL,
   labelGaveta,
