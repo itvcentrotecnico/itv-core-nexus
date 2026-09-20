@@ -520,7 +520,7 @@ function EstoquePage() {
       </div>
 
       <Tabs defaultValue="consulta">
-        <TabsList className="flex w-full flex-wrap justify-start">
+        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="consulta">Consultar peça</TabsTrigger>
           {podeReservar ? (
             <TabsTrigger value="solicitacoes">Solicitações de peças</TabsTrigger>
