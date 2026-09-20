@@ -64,7 +64,7 @@ function CardEstoque() {
       <p className="mt-1 text-xs text-muted-foreground">
         Solicitações dos técnicos, peças reservadas e saídas do dia.
       </p>
-      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         <div className="rounded-lg bg-primary/5 p-3">
           <p className="font-display text-2xl font-bold text-foreground">
             {v(contadores.solicitacoesEstoque)}
@@ -94,6 +94,18 @@ function CardEstoque() {
             {v(contadores.baixasEstoqueHoje)}
           </p>
           <p className="text-xs text-muted-foreground">Baixas hoje</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.estoqueAbaixoMinimo)}
+          </p>
+          <p className="text-xs text-muted-foreground">Abaixo do alerta</p>
+        </div>
+        <div className="rounded-lg bg-background p-3">
+          <p className="font-display text-2xl font-bold text-foreground">
+            {v(contadores.divergenciasInventario)}
+          </p>
+          <p className="text-xs text-muted-foreground">Divergências (30 dias)</p>
         </div>
       </div>
     </Link>
