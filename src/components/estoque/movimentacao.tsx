@@ -65,9 +65,11 @@ const unidade = (item: EstoqueItem, n: number) =>
 
 export function BaixaDialog({
   item,
+  reservaId,
   onClose,
 }: {
   item: EstoqueItem | null;
+  reservaId?: string | null;
   onClose: () => void;
 }) {
   const queryClient = useQueryClient();
