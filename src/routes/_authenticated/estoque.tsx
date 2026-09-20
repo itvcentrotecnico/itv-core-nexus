@@ -28,6 +28,7 @@ import {
 import { inputClass } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import {
+  CONDICOES,
   POLEGADAS,
   STATUS_ESTOQUE,
   TIPO_LABEL,
@@ -58,6 +59,11 @@ import {
   ConferenciaGavetaCard,
   RelatoriosEstoqueCard,
 } from "@/components/estoque/inventario";
+import {
+  MovimentacoesCard,
+  PainelGavetasCard,
+  ReposicaoCard,
+} from "@/components/estoque/gestao";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
