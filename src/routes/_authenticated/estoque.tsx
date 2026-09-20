@@ -156,6 +156,12 @@ function ItemCard({
             <p className="text-xs text-muted-foreground">
               Físico: {item.quantidade} · Reservado: {item.quantidade_reservada}
             </p>
+            {item.minha_reserva && item.minha_reserva > 0 ? (
+              <p className="text-xs font-medium text-primary">
+                Reservado para a sua OS{item.minha_reserva_os ? ` ${item.minha_reserva_os}` : ""}:{" "}
+                {item.minha_reserva}
+              </p>
+            ) : null}
           </div>
         </div>
 
