@@ -123,6 +123,11 @@ export interface GerenciaContadores {
   pendencias: number;
   lotesProntos: number;
   lotesDevolvidos: number;
+  solicitacoesEstoque: number;
+  reservasEstoque: number;
+  reservasAntigas: number;
+  entregasEstoqueHoje: number;
+  baixasEstoqueHoje: number;
   total: number;
 }
 
