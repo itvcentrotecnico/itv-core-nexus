@@ -93,11 +93,125 @@ export interface EstoqueItem {
   estoque_minimo: number;
   observacao: string | null;
   custo_unitario: number | null;
+  condicao: CondicaoPeca | null;
   compatibilidades: string[];
   status: EstoqueStatus;
   /** Quantidade reservada para o próprio usuário (técnico) — nunca expõe OS de terceiros. */
   minha_reserva?: number;
   minha_reserva_os?: string | null;
+}
+
+/** Condição da peça — usada principalmente nas Placas Main. */
+export type CondicaoPeca =
+  | "nova"
+  | "usada_testada"
+  | "recuperada_testada"
+  | "aguardando_teste"
+  | "defeituosa";
+
+export const CONDICOES: { value: CondicaoPeca; label: string; classe: string }[] = [
+  { value: "nova", label: "Nova", classe: "bg-primary/10 text-primary border-primary/30" },
+  {
+    value: "usada_testada",
+    label: "Original usada testada",
+    classe: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+  },
+  {
+    value: "recuperada_testada",
+    label: "Recuperada testada",
+    classe: "bg-sky-500/10 text-sky-600 border-sky-500/30",
+  },
+  {
+    value: "aguardando_teste",
+    label: "Aguardando teste",
+    classe: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+  },
+  {
+    value: "defeituosa",
+    label: "Defeituosa",
+    classe: "bg-destructive/10 text-destructive border-destructive/30",
+  },
+];
+
+export const CONDICAO_LABEL: Record<string, string> = Object.fromEntries(
+  CONDICOES.map((c) => [c.value, c.label]),
+);
+
+/** Como a quantidade inicial de um cadastro entra no estoque (sempre com movimentação). */
+export const MOTIVOS_INICIAIS = [
+  { value: "entrada_inicial", label: "Quantidade inicial do cadastro" },
+  { value: "saldo_abertura", label: "Saldo de abertura (peça já existia na ITV)" },
+  { value: "entrada_compra", label: "Entrada por compra" },
+];
+
+export interface ReposicaoLinha {
+  id: string;
+  tipo: EstoqueTipo;
+  marca_nome: string;
+  polegada: string | null;
+  modelo: string;
+  codigo_placa: string | null;
+  gaveta_label: string;
+  fisico: number;
+  reservado: number;
+  disponivel: number;
+  minimo: number;
+  falta: number;
+  status: "sem_estoque" | "baixo";
+}
+
+export interface MovimentoLinha {
+  id: string;
+  data: string;
+  tipo: "entrada" | "saida";
+  motivo: string;
+  quantidade: number;
+  saldo_anterior: number;
+  saldo_posterior: number;
+  os: string | null;
+  observacao: string | null;
+  familia: EstoqueTipo;
+  marca_nome: string;
+  polegada: string | null;
+  modelo: string;
+  codigo_placa: string | null;
+  gaveta_label: string;
+  tecnico_nome: string | null;
+  responsavel: string | null;
+  estornado_em: string | null;
+  estorno_de: string | null;
+}
+
+export interface GavetaPainelLinha {
+  id: string;
+  grupo: "LED" | "MAIN";
+  numero: number;
+  codigo: string;
+  label: string;
+  descricao: string | null;
+  ativo: boolean;
+  itens: number;
+  total: number;
+  reservado: number;
+}
+
+export interface RelatorioLinha {
+  rotulo?: string;
+  marca?: string;
+  grupo_label?: string;
+  gaveta?: string;
+  total?: number;
+  posicoes?: number;
+  reservado?: number;
+  disponivel?: number;
+  minimo?: number;
+  movimentos?: number;
+  sistema?: number;
+  contado?: number;
+  diferenca?: number;
+  data?: string;
+  responsavel?: string | null;
+  itens?: { marca: string; modelo: string; quantidade: number }[];
 }
 
 export type StatusSolicitacao =
