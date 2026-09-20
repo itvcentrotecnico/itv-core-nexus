@@ -53,6 +53,11 @@ import {
   SolicitacoesLista,
   SolicitarDialog,
 } from "@/components/estoque/solicitacoes";
+import {
+  CargaInicialCard,
+  ConferenciaGavetaCard,
+  RelatoriosEstoqueCard,
+} from "@/components/estoque/inventario";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
