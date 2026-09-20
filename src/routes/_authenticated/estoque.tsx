@@ -41,6 +41,12 @@ import {
 } from "@/lib/estoque";
 import { ItemEstoqueDialog } from "@/components/estoque/item-form";
 import { GavetasCard, MarcasCard } from "@/components/estoque/cadastros";
+import {
+  BaixaDialog,
+  EntradaDialog,
+  HistoricoDialog,
+  ReservaDialog,
+} from "@/components/estoque/movimentacao";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
@@ -492,6 +498,28 @@ function EstoquePage() {
       ) : (
         consulta
       )}
+
+      <BaixaDialog
+        item={baixaItem}
+        reservaId={baixaReserva}
+        onClose={() => {
+          setBaixaItem(null);
+          setBaixaReserva(null);
+        }}
+      />
+      <EntradaDialog item={entradaItem} onClose={() => setEntradaItem(null)} />
+      <ReservaDialog item={reservaItem} onClose={() => setReservaItem(null)} />
+      <HistoricoDialog
+        item={historicoItem}
+        podeMovimentar={podeMovimentar}
+        podeEstornar={podeEstornar}
+        onClose={() => setHistoricoItem(null)}
+        onBaixarReserva={(reservaId) => {
+          setBaixaReserva(reservaId);
+          setBaixaItem(historicoItem);
+          setHistoricoItem(null);
+        }}
+      />
 
       <ItemEstoqueDialog
         aberto={!!formTipo}
