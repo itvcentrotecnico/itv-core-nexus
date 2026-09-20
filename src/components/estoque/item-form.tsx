@@ -301,6 +301,25 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
           ) : null}
 
           <div>
+            <label className={labelClass} htmlFor="estoque-condicao">
+              Condição da peça
+            </label>
+            <select
+              id="estoque-condicao"
+              className={inputClass}
+              value={condicao}
+              onChange={(e) => setCondicao(e.target.value)}
+            >
+              <option value="">Não informada</option>
+              {CONDICOES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
             <span className={labelClass}>Compatibilidade</span>
             <div className="flex gap-2">
               <input
@@ -396,6 +415,29 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
             </div>
           </div>
 
+          {item ? null : (
+            <div>
+              <label className={labelClass} htmlFor="estoque-motivo-inicial">
+                Como esta quantidade entra no estoque
+              </label>
+              <select
+                id="estoque-motivo-inicial"
+                className={inputClass}
+                value={motivoInicial}
+                onChange={(e) => setMotivoInicial(e.target.value)}
+              >
+                {MOTIVOS_INICIAIS.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                A quantidade inicial sempre gera movimentação registrada no histórico da peça.
+              </p>
+            </div>
+          )}
+
           <div>
             <label className={labelClass} htmlFor="estoque-custo">
               Custo unitário (R$)
@@ -408,10 +450,12 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
               className={inputClass}
               value={custo}
               onChange={(e) => setCusto(e.target.value)}
+              placeholder="Custo não informado"
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Usado para lançar o custo direto na OS quando a baixa for por uso em OS. O técnico não
-              visualiza este valor.
+              Deixe em branco quando o custo não for conhecido — o sistema nunca registra R$ 0,00 como
+              se fosse custo real. Usado para o custo direto da OS quando a baixa for por uso em OS. O
+              técnico não visualiza este valor.
             </p>
           </div>
 
