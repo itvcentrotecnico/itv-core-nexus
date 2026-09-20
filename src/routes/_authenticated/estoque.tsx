@@ -511,6 +511,7 @@ function EstoquePage() {
             <TabsTrigger value="minhas">Minhas solicitações</TabsTrigger>
           ) : null}
           {podeReservar ? <TabsTrigger value="reservas">Reservas ativas</TabsTrigger> : null}
+          {podeMovimentar ? <TabsTrigger value="inventario">Inventário</TabsTrigger> : null}
           {podeAdministrar ? <TabsTrigger value="cadastros">Marcas e gavetas</TabsTrigger> : null}
         </TabsList>
         <TabsContent value="consulta" className="mt-4">
