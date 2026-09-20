@@ -182,15 +182,15 @@ function ItemCard({
               </Button>
             </>
           ) : null}
-          {podeReservar && !podeMovimentar ? (
-            <Button size="sm" onClick={onReservar} disabled={item.quantidade_disponivel <= 0}>
-              Reservar para OS
+          {podeSolicitar && !podeReservar ? (
+            <Button size="sm" onClick={onSolicitar} disabled={item.quantidade_disponivel <= 0}>
+              <ClipboardList className="mr-1.5 size-3.5" /> Solicitar para OS
             </Button>
           ) : null}
-          {podeReservar && podeMovimentar ? (
+          {podeReservar ? (
             <Button
               size="sm"
-              variant="outline"
+              variant={podeMovimentar ? "outline" : "default"}
               onClick={onReservar}
               disabled={item.quantidade_disponivel <= 0}
             >
