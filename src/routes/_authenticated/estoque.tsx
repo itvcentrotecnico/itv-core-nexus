@@ -531,6 +531,13 @@ function EstoquePage() {
             <SolicitacoesLista escopo="minhas" podeAnalisar={false} />
           </TabsContent>
         ) : null}
+        {podeMovimentar ? (
+          <TabsContent value="inventario" className="mt-4 space-y-4">
+            {podeAdministrar ? <CargaInicialCard /> : null}
+            <ConferenciaGavetaCard localizacoes={locais} />
+            <RelatoriosEstoqueCard />
+          </TabsContent>
+        ) : null}
         {podeAdministrar ? (
           <TabsContent value="cadastros" className="mt-4 space-y-4">
             <MarcasCard marcas={marcas} podeAdministrar={podeAdministrar} />
