@@ -268,7 +268,8 @@ export function useGerenciaResumo() {
     contadores.semMotorista +
     contadores.naoRealizadas +
     contadores.lotesProntos +
-    contadores.lotesDevolvidos;
+    contadores.lotesDevolvidos +
+    contadores.solicitacoesEstoque;
 
   return {
     contadores,
