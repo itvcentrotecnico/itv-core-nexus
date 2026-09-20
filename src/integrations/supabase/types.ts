@@ -6360,6 +6360,8 @@ export type Database = {
         | "localizacao_ativar"
         | "localizacao_visualizar"
         | "localizacao_historico"
+        | "movimentar"
+        | "reservar"
       producao_status:
         | "rascunho"
         | "enviado_validacao"
@@ -6619,6 +6621,8 @@ export const Constants = {
         "localizacao_ativar",
         "localizacao_visualizar",
         "localizacao_historico",
+        "movimentar",
+        "reservar",
       ],
       producao_status: [
         "rascunho",
