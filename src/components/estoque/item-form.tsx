@@ -169,7 +169,7 @@ export function ItemEstoqueDialog({ aberto, tipo, item, marcas, localizacoes, on
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {item ? "Editar" : "Novo"} {TIPO_LABEL[tipo].toLowerCase()}
+            {item ? "Editar" : tipo === "kit_led" ? "Novo" : "Nova"} {TIPO_LABEL[tipo]}
           </DialogTitle>
           <DialogDescription>
             Campos com * são obrigatórios. A compatibilidade nunca é deduzida pelo sistema: só vale o
