@@ -91,7 +91,8 @@ export function BaixaDialog({
   }, [item]);
 
   if (!item) return null;
-  const disponivel = item.quantidade_disponivel;
+  // Ao atender uma reserva, a quantidade reservada volta a ficar disponível para a baixa.
+  const disponivel = reservaId ? item.quantidade : item.quantidade_disponivel;
 
   async function registrar() {
     if (!item) return;
@@ -120,6 +121,7 @@ export function BaixaDialog({
         p_os: os.trim() || null,
         p_tecnico_id: tecnicoId || null,
         p_observacao: observacao.trim() || null,
+        p_reserva_id: reservaId ?? null,
       });
       toast.success("✅ Baixa registrada", {
         duration: 9000,
