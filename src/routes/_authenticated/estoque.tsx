@@ -48,6 +48,11 @@ import {
   HistoricoDialog,
   ReservaDialog,
 } from "@/components/estoque/movimentacao";
+import {
+  ReservasLista,
+  SolicitacoesLista,
+  SolicitarDialog,
+} from "@/components/estoque/solicitacoes";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
