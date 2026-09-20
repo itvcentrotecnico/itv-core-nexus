@@ -94,13 +94,20 @@ export function BaixaDialog({
   async function registrar() {
     if (!item) return;
     const qtd = Number(quantidade || 0);
-    if (qtd <= 0) return toast.error("Informe uma quantidade maior que zero.");
-    if (qtd > disponivel)
-      return toast.error("Quantidade maior que o disponível.", {
+    if (qtd <= 0) {
+      toast.error("Informe uma quantidade maior que zero.");
+      return;
+    }
+    if (qtd > disponivel) {
+      toast.error("Quantidade maior que o disponível.", {
         description: `Disponível agora: ${disponivel} ${unidade(item, disponivel)}.`,
       });
-    if (motivo === "uso_os" && !os.trim())
-      return toast.error("Para uso em OS, informe o número da OS.");
+      return;
+    }
+    if (motivo === "uso_os" && !os.trim()) {
+      toast.error("Para uso em OS, informe o número da OS.");
+      return;
+    }
 
     setSalvando(true);
     try {
@@ -273,7 +280,10 @@ export function EntradaDialog({
   async function registrar() {
     if (!item) return;
     const qtd = Number(quantidade || 0);
-    if (qtd <= 0) return toast.error("Informe uma quantidade maior que zero.");
+    if (qtd <= 0) {
+      toast.error("Informe uma quantidade maior que zero.");
+      return;
+    }
     setSalvando(true);
     try {
       const res = await rpcEstoque<{
@@ -398,7 +408,10 @@ export function ReservaDialog({
   async function reservar() {
     if (!item) return;
     const qtd = Number(quantidade || 0);
-    if (qtd <= 0) return toast.error("Informe uma quantidade maior que zero.");
+    if (qtd <= 0) {
+      toast.error("Informe uma quantidade maior que zero.");
+      return;
+    }
     setSalvando(true);
     try {
       const res = await rpcEstoque<{ ok: true; disponivel: number }>("estoque_reservar", {
