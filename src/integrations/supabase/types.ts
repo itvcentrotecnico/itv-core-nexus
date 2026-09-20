@@ -6051,16 +6051,10 @@ export type Database = {
         Args: { p_ativo?: boolean; p_id?: string; p_nome: string }
         Returns: Json
       }
-      estoque_movimento_estornar:
-        | { Args: { p_id: string; p_motivo: string }; Returns: Json }
-        | {
-            Args: {
-              p_id: string
-              p_motivo: string
-              p_restaurar_reserva?: boolean
-            }
-            Returns: Json
-          }
+      estoque_movimento_estornar: {
+        Args: { p_id: string; p_motivo: string; p_restaurar_reserva?: boolean }
+        Returns: Json
+      }
       estoque_norm: { Args: { p: string }; Returns: string }
       estoque_reserva_cancelar: {
         Args: { p_id: string; p_motivo?: string }
@@ -6074,27 +6068,17 @@ export type Database = {
         Args: { p_id: string; p_motivo: string }
         Returns: Json
       }
-      estoque_reservar:
-        | {
-            Args: {
-              p_item_id: string
-              p_observacao?: string
-              p_os?: string
-              p_quantidade: number
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              p_item_id: string
-              p_observacao?: string
-              p_os?: string
-              p_quantidade: number
-              p_solicitacao_id?: string
-              p_tecnico_id?: string
-            }
-            Returns: Json
-          }
+      estoque_reservar: {
+        Args: {
+          p_item_id: string
+          p_observacao?: string
+          p_os?: string
+          p_quantidade: number
+          p_solicitacao_id?: string
+          p_tecnico_id?: string
+        }
+        Returns: Json
+      }
       estoque_reservas_listar: { Args: { p_status?: string }; Returns: Json }
       estoque_resumo: { Args: never; Returns: Json }
       estoque_solicitacao_cancelar: {
