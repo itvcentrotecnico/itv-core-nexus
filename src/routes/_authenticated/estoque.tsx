@@ -1,7 +1,16 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Info, Package, Pencil, Plus, Search } from "lucide-react";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  History,
+  Info,
+  Package,
+  Pencil,
+  Plus,
+  Search,
+} from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAccess } from "@/hooks/use-auth";
@@ -32,6 +41,12 @@ import {
 } from "@/lib/estoque";
 import { ItemEstoqueDialog } from "@/components/estoque/item-form";
 import { GavetasCard, MarcasCard } from "@/components/estoque/cadastros";
+import {
+  BaixaDialog,
+  EntradaDialog,
+  HistoricoDialog,
+  ReservaDialog,
+} from "@/components/estoque/movimentacao";
 
 export const Route = createFileRoute("/_authenticated/estoque")({
   head: () => ({
@@ -60,15 +75,28 @@ function StatusBadge({ item }: { item: EstoqueItem }) {
   );
 }
 
+interface AcoesItem {
+  podeEditar: boolean;
+  podeMovimentar: boolean;
+  podeReservar: boolean;
+  onEditar: () => void;
+  onBaixa: () => void;
+  onEntrada: () => void;
+  onReservar: () => void;
+  onHistorico: () => void;
+}
+
 function ItemCard({
   item,
   podeEditar,
+  podeMovimentar,
+  podeReservar,
   onEditar,
-}: {
-  item: EstoqueItem;
-  podeEditar: boolean;
-  onEditar: () => void;
-}) {
+  onBaixa,
+  onEntrada,
+  onReservar,
+  onHistorico,
+}: { item: EstoqueItem } & AcoesItem) {
   return (
     <Card>
       <CardContent className="space-y-3 p-4">
@@ -112,14 +140,17 @@ function ItemCard({
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Disponível</p>
             <p className="font-medium text-foreground">
-              {item.quantidade}
+              {item.quantidade_disponivel}
               {item.tipo === "kit_led"
-                ? item.quantidade === 1
+                ? item.quantidade_disponivel === 1
                   ? " kit"
                   : " kits"
-                : item.quantidade === 1
+                : item.quantidade_disponivel === 1
                   ? " placa"
                   : " placas"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Físico: {item.quantidade} · Reservado: {item.quantidade_reservada}
             </p>
           </div>
         </div>
@@ -130,11 +161,41 @@ function ItemCard({
           </p>
         ) : null}
 
-        {podeEditar ? (
-          <Button size="sm" variant="outline" onClick={onEditar}>
-            <Pencil className="mr-1.5 size-3.5" /> Editar cadastro
+        <div className="flex flex-wrap gap-2">
+          {podeMovimentar ? (
+            <>
+              <Button size="sm" onClick={onBaixa} disabled={item.quantidade_disponivel <= 0}>
+                <ArrowDownCircle className="mr-1.5 size-3.5" /> Dar baixa
+              </Button>
+              <Button size="sm" variant="outline" onClick={onEntrada}>
+                <ArrowUpCircle className="mr-1.5 size-3.5" /> Entrada
+              </Button>
+            </>
+          ) : null}
+          {podeReservar && !podeMovimentar ? (
+            <Button size="sm" onClick={onReservar} disabled={item.quantidade_disponivel <= 0}>
+              Reservar para OS
+            </Button>
+          ) : null}
+          {podeReservar && podeMovimentar ? (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onReservar}
+              disabled={item.quantidade_disponivel <= 0}
+            >
+              Reservar
+            </Button>
+          ) : null}
+          <Button size="sm" variant="ghost" onClick={onHistorico}>
+            <History className="mr-1.5 size-3.5" /> Histórico
           </Button>
-        ) : null}
+          {podeEditar ? (
+            <Button size="sm" variant="ghost" onClick={onEditar}>
+              <Pencil className="mr-1.5 size-3.5" /> Editar cadastro
+            </Button>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );
@@ -146,6 +207,9 @@ function EstoquePage() {
   const podeCriar = isAdmin || can("estoque", "criar");
   const podeEditar = isAdmin || can("estoque", "editar");
   const podeAdministrar = isAdmin || can("estoque", "administrar");
+  const podeMovimentar = isAdmin || can("estoque", "movimentar");
+  const podeEstornar = isAdmin || can("estoque", "estornar");
+  const podeReservar = isAdmin || can("estoque", "reservar");
 
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState<"" | EstoqueTipo>("");
@@ -156,6 +220,11 @@ function EstoquePage() {
   const [formTipo, setFormTipo] = useState<EstoqueTipo | null>(null);
   const [editando, setEditando] = useState<EstoqueItem | null>(null);
   const [gavetaAberta, setGavetaAberta] = useState<string | null>(null);
+  const [baixaItem, setBaixaItem] = useState<EstoqueItem | null>(null);
+  const [baixaReserva, setBaixaReserva] = useState<string | null>(null);
+  const [entradaItem, setEntradaItem] = useState<EstoqueItem | null>(null);
+  const [reservaItem, setReservaItem] = useState<EstoqueItem | null>(null);
+  const [historicoItem, setHistoricoItem] = useState<EstoqueItem | null>(null);
 
   const marcasQuery = useQuery({
     queryKey: ["estoque", "marcas"],
@@ -353,10 +422,19 @@ function EstoquePage() {
                 key={i.id}
                 item={i}
                 podeEditar={podeEditar}
+                podeMovimentar={podeMovimentar}
+                podeReservar={podeReservar}
                 onEditar={() => {
                   setEditando(i);
                   setFormTipo(i.tipo);
                 }}
+                onBaixa={() => {
+                  setBaixaReserva(null);
+                  setBaixaItem(i);
+                }}
+                onEntrada={() => setEntradaItem(i)}
+                onReservar={() => setReservaItem(i)}
+                onHistorico={() => setHistoricoItem(i)}
               />
             ))}
           </div>
@@ -420,6 +498,28 @@ function EstoquePage() {
       ) : (
         consulta
       )}
+
+      <BaixaDialog
+        item={baixaItem}
+        reservaId={baixaReserva}
+        onClose={() => {
+          setBaixaItem(null);
+          setBaixaReserva(null);
+        }}
+      />
+      <EntradaDialog item={entradaItem} onClose={() => setEntradaItem(null)} />
+      <ReservaDialog item={reservaItem} onClose={() => setReservaItem(null)} />
+      <HistoricoDialog
+        item={historicoItem}
+        podeMovimentar={podeMovimentar}
+        podeEstornar={podeEstornar}
+        onClose={() => setHistoricoItem(null)}
+        onBaixarReserva={(reservaId) => {
+          setBaixaReserva(reservaId);
+          setBaixaItem(historicoItem);
+          setHistoricoItem(null);
+        }}
+      />
 
       <ItemEstoqueDialog
         aberto={!!formTipo}
