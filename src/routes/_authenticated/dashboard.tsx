@@ -19,6 +19,7 @@ import { Link } from "@tanstack/react-router";
 import { ClipboardCheck } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { ProjecaoMesCard } from "@/components/dashboard/projecao-mes";
 import { useAccess } from "@/hooks/use-auth";
 import { round2, type CaixaIndicadores } from "@/lib/caixa";
 import type { CustosIndicadores } from "@/lib/custos";
@@ -443,6 +444,8 @@ function DashboardPage() {
           </div>
         </Link>
       )}
+
+      <ProjecaoMesCard />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {KPIS.map((kpi) => {
