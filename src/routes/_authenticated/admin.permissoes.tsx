@@ -44,6 +44,12 @@ const ACTIONS: { value: PermissionAction; label: string }[] = [
   { value: "exportar", label: "Exportar" },
   { value: "configurar", label: "Configurar" },
   { value: "administrar", label: "Administrar" },
+  { value: "solicitar", label: "Solicitar" },
+  { value: "movimentar", label: "Movimentar (entrada/baixa)" },
+  { value: "reservar", label: "Reservar" },
+  { value: "liberar_reserva", label: "Liberar reserva" },
+  { value: "entregar_reserva", label: "Entregar reserva" },
+  { value: "validar", label: "Validar" },
 ];
 
 interface UsuarioBasico {
