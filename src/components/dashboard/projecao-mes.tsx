@@ -7,9 +7,11 @@ import type { CaixaIndicadores } from "@/lib/caixa";
 import { formatCurrencyBRL, todayManausISO } from "@/lib/format";
 import {
   FAIXA_LABEL,
+  METAS_PADRAO,
   RITMO_LABEL,
   SEMAFORO_LABEL,
   calcularProjecao,
+  type MetasFaturamento,
   type Semaforo,
 } from "@/lib/projecao";
 import { cn } from "@/lib/utils";
@@ -109,6 +111,29 @@ export function ProjecaoMesCard() {
     },
   });
 
+  // Metas do mês corrente, cadastradas em metas_empresa (repetem todo mês).
+  // Sem cadastro (ou sem permissão de leitura), cai no padrão 120K/125K/130K.
+  const metasQuery = useQuery({
+    queryKey: ["projecao-metas", inicioMes],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("metas_empresa")
+        .select("nome, valor_alvo")
+        .eq("tipo", "faturamento")
+        .eq("data_inicio", inicioMes);
+      if (error) throw error;
+      const metas = { ...METAS_PADRAO };
+      for (const row of data ?? []) {
+        const valor = Number(row.valor_alvo);
+        if (!Number.isFinite(valor) || valor <= 0) continue;
+        if (row.nome.startsWith("Piso")) metas.piso = valor;
+        else if (row.nome.startsWith("Desafio")) metas.desafio = valor;
+        else if (row.nome.startsWith("Meta")) metas.meta = valor;
+      }
+      return metas as MetasFaturamento;
+    },
+  });
+
   const ind = mesQuery.data;
   const semanaInd = semanaQuery.data;
 
@@ -119,8 +144,9 @@ export function ProjecaoMesCard() {
         ticketMedio: ind?.ok ? ind.ticket_medio : 0,
         hoje,
         realizadoSemana: semanaInd?.ok ? semanaInd.faturamento_final : null,
+        metas: metasQuery.data,
       }),
-    [ind, semanaInd, hoje],
+    [ind, semanaInd, hoje, metasQuery.data],
   );
 
   if (mesQuery.isLoading) {
