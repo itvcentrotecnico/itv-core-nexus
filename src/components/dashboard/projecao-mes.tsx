@@ -144,7 +144,7 @@ export function ProjecaoMesCard() {
         ticketMedio: ind?.ok ? ind.ticket_medio : 0,
         hoje,
         realizadoSemana: semanaInd?.ok ? semanaInd.faturamento_final : null,
-        metas: metasQuery.data,
+        metas: metasQuery.data ?? METAS_PADRAO,
       }),
     [ind, semanaInd, hoje, metasQuery.data],
   );
