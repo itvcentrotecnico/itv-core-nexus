@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import QRCode from "qrcode";
 import { Copy, ExternalLink, MessageSquareText, QrCode as QrIcon, Send } from "lucide-react";
 import { toast } from "sonner";
 
@@ -82,11 +81,22 @@ export function LinkDialog({ dados, onClose }: { dados: LinkGerado | null; onClo
     if (template.data) setMensagem(template.data);
   }, [template.data, dados?.token]);
 
+  // A biblioteca de QR Code só funciona no navegador: importada sob demanda
+  // para não ser avaliada no servidor (quebra a renderização em produção).
   useEffect(() => {
     if (!mostrarQr || !url) return;
-    void QRCode.toDataURL(url, { width: 320, margin: 1 })
-      .then(setQr)
-      .catch(() => setQr(null));
+    let ativo = true;
+    void import("qrcode")
+      .then((m) => (m.default ?? m).toDataURL(url, { width: 320, margin: 1 }))
+      .then((dataUrl) => {
+        if (ativo) setQr(dataUrl);
+      })
+      .catch(() => {
+        if (ativo) setQr(null);
+      });
+    return () => {
+      ativo = false;
+    };
   }, [mostrarQr, url]);
 
   async function copiar(texto: string, ok: string) {
