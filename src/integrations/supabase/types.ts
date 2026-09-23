@@ -232,6 +232,9 @@ export type Database = {
           desconto: number
           desconto_autorizacao_id: string | null
           descricao: string | null
+          grupo_classificado_em: string | null
+          grupo_classificado_por: string | null
+          grupo_receita: Database["public"]["Enums"]["grupo_receita"] | null
           id: string
           motivo_cancelamento: string | null
           observacao: string | null
@@ -258,6 +261,9 @@ export type Database = {
           desconto?: number
           desconto_autorizacao_id?: string | null
           descricao?: string | null
+          grupo_classificado_em?: string | null
+          grupo_classificado_por?: string | null
+          grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
           motivo_cancelamento?: string | null
           observacao?: string | null
@@ -284,6 +290,9 @@ export type Database = {
           desconto?: number
           desconto_autorizacao_id?: string | null
           descricao?: string | null
+          grupo_classificado_em?: string | null
+          grupo_classificado_por?: string | null
+          grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
           motivo_cancelamento?: string | null
           observacao?: string | null
@@ -4979,6 +4988,7 @@ export type Database = {
         Row: {
           ativo: boolean
           created_at: string
+          grupo_receita: Database["public"]["Enums"]["grupo_receita"] | null
           id: string
           nome: string
           ordem: number
@@ -4986,6 +4996,7 @@ export type Database = {
         Insert: {
           ativo?: boolean
           created_at?: string
+          grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
           nome: string
           ordem?: number
@@ -4993,6 +5004,7 @@ export type Database = {
         Update: {
           ativo?: boolean
           created_at?: string
+          grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
           nome?: string
           ordem?: number
@@ -5520,6 +5532,13 @@ export type Database = {
         Args: { p_id: string; p_motivo: string }
         Returns: Json
       }
+      caixa_classificar_receita: {
+        Args: {
+          p_grupo: Database["public"]["Enums"]["grupo_receita"]
+          p_id: string
+        }
+        Returns: Json
+      }
       caixa_desempenho: {
         Args: { p_meses?: number; p_ref?: string }
         Returns: Json
@@ -5571,6 +5590,7 @@ export type Database = {
         Args: { p_fechamento_id: string; p_motivo: string }
         Returns: Json
       }
+      caixa_receitas_sem_classificacao: { Args: never; Returns: Json }
       caixa_registrar_lancamento: {
         Args: {
           p_cliente?: string
@@ -6779,6 +6799,7 @@ export type Database = {
         | "parcialmente_pago"
         | "pago"
       folha_natureza: "provento" | "desconto"
+      grupo_receita: "servicos" | "acessorios" | "venda_tv"
       meta_status: "planejada" | "ativa" | "concluida" | "cancelada"
       permission_action:
         | "visualizar"
@@ -7043,6 +7064,7 @@ export const Constants = {
         "pago",
       ],
       folha_natureza: ["provento", "desconto"],
+      grupo_receita: ["servicos", "acessorios", "venda_tv"],
       meta_status: ["planejada", "ativa", "concluida", "cancelada"],
       permission_action: [
         "visualizar",
