@@ -38,6 +38,8 @@ import {
   type CaixaRpcResult,
   type FormaPagamento,
   type TipoReceita,
+  type GrupoReceita,
+  GRUPO_RECEITA_LABEL,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
@@ -234,6 +236,7 @@ export function LancamentoForm({
       setData(editing.data_lancamento);
       setOs(editing.os ?? "");
       setCliente(editing.cliente ?? "");
+      setGrupo(null);
       setTipoId(editing.tipo_receita_id);
       setDescricao(editing.descricao ?? "");
       setTecnicoId(editing.tecnico_id ?? "");
@@ -257,6 +260,7 @@ export function LancamentoForm({
       setOs("");
       setCliente("");
       setTipoId("");
+      setGrupo(null);
       setDescricao("");
       setTecnicoId("");
       setValorBruto(null);
