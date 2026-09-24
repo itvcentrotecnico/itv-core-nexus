@@ -193,7 +193,12 @@ function kpiValue(
   const v = map[kpi.key] ?? 0;
   return {
     value: kpi.format === "currency" ? formatCurrencyBRL(v) : String(v),
-    sub: ind.quantidade === 0 ? "Sem lançamentos no período" : "Fonte: Caixa Diário",
+    sub:
+      ind.quantidade === 0
+        ? "Sem lançamentos no período"
+        : kpi.key === "faturamento"
+          ? `Serviços ${formatCurrencyBRL(ind.receita_servicos ?? 0)} · Acessórios ${formatCurrencyBRL(ind.receita_acessorios ?? 0)} · TVs ${formatCurrencyBRL(ind.receita_venda_tv ?? 0)}`
+          : "Fonte: Caixa Diário",
   };
 }
 
