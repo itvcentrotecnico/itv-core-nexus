@@ -123,7 +123,21 @@ export interface CaixaIndicadores {
   receita_liquida: number;
   os_faturadas: number;
   ticket_medio: number;
+  receita_servicos?: number;
+  receita_acessorios?: number;
+  receita_venda_tv?: number;
+  receita_sem_classificacao?: number;
+  quantidade_servicos?: number;
+  quantidade_sem_classificacao?: number;
+  ticket_medio_servicos?: number;
 }
+
+export type GrupoReceita = "servicos" | "acessorios" | "venda_tv";
+export const GRUPO_RECEITA_LABEL: Record<GrupoReceita, string> = {
+  servicos: "Serviços",
+  acessorios: "Acessórios",
+  venda_tv: "Venda de TVs",
+};
 
 /** Resultado padronizado das funções RPC do caixa. */
 export interface CaixaRpcResult {

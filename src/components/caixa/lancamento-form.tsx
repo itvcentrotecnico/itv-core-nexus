@@ -38,6 +38,8 @@ import {
   type CaixaRpcResult,
   type FormaPagamento,
   type TipoReceita,
+  type GrupoReceita,
+  GRUPO_RECEITA_LABEL,
 } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
@@ -137,6 +139,7 @@ export function LancamentoForm({
   const [os, setOs] = useState("");
   const [cliente, setCliente] = useState("");
   const [tipoId, setTipoId] = useState("");
+  const [grupo, setGrupo] = useState<GrupoReceita | null>(null);
   const [descricao, setDescricao] = useState("");
   const [tecnicoId, setTecnicoId] = useState("");
   const [valorBruto, setValorBruto] = useState<number | null>(null);
@@ -182,13 +185,15 @@ export function LancamentoForm({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tipos_receita")
-        .select("id, nome, ativo, ordem")
-        .eq("ativo", true)
+        .select("id, nome, ativo, ordem, grupo_receita")
+        .or(`ativo.eq.true${editing ? `,id.eq.${editing.tipo_receita_id}` : ""}`)
         .order("ordem");
       if (error) throw error;
-      return data as TipoReceita[];
+      return data as (TipoReceita & { grupo_receita: GrupoReceita | null })[];
     },
   });
+  const tipoSel = (tiposQuery.data ?? []).find((t) => t.id === tipoId);
+  const grupoAtual: GrupoReceita | null = grupo ?? tipoSel?.grupo_receita ?? null;
 
   const formasQuery = useQuery({
     queryKey: ["caixa", "formas-pagamento"],
@@ -231,6 +236,7 @@ export function LancamentoForm({
       setData(editing.data_lancamento);
       setOs(editing.os ?? "");
       setCliente(editing.cliente ?? "");
+      setGrupo(null);
       setTipoId(editing.tipo_receita_id);
       setDescricao(editing.descricao ?? "");
       setTecnicoId(editing.tecnico_id ?? "");
@@ -254,6 +260,7 @@ export function LancamentoForm({
       setOs("");
       setCliente("");
       setTipoId("");
+      setGrupo(null);
       setDescricao("");
       setTecnicoId("");
       setValorBruto(null);
@@ -560,18 +567,51 @@ export function LancamentoForm({
                 className={inputClass}
               />
             </div>
+            <div className="sm:col-span-2">
+              <label className={labelClass}>Categoria da receita *</label>
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(GRUPO_RECEITA_LABEL) as GrupoReceita[]).map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => {
+                      setGrupo(g);
+                      const atual = (tiposQuery.data ?? []).find((t) => t.id === tipoId);
+                      if (atual?.grupo_receita !== g) setTipoId("");
+                    }}
+                    className={cn(
+                      "rounded-md border px-2 py-2 text-xs font-semibold uppercase transition",
+                      grupoAtual === g
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-foreground hover:border-primary/50",
+                    )}
+                  >
+                    {GRUPO_RECEITA_LABEL[g]}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {grupoAtual === "servicos"
+                  ? "Entra no Faturamento Total e na Meta de Serviços."
+                  : grupoAtual
+                    ? "Entra no Faturamento Total. Não entra na Meta de Serviços."
+                    : "Escolha onde este valor será contabilizado."}
+              </p>
+            </div>
             <div>
-              <label className={labelClass}>Tipo de receita</label>
-              <Select value={tipoId} onValueChange={setTipoId}>
+              <label className={labelClass}>Tipo *</label>
+              <Select value={tipoId} onValueChange={setTipoId} disabled={!grupoAtual}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecione…" />
+                  <SelectValue placeholder={grupoAtual ? "Selecione…" : "Escolha a categoria"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {(tiposQuery.data ?? []).map((t) => (
-                    <SelectItem key={t.id} value={t.id}>
-                      {t.nome}
-                    </SelectItem>
-                  ))}
+                  {(tiposQuery.data ?? [])
+                    .filter((t) => t.grupo_receita === grupoAtual || t.id === tipoId)
+                    .map((t) => (
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.nome}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>

@@ -16,6 +16,7 @@ import { CaixaFisicoSection, useCaixaFisico } from "@/components/caixa/caixa-fis
 import { ResumoDesempenho } from "@/components/caixa/resumo-desempenho";
 import { PeriodoPresets } from "@/components/caixa/periodo-presets";
 import { DescontosSection } from "@/components/caixa/descontos";
+import { ReceitaCategorias, RevisaoClassificacao } from "@/components/caixa/receita-categorias";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import {
@@ -233,6 +234,10 @@ function CaixaPage() {
 
       {/* Resumo de faturamento — cards fixos (Hoje / Semana / Mês), independentes dos filtros */}
       <ResumoDesempenho dataRef={date} podeVerFinanceiro={podeVerFinanceiro} />
+
+      {/* Receita por categoria do período filtrado: Serviços + Acessórios + TVs = Total */}
+      <ReceitaCategorias lancamentos={lancamentos} />
+      {podeAdministrar && <RevisaoClassificacao />}
 
       {/* Banner de fechamento */}
       {diaFechado && fechamentoAtual && (
