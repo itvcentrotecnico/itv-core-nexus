@@ -140,10 +140,11 @@ export function ProjecaoMesCard() {
   const p = useMemo(
     () =>
       calcularProjecao({
-        faturamento: ind?.ok ? ind.faturamento_final : 0,
-        ticketMedio: ind?.ok ? ind.ticket_medio : 0,
+        // Meta de Serviços: somente receitas classificadas como SERVIÇOS.
+        faturamento: ind?.ok ? (ind.receita_servicos ?? 0) : 0,
+        ticketMedio: ind?.ok ? (ind.ticket_medio_servicos ?? 0) : 0,
         hoje,
-        realizadoSemana: semanaInd?.ok ? semanaInd.faturamento_final : null,
+        realizadoSemana: semanaInd?.ok ? (semanaInd.receita_servicos ?? 0) : null,
         metas: metasQuery.data ?? METAS_PADRAO,
       }),
     [ind, semanaInd, hoje, metasQuery.data],
@@ -162,7 +163,7 @@ export function ProjecaoMesCard() {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Projeção de fechamento
+            Meta de Serviços
           </p>
           <h2 className="font-display text-lg font-bold text-card-foreground">
             Projeção de {MESES[hoje.getMonth()]}
@@ -178,14 +179,42 @@ export function ProjecaoMesCard() {
         </span>
       </div>
 
-      {/* 1. Faturamento atual */}
+      {/* 1. Realizado em Serviços */}
       <p className="mt-4 font-display text-3xl font-bold text-card-foreground">
         {formatCurrencyBRL(p.faturamento)}
       </p>
       <p className="mt-1 text-xs text-muted-foreground">
-        Faturado no mês — fonte: Caixa Diário · {fmtDias(p.diasDecorridos)} dias operacionais
-        decorridos
+        Realizado em Serviços · faltam{" "}
+        {formatCurrencyBRL(Math.max(p.metas.piso - p.faturamento, 0))} para o piso ·{" "}
+        {fmtDias(p.diasDecorridos)} dias operacionais decorridos
       </p>
+      {ind?.ok && (
+        <div className="mt-3 rounded-lg border border-border bg-background p-3 text-xs">
+          <p className="font-semibold uppercase tracking-wide text-muted-foreground">
+            Outras receitas (fora da meta)
+          </p>
+          <div className="mt-1 flex justify-between">
+            <span>Acessórios</span>
+            <span className="font-medium">{formatCurrencyBRL(ind.receita_acessorios ?? 0)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Venda de TVs</span>
+            <span className="font-medium">{formatCurrencyBRL(ind.receita_venda_tv ?? 0)}</span>
+          </div>
+          {(ind.receita_sem_classificacao ?? 0) > 0 && (
+            <div className="flex justify-between text-destructive">
+              <span>Aguardando classificação</span>
+              <span className="font-medium">
+                {formatCurrencyBRL(ind.receita_sem_classificacao ?? 0)}
+              </span>
+            </div>
+          )}
+          <div className="mt-1 flex justify-between border-t border-border pt-1 font-semibold">
+            <span>Faturamento Total ITV</span>
+            <span>{formatCurrencyBRL(ind.faturamento_final)}</span>
+          </div>
+        </div>
+      )}
 
       {/* 2. Progresso até o desafio */}
       <div className="mt-4">
