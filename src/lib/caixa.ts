@@ -77,6 +77,9 @@ export interface CaixaLancamento {
   status: CaixaLancamentoStatus;
   observacao: string | null;
   alerta_duplicidade: boolean;
+  condicao_recebimento?: "imediato" | "faturado";
+  /** Preenchido quando o lançamento é o recebimento de um boleto (não é receita nova). */
+  liquida_conta_receber_id?: string | null;
   cancelado_em: string | null;
   motivo_cancelamento: string | null;
   created_at: string;
