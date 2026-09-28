@@ -480,7 +480,7 @@ export interface BoletosPainel {
 
 export const STATUS_BOLETO: Record<BoletoStatus, { label: string; className: string }> = {
   a_receber: { label: "A receber", className: "bg-secondary text-foreground" },
-  vence_hoje: { label: "Vence hoje", className: "bg-warning/15 text-warning" },
+  vence_hoje: { label: "Vence hoje", className: "bg-accent text-accent-foreground" },
   vencido: { label: "Vencido", className: "bg-destructive/10 text-destructive" },
   parcial: { label: "Recebido parcialmente", className: "bg-primary/10 text-primary" },
   recebido: { label: "Recebido", className: "bg-primary/15 text-primary" },
@@ -599,9 +599,9 @@ export function BoletosSection() {
       </div>
 
       {alertas.length > 0 && (
-        <div className="space-y-2 rounded-xl border border-warning/40 bg-warning/5 p-3">
+        <div className="space-y-2 rounded-xl border border-border bg-accent/40 p-3">
           <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <BellRing className="h-4 w-4 text-warning" /> Alertas de vencimento
+            <BellRing className="h-4 w-4 text-primary" /> Alertas de vencimento
           </p>
           <ul className="space-y-1.5">
             {alertas.slice(0, 8).map((b) => (
@@ -1070,7 +1070,7 @@ export function ContasReceberCard() {
           Contas a Receber
         </h2>
         {alertas > 0 && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-semibold text-warning">
+          <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
             <BellRing className="h-3 w-3" /> {alertas} alerta{alertas > 1 ? "s" : ""}
           </span>
         )}

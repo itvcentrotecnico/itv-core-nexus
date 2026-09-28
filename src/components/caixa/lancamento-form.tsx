@@ -58,6 +58,12 @@ import {
   valorTaxa,
   type TaxaRecebimento,
 } from "@/lib/taxas-recebimento";
+import {
+  FaturadoSection,
+  faturadoVazio,
+  validarFaturado,
+  type FaturadoEstado,
+} from "@/components/caixa/boletos";
 
 const NONE = "__none__";
 
@@ -147,6 +153,10 @@ export function LancamentoForm({
   const [observacao, setObservacao] = useState("");
   const [rows, setRows] = useState<PagRow[]>([emptyRow()]);
   const [saving, setSaving] = useState(false);
+  /** Condição de recebimento: imediato (entra no caixa) ou faturado/boleto (vira conta a receber). */
+  const [condicao, setCondicao] = useState<"imediato" | "faturado">("imediato");
+  const [faturado, setFaturado] = useState<FaturadoEstado>(faturadoVazio);
+  const ehFaturado = !editing && condicao === "faturado";
   const [dupInfo, setDupInfo] = useState<NonNullable<CaixaRpcResult["existente"]> | null>(null);
   const [comissaoEntrega, setComissaoEntrega] =
     useState<ComissaoEntregaEstado>(COMISSAO_ENTREGA_VAZIA);
@@ -232,6 +242,8 @@ export function LancamentoForm({
     setDupInfo(null);
     setAutorizacaoId(null);
     setAlcadaInfo(null);
+    setCondicao("imediato");
+    setFaturado(faturadoVazio());
     if (editing) {
       setData(editing.data_lancamento);
       setOs(editing.os ?? "");
@@ -383,6 +395,7 @@ export function LancamentoForm({
     if (valorBruto == null || valorBruto <= 0) return "Informe o valor bruto.";
     if ((desconto ?? 0) < 0) return "O desconto não pode ser negativo.";
     if (valorFinal < 0) return "O desconto não pode ser maior que o valor bruto.";
+    if (ehFaturado) return validarFaturado(faturado, valorFinal, data);
     const validas = rows.filter((r) => r.forma_pagamento_id && (r.valor ?? 0) > 0);
     if (validas.length === 0) return "Informe ao menos uma forma de pagamento com valor.";
     if (somaPagamentos !== valorFinal) {
@@ -472,7 +485,29 @@ export function LancamentoForm({
     try {
       const { data: res, error } = editing
         ? await supabase.rpc("caixa_atualizar_lancamento", { p_id: editing.id, ...payload })
-        : await supabase.rpc("caixa_registrar_lancamento", payload);
+        : ehFaturado
+          ? await supabase.rpc("caixa_registrar_faturado", {
+              p_data: data,
+              p_tipo_receita_id: tipoId,
+              p_valor_bruto: valorBruto ?? 0,
+              p_desconto: desconto ?? 0,
+              p_cliente_cnpj_id: faturado.cliente?.id ?? "",
+              p_boletos: faturado.boletos.map((b) => ({
+                vencimento: b.vencimento,
+                valor: round2(b.valor ?? 0),
+                documento: b.documento.trim(),
+              })) as unknown as Json,
+              p_confirmar_duplicidade: confirmarDuplicidade,
+              ...(faturado.emissao ? { p_data_emissao: faturado.emissao } : {}),
+              ...(faturado.notaFiscal.trim() ? { p_nota_fiscal: faturado.notaFiscal.trim() } : {}),
+              ...(faturado.responsavelId ? { p_responsavel_id: faturado.responsavelId } : {}),
+              ...(os.trim() ? { p_os: os.trim() } : {}),
+              ...(descricao.trim() ? { p_descricao: descricao.trim() } : {}),
+              ...(tecnicoId ? { p_tecnico_id: tecnicoId } : {}),
+              ...(observacao.trim() ? { p_observacao: observacao.trim() } : {}),
+              ...(autorizacaoId ? { p_desconto_autorizacao_id: autorizacaoId } : {}),
+            })
+          : await supabase.rpc("caixa_registrar_lancamento", payload);
       if (error) {
         toast.error("Não foi possível salvar o lançamento. Tente novamente.");
         return;
@@ -495,7 +530,13 @@ export function LancamentoForm({
       }
       const lancamentoId = (result.id as string | undefined) ?? editing?.id;
       if (lancamentoId) await salvarComissaoEntrega(lancamentoId);
-      toast.success(editing ? "Lançamento atualizado." : "Lançamento registrado no caixa.");
+      toast.success(
+        editing
+          ? "Lançamento atualizado."
+          : ehFaturado
+            ? "Venda faturada registrada. Boleto(s) em Contas a Receber."
+            : "Lançamento registrado no caixa.",
+      );
       onSaved();
       onOpenChange(false);
     } finally {
@@ -714,7 +755,43 @@ export function LancamentoForm({
             </div>
           )}
 
-          {/* Pagamentos */}
+          {!editing && (
+            <div className="mt-4">
+              <label className={labelClass}>Condição de recebimento *</label>
+              <div className="grid grid-cols-2 gap-2">
+                {(
+                  [
+                    ["imediato", "Recebimento imediato"],
+                    ["faturado", "Faturado / Boleto a receber"],
+                  ] as const
+                ).map(([k, l]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => setCondicao(k)}
+                    aria-pressed={condicao === k}
+                    className={cn(
+                      "rounded-md border px-3 py-2 text-sm font-medium transition-colors",
+                      condicao === k
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-foreground hover:bg-secondary",
+                    )}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {ehFaturado ? (
+            <FaturadoSection
+              valor={faturado}
+              onChange={(patch) => setFaturado((p) => ({ ...p, ...patch }))}
+              valorFinal={valorFinal}
+            />
+          ) : (
+          /* Pagamentos */
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">Pagamentos</h3>
@@ -948,6 +1025,7 @@ export function LancamentoForm({
               </dl>
             )}
           </div>
+          )}
 
           <ComissaoEntregaSection
             valor={comissaoEntrega}
