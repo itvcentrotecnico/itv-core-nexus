@@ -1070,7 +1070,7 @@ export function ContasReceberCard() {
           Contas a Receber
         </h2>
         {alertas > 0 && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+          <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-primary">
             <BellRing className="h-3 w-3" /> {alertas} alerta{alertas > 1 ? "s" : ""}
           </span>
         )}

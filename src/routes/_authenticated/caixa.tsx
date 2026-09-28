@@ -17,6 +17,7 @@ import { ResumoDesempenho } from "@/components/caixa/resumo-desempenho";
 import { PeriodoPresets } from "@/components/caixa/periodo-presets";
 import { DescontosSection } from "@/components/caixa/descontos";
 import { ReceitaCategorias, RevisaoClassificacao } from "@/components/caixa/receita-categorias";
+import { BoletosSection } from "@/components/caixa/boletos";
 import { round2, type CaixaFechamento, type CaixaLancamento } from "@/lib/caixa";
 import { cn } from "@/lib/utils";
 import {
@@ -47,7 +48,7 @@ function CaixaPage() {
 
   const [date, setDate] = useState(todayManausISO());
   const [periodo, setPeriodo] = useState({ inicio: todayManausISO(), fim: todayManausISO() });
-  const [tab, setTab] = useState<"lancamentos" | "fisico" | "descontos" | "fechamentos">(
+  const [tab, setTab] = useState<"lancamentos" | "fisico" | "boletos" | "descontos" | "fechamentos">(
     "lancamentos",
   );
   const [formOpen, setFormOpen] = useState(false);
@@ -113,10 +114,14 @@ function CaixaPage() {
 
   const lancamentos = useMemo(() => lancamentosQuery.data ?? [], [lancamentosQuery.data]);
   /** Totais do dia selecionado — usados no fechamento (regra financeira inalterada). */
-  const ativos = useMemo(
+  const ativosDia = useMemo(
     () => lancamentos.filter((l) => l.status === "ativo" && l.data_lancamento === date),
     [lancamentos, date],
   );
+  /** Receita = sem recebimentos de boleto (esses liquidam uma venda já faturada). */
+  const ehLiquidacao = (l: { liquida_conta_receber_id?: string | null }) => !!l.liquida_conta_receber_id;
+  const ativos = useMemo(() => ativosDia.filter((l) => !ehLiquidacao(l)), [ativosDia]);
+  const receitas = useMemo(() => lancamentos.filter((l) => !ehLiquidacao(l)), [lancamentos]);
 
   const fechamentoAtual = useMemo(
     () =>
@@ -138,14 +143,14 @@ function CaixaPage() {
   const dinheiroEsperado = useMemo(
     () =>
       round2(
-        ativos.reduce(
+        ativosDia.reduce(
           (acc, l) =>
             acc +
             (l.pagamentos ?? []).reduce((a, p) => a + (p.forma?.eh_dinheiro ? p.valor : 0), 0),
           0,
         ),
       ),
-    [ativos],
+    [ativosDia],
   );
 
   const fisicoQuery = useCaixaFisico(date, podeVer);
@@ -236,7 +241,7 @@ function CaixaPage() {
       <ResumoDesempenho dataRef={date} podeVerFinanceiro={podeVerFinanceiro} />
 
       {/* Receita por categoria do período filtrado: Serviços + Acessórios + TVs = Total */}
-      <ReceitaCategorias lancamentos={lancamentos} />
+      <ReceitaCategorias lancamentos={receitas} />
       {podeAdministrar && <RevisaoClassificacao />}
 
       {/* Banner de fechamento */}
@@ -259,12 +264,13 @@ function CaixaPage() {
       <div
         role="tablist"
         aria-label="Seções do caixa"
-        className="flex gap-1 rounded-lg border border-border bg-card p-1"
+        className="flex gap-1 overflow-x-auto rounded-lg border border-border bg-card p-1"
       >
         {(
           [
             { key: "lancamentos", label: "Lançamentos" },
             { key: "fisico", label: "Caixa físico" },
+            { key: "boletos", label: "Boletos / A receber" },
             { key: "descontos", label: "Descontos" },
             { key: "fechamentos", label: "Fechamentos" },
           ] as const
@@ -316,6 +322,8 @@ function CaixaPage() {
           diaBloqueado={diaBloqueado}
         />
       )}
+
+      {tab === "boletos" && <BoletosSection />}
 
       {tab === "descontos" && <DescontosSection periodo={periodo} />}
 
