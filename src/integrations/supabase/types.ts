@@ -226,6 +226,7 @@ export type Database = {
           cancelado_em: string | null
           cancelado_por: string | null
           cliente: string | null
+          condicao_recebimento: string
           created_at: string
           created_by: string | null
           data_lancamento: string
@@ -236,6 +237,7 @@ export type Database = {
           grupo_classificado_por: string | null
           grupo_receita: Database["public"]["Enums"]["grupo_receita"] | null
           id: string
+          liquida_conta_receber_id: string | null
           motivo_cancelamento: string | null
           observacao: string | null
           os: string | null
@@ -255,6 +257,7 @@ export type Database = {
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente?: string | null
+          condicao_recebimento?: string
           created_at?: string
           created_by?: string | null
           data_lancamento?: string
@@ -265,6 +268,7 @@ export type Database = {
           grupo_classificado_por?: string | null
           grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
+          liquida_conta_receber_id?: string | null
           motivo_cancelamento?: string | null
           observacao?: string | null
           os?: string | null
@@ -284,6 +288,7 @@ export type Database = {
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente?: string | null
+          condicao_recebimento?: string
           created_at?: string
           created_by?: string | null
           data_lancamento?: string
@@ -294,6 +299,7 @@ export type Database = {
           grupo_classificado_por?: string | null
           grupo_receita?: Database["public"]["Enums"]["grupo_receita"] | null
           id?: string
+          liquida_conta_receber_id?: string | null
           motivo_cancelamento?: string | null
           observacao?: string | null
           os?: string | null
@@ -328,6 +334,20 @@ export type Database = {
             columns: ["desconto_autorizacao_id"]
             isOneToOne: false
             referencedRelation: "descontos_autorizacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_liquida_conta_receber_id_fkey"
+            columns: ["liquida_conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caixa_lancamentos_liquida_conta_receber_id_fkey"
+            columns: ["liquida_conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber_saldos"
             referencedColumns: ["id"]
           },
           {
@@ -613,6 +633,59 @@ export type Database = {
           ordem?: number
         }
         Relationships: []
+      }
+      clientes_cnpj: {
+        Row: {
+          ativo: boolean
+          cnpj: string
+          contato: string | null
+          created_at: string
+          created_by: string | null
+          email_financeiro: string | null
+          id: string
+          nome_fantasia: string | null
+          observacao: string | null
+          razao_social: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          cnpj: string
+          contato?: string | null
+          created_at?: string
+          created_by?: string | null
+          email_financeiro?: string | null
+          id?: string
+          nome_fantasia?: string | null
+          observacao?: string | null
+          razao_social: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          cnpj?: string
+          contato?: string | null
+          created_at?: string
+          created_by?: string | null
+          email_financeiro?: string | null
+          id?: string
+          nome_fantasia?: string | null
+          observacao?: string | null
+          razao_social?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_cnpj_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       colaborador_adiantamentos: {
         Row: {
@@ -1940,19 +2013,23 @@ export type Database = {
           cancelado_em: string | null
           cancelado_por: string | null
           cliente: string
+          cliente_cnpj_id: string | null
           competencia: string | null
           created_at: string
           created_by: string | null
           data_emissao: string
           descricao: string
+          documento: string | null
           grupo_parcela: string | null
           id: string
           motivo_cancelamento: string | null
+          nota_fiscal: string | null
           observacao: string | null
           origem: string | null
           os: string | null
           parcela_atual: number | null
           parcela_total: number | null
+          renegociado: boolean
           responsavel_id: string
           status: Database["public"]["Enums"]["conta_receber_status"]
           updated_at: string
@@ -1965,19 +2042,23 @@ export type Database = {
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente: string
+          cliente_cnpj_id?: string | null
           competencia?: string | null
           created_at?: string
           created_by?: string | null
           data_emissao: string
           descricao: string
+          documento?: string | null
           grupo_parcela?: string | null
           id?: string
           motivo_cancelamento?: string | null
+          nota_fiscal?: string | null
           observacao?: string | null
           origem?: string | null
           os?: string | null
           parcela_atual?: number | null
           parcela_total?: number | null
+          renegociado?: boolean
           responsavel_id: string
           status?: Database["public"]["Enums"]["conta_receber_status"]
           updated_at?: string
@@ -1990,19 +2071,23 @@ export type Database = {
           cancelado_em?: string | null
           cancelado_por?: string | null
           cliente?: string
+          cliente_cnpj_id?: string | null
           competencia?: string | null
           created_at?: string
           created_by?: string | null
           data_emissao?: string
           descricao?: string
+          documento?: string | null
           grupo_parcela?: string | null
           id?: string
           motivo_cancelamento?: string | null
+          nota_fiscal?: string | null
           observacao?: string | null
           origem?: string | null
           os?: string | null
           parcela_atual?: number | null
           parcela_total?: number | null
+          renegociado?: boolean
           responsavel_id?: string
           status?: Database["public"]["Enums"]["conta_receber_status"]
           updated_at?: string
@@ -2023,6 +2108,13 @@ export type Database = {
             columns: ["cancelado_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_cliente_cnpj_id_fkey"
+            columns: ["cliente_cnpj_id"]
+            isOneToOne: false
+            referencedRelation: "clientes_cnpj"
             referencedColumns: ["id"]
           },
           {
@@ -2132,6 +2224,58 @@ export type Database = {
             columns: ["recebido_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_receber_vencimentos: {
+        Row: {
+          alterado_em: string
+          alterado_por: string
+          conta_receber_id: string
+          id: string
+          motivo: string
+          vencimento_anterior: string
+          vencimento_novo: string
+        }
+        Insert: {
+          alterado_em?: string
+          alterado_por: string
+          conta_receber_id: string
+          id?: string
+          motivo: string
+          vencimento_anterior: string
+          vencimento_novo: string
+        }
+        Update: {
+          alterado_em?: string
+          alterado_por?: string
+          conta_receber_id?: string
+          id?: string
+          motivo?: string
+          vencimento_anterior?: string
+          vencimento_novo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_receber_vencimentos_alterado_por_fkey"
+            columns: ["alterado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_vencimentos_conta_receber_id_fkey"
+            columns: ["conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_receber_vencimentos_conta_receber_id_fkey"
+            columns: ["conta_receber_id"]
+            isOneToOne: false
+            referencedRelation: "contas_receber_saldos"
             referencedColumns: ["id"]
           },
         ]
@@ -5591,6 +5735,26 @@ export type Database = {
         Returns: Json
       }
       caixa_receitas_sem_classificacao: { Args: never; Returns: Json }
+      caixa_registrar_faturado: {
+        Args: {
+          p_boletos: Json
+          p_cliente_cnpj_id: string
+          p_confirmar_duplicidade?: boolean
+          p_data: string
+          p_data_emissao?: string
+          p_desconto?: number
+          p_desconto_autorizacao_id?: string
+          p_descricao?: string
+          p_nota_fiscal?: string
+          p_observacao?: string
+          p_os?: string
+          p_responsavel_id?: string
+          p_tecnico_id?: string
+          p_tipo_receita_id: string
+          p_valor_bruto: number
+        }
+        Returns: Json
+      }
       caixa_registrar_lancamento: {
         Args: {
           p_cliente?: string
@@ -5605,6 +5769,18 @@ export type Database = {
           p_tecnico_id?: string
           p_tipo_receita_id?: string
           p_valor_bruto?: number
+        }
+        Returns: Json
+      }
+      clientes_cnpj_salvar: {
+        Args: {
+          p_cnpj: string
+          p_contato?: string
+          p_email?: string
+          p_nome_fantasia?: string
+          p_observacao?: string
+          p_razao_social: string
+          p_telefone?: string
         }
         Returns: Json
       }
@@ -5954,6 +6130,11 @@ export type Database = {
         }
         Returns: Json
       }
+      cr_alterar_vencimento: {
+        Args: { p_conta_id: string; p_motivo: string; p_vencimento: string }
+        Returns: Json
+      }
+      cr_boletos_painel: { Args: never; Returns: Json }
       custos_atualizar: {
         Args: {
           p_categoria_id?: string
