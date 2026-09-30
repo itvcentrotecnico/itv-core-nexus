@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -78,6 +78,7 @@ interface Pendente {
 /** Revisão de classificação: somente Gerência (caixa:administrar). */
 export function RevisaoClassificacao() {
   const qc = useQueryClient();
+  const [classificados, setClassificados] = useState<Set<string>>(new Set());
   const q = useQuery({
     queryKey: ["caixa", "sem-classificacao"],
     queryFn: async () => {
@@ -98,13 +99,14 @@ export function RevisaoClassificacao() {
       toast.error(error ? mensagemErro(error) : (r?.message ?? "Não foi possível classificar."));
       return;
     }
+    setClassificados((prev) => new Set(prev).add(id));
     toast.success(`Classificado como ${GRUPO_RECEITA_LABEL[grupo]}.`);
     void qc.invalidateQueries({ queryKey: ["caixa"] });
     void qc.invalidateQueries({ queryKey: ["dashboard-indicadores"] });
     void qc.invalidateQueries({ queryKey: ["projecao"] });
   }
 
-  const itens = q.data ?? [];
+  const itens = (q.data ?? []).filter((i) => !classificados.has(i.id));
   if (!itens.length) return null;
 
   return (
