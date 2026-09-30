@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDownCircle,
@@ -137,10 +137,10 @@ function kpiValue(
     valor_alvo: number;
     percentual: number;
   } | null,
-): { value: string; sub: string } {
+): { value: string; sub: ReactNode } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
-    sub: "Sem dados no período",
+    sub: "Sem dados no período" as ReactNode,
   };
   if (!kpi.key) return vazio;
 
@@ -192,14 +192,30 @@ function kpiValue(
     os: ind.os_faturadas,
   };
   const v = map[kpi.key] ?? 0;
+  const semClassificacao = round2(ind.receita_sem_classificacao ?? 0);
   return {
     value: kpi.format === "currency" ? formatCurrencyBRL(v) : String(v),
     sub:
-      ind.quantidade === 0
-        ? "Sem lançamentos no período"
-        : kpi.key === "faturamento"
-          ? `Serviços ${formatCurrencyBRL(ind.receita_servicos ?? 0)} · Acessórios ${formatCurrencyBRL(ind.receita_acessorios ?? 0)} · TVs ${formatCurrencyBRL(ind.receita_venda_tv ?? 0)}`
-          : "Fonte: Caixa Diário",
+      ind.quantidade === 0 ? (
+        "Sem lançamentos no período"
+      ) : kpi.key === "faturamento" ? (
+        <>
+          <span className="block">
+            Serviços + Acessórios:{" "}
+            {formatCurrencyBRL(
+              round2((ind.receita_servicos ?? 0) + (ind.receita_acessorios ?? 0)),
+            )}
+          </span>
+          <span className="block">
+            Venda de TVs: {formatCurrencyBRL(ind.receita_venda_tv ?? 0)}
+          </span>
+          {semClassificacao > 0 && (
+            <span className="block">Sem categoria: {formatCurrencyBRL(semClassificacao)}</span>
+          )}
+        </>
+      ) : (
+        "Fonte: Caixa Diário"
+      ),
   };
 }
 
