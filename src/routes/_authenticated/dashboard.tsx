@@ -137,10 +137,10 @@ function kpiValue(
     valor_alvo: number;
     percentual: number;
   } | null,
-): { value: string; sub: React.ReactNode } {
+): { value: string; sub: ReactNode } {
   const vazio = {
     value: kpi.format === "currency" ? "R$ 0,00" : "0",
-    sub: "Sem dados no período" as React.ReactNode,
+    sub: "Sem dados no período" as ReactNode,
   };
   if (!kpi.key) return vazio;
 
