@@ -101,9 +101,8 @@ export function RevisaoClassificacao() {
     }
     setClassificados((prev) => new Set(prev).add(id));
     toast.success(`Classificado como ${GRUPO_RECEITA_LABEL[grupo]}.`);
-    void qc.invalidateQueries({ queryKey: ["caixa"] });
-    void qc.invalidateQueries({ queryKey: ["dashboard-indicadores"] });
-    void qc.invalidateQueries({ queryKey: ["projecao"] });
+    const keys = ["caixa", "dashboard-indicadores", "dashboard-meta-principal", "projecao-mes", "projecao-semana", "projecao-metas"];
+    for (const k of keys) void qc.invalidateQueries({ queryKey: [k] });
   }
 
   const itens = (q.data ?? []).filter((i) => !classificados.has(i.id));
