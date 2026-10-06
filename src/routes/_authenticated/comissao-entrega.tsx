@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bike, Copy, MessageCircle, RefreshCw } from "lucide-react";
@@ -115,6 +115,7 @@ function ComissaoEntregaPage() {
   const [status, setStatus] = useState<"" | ComissaoEntregaStatus>("");
   const [os, setOs] = useState("");
   const [acao, setAcao] = useState<{ item: ComissaoEntrega; tipo: Acao } | null>(null);
+  const [divisao, setDivisao] = useState<"semana" | "dia">("semana");
 
   const podeValidar = isAdmin || can("comissao_entrega", "validar");
   const podePagar = isAdmin || can("comissao_entrega", "pagar");
@@ -181,6 +182,57 @@ function ComissaoEntregaPage() {
     setAcao(null);
     void queryClient.invalidateQueries({ queryKey: ["comissao-entrega"] });
   }
+
+  const relatorioPeriodo = useMemo<LinhaRelatorio[]>(() => {
+    const lancamentos = listaQuery.data?.itens ?? [];
+    const ativos = lancamentos.filter((i) => i.status !== "cancelada");
+    if (!inicio || !fim || ativos.length === 0) return [];
+    const spanDias =
+      (parseDataISO(fim).getTime() - parseDataISO(inicio).getTime()) / 86_400_000;
+    const porDia = divisao === "dia" || spanDias <= 7;
+    const porMotorista = new Map<string, Map<string, BalcaoRelatorio>>();
+    const nomes = new Map<string, string>();
+    for (const item of ativos) {
+      nomes.set(item.entregador_id, item.entregador);
+      const periodos =
+        porMotorista.get(item.entregador_id) ?? new Map<string, BalcaoRelatorio>();
+      let key: string;
+      let label: string;
+      if (porDia) {
+        key = item.data;
+        label = formatDateITV(item.data);
+      } else {
+        const iniSemana = dataISO(segundaFeira(parseDataISO(item.data)));
+        const fimSemana = dataISO(somarDias(parseDataISO(iniSemana), 6));
+        key = iniSemana;
+        label = `Semana ${formatDateITV(iniSemana)} – ${formatDateITV(fimSemana)}`;
+      }
+      let b = periodos.get(key);
+      if (!b) {
+        b = balcaoVazio(key, label);
+        periodos.set(key, b);
+      }
+      somarBalcao(b, item);
+      porMotorista.set(item.entregador_id, periodos);
+    }
+    return [...porMotorista.entries()]
+      .map(([id, periodos]) => {
+        const ordenados = [...periodos.values()].sort((a, b) => (a.key < b.key ? -1 : 1));
+        const total = ordenados.reduce(
+          (acc, p) => {
+            acc.entregas += p.entregas;
+            acc.comAvaliacao += p.comAvaliacao;
+            acc.gerado += p.gerado;
+            acc.validado += p.validado;
+            acc.pago += p.pago;
+            return acc;
+          },
+          balcaoVazio("total", "Total"),
+        );
+        return { id, nome: nomes.get(id) ?? "—", periodos: ordenados, total };
+      })
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  }, [listaQuery.data, inicio, fim, divisao]);
 
   if (isLoading) return <Carregando />;
 
