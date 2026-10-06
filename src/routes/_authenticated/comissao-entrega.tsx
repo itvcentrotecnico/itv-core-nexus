@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bike, RefreshCw } from "lucide-react";
+import { Bike, Copy, MessageCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +17,7 @@ import {
   TabelaAdmin,
 } from "@/components/admin/shared";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateITV, todayManausISO } from "@/lib/format";
+import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
 import {
   STATUS_ENTREGA,
   TIPO_ENTREGA,
@@ -52,6 +52,56 @@ function monthStart(iso: string) {
   return `${iso.slice(0, 7)}-01`;
 }
 
+/** Semana operacional: segunda a domingo (America/Manaus, datas ISO). */
+function parseDataISO(v: string): Date {
+  const [y = 1970, m = 1, d = 1] = v.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+function dataISO(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function somarDias(d: Date, n: number): Date {
+  const x = new Date(d);
+  x.setUTCDate(x.getUTCDate() + n);
+  return x;
+}
+
+function segundaFeira(d: Date): Date {
+  return somarDias(d, -((d.getUTCDay() + 6) % 7));
+}
+
+interface BalcaoRelatorio {
+  key: string;
+  label: string;
+  entregas: number;
+  comAvaliacao: number;
+  gerado: number;
+  validado: number;
+  pago: number;
+}
+
+interface LinhaRelatorio {
+  id: string;
+  nome: string;
+  periodos: BalcaoRelatorio[];
+  total: BalcaoRelatorio;
+}
+
+function balcaoVazio(key: string, label: string): BalcaoRelatorio {
+  return { key, label, entregas: 0, comAvaliacao: 0, gerado: 0, validado: 0, pago: 0 };
+}
+
+function somarBalcao(b: BalcaoRelatorio, item: ComissaoEntrega) {
+  b.entregas += 1;
+  if (item.avaliacao_confirmada) b.comAvaliacao += 1;
+  const v = Number(item.valor);
+  if (item.status === "validada" || item.status === "paga") b.validado += v;
+  if (item.status === "paga") b.pago += v;
+  b.gerado += v;
+}
+
 type Acao = "validar" | "rejeitar" | "pagar" | "cancelar";
 
 function ComissaoEntregaPage() {
@@ -65,6 +115,7 @@ function ComissaoEntregaPage() {
   const [status, setStatus] = useState<"" | ComissaoEntregaStatus>("");
   const [os, setOs] = useState("");
   const [acao, setAcao] = useState<{ item: ComissaoEntrega; tipo: Acao } | null>(null);
+  const [divisao, setDivisao] = useState<"semana" | "dia">("semana");
 
   const podeValidar = isAdmin || can("comissao_entrega", "validar");
   const podePagar = isAdmin || can("comissao_entrega", "pagar");
@@ -132,6 +183,58 @@ function ComissaoEntregaPage() {
     void queryClient.invalidateQueries({ queryKey: ["comissao-entrega"] });
   }
 
+  const periodoSpan = (parseDataISO(fim).getTime() - parseDataISO(inicio).getTime()) / 86_400_000;
+  const divisaoEfetiva = divisao === "dia" || periodoSpan <= 7 ? "dia" : "semana";
+
+  const relatorioPeriodo = useMemo<LinhaRelatorio[]>(() => {
+    const lancamentos = listaQuery.data?.itens ?? [];
+    const ativos = lancamentos.filter((i) => i.status !== "cancelada");
+    if (!inicio || !fim || ativos.length === 0) return [];
+    const porDia = divisaoEfetiva === "dia";
+    const porMotorista = new Map<string, Map<string, BalcaoRelatorio>>();
+    const nomes = new Map<string, string>();
+    for (const item of ativos) {
+      nomes.set(item.entregador_id, item.entregador);
+      const periodos =
+        porMotorista.get(item.entregador_id) ?? new Map<string, BalcaoRelatorio>();
+      let key: string;
+      let label: string;
+      if (porDia) {
+        key = item.data;
+        label = formatDateOnlyISO(item.data);
+      } else {
+        const iniSemana = dataISO(segundaFeira(parseDataISO(item.data)));
+        const fimSemana = dataISO(somarDias(parseDataISO(iniSemana), 6));
+        key = iniSemana;
+        label = `Semana ${formatDateOnlyISO(iniSemana)} – ${formatDateOnlyISO(fimSemana)}`;
+      }
+      let b = periodos.get(key);
+      if (!b) {
+        b = balcaoVazio(key, label);
+        periodos.set(key, b);
+      }
+      somarBalcao(b, item);
+      porMotorista.set(item.entregador_id, periodos);
+    }
+    return [...porMotorista.entries()]
+      .map(([id, periodos]) => {
+        const ordenados = [...periodos.values()].sort((a, b) => (a.key < b.key ? -1 : 1));
+        const total = ordenados.reduce(
+          (acc, p) => {
+            acc.entregas += p.entregas;
+            acc.comAvaliacao += p.comAvaliacao;
+            acc.gerado += p.gerado;
+            acc.validado += p.validado;
+            acc.pago += p.pago;
+            return acc;
+          },
+          balcaoVazio("total", "Total"),
+        );
+        return { id, nome: nomes.get(id) ?? "—", periodos: ordenados, total };
+      })
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  }, [listaQuery.data, inicio, fim, divisaoEfetiva]);
+
   if (isLoading) return <Carregando />;
 
   const itens = listaQuery.data?.itens ?? [];
@@ -141,6 +244,54 @@ function ComissaoEntregaPage() {
   const totalPago = itens
     .filter((i) => i.status === "paga")
     .reduce((acc, i) => acc + Number(i.valor), 0);
+
+  const totalGeral = relatorioPeriodo.reduce(
+    (acc, m) => {
+      acc.entregas += m.total.entregas;
+      acc.comAvaliacao += m.total.comAvaliacao;
+      acc.gerado += m.total.gerado;
+      acc.validado += m.total.validado;
+      acc.pago += m.total.pago;
+      return acc;
+    },
+    balcaoVazio("total-geral", "Total geral"),
+  );
+
+  function textoRelatorioPeriodo(): string {
+    const linhas: string[] = [
+      `*Relatório de entregas — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}*`,
+    ];
+    for (const m of relatorioPeriodo) {
+      linhas.push("", `*${m.nome}*`);
+      for (const p of m.periodos) {
+        linhas.push(
+          `• ${p.label}: ${p.entregas} ${p.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(p.gerado)}` +
+            (p.comAvaliacao > 0 ? ` · ${p.comAvaliacao} com avaliação` : ""),
+        );
+      }
+      linhas.push(
+        `*Total: ${m.total.entregas} ${m.total.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(m.total.gerado)}*`,
+      );
+    }
+    linhas.push(
+      "",
+      `*Total geral: ${totalGeral.entregas} ${totalGeral.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(totalGeral.gerado)}*`,
+    );
+    return linhas.join("\n");
+  }
+
+  async function copiarRelatorio() {
+    try {
+      await navigator.clipboard.writeText(textoRelatorioPeriodo());
+      toast.success("Relatório copiado para a área de transferência.");
+    } catch {
+      toast.error("Não foi possível copiar o relatório.");
+    }
+  }
+
+  function enviarWhatsApp() {
+    window.open(`https://wa.me/?text=${encodeURIComponent(textoRelatorioPeriodo())}`, "_blank");
+  }
 
   return (
     <div className="space-y-6">
@@ -257,6 +408,7 @@ function ComissaoEntregaPage() {
         <TabsList>
           <TabsTrigger value="lista">Comissões</TabsTrigger>
           <TabsTrigger value="relatorio">Por entregador</TabsTrigger>
+          <TabsTrigger value="periodos">Por período</TabsTrigger>
         </TabsList>
 
         <TabsContent value="lista" className="mt-4">
@@ -274,7 +426,7 @@ function ComissaoEntregaPage() {
               >
                 {itens.map((i) => (
                   <tr key={i.id}>
-                    <td className="px-3 py-2 whitespace-nowrap">{formatDateITV(i.data)}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">{formatDateOnlyISO(i.data)}</td>
                     <td className="px-3 py-2">{i.os ?? "—"}</td>
                     <td className="px-3 py-2 font-medium text-foreground">{i.entregador}</td>
                     <td className="px-3 py-2 text-muted-foreground">
@@ -369,6 +521,116 @@ function ComissaoEntregaPage() {
                     <td className="px-3 py-2">{formatCurrencyBRL(Number(r.valor_pendente))}</td>
                   </tr>
                 ))}
+              </TabelaAdmin>
+            )}
+          </SecaoAdmin>
+        </TabsContent>
+
+        <TabsContent value="periodos" className="mt-4">
+          <SecaoAdmin
+            titulo="Relatório por período"
+            descricao={`Dividido por ${divisaoEfetiva === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}. Lançamentos cancelados não entram.`}
+            acoes={
+              <>
+                <Button
+                  size="sm"
+                  variant={divisao === "semana" ? "secondary" : "ghost"}
+                  onClick={() => setDivisao("semana")}
+                >
+                  Por semana
+                </Button>
+                <Button
+                  size="sm"
+                  variant={divisao === "dia" ? "secondary" : "ghost"}
+                  onClick={() => setDivisao("dia")}
+                >
+                  Por dia
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={relatorioPeriodo.length === 0}
+                  onClick={() => void copiarRelatorio()}
+                >
+                  <Copy className="mr-2 size-4" /> Copiar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={relatorioPeriodo.length === 0}
+                  onClick={enviarWhatsApp}
+                >
+                  <MessageCircle className="mr-2 size-4" /> WhatsApp
+                </Button>
+              </>
+            }
+          >
+            {relatorioPeriodo.length === 0 ? (
+              <SemDados label="Sem entregas no período" />
+            ) : (
+              <TabelaAdmin
+                cabecalho={[
+                  "Período",
+                  "Entregas",
+                  "Com avaliação",
+                  "Gerado",
+                  "Validado",
+                  "Pago",
+                ]}
+              >
+                {relatorioPeriodo.map((m) => (
+                  <Fragment key={m.id}>
+                    <tr className="bg-muted/50">
+                      <td colSpan={6} className="px-3 py-2 font-semibold text-foreground">
+                        {m.nome}
+                      </td>
+                    </tr>
+                    {m.periodos.map((p) => (
+                      <tr key={`${m.id}-${p.key}`}>
+                        <td className="px-3 py-2 whitespace-nowrap">{p.label}</td>
+                        <td className="px-3 py-2">{p.entregas}</td>
+                        <td className="px-3 py-2">{p.comAvaliacao}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.gerado)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.validado)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.pago)}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr className="border-t border-border font-medium">
+                      <td className="px-3 py-2">Total — {m.nome}</td>
+                      <td className="px-3 py-2">{m.total.entregas}</td>
+                      <td className="px-3 py-2">{m.total.comAvaliacao}</td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.gerado)}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.validado)}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.pago)}
+                      </td>
+                    </tr>
+                  </Fragment>
+                ))}
+                <tr className="border-t-2 border-border font-semibold">
+                  <td className="px-3 py-2">Total geral</td>
+                  <td className="px-3 py-2">{totalGeral.entregas}</td>
+                  <td className="px-3 py-2">{totalGeral.comAvaliacao}</td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.gerado)}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.validado)}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.pago)}
+                  </td>
+                </tr>
               </TabelaAdmin>
             )}
           </SecaoAdmin>
