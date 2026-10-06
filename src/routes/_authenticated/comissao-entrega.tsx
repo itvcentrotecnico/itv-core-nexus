@@ -183,13 +183,14 @@ function ComissaoEntregaPage() {
     void queryClient.invalidateQueries({ queryKey: ["comissao-entrega"] });
   }
 
+  const periodoSpan = (parseDataISO(fim).getTime() - parseDataISO(inicio).getTime()) / 86_400_000;
+  const divisaoEfetiva = divisao === "dia" || periodoSpan <= 7 ? "dia" : "semana";
+
   const relatorioPeriodo = useMemo<LinhaRelatorio[]>(() => {
     const lancamentos = listaQuery.data?.itens ?? [];
     const ativos = lancamentos.filter((i) => i.status !== "cancelada");
     if (!inicio || !fim || ativos.length === 0) return [];
-    const spanDias =
-      (parseDataISO(fim).getTime() - parseDataISO(inicio).getTime()) / 86_400_000;
-    const porDia = divisao === "dia" || spanDias <= 7;
+    const porDia = divisaoEfetiva === "dia";
     const porMotorista = new Map<string, Map<string, BalcaoRelatorio>>();
     const nomes = new Map<string, string>();
     for (const item of ativos) {
@@ -528,7 +529,7 @@ function ComissaoEntregaPage() {
         <TabsContent value="periodos" className="mt-4">
           <SecaoAdmin
             titulo="Relatório por período"
-            descricao={`Dividido por ${divisao === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}. Lançamentos cancelados não entram.`}
+            descricao={`Dividido por ${divisaoEfetiva === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}. Lançamentos cancelados não entram.`}
             acoes={
               <>
                 <Button
