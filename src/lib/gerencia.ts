@@ -12,6 +12,7 @@ import {
   ClipboardList,
   Inbox,
   LayoutDashboard,
+  Megaphone,
   Package,
   Percent,
   Truck,
@@ -99,6 +100,12 @@ export const GERENCIA_SUBNAV: GerenciaItem[] = [
     label: "Equipe Externa",
     icon: Bike,
     moduleKey: "coletas",
+  },
+  {
+    to: `${GERENCIA_BASE}/comunicados`,
+    label: "Comunicados aos Motoristas",
+    icon: Megaphone,
+    moduleKey: "operacional",
   },
   {
     to: `${GERENCIA_BASE}/relatorios`,

@@ -38,6 +38,7 @@ import { Route as AuthenticatedGerenciaOperacionalIndexRouteImport } from './rou
 import { Route as AuthenticatedGerenciaOperacionalCaixaEntradaRouteImport } from './routes/_authenticated/gerencia-operacional.caixa-entrada'
 import { Route as AuthenticatedGerenciaOperacionalColetasRouteImport } from './routes/_authenticated/gerencia-operacional.coletas'
 import { Route as AuthenticatedGerenciaOperacionalComissoesRouteImport } from './routes/_authenticated/gerencia-operacional.comissoes'
+import { Route as AuthenticatedGerenciaOperacionalComunicadosRouteImport } from './routes/_authenticated/gerencia-operacional.comunicados'
 import { Route as AuthenticatedGerenciaOperacionalEquipeExternaRouteImport } from './routes/_authenticated/gerencia-operacional.equipe-externa'
 import { Route as AuthenticatedGerenciaOperacionalFechamentoRouteImport } from './routes/_authenticated/gerencia-operacional.fechamento'
 import { Route as AuthenticatedGerenciaOperacionalFluxoRouteImport } from './routes/_authenticated/gerencia-operacional.fluxo'
@@ -203,6 +204,12 @@ const AuthenticatedGerenciaOperacionalComissoesRoute =
     path: '/comissoes',
     getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
   } as any)
+const AuthenticatedGerenciaOperacionalComunicadosRoute =
+  AuthenticatedGerenciaOperacionalComunicadosRouteImport.update({
+    id: '/comunicados',
+    path: '/comunicados',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
 const AuthenticatedGerenciaOperacionalEquipeExternaRoute =
   AuthenticatedGerenciaOperacionalEquipeExternaRouteImport.update({
     id: '/equipe-externa',
@@ -285,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
   '/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
   '/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/gerencia-operacional/comunicados': typeof AuthenticatedGerenciaOperacionalComunicadosRoute
   '/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
   '/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
   '/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
@@ -323,6 +331,7 @@ export interface FileRoutesByTo {
   '/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
   '/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
   '/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/gerencia-operacional/comunicados': typeof AuthenticatedGerenciaOperacionalComunicadosRoute
   '/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
   '/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
   '/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
@@ -364,6 +373,7 @@ export interface FileRoutesById {
   '/_authenticated/gerencia-operacional/caixa-entrada': typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
   '/_authenticated/gerencia-operacional/coletas': typeof AuthenticatedGerenciaOperacionalColetasRoute
   '/_authenticated/gerencia-operacional/comissoes': typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  '/_authenticated/gerencia-operacional/comunicados': typeof AuthenticatedGerenciaOperacionalComunicadosRoute
   '/_authenticated/gerencia-operacional/equipe-externa': typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
   '/_authenticated/gerencia-operacional/fechamento': typeof AuthenticatedGerenciaOperacionalFechamentoRoute
   '/_authenticated/gerencia-operacional/fluxo': typeof AuthenticatedGerenciaOperacionalFluxoRoute
@@ -405,6 +415,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/caixa-entrada'
     | '/gerencia-operacional/coletas'
     | '/gerencia-operacional/comissoes'
+    | '/gerencia-operacional/comunicados'
     | '/gerencia-operacional/equipe-externa'
     | '/gerencia-operacional/fechamento'
     | '/gerencia-operacional/fluxo'
@@ -443,6 +454,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/caixa-entrada'
     | '/gerencia-operacional/coletas'
     | '/gerencia-operacional/comissoes'
+    | '/gerencia-operacional/comunicados'
     | '/gerencia-operacional/equipe-externa'
     | '/gerencia-operacional/fechamento'
     | '/gerencia-operacional/fluxo'
@@ -483,6 +495,7 @@ export interface FileRouteTypes {
     | '/_authenticated/gerencia-operacional/caixa-entrada'
     | '/_authenticated/gerencia-operacional/coletas'
     | '/_authenticated/gerencia-operacional/comissoes'
+    | '/_authenticated/gerencia-operacional/comunicados'
     | '/_authenticated/gerencia-operacional/equipe-externa'
     | '/_authenticated/gerencia-operacional/fechamento'
     | '/_authenticated/gerencia-operacional/fluxo'
@@ -710,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGerenciaOperacionalComissoesRouteImport
       parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
     }
+    '/_authenticated/gerencia-operacional/comunicados': {
+      id: '/_authenticated/gerencia-operacional/comunicados'
+      path: '/comunicados'
+      fullPath: '/gerencia-operacional/comunicados'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalComunicadosRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
     '/_authenticated/gerencia-operacional/equipe-externa': {
       id: '/_authenticated/gerencia-operacional/equipe-externa'
       path: '/equipe-externa'
@@ -780,6 +800,7 @@ interface AuthenticatedGerenciaOperacionalRouteChildren {
   AuthenticatedGerenciaOperacionalCaixaEntradaRoute: typeof AuthenticatedGerenciaOperacionalCaixaEntradaRoute
   AuthenticatedGerenciaOperacionalColetasRoute: typeof AuthenticatedGerenciaOperacionalColetasRoute
   AuthenticatedGerenciaOperacionalComissoesRoute: typeof AuthenticatedGerenciaOperacionalComissoesRoute
+  AuthenticatedGerenciaOperacionalComunicadosRoute: typeof AuthenticatedGerenciaOperacionalComunicadosRoute
   AuthenticatedGerenciaOperacionalEquipeExternaRoute: typeof AuthenticatedGerenciaOperacionalEquipeExternaRoute
   AuthenticatedGerenciaOperacionalFechamentoRoute: typeof AuthenticatedGerenciaOperacionalFechamentoRoute
   AuthenticatedGerenciaOperacionalFluxoRoute: typeof AuthenticatedGerenciaOperacionalFluxoRoute
@@ -800,6 +821,8 @@ const AuthenticatedGerenciaOperacionalRouteChildren: AuthenticatedGerenciaOperac
       AuthenticatedGerenciaOperacionalColetasRoute,
     AuthenticatedGerenciaOperacionalComissoesRoute:
       AuthenticatedGerenciaOperacionalComissoesRoute,
+    AuthenticatedGerenciaOperacionalComunicadosRoute:
+      AuthenticatedGerenciaOperacionalComunicadosRoute,
     AuthenticatedGerenciaOperacionalEquipeExternaRoute:
       AuthenticatedGerenciaOperacionalEquipeExternaRoute,
     AuthenticatedGerenciaOperacionalFechamentoRoute:
