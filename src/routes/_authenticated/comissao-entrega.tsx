@@ -233,7 +233,7 @@ function ComissaoEntregaPage() {
         return { id, nome: nomes.get(id) ?? "—", periodos: ordenados, total };
       })
       .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-  }, [listaQuery.data, inicio, fim, divisao]);
+  }, [listaQuery.data, inicio, fim, divisaoEfetiva]);
 
   if (isLoading) return <Carregando />;
 
