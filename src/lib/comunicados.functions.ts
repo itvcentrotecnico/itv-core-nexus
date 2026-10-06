@@ -27,7 +27,7 @@ export const listarMotoristas = createServerFn({ method: "GET" })
       .order("nome");
     if (error) throw new Error("Não foi possível carregar os motoristas.");
     return (data ?? [])
-      .filter((m) => m.status !== "desligado" && m.status !== "inativo")
+      .filter((m) => m.status === "ativo")
       .map((m) => ({ id: m.id, nome: m.nome_exibicao || m.nome, telefone: m.telefone }));
   });
 
@@ -42,7 +42,7 @@ export const gerarComunicados = createServerFn({ method: "POST" })
     });
     if (!pode) throw new Error("Apenas a Gerência pode gerar comunicados.");
 
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) throw new Error("Serviço de IA não configurado.");
 
     let alvos: { id: string | null; nome: string; telefone: string | null }[] = [
@@ -55,7 +55,7 @@ export const gerarComunicados = createServerFn({ method: "POST" })
         .in("id", data.motoristaIds);
       alvos = (rows ?? []).map((r) => ({
         id: r.id,
-        nome: (r.nome_exibicao || r.nome).split(" ")[0],
+        nome: (r.nome_exibicao || r.nome).split(" ")[0] ?? r.nome,
         telefone: r.telefone,
       }));
     }
