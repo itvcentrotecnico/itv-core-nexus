@@ -170,7 +170,7 @@ function ComissaoEntregaPage() {
             onChange={(e) => {
               const v = e.target.value;
               if (!v) return;
-              const [y, m] = v.split("-").map(Number);
+              const [y = 0, m = 1] = v.split("-").map(Number);
               const ultimo = new Date(Date.UTC(y, m, 0)).getUTCDate();
               setInicio(`${v}-01`);
               setFim(`${v}-${String(ultimo).padStart(2, "0")}`);
