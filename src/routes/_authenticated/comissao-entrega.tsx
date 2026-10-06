@@ -244,6 +244,54 @@ function ComissaoEntregaPage() {
     .filter((i) => i.status === "paga")
     .reduce((acc, i) => acc + Number(i.valor), 0);
 
+  const totalGeral = relatorioPeriodo.reduce(
+    (acc, m) => {
+      acc.entregas += m.total.entregas;
+      acc.comAvaliacao += m.total.comAvaliacao;
+      acc.gerado += m.total.gerado;
+      acc.validado += m.total.validado;
+      acc.pago += m.total.pago;
+      return acc;
+    },
+    balcaoVazio("total-geral", "Total geral"),
+  );
+
+  function textoRelatorioPeriodo(): string {
+    const linhas: string[] = [
+      `*Relatório de entregas — ${formatDateITV(inicio)} a ${formatDateITV(fim)}*`,
+    ];
+    for (const m of relatorioPeriodo) {
+      linhas.push("", `*${m.nome}*`);
+      for (const p of m.periodos) {
+        linhas.push(
+          `• ${p.label}: ${p.entregas} ${p.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(p.gerado)}` +
+            (p.comAvaliacao > 0 ? ` · ${p.comAvaliacao} com avaliação` : ""),
+        );
+      }
+      linhas.push(
+        `*Total: ${m.total.entregas} ${m.total.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(m.total.gerado)}*`,
+      );
+    }
+    linhas.push(
+      "",
+      `*Total geral: ${totalGeral.entregas} ${totalGeral.entregas === 1 ? "entrega" : "entregas"} · ${formatCurrencyBRL(totalGeral.gerado)}*`,
+    );
+    return linhas.join("\n");
+  }
+
+  async function copiarRelatorio() {
+    try {
+      await navigator.clipboard.writeText(textoRelatorioPeriodo());
+      toast.success("Relatório copiado para a área de transferência.");
+    } catch {
+      toast.error("Não foi possível copiar o relatório.");
+    }
+  }
+
+  function enviarWhatsApp() {
+    window.open(`https://wa.me/?text=${encodeURIComponent(textoRelatorioPeriodo())}`, "_blank");
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -359,6 +407,7 @@ function ComissaoEntregaPage() {
         <TabsList>
           <TabsTrigger value="lista">Comissões</TabsTrigger>
           <TabsTrigger value="relatorio">Por entregador</TabsTrigger>
+          <TabsTrigger value="periodos">Por período</TabsTrigger>
         </TabsList>
 
         <TabsContent value="lista" className="mt-4">
@@ -471,6 +520,116 @@ function ComissaoEntregaPage() {
                     <td className="px-3 py-2">{formatCurrencyBRL(Number(r.valor_pendente))}</td>
                   </tr>
                 ))}
+              </TabelaAdmin>
+            )}
+          </SecaoAdmin>
+        </TabsContent>
+
+        <TabsContent value="periodos" className="mt-4">
+          <SecaoAdmin
+            titulo="Relatório por período"
+            descricao={`Dividido por ${divisao === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateITV(inicio)} a ${formatDateITV(fim)}. Lançamentos cancelados não entram.`}
+            acoes={
+              <>
+                <Button
+                  size="sm"
+                  variant={divisao === "semana" ? "secondary" : "ghost"}
+                  onClick={() => setDivisao("semana")}
+                >
+                  Por semana
+                </Button>
+                <Button
+                  size="sm"
+                  variant={divisao === "dia" ? "secondary" : "ghost"}
+                  onClick={() => setDivisao("dia")}
+                >
+                  Por dia
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={relatorioPeriodo.length === 0}
+                  onClick={() => void copiarRelatorio()}
+                >
+                  <Copy className="mr-2 size-4" /> Copiar
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={relatorioPeriodo.length === 0}
+                  onClick={enviarWhatsApp}
+                >
+                  <MessageCircle className="mr-2 size-4" /> WhatsApp
+                </Button>
+              </>
+            }
+          >
+            {relatorioPeriodo.length === 0 ? (
+              <SemDados label="Sem entregas no período" />
+            ) : (
+              <TabelaAdmin
+                cabecalho={[
+                  "Período",
+                  "Entregas",
+                  "Com avaliação",
+                  "Gerado",
+                  "Validado",
+                  "Pago",
+                ]}
+              >
+                {relatorioPeriodo.map((m) => (
+                  <Fragment key={m.id}>
+                    <tr className="bg-muted/50">
+                      <td colSpan={6} className="px-3 py-2 font-semibold text-foreground">
+                        {m.nome}
+                      </td>
+                    </tr>
+                    {m.periodos.map((p) => (
+                      <tr key={`${m.id}-${p.key}`}>
+                        <td className="px-3 py-2 whitespace-nowrap">{p.label}</td>
+                        <td className="px-3 py-2">{p.entregas}</td>
+                        <td className="px-3 py-2">{p.comAvaliacao}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.gerado)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.validado)}
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {formatCurrencyBRL(p.pago)}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr className="border-t border-border font-medium">
+                      <td className="px-3 py-2">Total — {m.nome}</td>
+                      <td className="px-3 py-2">{m.total.entregas}</td>
+                      <td className="px-3 py-2">{m.total.comAvaliacao}</td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.gerado)}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.validado)}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        {formatCurrencyBRL(m.total.pago)}
+                      </td>
+                    </tr>
+                  </Fragment>
+                ))}
+                <tr className="border-t-2 border-border font-semibold">
+                  <td className="px-3 py-2">Total geral</td>
+                  <td className="px-3 py-2">{totalGeral.entregas}</td>
+                  <td className="px-3 py-2">{totalGeral.comAvaliacao}</td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.gerado)}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.validado)}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    {formatCurrencyBRL(totalGeral.pago)}
+                  </td>
+                </tr>
               </TabelaAdmin>
             )}
           </SecaoAdmin>
