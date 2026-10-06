@@ -17,7 +17,7 @@ import {
   TabelaAdmin,
 } from "@/components/admin/shared";
 import { inputClass, labelClass } from "@/lib/caixa";
-import { formatCurrencyBRL, formatDateITV, todayManausISO } from "@/lib/format";
+import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
 import {
   STATUS_ENTREGA,
   TIPO_ENTREGA,
@@ -200,12 +200,12 @@ function ComissaoEntregaPage() {
       let label: string;
       if (porDia) {
         key = item.data;
-        label = formatDateITV(item.data);
+        label = formatDateOnlyISO(item.data);
       } else {
         const iniSemana = dataISO(segundaFeira(parseDataISO(item.data)));
         const fimSemana = dataISO(somarDias(parseDataISO(iniSemana), 6));
         key = iniSemana;
-        label = `Semana ${formatDateITV(iniSemana)} – ${formatDateITV(fimSemana)}`;
+        label = `Semana ${formatDateOnlyISO(iniSemana)} – ${formatDateOnlyISO(fimSemana)}`;
       }
       let b = periodos.get(key);
       if (!b) {
@@ -258,7 +258,7 @@ function ComissaoEntregaPage() {
 
   function textoRelatorioPeriodo(): string {
     const linhas: string[] = [
-      `*Relatório de entregas — ${formatDateITV(inicio)} a ${formatDateITV(fim)}*`,
+      `*Relatório de entregas — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}*`,
     ];
     for (const m of relatorioPeriodo) {
       linhas.push("", `*${m.nome}*`);
@@ -425,7 +425,7 @@ function ComissaoEntregaPage() {
               >
                 {itens.map((i) => (
                   <tr key={i.id}>
-                    <td className="px-3 py-2 whitespace-nowrap">{formatDateITV(i.data)}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">{formatDateOnlyISO(i.data)}</td>
                     <td className="px-3 py-2">{i.os ?? "—"}</td>
                     <td className="px-3 py-2 font-medium text-foreground">{i.entregador}</td>
                     <td className="px-3 py-2 text-muted-foreground">
@@ -528,7 +528,7 @@ function ComissaoEntregaPage() {
         <TabsContent value="periodos" className="mt-4">
           <SecaoAdmin
             titulo="Relatório por período"
-            descricao={`Dividido por ${divisao === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateITV(inicio)} a ${formatDateITV(fim)}. Lançamentos cancelados não entram.`}
+            descricao={`Dividido por ${divisao === "semana" ? "semana" : "dia"} dentro do período filtrado — ${formatDateOnlyISO(inicio)} a ${formatDateOnlyISO(fim)}. Lançamentos cancelados não entram.`}
             acoes={
               <>
                 <Button
