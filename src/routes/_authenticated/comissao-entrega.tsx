@@ -158,6 +158,25 @@ function ComissaoEntregaPage() {
       </header>
 
       <SecaoAdmin titulo="Filtros">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <label className={labelClass} htmlFor="ce-mes">
+            Mês do relatório
+          </label>
+          <input
+            id="ce-mes"
+            type="month"
+            className={inputClass + " w-auto"}
+            value={inicio.slice(0, 7)}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (!v) return;
+              const [y = 0, m = 1] = v.split("-").map(Number);
+              const ultimo = new Date(Date.UTC(y, m, 0)).getUTCDate();
+              setInicio(`${v}-01`);
+              setFim(`${v}-${String(ultimo).padStart(2, "0")}`);
+            }}
+          />
+        </div>
         <div className="grid gap-3 sm:grid-cols-5">
           <div>
             <label className={labelClass} htmlFor="ce-inicio">
