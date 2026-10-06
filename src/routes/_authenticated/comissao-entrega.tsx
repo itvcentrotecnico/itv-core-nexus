@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bike, RefreshCw } from "lucide-react";
+import { Bike, Copy, MessageCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -52,7 +52,55 @@ function monthStart(iso: string) {
   return `${iso.slice(0, 7)}-01`;
 }
 
-type Acao = "validar" | "rejeitar" | "pagar" | "cancelar";
+/** Semana operacional: segunda a domingo (America/Manaus, datas ISO). */
+function parseDataISO(v: string): Date {
+  const [y = 1970, m = 1, d = 1] = v.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+function dataISO(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function somarDias(d: Date, n: number): Date {
+  const x = new Date(d);
+  x.setUTCDate(x.getUTCDate() + n);
+  return x;
+}
+
+function segundaFeira(d: Date): Date {
+  return somarDias(d, -((d.getUTCDay() + 6) % 7));
+}
+
+interface BalcaoRelatorio {
+  key: string;
+  label: string;
+  entregas: number;
+  comAvaliacao: number;
+  gerado: number;
+  validado: number;
+  pago: number;
+}
+
+interface LinhaRelatorio {
+  id: string;
+  nome: string;
+  periodos: BalcaoRelatorio[];
+  total: BalcaoRelatorio;
+}
+
+function balcaoVazio(key: string, label: string): BalcaoRelatorio {
+  return { key, label, entregas: 0, comAvaliacao: 0, gerado: 0, validado: 0, pago: 0 };
+}
+
+function somarBalcao(b: BalcaoRelatorio, item: ComissaoEntrega) {
+  b.entregas += 1;
+  if (item.avaliacao_confirmada) b.comAvaliacao += 1;
+  const v = Number(item.valor);
+  if (item.status === "validada" || item.status === "paga") b.validado += v;
+  if (item.status === "paga") b.pago += v;
+  b.gerado += v;
+}
 
 function ComissaoEntregaPage() {
   const { can, isAdmin, isLoading } = useAccess();
