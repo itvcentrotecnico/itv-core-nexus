@@ -102,6 +102,8 @@ function somarBalcao(b: BalcaoRelatorio, item: ComissaoEntrega) {
   b.gerado += v;
 }
 
+type Acao = "validar" | "rejeitar" | "pagar" | "cancelar";
+
 function ComissaoEntregaPage() {
   const { can, isAdmin, isLoading } = useAccess();
   const queryClient = useQueryClient();
