@@ -226,7 +226,7 @@ export function ConferenciaAvaliacoes({ itens, resumo, carregando, podeConferir 
               ) : "",
               "OS", "Cliente", "Data", "Motorista", "Base", "Bonificação", "Total solicitado",
               "Comprovação", "Situação", "Conferido por", "Ações",
-            ] as unknown as string[]}
+            ]}
           >
             {comAvaliacao.map((i) => {
               const st = AVALIACAO_STATUS[i.avaliacao_status];
