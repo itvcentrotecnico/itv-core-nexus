@@ -91,13 +91,13 @@ export function ConferenciaAvaliacoes({ itens, resumo, carregando, podeConferir 
 
   async function verAnexo(path: string) {
     const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 300);
-    if (error || !data) return toast.error("Não foi possível abrir o comprovante.");
+    if (error || !data) { toast.error("Não foi possível abrir o comprovante."); return; }
     window.open(data.signedUrl, "_blank", "noopener");
   }
 
   async function confirmar() {
     if (!dialogo) return;
-    if (!dialogo.aprovar && !obs.trim()) return toast.error("Informe o motivo da não validação.");
+    if (!dialogo.aprovar && !obs.trim()) { toast.error("Informe o motivo da não validação."); return; }
     setSalvando(true);
     let anexo: string | null = null;
     if (arquivo) {
@@ -106,7 +106,7 @@ export function ConferenciaAvaliacoes({ itens, resumo, carregando, podeConferir 
       const up = await supabase.storage.from(BUCKET).upload(path, arquivo);
       if (up.error) {
         setSalvando(false);
-        return toast.error("Não foi possível enviar o comprovante.");
+        toast.error("Não foi possível enviar o comprovante."); return;
       }
       anexo = path;
     }
@@ -119,7 +119,7 @@ export function ConferenciaAvaliacoes({ itens, resumo, carregando, podeConferir 
     });
     setSalvando(false);
     const res = data as unknown as { ok: boolean; message?: string; conferidas?: number };
-    if (error || !res?.ok) return toast.error(res?.message ?? "Não foi possível registrar a conferência.");
+    if (error || !res?.ok) { toast.error(res?.message ?? "Não foi possível registrar a conferência."); return; }
     toast.success(
       dialogo.aprovar
         ? `${res.conferidas} avaliação(ões) validada(s).`
