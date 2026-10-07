@@ -8,6 +8,13 @@
       "when": 1791393740921,
       "tag": "0000_comissao_entrega_conferencia_avaliacao",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791393763084,
+      "tag": "0001_comprovantes_storage_policies",
+      "breakpoints": true
     }
   ]
 }
