@@ -18,7 +18,9 @@ import {
 } from "@/components/admin/shared";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import { ConferenciaAvaliacoes } from "@/components/comissao-entrega/conferencia";
 import {
+  AVALIACAO_STATUS,
   STATUS_ENTREGA,
   TIPO_ENTREGA,
   type ComissaoEntrega,
