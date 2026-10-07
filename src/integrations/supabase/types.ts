@@ -1662,7 +1662,15 @@ export type Database = {
         Row: {
           avaliacao_confirmada: boolean
           avaliacao_observacao: string | null
+          avaliacao_status: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          bonificacao_solicitada: number
+          bonificacao_validada: number
           caixa_lancamento_id: string
+          conferencia_anexo_path: string | null
+          conferencia_forma: string | null
+          conferencia_obs: string | null
+          conferido_em: string | null
+          conferido_por: string | null
           created_at: string
           created_by: string | null
           entregador_id: string
@@ -1678,11 +1686,20 @@ export type Database = {
           validado_em: string | null
           validado_por: string | null
           valor: number
+          valor_base: number
         }
         Insert: {
           avaliacao_confirmada?: boolean
           avaliacao_observacao?: string | null
+          avaliacao_status?: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          bonificacao_solicitada?: number
+          bonificacao_validada?: number
           caixa_lancamento_id: string
+          conferencia_anexo_path?: string | null
+          conferencia_forma?: string | null
+          conferencia_obs?: string | null
+          conferido_em?: string | null
+          conferido_por?: string | null
           created_at?: string
           created_by?: string | null
           entregador_id: string
@@ -1698,11 +1715,20 @@ export type Database = {
           validado_em?: string | null
           validado_por?: string | null
           valor: number
+          valor_base?: number
         }
         Update: {
           avaliacao_confirmada?: boolean
           avaliacao_observacao?: string | null
+          avaliacao_status?: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          bonificacao_solicitada?: number
+          bonificacao_validada?: number
           caixa_lancamento_id?: string
+          conferencia_anexo_path?: string | null
+          conferencia_forma?: string | null
+          conferencia_obs?: string | null
+          conferido_em?: string | null
+          conferido_por?: string | null
           created_at?: string
           created_by?: string | null
           entregador_id?: string
@@ -1718,6 +1744,7 @@ export type Database = {
           validado_em?: string | null
           validado_por?: string | null
           valor?: number
+          valor_base?: number
         }
         Relationships: [
           {
@@ -1767,6 +1794,62 @@ export type Database = {
             columns: ["validado_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comissoes_entrega_conferencias: {
+        Row: {
+          anexo_path: string | null
+          comissao_id: string
+          created_at: string
+          forma: string | null
+          id: string
+          observacao: string | null
+          status_anterior:
+            | Database["public"]["Enums"]["avaliacao_conferencia_status"]
+            | null
+          status_final: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          usuario_id: string
+          valor_anterior: number | null
+          valor_final: number
+        }
+        Insert: {
+          anexo_path?: string | null
+          comissao_id: string
+          created_at?: string
+          forma?: string | null
+          id?: string
+          observacao?: string | null
+          status_anterior?:
+            | Database["public"]["Enums"]["avaliacao_conferencia_status"]
+            | null
+          status_final: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          usuario_id: string
+          valor_anterior?: number | null
+          valor_final: number
+        }
+        Update: {
+          anexo_path?: string | null
+          comissao_id?: string
+          created_at?: string
+          forma?: string | null
+          id?: string
+          observacao?: string | null
+          status_anterior?:
+            | Database["public"]["Enums"]["avaliacao_conferencia_status"]
+            | null
+          status_final?: Database["public"]["Enums"]["avaliacao_conferencia_status"]
+          usuario_id?: string
+          valor_anterior?: number | null
+          valor_final?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissoes_entrega_conferencias_comissao_id_fkey"
+            columns: ["comissao_id"]
+            isOneToOne: false
+            referencedRelation: "comissoes_entrega"
             referencedColumns: ["id"]
           },
         ]
@@ -5932,6 +6015,16 @@ export type Database = {
       }
       coletas_whatsapp_aberto: { Args: { p_id: string }; Returns: Json }
       comissao_entrega_colaboradores: { Args: never; Returns: Json }
+      comissao_entrega_conferir: {
+        Args: {
+          p_anexo?: string
+          p_aprovar: boolean
+          p_forma?: string
+          p_ids: string[]
+          p_obs?: string
+        }
+        Returns: Json
+      }
       comissao_entrega_config: { Args: never; Returns: Json }
       comissao_entrega_entregadores: { Args: never; Returns: Json }
       comissao_entrega_flag_colaborador: {
@@ -6922,6 +7015,11 @@ export type Database = {
         | "tv_display"
         | "adm_operacional"
         | "motorista"
+      avaliacao_conferencia_status:
+        | "sem_avaliacao"
+        | "aguardando"
+        | "validada"
+        | "nao_validada"
       caixa_fechamento_status: "fechado" | "reaberto"
       caixa_lancamento_status: "ativo" | "cancelado" | "estornado"
       caixa_movimento_tipo: "saldo_inicial" | "suprimento" | "sangria"
@@ -7178,6 +7276,12 @@ export const Constants = {
         "tv_display",
         "adm_operacional",
         "motorista",
+      ],
+      avaliacao_conferencia_status: [
+        "sem_avaliacao",
+        "aguardando",
+        "validada",
+        "nao_validada",
       ],
       caixa_fechamento_status: ["fechado", "reaberto"],
       caixa_lancamento_status: ["ativo", "cancelado", "estornado"],
