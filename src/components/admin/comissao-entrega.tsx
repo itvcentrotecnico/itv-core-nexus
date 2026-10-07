@@ -69,7 +69,9 @@ export function AdminComissaoEntrega() {
                     p_key: "comissao_entrega",
                     p_value: {
                       valor_taxa_fixa: cfg.valor_taxa_fixa,
-                      valor_taxa_com_avaliacao: cfg.valor_taxa_com_avaliacao,
+                      valor_bonificacao_avaliacao: cfg.valor_bonificacao_avaliacao,
+                      valor_taxa_com_avaliacao:
+                        cfg.valor_taxa_fixa + cfg.valor_bonificacao_avaliacao,
                       exige_validacao: cfg.exige_validacao,
                       ativo: cfg.ativo,
                     },
@@ -100,23 +102,22 @@ export function AdminComissaoEntrega() {
           </div>
           <div>
             <label className={labelClass} htmlFor="ce-avaliacao">
-              Taxa fixa + avaliação (R$)
+              Bonificação por avaliação Google (R$)
             </label>
             <input
               id="ce-avaliacao"
               type="number"
               step="0.01"
               min="0"
-              placeholder="Não definido"
               className={inputClass}
-              value={cfg.valor_taxa_com_avaliacao ?? ""}
+              value={cfg.valor_bonificacao_avaliacao}
               onChange={(e) =>
-                setCfg((c) => ({
-                  ...c,
-                  valor_taxa_com_avaliacao: e.target.value === "" ? null : Number(e.target.value),
-                }))
+                setCfg((c) => ({ ...c, valor_bonificacao_avaliacao: Number(e.target.value) }))
               }
             />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Paga somente após conferência da Gerência.
+            </p>
           </div>
           <label className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2 text-sm">
             <span>Exigir validação gerencial antes do pagamento</span>
@@ -181,11 +182,9 @@ export function AdminComissaoEntrega() {
       </SecaoAdmin>
 
       <p className="text-xs text-muted-foreground">
-        Valor atual por entrega: <strong>{formatCurrencyBRL(cfg.valor_taxa_fixa)}</strong>
-        {cfg.valor_taxa_com_avaliacao != null
-          ? ` · com avaliação: ${formatCurrencyBRL(cfg.valor_taxa_com_avaliacao)}`
-          : " · valor com avaliação ainda não definido"}
-        .
+        Valor atual por entrega: <strong>{formatCurrencyBRL(cfg.valor_taxa_fixa)}</strong> · com
+        avaliação validada:{" "}
+        {formatCurrencyBRL(cfg.valor_taxa_fixa + cfg.valor_bonificacao_avaliacao)}.
       </p>
     </div>
   );

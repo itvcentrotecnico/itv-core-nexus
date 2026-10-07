@@ -18,7 +18,9 @@ import {
 } from "@/components/admin/shared";
 import { inputClass, labelClass } from "@/lib/caixa";
 import { formatCurrencyBRL, formatDateOnlyISO, todayManausISO } from "@/lib/format";
+import { ConferenciaAvaliacoes } from "@/components/comissao-entrega/conferencia";
 import {
+  AVALIACAO_STATUS,
   STATUS_ENTREGA,
   TIPO_ENTREGA,
   type ComissaoEntrega,
@@ -405,11 +407,21 @@ function ComissaoEntregaPage() {
       </SecaoAdmin>
 
       <Tabs defaultValue="lista">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="lista">Comissões</TabsTrigger>
+          <TabsTrigger value="conferencia">Conferência de avaliações</TabsTrigger>
           <TabsTrigger value="relatorio">Por entregador</TabsTrigger>
           <TabsTrigger value="periodos">Por período</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="conferencia" className="mt-4">
+          <ConferenciaAvaliacoes
+            itens={itens}
+            resumo={relatorioQuery.data ?? []}
+            carregando={listaQuery.isLoading}
+            podeConferir={podeValidar}
+          />
+        </TabsContent>
 
         <TabsContent value="lista" className="mt-4">
           <SecaoAdmin
@@ -433,14 +445,17 @@ function ComissaoEntregaPage() {
                       {TIPO_ENTREGA[i.tipo]}
                       {i.tipo === "entrega_avaliacao" ? (
                         <span className="ml-2 text-xs">
-                          {i.avaliacao_confirmada
-                            ? "· avaliação confirmada"
-                            : "· avaliação pendente"}
+                          · {AVALIACAO_STATUS[i.avaliacao_status]?.label}
                         </span>
                       ) : null}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       {formatCurrencyBRL(Number(i.valor))}
+                      {i.avaliacao_status === "aguardando" ? (
+                        <span className="block text-xs text-muted-foreground">
+                          + {formatCurrencyBRL(Number(i.bonificacao_solicitada))} em conferência
+                        </span>
+                      ) : null}
                     </td>
                     <td className="px-3 py-2">
                       <PillStatus tom={STATUS_ENTREGA[i.status].tom}>
@@ -450,6 +465,7 @@ function ComissaoEntregaPage() {
                     <td className="px-3 py-2">
                       <div className="flex flex-wrap gap-2">
                         {podeValidar &&
+                        i.avaliacao_status !== "aguardando" &&
                         (i.status === "gerada" || i.status === "pendente_validacao") ? (
                           <>
                             <Button size="sm" onClick={() => void executar(i, "validar", "")}>

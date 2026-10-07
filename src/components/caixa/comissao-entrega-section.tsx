@@ -233,14 +233,17 @@ export function ComissaoEntregaSection({
                 : "bg-destructive/10 text-destructive",
             )}
           >
-            {valorPrevisto != null ? (
+            {valor.tipo === "entrega_avaliacao" ? (
               <>
-                Valor da comissão: <strong>{formatCurrencyBRL(valorPrevisto)}</strong> — será
-                registrada como{" "}
-                {cfg.exige_validacao || valor.tipo === "entrega_avaliacao"
-                  ? "pendente de validação"
-                  : "gerada"}
-                . O pagamento nunca é automático.
+                Entrega <strong>{formatCurrencyBRL(cfg.valor_taxa_fixa)}</strong> + bonificação{" "}
+                <strong>{formatCurrencyBRL(cfg.valor_bonificacao_avaliacao)}</strong>{" "}
+                <strong>aguardando conferência</strong> da Gerência. A bonificação só é paga
+                depois de validada.
+              </>
+            ) : valorPrevisto != null ? (
+              <>
+                Valor da comissão: <strong>{formatCurrencyBRL(valorPrevisto)}</strong>. O pagamento
+                nunca é automático.
               </>
             ) : (
               <>
