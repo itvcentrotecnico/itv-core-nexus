@@ -419,7 +419,7 @@ function ComissaoEntregaPage() {
             itens={itens}
             resumo={relatorioQuery.data ?? []}
             carregando={listaQuery.isLoading}
-            podeConferir={podeValidar}
+            podeConferir={podeValidar || can("comissao_entrega", "aprovar")}
           />
         </TabsContent>
 
