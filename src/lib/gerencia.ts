@@ -13,6 +13,7 @@ import {
   Inbox,
   LayoutDashboard,
   Megaphone,
+  FileText,
   Package,
   Percent,
   Truck,
@@ -105,6 +106,12 @@ export const GERENCIA_SUBNAV: GerenciaItem[] = [
     to: `${GERENCIA_BASE}/comunicados`,
     label: "Comunicados aos Motoristas",
     icon: Megaphone,
+    moduleKey: "operacional",
+  },
+  {
+    to: `${GERENCIA_BASE}/resumo-executivo`,
+    label: "Resumo Executivo",
+    icon: FileText,
     moduleKey: "operacional",
   },
   {
