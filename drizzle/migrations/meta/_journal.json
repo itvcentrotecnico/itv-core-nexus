@@ -22,6 +22,13 @@
       "when": 1791485085160,
       "tag": "0002_vendedor_conferir_avaliacao",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791898854457,
+      "tag": "0003_resumo_executivo_semanal",
+      "breakpoints": true
     }
   ]
 }

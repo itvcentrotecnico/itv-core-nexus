@@ -2539,6 +2539,59 @@ export type Database = {
           },
         ]
       }
+      decisoes_pendentes: {
+        Row: {
+          contexto: string | null
+          created_at: string
+          criado_por: string | null
+          descricao: string
+          id: string
+          prazo: string | null
+          resolucao: string | null
+          resolvido_em: string | null
+          resolvido_por: string | null
+          responsavel_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          contexto?: string | null
+          created_at?: string
+          criado_por?: string | null
+          descricao: string
+          id?: string
+          prazo?: string | null
+          resolucao?: string | null
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          responsavel_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          contexto?: string | null
+          created_at?: string
+          criado_por?: string | null
+          descricao?: string
+          id?: string
+          prazo?: string | null
+          resolucao?: string | null
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          responsavel_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decisoes_pendentes_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       descontos_autorizacoes: {
         Row: {
           cliente: string | null
@@ -4816,6 +4869,107 @@ export type Database = {
           },
         ]
       }
+      resumo_execucoes: {
+        Row: {
+          executado_em: string
+          executado_por: string | null
+          id: string
+          mensagem: string | null
+          origem: string
+          periodo_fim: string | null
+          periodo_inicio: string | null
+          resumo_id: string | null
+          status: string
+        }
+        Insert: {
+          executado_em?: string
+          executado_por?: string | null
+          id?: string
+          mensagem?: string | null
+          origem: string
+          periodo_fim?: string | null
+          periodo_inicio?: string | null
+          resumo_id?: string | null
+          status: string
+        }
+        Update: {
+          executado_em?: string
+          executado_por?: string | null
+          id?: string
+          mensagem?: string | null
+          origem?: string
+          periodo_fim?: string | null
+          periodo_inicio?: string | null
+          resumo_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resumo_execucoes_resumo_id_fkey"
+            columns: ["resumo_id"]
+            isOneToOne: false
+            referencedRelation: "resumos_executivos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resumos_executivos: {
+        Row: {
+          created_at: string
+          gerado_por: string | null
+          id: string
+          indicadores: Json
+          narrativa: Json
+          narrativa_origem: string
+          origem_geracao: string
+          periodo_fim: string
+          periodo_inicio: string
+          prioridades: Json
+          regras: Json
+          revisado: boolean
+          revisado_em: string | null
+          revisado_por: string | null
+          tipo: string
+          versao: number
+        }
+        Insert: {
+          created_at?: string
+          gerado_por?: string | null
+          id?: string
+          indicadores: Json
+          narrativa?: Json
+          narrativa_origem?: string
+          origem_geracao?: string
+          periodo_fim: string
+          periodo_inicio: string
+          prioridades?: Json
+          regras?: Json
+          revisado?: boolean
+          revisado_em?: string | null
+          revisado_por?: string | null
+          tipo?: string
+          versao?: number
+        }
+        Update: {
+          created_at?: string
+          gerado_por?: string | null
+          id?: string
+          indicadores?: Json
+          narrativa?: Json
+          narrativa_origem?: string
+          origem_geracao?: string
+          periodo_fim?: string
+          periodo_inicio?: string
+          prioridades?: Json
+          regras?: Json
+          revisado?: boolean
+          revisado_em?: string | null
+          revisado_por?: string | null
+          tipo?: string
+          versao?: number
+        }
+        Relationships: []
+      }
       role_permissions: {
         Row: {
           action: Database["public"]["Enums"]["permission_action"]
@@ -5628,6 +5782,28 @@ export type Database = {
       }
     }
     Functions: {
+      _resumo_calcular: {
+        Args: { p_fim: string; p_inicio: string }
+        Returns: Json
+      }
+      _resumo_filtrar: { Args: { m: Json }; Returns: Json }
+      _resumo_montar: {
+        Args: { p_fim: string; p_inicio: string }
+        Returns: Json
+      }
+      _resumo_narrativa_estruturada: { Args: { m: Json }; Returns: Json }
+      _resumo_regras: { Args: never; Returns: Json }
+      _resumo_salvar: {
+        Args: {
+          p_fim: string
+          p_inicio: string
+          p_narrativa?: Json
+          p_origem: string
+          p_prioridades?: Json
+          p_user: string
+        }
+        Returns: string
+      }
       admin_auditoria: {
         Args: {
           p_action?: string
@@ -6885,6 +7061,35 @@ export type Database = {
       relatorios_tecnicos: {
         Args: { p_from: string; p_to: string }
         Returns: Json
+      }
+      resumo_config_salvar: {
+        Args: { p_destinatarios: string[]; p_dia: number; p_hora: number }
+        Returns: undefined
+      }
+      resumo_corte: { Args: { p_ref?: string }; Returns: string }
+      resumo_detalhe: {
+        Args: { p_fim: string; p_indicador: string; p_inicio: string }
+        Returns: Json
+      }
+      resumo_gerar: {
+        Args: {
+          p_fim: string
+          p_inicio: string
+          p_narrativa?: Json
+          p_prioridades?: Json
+        }
+        Returns: string
+      }
+      resumo_gerar_agendado: { Args: never; Returns: undefined }
+      resumo_obter: { Args: { p_id: string }; Returns: Json }
+      resumo_periodos: { Args: never; Returns: Json }
+      resumo_previa: {
+        Args: { p_fim: string; p_inicio: string }
+        Returns: Json
+      }
+      resumo_revisar: {
+        Args: { p_id: string; p_prioridades: Json }
+        Returns: undefined
       }
       seguranca_eventos_listar: {
         Args: { p_dias?: number; p_limite?: number; p_tipo?: string }
