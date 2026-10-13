@@ -45,6 +45,7 @@ import { Route as AuthenticatedGerenciaOperacionalFluxoRouteImport } from './rou
 import { Route as AuthenticatedGerenciaOperacionalPendenciasRouteImport } from './routes/_authenticated/gerencia-operacional.pendencias'
 import { Route as AuthenticatedGerenciaOperacionalProducaoRouteImport } from './routes/_authenticated/gerencia-operacional.producao'
 import { Route as AuthenticatedGerenciaOperacionalRelatoriosRouteImport } from './routes/_authenticated/gerencia-operacional.relatorios'
+import { Route as AuthenticatedGerenciaOperacionalResumoExecutivoRouteImport } from './routes/_authenticated/gerencia-operacional.resumo-executivo'
 import { Route as AuthenticatedGerenciaOperacionalTecnicosRouteImport } from './routes/_authenticated/gerencia-operacional.tecnicos'
 import { Route as AuthenticatedGerenciaOperacionalTerceirizadosRouteImport } from './routes/_authenticated/gerencia-operacional.terceirizados'
 import { Route as AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport } from './routes/_authenticated/gerencia-operacional.validacao-tecnica'
@@ -246,6 +247,12 @@ const AuthenticatedGerenciaOperacionalRelatoriosRoute =
     path: '/relatorios',
     getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
   } as any)
+const AuthenticatedGerenciaOperacionalResumoExecutivoRoute =
+  AuthenticatedGerenciaOperacionalResumoExecutivoRouteImport.update({
+    id: '/resumo-executivo',
+    path: '/resumo-executivo',
+    getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
+  } as any)
 const AuthenticatedGerenciaOperacionalTecnicosRoute =
   AuthenticatedGerenciaOperacionalTecnicosRouteImport.update({
     id: '/tecnicos',
@@ -299,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
   '/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
   '/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/gerencia-operacional/resumo-executivo': typeof AuthenticatedGerenciaOperacionalResumoExecutivoRoute
   '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
@@ -338,6 +346,7 @@ export interface FileRoutesByTo {
   '/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
   '/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
   '/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/gerencia-operacional/resumo-executivo': typeof AuthenticatedGerenciaOperacionalResumoExecutivoRoute
   '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
@@ -380,6 +389,7 @@ export interface FileRoutesById {
   '/_authenticated/gerencia-operacional/pendencias': typeof AuthenticatedGerenciaOperacionalPendenciasRoute
   '/_authenticated/gerencia-operacional/producao': typeof AuthenticatedGerenciaOperacionalProducaoRoute
   '/_authenticated/gerencia-operacional/relatorios': typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  '/_authenticated/gerencia-operacional/resumo-executivo': typeof AuthenticatedGerenciaOperacionalResumoExecutivoRoute
   '/_authenticated/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/_authenticated/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/_authenticated/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
@@ -422,6 +432,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/pendencias'
     | '/gerencia-operacional/producao'
     | '/gerencia-operacional/relatorios'
+    | '/gerencia-operacional/resumo-executivo'
     | '/gerencia-operacional/tecnicos'
     | '/gerencia-operacional/terceirizados'
     | '/gerencia-operacional/validacao-tecnica'
@@ -461,6 +472,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/pendencias'
     | '/gerencia-operacional/producao'
     | '/gerencia-operacional/relatorios'
+    | '/gerencia-operacional/resumo-executivo'
     | '/gerencia-operacional/tecnicos'
     | '/gerencia-operacional/terceirizados'
     | '/gerencia-operacional/validacao-tecnica'
@@ -502,6 +514,7 @@ export interface FileRouteTypes {
     | '/_authenticated/gerencia-operacional/pendencias'
     | '/_authenticated/gerencia-operacional/producao'
     | '/_authenticated/gerencia-operacional/relatorios'
+    | '/_authenticated/gerencia-operacional/resumo-executivo'
     | '/_authenticated/gerencia-operacional/tecnicos'
     | '/_authenticated/gerencia-operacional/terceirizados'
     | '/_authenticated/gerencia-operacional/validacao-tecnica'
@@ -772,6 +785,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGerenciaOperacionalRelatoriosRouteImport
       parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
     }
+    '/_authenticated/gerencia-operacional/resumo-executivo': {
+      id: '/_authenticated/gerencia-operacional/resumo-executivo'
+      path: '/resumo-executivo'
+      fullPath: '/gerencia-operacional/resumo-executivo'
+      preLoaderRoute: typeof AuthenticatedGerenciaOperacionalResumoExecutivoRouteImport
+      parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
+    }
     '/_authenticated/gerencia-operacional/tecnicos': {
       id: '/_authenticated/gerencia-operacional/tecnicos'
       path: '/tecnicos'
@@ -807,6 +827,7 @@ interface AuthenticatedGerenciaOperacionalRouteChildren {
   AuthenticatedGerenciaOperacionalPendenciasRoute: typeof AuthenticatedGerenciaOperacionalPendenciasRoute
   AuthenticatedGerenciaOperacionalProducaoRoute: typeof AuthenticatedGerenciaOperacionalProducaoRoute
   AuthenticatedGerenciaOperacionalRelatoriosRoute: typeof AuthenticatedGerenciaOperacionalRelatoriosRoute
+  AuthenticatedGerenciaOperacionalResumoExecutivoRoute: typeof AuthenticatedGerenciaOperacionalResumoExecutivoRoute
   AuthenticatedGerenciaOperacionalTecnicosRoute: typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   AuthenticatedGerenciaOperacionalTerceirizadosRoute: typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute: typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
@@ -835,6 +856,8 @@ const AuthenticatedGerenciaOperacionalRouteChildren: AuthenticatedGerenciaOperac
       AuthenticatedGerenciaOperacionalProducaoRoute,
     AuthenticatedGerenciaOperacionalRelatoriosRoute:
       AuthenticatedGerenciaOperacionalRelatoriosRoute,
+    AuthenticatedGerenciaOperacionalResumoExecutivoRoute:
+      AuthenticatedGerenciaOperacionalResumoExecutivoRoute,
     AuthenticatedGerenciaOperacionalTecnicosRoute:
       AuthenticatedGerenciaOperacionalTecnicosRoute,
     AuthenticatedGerenciaOperacionalTerceirizadosRoute:
