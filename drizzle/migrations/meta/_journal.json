@@ -43,6 +43,13 @@
       "when": 1791898971710,
       "tag": "0005_resumo_executivo_agendamento",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791900677013,
+      "tag": "0006_fix_relatorios_faturamento_window",
+      "breakpoints": true
     }
   ]
 }
