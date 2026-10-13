@@ -7062,6 +7062,8 @@ export type Database = {
         Args: { p_from: string; p_to: string }
         Returns: Json
       }
+      resumo_agenda_status: { Args: never; Returns: Json }
+      resumo_agendar: { Args: never; Returns: undefined }
       resumo_config_salvar: {
         Args: { p_destinatarios: string[]; p_dia: number; p_hora: number }
         Returns: undefined
