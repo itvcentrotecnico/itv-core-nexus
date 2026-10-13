@@ -9,3 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 - AI text generation runs only in server functions (*.functions.ts) via the Lovable AI Gateway Responses API with streamText; why: keeps the key server-side and avoids buffered timeouts.
+- Resumo Executivo Semanal: indicators are computed only by SQL (`_resumo_calcular`/`_resumo_montar`) and each generation is stored as a frozen version; AI only rewrites text from those indicators and falls back to the structured text. Why: reports must stay traceable and never change silently.

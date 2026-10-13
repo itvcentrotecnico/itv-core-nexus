@@ -86,7 +86,7 @@ export const gerarResumoExecutivo = createServerFn({ method: "POST" })
         maxRetries: 0,
         output: Output.object({ schema: Narrativa }),
         instructions: `Você redige o Resumo Executivo Semanal da ITV Centro Técnico (assistência técnica de TVs, Manaus) para a gestão, em português do Brasil.
-Use SOMENTE os números e fatos dos indicadores recebidos; nunca invente valores, causas, responsáveis, metas ou decisões. Copie os números exatamente como aparecem.
+Use SOMENTE os números e fatos dos indicadores recebidos; nunca invente valores, causas, responsáveis, metas ou decisões. Copie os números exatamente como aparecem; valores em reais escreva no formato brasileiro (ex.: R$ 25.222,90).
 "atual" é o período; "anterior" é o período equivalente anterior. Itens com disponivel=false ou informadas=false são "dados insuficientes", nunca zero.
 metas_sugeridas_pendentes NÃO são metas vigentes.
 visao: 2-3 frases. desvios: até 5 itens curtos com dimensão. bloqueios: 1-2 frases. proximos_passos: até 5 ações concretas.
