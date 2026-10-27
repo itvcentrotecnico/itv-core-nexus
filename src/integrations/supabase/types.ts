@@ -6802,6 +6802,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      integracao_financeiro_hml_ler: {
+        Args: {
+          p_fim: string
+          p_inicio: string
+          p_limite?: number
+          p_offset?: number
+          p_recurso: string
+        }
+        Returns: Json
+      }
       localizacao_registrar: {
         Args: {
           p_bairro?: string
