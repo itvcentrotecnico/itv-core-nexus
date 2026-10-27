@@ -49,6 +49,7 @@ import { Route as AuthenticatedGerenciaOperacionalResumoExecutivoRouteImport } f
 import { Route as AuthenticatedGerenciaOperacionalTecnicosRouteImport } from './routes/_authenticated/gerencia-operacional.tecnicos'
 import { Route as AuthenticatedGerenciaOperacionalTerceirizadosRouteImport } from './routes/_authenticated/gerencia-operacional.terceirizados'
 import { Route as AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport } from './routes/_authenticated/gerencia-operacional.validacao-tecnica'
+import { Route as ApiPublicIntegracaoFinanceiroRouteImport } from './routes/api/public/integracao-financeiro'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -271,6 +272,12 @@ const AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute =
     path: '/validacao-tecnica',
     getParentRoute: () => AuthenticatedGerenciaOperacionalRoute,
   } as any)
+const ApiPublicIntegracaoFinanceiroRoute =
+  ApiPublicIntegracaoFinanceiroRouteImport.update({
+    id: '/api/public/integracao-financeiro',
+    path: '/api/public/integracao-financeiro',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
+  '/api/public/integracao-financeiro': typeof ApiPublicIntegracaoFinanceiroRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/gerencia-operacional/': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
@@ -350,6 +358,7 @@ export interface FileRoutesByTo {
   '/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
+  '/api/public/integracao-financeiro': typeof ApiPublicIntegracaoFinanceiroRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
@@ -393,6 +402,7 @@ export interface FileRoutesById {
   '/_authenticated/gerencia-operacional/tecnicos': typeof AuthenticatedGerenciaOperacionalTecnicosRoute
   '/_authenticated/gerencia-operacional/terceirizados': typeof AuthenticatedGerenciaOperacionalTerceirizadosRoute
   '/_authenticated/gerencia-operacional/validacao-tecnica': typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRoute
+  '/api/public/integracao-financeiro': typeof ApiPublicIntegracaoFinanceiroRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/gerencia-operacional/': typeof AuthenticatedGerenciaOperacionalIndexRoute
 }
@@ -436,6 +446,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/tecnicos'
     | '/gerencia-operacional/terceirizados'
     | '/gerencia-operacional/validacao-tecnica'
+    | '/api/public/integracao-financeiro'
     | '/admin/'
     | '/gerencia-operacional/'
   fileRoutesByTo: FileRoutesByTo
@@ -476,6 +487,7 @@ export interface FileRouteTypes {
     | '/gerencia-operacional/tecnicos'
     | '/gerencia-operacional/terceirizados'
     | '/gerencia-operacional/validacao-tecnica'
+    | '/api/public/integracao-financeiro'
     | '/admin'
     | '/gerencia-operacional'
   id:
@@ -518,6 +530,7 @@ export interface FileRouteTypes {
     | '/_authenticated/gerencia-operacional/tecnicos'
     | '/_authenticated/gerencia-operacional/terceirizados'
     | '/_authenticated/gerencia-operacional/validacao-tecnica'
+    | '/api/public/integracao-financeiro'
     | '/_authenticated/admin/'
     | '/_authenticated/gerencia-operacional/'
   fileRoutesById: FileRoutesById
@@ -529,6 +542,7 @@ export interface RootRouteChildren {
   ModoTvRoute: typeof ModoTvRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   CadastroColetaTokenRoute: typeof CadastroColetaTokenRoute
+  ApiPublicIntegracaoFinanceiroRoute: typeof ApiPublicIntegracaoFinanceiroRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -813,6 +827,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGerenciaOperacionalValidacaoTecnicaRouteImport
       parentRoute: typeof AuthenticatedGerenciaOperacionalRoute
     }
+    '/api/public/integracao-financeiro': {
+      id: '/api/public/integracao-financeiro'
+      path: '/api/public/integracao-financeiro'
+      fullPath: '/api/public/integracao-financeiro'
+      preLoaderRoute: typeof ApiPublicIntegracaoFinanceiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -928,6 +949,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModoTvRoute: ModoTvRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   CadastroColetaTokenRoute: CadastroColetaTokenRoute,
+  ApiPublicIntegracaoFinanceiroRoute: ApiPublicIntegracaoFinanceiroRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
