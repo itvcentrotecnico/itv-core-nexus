@@ -21,7 +21,7 @@ export async function autorizarIntegracao(header: string | null, secret: string 
   ]);
   const left = new Uint8Array(a), right = new Uint8Array(b);
   let difference = 0;
-  for (let i = 0; i < left.length; i++) difference |= left[i] ^ right[i];
+  for (let i = 0; i < left.length; i++) difference |= (left[i] ?? 0) ^ (right[i] ?? 0);
   return difference === 0;
 }
 
