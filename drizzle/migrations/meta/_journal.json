@@ -50,6 +50,13 @@
       "when": 1791900677013,
       "tag": "0006_fix_relatorios_faturamento_window",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793059717526,
+      "tag": "0007_financeiro_hml_leitura_isolada",
+      "breakpoints": true
     }
   ]
 }

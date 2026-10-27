@@ -8,4 +8,6 @@
 
 ## Integração financeira HML
 - [x] Inspecionar autenticação, RLS e escopo financeiro solicitado
-- [ ] Provisionar identidade dedicada e validar leitura/bloqueio de escrita — depende de mecanismo seguro de provisionamento e configuração no HML
+- [x] Implementar endpoint isolado e função SQL de leitura fixa sem alterar usuários existentes
+- [ ] Validar acesso autenticado real e bloqueios — aguarda token no formulário seguro
+- [ ] Configurar consumidor HML e disponibilizar versão publicada — requer configuração no projeto Financeiro e publicação
