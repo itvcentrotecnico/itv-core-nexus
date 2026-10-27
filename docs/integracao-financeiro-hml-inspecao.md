@@ -42,6 +42,8 @@ Excluir nomes de clientes, descrições livres, observações, dados pessoais de
 
 ## Próximo passo seguro
 
+O snapshot do ITV FINANCEIRO confirma que o adaptador atual espera autenticação por usuário/senha da origem, usando os segredos de servidor `GESTAO_ITV_USUARIO` e `GESTAO_ITV_SENHA`, e consulta a Data API, não uma conexão PostgreSQL. Também espera a view `contas_receber_saldos`, cuja existência foi confirmada; os campos e o isolamento dessa view ainda precisam de validação. A implementação do HML declara que a identidade e a leitura real ainda não foram configuradas. Não preencher esses segredos com uma conta de Administrador, ADM Financeiro ou outro usuário existente.
+
 Definir no projeto ITV FINANCEIRO HML um mecanismo provisionável de autenticação de integração. Preferir acesso mediado exclusivamente de leitura com projeção fixa de campos e credencial própria, ou um papel de banco dedicado quando houver provisionamento seguro disponível. O acesso mediado não pode abrir leitura anônima nem utilizar privilégios administrativos como substituto do isolamento.
 
 Se o mecanismo escolhido usar token compartilhado, registrar `GESTAO_ITV_READ_TOKEN` através de formulário seguro nos dois projetos, gerando-o uma única vez e copiando-o somente entre esses formulários. Guardar apenas no servidor do HML, nunca em variável `VITE_`, código, GitHub, chat ou relatório. Configurar a URL real somente depois de o acesso estar disponível e publicado.
