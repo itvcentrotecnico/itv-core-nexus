@@ -19,7 +19,8 @@ Sem nomes de clientes, dados de funcionários, observações, descrições livre
 - Consulta HTTP real sem token: 401.
 - Função SQL existe, é STABLE e não tem execução concedida a anon/authenticated; somente servidor de origem.
 - Página de acesso abre normalmente; compilação sem erros após correção.
-- Leitura autenticada real e testes negativos com token real ainda pendentes da configuração segura. Nenhuma escrita foi tentada em registros operacionais.
+- Token salvo no gerenciamento seguro da origem. Teste HTTP com token real na prévia: os seis recursos responderam 200; recebimentos, pagamentos, formas e taxas retornaram registros reais (5 por consulta limitada). Títulos e recebimentos de títulos retornaram arrays vazios no período 01/10–26/10/2026; portanto, o caminho está acessível, mas a leitura de um boleto existente não foi demonstrada nesse período.
+- Com o mesmo token real, POST/PUT/PATCH/DELETE retornaram 405; seleção de profiles/coletas e funções mutáveis retornou 400; seleção arbitrária de campos retornou 400; ausência de token retornou 401. Campos pessoais excluídos não apareceram nos registros consultados. Nenhuma escrita foi realizada em registros operacionais.
 
 ## Configurar no HML
 O adaptador atual do HML usa usuário/senha e Data API: deve ser ajustado para este endpoint, sem usar `GESTAO_ITV_USUARIO`/`GESTAO_ITV_SENHA` de funcionário.
@@ -28,4 +29,4 @@ O adaptador atual do HML usa usuário/senha e Data API: deve ser ajustado para e
 3. Publicar a versão da origem quando autorizado. A versão publicada anterior não contém este endpoint. Configuração e alterações no HML não podem ser efetuadas pelo snapshot somente leitura disponível nesta conversa.
 4. Validar leitura real, bloqueios com token válido e comportamento do consumidor antes de declarar a conexão liberada. Para revogar, substituir/remover o segredo na origem.
 
-Estado: acesso implementado na prévia, ainda não liberado para uso HML. Este documento substitui o impedimento de implementação descrito na inspeção anterior; permanecem configuração do segredo, validação real, publicação e adaptação do consumidor.
+Estado: acesso provisionado e validado com token real na prévia; ainda não liberado na versão publicada nem conectado pelo consumidor HML. Este documento substitui o impedimento de implementação descrito na inspeção anterior; permanecem publicação, configuração do mesmo token e adaptação do consumidor no projeto Financeiro, além da validação de títulos com dados quando disponíveis.
