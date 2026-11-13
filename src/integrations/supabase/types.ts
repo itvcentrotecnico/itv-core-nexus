@@ -7210,6 +7210,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      reference_module_access: {
+        Args: { p_modules: string[] }
+        Returns: boolean
+      }
       registrar_auditoria: {
         Args: { p_action: string; p_module: string; p_new?: Json; p_old?: Json }
         Returns: undefined
