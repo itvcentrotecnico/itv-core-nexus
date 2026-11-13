@@ -6,6 +6,7 @@ import {
   horario,
   totalSemana,
   minutosDia,
+  intervaloTexto,
   adicionarDias,
   type PessoaEscala,
 } from "@/lib/escalas-calculo";
@@ -73,7 +74,7 @@ export function GradeEscala({
                               {horario(d.entrada)}–{horario(d.saida)}
                             </span>
                             <span className="text-xs font-normal text-muted-foreground">
-                              Intervalo {d.intervalo} min
+                              {intervaloTexto(d)}
                             </span>
                             <span className="text-xs text-primary">{horas(minutosDia(d))}</span>
                           </>
@@ -89,7 +90,7 @@ export function GradeEscala({
                               {horario(d.entrada)}–{horario(d.saida)}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              Intervalo {d.intervalo} min
+                              {intervaloTexto(d)}
                             </span>
                             <span className="text-xs text-primary">{horas(minutosDia(d))}</span>
                           </>
@@ -101,6 +102,10 @@ export function GradeEscala({
                 <td className="p-3 text-center">
                   <strong>{horas(total)}</strong>
                   <span className="block text-xs text-muted-foreground">Meta {horas(p.meta)}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {p.dias.filter((d) => !d.folga).length} dias ·{" "}
+                    {p.dias.filter((d) => d.folga).length} folgas
+                  </span>
                   <span
                     className={cn(
                       "block text-xs",

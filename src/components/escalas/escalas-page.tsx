@@ -19,7 +19,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { inputClass } from "@/lib/caixa";
 import { mensagemErro } from "@/lib/erros";
-import { lerEscala, gravarEscala, lerAcessosEscala, acessoPronto, type SemanaEscala } from "@/lib/escalas";
+import {
+  lerEscala,
+  gravarEscala,
+  lerAcessosEscala,
+  acessoPronto,
+  type SemanaEscala,
+} from "@/lib/escalas";
 import {
   DIAS,
   adicionarDias,
@@ -29,32 +35,40 @@ import {
   horas,
   totalSemana,
   inconsistencias,
+  propostaInicial,
+  cobertura,
+  intervaloTexto,
+  duracaoIntervalo,
   type DiaEscala,
   type PessoaEscala,
   type RegrasEscala,
 } from "@/lib/escalas-calculo";
 import { GradeEscala } from "./grade";
+import { IdentidadeDialog } from "./identidade-dialog";
 
 export const HORARIOS = Array.from({ length: 48 }, (_, i) => i * 30);
 export function CampoHorario({
   label,
   value,
   onChange,
+  passo = 30,
 }: {
   label: string;
   value: number | null;
   onChange: (v: number | null) => void;
+  passo?: number;
 }) {
   return (
     <label className="grid gap-1 text-sm">
       {label}
       <select
         className={inputClass}
+        aria-label={label}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
       >
         <option value="">Não informado</option>
-        {HORARIOS.map((n) => (
+        {Array.from({ length: 1440 / passo }, (_, i) => i * passo).map((n) => (
           <option key={n} value={n}>
             {horario(n)}
           </option>
@@ -119,6 +133,9 @@ export function EscalasPage() {
   const [regras, setRegras] = useState<RegrasEscala | null>(null);
   const [publicar, setPublicar] = useState(false);
   const [confirmado, setConfirmado] = useState(false);
+  const [justificativa, setJustificativa] = useState("");
+  const [identidade, setIdentidade] = useState<string | null>(null);
+  const [conferencia, setConferencia] = useState(false);
   const [versao, setVersao] = useState("");
   const [edit, setEdit] = useState<{ p: number; d: number; dia: DiaEscala } | null>(null);
   const [pessoa, setPessoa] = useState<{
@@ -156,7 +173,16 @@ export function EscalasPage() {
   async function acao(a: string, equipe?: PessoaEscala[], r?: RegrasEscala) {
     setBusy(true);
     try {
-      const res = await gravarEscala(a, inicio, local?.revisao, equipe, r, confirmado);
+      const res = await gravarEscala(
+        a,
+        inicio,
+        local?.revisao,
+        equipe,
+        r,
+        confirmado,
+        justificativa,
+      );
+      if (a === "validar") setConferencia(true);
       setNova(false);
       setConfig(false);
       setPublicar(false);
@@ -186,11 +212,38 @@ export function EscalasPage() {
     );
   const historica = query.data?.versoes.find((v) => v.id === versao);
   const equipe = historica?.equipe ?? local?.equipe ?? [];
-  const pendenciasAcesso = equipe.filter((p) =>
-    !acessoPronto(acessos.data?.find((a) => a.colaborador_id === p.colaborador_id)),
+  const pendenciasAcesso = equipe.filter(
+    (p) => !acessoPronto(acessos.data?.find((a) => a.colaborador_id === p.colaborador_id)),
   );
   const editavel = !!local && local.estado !== "publicada" && !historica;
   const valid = historica?.validacao ?? local?.validacao;
+  const falhas = regras ? cobertura(equipe, regras) : [];
+  function aplicarProposta() {
+    if (
+      !local ||
+      !window.confirm(
+        "Aplicar folgas e sábado da proposta inicial? Horários preenchidos dos dias úteis serão preservados; os demais continuarão pendentes.",
+      )
+    )
+      return;
+    const cadastrados = (query.data?.colaboradores ?? []).map(
+      (c) =>
+        local.equipe.find((p) => p.colaborador_id === c.id) ?? {
+          colaborador_id: c.id,
+          nome: c.nome,
+          funcao: c.funcao,
+          meta: c.meta,
+          dias: DIAS.map(() => ({ folga: false, entrada: null, saida: null, intervalo: 0 })),
+        },
+    );
+    setLocal({
+      ...local,
+      estado: "rascunho",
+      validacao: null,
+      equipe: propostaInicial(cadastrados),
+    });
+    setSujo(true);
+  }
   function abrirNova() {
     setIds(query.data?.colaboradores.filter((c) => c.selecionado).map((c) => c.id) ?? []);
     setNova(true);
@@ -322,6 +375,12 @@ export function EscalasPage() {
                   <Save />
                   Salvar
                 </Button>
+                {editavel && (
+                  <Button variant="outline" onClick={aplicarProposta} disabled={busy}>
+                    <CalendarDays />
+                    Proposta inicial · 7 colaboradores
+                  </Button>
+                )}
                 <Button variant="outline" disabled={busy || sujo} onClick={() => acao("duplicar")}>
                   <Copy />
                   Duplicar semana
@@ -335,7 +394,13 @@ export function EscalasPage() {
                   Validar
                 </Button>
                 <Button
-                  disabled={busy || sujo || local.estado !== "validada" || !acessos.isSuccess || pendenciasAcesso.length > 0}
+                  disabled={
+                    busy ||
+                    sujo ||
+                    local.estado !== "validada" ||
+                    !acessos.isSuccess ||
+                    pendenciasAcesso.length > 0
+                  }
                   onClick={() => {
                     setConfirmado(false);
                     setPublicar(true);
@@ -376,20 +441,67 @@ export function EscalasPage() {
           </div>
           <section className="space-y-3 border-y border-border py-4">
             <h2 className="font-display font-semibold">Cadastros e acessos da escala</h2>
-            {acessos.isPending && <p className="text-sm text-muted-foreground">Conferindo acessos…</p>}
-            {acessos.isError && <p role="alert" className="text-sm text-destructive">Não foi possível conferir os acessos. Publicação bloqueada.</p>}
+            {acessos.isPending && (
+              <p className="text-sm text-muted-foreground">Conferindo acessos…</p>
+            )}
+            {acessos.isError && (
+              <p role="alert" className="text-sm text-destructive">
+                Não foi possível conferir os acessos. Publicação bloqueada.
+              </p>
+            )}
             <ul className="divide-y divide-border text-sm">
-              {(equipe.length ? equipe : query.data.colaboradores.filter((c) => c.selecionado).map((c) => ({ nome: c.nome, colaborador_id: c.id }))).map((p) => {
+              {(equipe.length
+                ? equipe
+                : query.data.colaboradores
+                    .filter((c) => c.selecionado)
+                    .map((c) => ({ nome: c.nome, colaborador_id: c.id }))
+              ).map((p) => {
                 const a = acessos.data?.find((x) => x.colaborador_id === p.colaborador_id);
-                return <li key={p.colaborador_id} className="flex flex-wrap justify-between gap-2 py-2">
-                  <strong>{p.nome}</strong>
-                  <span className={acessoPronto(a) ? "text-primary" : "text-destructive"}>
-                    {!a ? "Conferência pendente" : !a.vinculado ? "Sem acesso vinculado" : !a.ativo ? "Acesso inativo" : !a.pode_consultar ? "Sem permissão para Minha Escala" : `Vinculado · ${a.usuario}`}
-                  </span>
-                </li>;
+                return (
+                  <li key={p.colaborador_id} className="flex flex-wrap justify-between gap-2 py-2">
+                    <strong>{p.nome}</strong>
+                    <span className={acessoPronto(a) ? "text-primary" : "text-destructive"}>
+                      {!a
+                        ? "Conferência pendente"
+                        : !a.vinculado
+                          ? "Sem acesso vinculado"
+                          : !a.ativo
+                            ? "Acesso inativo"
+                            : !a.pode_consultar
+                              ? "Sem permissão para Minha Escala"
+                              : `Vinculado · ${a.usuario}`}
+                    </span>
+                  </li>
+                );
               })}
             </ul>
-            {pendenciasAcesso.length > 0 && <p role="alert" className="text-sm text-destructive">Publicação bloqueada: {pendenciasAcesso.map((p) => p.nome).join(", ")}.</p>}
+            {pendenciasAcesso.length > 0 && (
+              <p role="alert" className="text-sm text-destructive">
+                Publicação bloqueada: {pendenciasAcesso.map((p) => p.nome).join(", ")}.
+              </p>
+            )}
+            {isAdmin &&
+              ["Adriano", "Taylor"]
+                .filter(
+                  (nome) =>
+                    !query.data.colaboradores.some((c) =>
+                      c.nome.toLowerCase().includes(nome.toLowerCase()),
+                    ),
+                )
+                .map((nome) => (
+                  <div
+                    key={nome}
+                    className="flex flex-wrap items-center justify-between gap-2 text-sm"
+                  >
+                    <span>
+                      {nome} · {nome === "Adriano" ? "Auxiliar Operacional" : "Auxiliar Logístico"}{" "}
+                      · identidade pendente
+                    </span>
+                    <Button variant="outline" onClick={() => setIdentidade(nome)}>
+                      Confirmar identidade
+                    </Button>
+                  </div>
+                ))}
           </section>
           {!local ? (
             <div className="border-y border-border py-16 text-center">
@@ -459,6 +571,89 @@ export function EscalasPage() {
           })}
         </section>
       )}
+      {identidade && (
+        <IdentidadeDialog
+          pessoa={identidade}
+          colaboradores={query.data?.colaboradores ?? []}
+          fechar={() => setIdentidade(null)}
+          concluir={(id, nome) => {
+            if (local) {
+              setLocal({
+                ...local,
+                estado: "rascunho",
+                validacao: null,
+                equipe: local.equipe.map((p) =>
+                  p.colaborador_id === `pendente:${identidade}`
+                    ? { ...p, colaborador_id: id, nome, pendente: false }
+                    : p,
+                ),
+              });
+              setSujo(true);
+            }
+            setIdentidade(null);
+            void qc.invalidateQueries({ queryKey: ["escalas-acessos"] });
+          }}
+        />
+      )}
+      <Dialog open={conferencia} onOpenChange={setConferencia}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
+          <DialogTitle>Conferência final da escala</DialogTitle>
+          <DialogDescription>Semana de {inicio.split("-").reverse().join("/")}</DialogDescription>
+          {equipe.map((p) => (
+            <section
+              key={p.colaborador_id}
+              className="space-y-1 border-b border-border pb-3 text-sm"
+            >
+              <strong>
+                {p.nome} · {horas(totalSemana(p.dias))}
+              </strong>
+              <p>
+                Meta {horas(p.meta)} · diferença {horas(totalSemana(p.dias) - p.meta)} ·{" "}
+                {p.dias.filter((d) => !d.folga).length} dias trabalhados
+              </p>
+              <p>
+                Folgas:{" "}
+                {p.dias.flatMap((d, i) => (d.folga ? [DIAS[i]] : [])).join(", ") || "Nenhuma"}
+              </p>
+              <p>
+                Intervalos:{" "}
+                {p.dias
+                  .flatMap((d, i) => (!d.folga ? [`${DIAS[i]} ${intervaloTexto(d)}`] : []))
+                  .join("; ")}
+              </p>
+              <p
+                className={
+                  pendenciasAcesso.some((x) => x.colaborador_id === p.colaborador_id)
+                    ? "text-destructive"
+                    : "text-primary"
+                }
+              >
+                {pendenciasAcesso.some((x) => x.colaborador_id === p.colaborador_id)
+                  ? "Acesso pendente — publicação bloqueada"
+                  : "Acesso individual conferido"}
+              </p>
+            </section>
+          ))}
+          {valid?.erros.map((e, i) => (
+            <p key={i} className="text-sm text-destructive">
+              {e}
+            </p>
+          ))}
+          {falhas.map((f, i) => (
+            <p key={i} className="text-sm text-muted-foreground">
+              {DIAS[f.dia]} {horario(f.inicio)}–{horario(f.fim)} · {f.setor} sem cobertura
+            </p>
+          ))}
+          {valid?.alertas
+            .filter((a) => a.tipo !== "operacional")
+            .map((a, i) => (
+              <p key={i} className="text-sm text-muted-foreground">
+                {a.texto}
+              </p>
+            ))}
+          <Button onClick={() => setConferencia(false)}>Concluir conferência</Button>
+        </DialogContent>
+      </Dialog>
       <Dialog open={nova} onOpenChange={setNova}>
         <DialogContent className="max-h-[90dvh] overflow-y-auto">
           <DialogTitle>Nova escala</DialogTitle>
@@ -527,26 +722,43 @@ export function EscalasPage() {
                       onChange={(v) => setEdit({ ...edit, dia: { ...edit.dia, saida: v } })}
                     />
                   </div>
-                  <label className="grid gap-1 text-sm">
-                    Intervalos totais
-                    <select
-                      className={inputClass}
-                      aria-label="Intervalos totais"
-                      value={edit.dia.intervalo}
-                      onChange={(e) =>
+                  <div className="grid grid-cols-2 gap-3">
+                    <CampoHorario
+                      label="Início do intervalo"
+                      passo={15}
+                      value={edit.dia.intervalo_inicio ?? null}
+                      onChange={(v) => {
+                        const fim = edit.dia.intervalo_fim ?? null;
                         setEdit({
                           ...edit,
-                          dia: { ...edit.dia, intervalo: Number(e.target.value) },
-                        })
-                      }
-                    >
-                      {[0, 15, 30, 45, 60, 90, 120].map((n) => (
-                        <option key={n} value={n}>
-                          {n} minutos
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                          dia: {
+                            ...edit.dia,
+                            intervalo_inicio: v,
+                            intervalo: v !== null && fim !== null ? fim - v : 0,
+                          },
+                        });
+                      }}
+                    />
+                    <CampoHorario
+                      label="Fim do intervalo"
+                      passo={15}
+                      value={edit.dia.intervalo_fim ?? null}
+                      onChange={(v) => {
+                        const ini = edit.dia.intervalo_inicio ?? null;
+                        setEdit({
+                          ...edit,
+                          dia: {
+                            ...edit.dia,
+                            intervalo_fim: v,
+                            intervalo: v !== null && ini !== null ? v - ini : 0,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Intervalo calculado: {duracaoIntervalo(edit.dia)} min
+                  </p>
                 </>
               )}
               <p className="text-sm">Total do dia: {horas(totalSemana([edit.dia]))}</p>
@@ -631,7 +843,26 @@ export function EscalasPage() {
             Conferi as metas, a cobertura e os possíveis alertas trabalhistas e autorizo a
             publicação.
           </label>
-          <Button disabled={!confirmado || busy || !acessos.isSuccess || pendenciasAcesso.length > 0} onClick={() => acao("publicar")}>
+          {!!valid?.alertas.length && (
+            <label className="grid gap-1 text-sm">
+              Decisão administrativa sobre os alertas
+              <textarea
+                className={inputClass}
+                value={justificativa}
+                onChange={(e) => setJustificativa(e.target.value)}
+              />
+            </label>
+          )}
+          <Button
+            disabled={
+              !confirmado ||
+              busy ||
+              !acessos.isSuccess ||
+              pendenciasAcesso.length > 0 ||
+              (!!valid?.alertas.length && justificativa.trim().length < 10)
+            }
+            onClick={() => acao("publicar")}
+          >
             Confirmar publicação
           </Button>
         </DialogContent>

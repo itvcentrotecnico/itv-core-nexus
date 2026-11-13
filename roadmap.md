@@ -1,11 +1,12 @@
 # Roadmap
 
 ## Escalas e Jornadas — Etapa 1
+- [x] Intervalos com horários, proposta editável de sete posições em rascunho, cobertura por faixa e conferência; 19 testes e tela autenticada/celular conferidos
 - [x] Persistir escalas, parâmetros e versões com acesso individual e gestão autorizada
 - [x] Integrar grade semanal, edição, duplicação, validação, publicação e impressão
 - [x] Disponibilizar Minha Escala; cálculos e celular conferidos, bloqueios de escrita e rascunho incompleto verificados
 - [x] Conferir cadastros e vincular os cinco acessos ativos existentes; bloquear publicação sem acesso individual e apresentar relatório da Etapa 1
-- [ ] Conferir publicação e leitura individual completa — depende dos horários reais, confirmação/cadastro e convites de Adriano e Taylor; cinco acessos existentes já vinculados
+- [ ] Concluir testes de duplicação, publicação/histórico e leitura individual completa — depende dos horários reais e confirmação/cadastro/convites de Adriano e Taylor; cinco acessos preservados
 
 ## Concluído
 - [x] Estoque Técnico: lançamentos exclusivos da Gerência (permissões, RLS de leitura, telas de permissão, auditoria conferida)

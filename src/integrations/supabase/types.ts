@@ -2886,6 +2886,7 @@ export type Database = {
           estado: string
           id: string
           inicio: string
+          justificativa: string | null
           regras: Json
           revisao: number
           updated_at: string
@@ -2897,6 +2898,7 @@ export type Database = {
           estado?: string
           id?: string
           inicio: string
+          justificativa?: string | null
           regras: Json
           revisao?: number
           updated_at?: string
@@ -2908,6 +2910,7 @@ export type Database = {
           estado?: string
           id?: string
           inicio?: string
+          justificativa?: string | null
           regras?: Json
           revisao?: number
           updated_at?: string
@@ -2922,6 +2925,7 @@ export type Database = {
           escala_id: string
           id: string
           inicio: string
+          justificativa: string | null
           publicado_em: string
           publicado_por: string
           regras: Json
@@ -2933,6 +2937,7 @@ export type Database = {
           escala_id: string
           id?: string
           inicio: string
+          justificativa?: string | null
           publicado_em?: string
           publicado_por: string
           regras: Json
@@ -2944,6 +2949,7 @@ export type Database = {
           escala_id?: string
           id?: string
           inicio?: string
+          justificativa?: string | null
           publicado_em?: string
           publicado_por?: string
           regras?: Json
@@ -6674,6 +6680,14 @@ export type Database = {
       }
       escalas_ler: {
         Args: { p_inicio: string; p_minha?: boolean }
+        Returns: Json
+      }
+      escalas_publicar_confirmado: {
+        Args: { p_inicio: string; p_justificativa: string; p_revisao: number }
+        Returns: Json
+      }
+      escalas_salvar_rascunho: {
+        Args: { p_equipe: Json; p_inicio: string; p_revisao?: number }
         Returns: Json
       }
       escalas_verificar: {

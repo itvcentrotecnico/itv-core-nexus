@@ -10,6 +10,7 @@ import {
   horas,
   horario,
   totalSemana,
+  intervaloTexto,
 } from "@/lib/escalas-calculo";
 import { useAccess } from "@/hooks/use-auth";
 import { EscolherSemana } from "./escalas-page";
@@ -94,7 +95,7 @@ export function MinhaEscalaPage() {
                         <p className="text-sm font-semibold">
                           {horario(d.entrada)} – {horario(d.saida)}
                         </p>
-                        <p className="text-xs text-muted-foreground">Intervalo {d.intervalo} min</p>
+                        <p className="text-xs text-muted-foreground">{intervaloTexto(d)}</p>
                       </>
                     )}
                   </div>

@@ -81,7 +81,26 @@ export async function gravarEscala(
   equipe?: PessoaEscala[],
   regras?: RegrasEscala,
   confirmado = false,
+  justificativa = "",
 ) {
+  if ((acao === "salvar" || acao === "criar") && equipe) {
+    const { data, error } = await supabase.rpc("escalas_salvar_rascunho", {
+      p_inicio: inicio,
+      p_equipe: equipe as never,
+      ...(revisao === undefined ? {} : { p_revisao: revisao }),
+    });
+    if (error) throw error;
+    return data as unknown as { ok: boolean; inicio: string };
+  }
+  if (acao === "publicar" && confirmado && revisao !== undefined) {
+    const { data, error } = await supabase.rpc("escalas_publicar_confirmado", {
+      p_inicio: inicio,
+      p_revisao: revisao,
+      p_justificativa: justificativa,
+    });
+    if (error) throw error;
+    return data as unknown as { ok: boolean; inicio: string };
+  }
   const { data, error } = await supabase.rpc("escalas_gravar", {
     p_acao: acao,
     p_inicio: inicio,

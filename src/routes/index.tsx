@@ -14,6 +14,8 @@ export const Route = createFileRoute("/")({
           "Sistema interno de gestão financeira, operacional e gerencial da ITV Centro Técnico.",
       },
       { property: "og:title", content: "GESTÃO ITV — Centro Técnico" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content:
