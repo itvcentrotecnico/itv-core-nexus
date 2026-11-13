@@ -1,0 +1,2 @@
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON public.escalas_semanas,public.escalas_versoes,public.escalas_preferencias,public.escalas_parametros FROM authenticated,anon;
+REVOKE SELECT ON public.escalas_semanas,public.escalas_versoes,public.escalas_preferencias,public.escalas_parametros FROM anon;

@@ -1,5 +1,11 @@
 # Roadmap
 
+## Escalas e Jornadas — Etapa 1
+- [x] Persistir escalas, parâmetros e versões com acesso individual e gestão autorizada
+- [x] Integrar grade semanal, edição, duplicação, validação, publicação e impressão
+- [x] Disponibilizar Minha Escala; cálculos e celular conferidos, bloqueios de escrita e rascunho incompleto verificados
+- [ ] Conferir publicação e leitura individual completa — depende dos horários reais e vínculo dos usuários aos colaboradores; Adriano e Taylor não encontrados
+
 ## Concluído
 - [x] Estoque Técnico: lançamentos exclusivos da Gerência (permissões, RLS de leitura, telas de permissão, auditoria conferida)
 

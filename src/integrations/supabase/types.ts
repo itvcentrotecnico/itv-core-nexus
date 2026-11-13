@@ -2823,6 +2823,143 @@ export type Database = {
           },
         ]
       }
+      escalas_parametros: {
+        Row: {
+          id: boolean
+          regras: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          regras?: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          regras?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      escalas_preferencias: {
+        Row: {
+          colaborador_id: string
+          folgas: number[]
+          funcao: string
+          meta: number
+          updated_at: string
+        }
+        Insert: {
+          colaborador_id: string
+          folgas?: number[]
+          funcao: string
+          meta?: number
+          updated_at?: string
+        }
+        Update: {
+          colaborador_id?: string
+          folgas?: number[]
+          funcao?: string
+          meta?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escalas_preferencias_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: true
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escalas_preferencias_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: true
+            referencedRelation: "colaboradores_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escalas_semanas: {
+        Row: {
+          equipe: Json
+          estado: string
+          id: string
+          inicio: string
+          regras: Json
+          revisao: number
+          updated_at: string
+          updated_by: string
+          validacao: Json | null
+        }
+        Insert: {
+          equipe?: Json
+          estado?: string
+          id?: string
+          inicio: string
+          regras: Json
+          revisao?: number
+          updated_at?: string
+          updated_by: string
+          validacao?: Json | null
+        }
+        Update: {
+          equipe?: Json
+          estado?: string
+          id?: string
+          inicio?: string
+          regras?: Json
+          revisao?: number
+          updated_at?: string
+          updated_by?: string
+          validacao?: Json | null
+        }
+        Relationships: []
+      }
+      escalas_versoes: {
+        Row: {
+          equipe: Json
+          escala_id: string
+          id: string
+          inicio: string
+          publicado_em: string
+          publicado_por: string
+          regras: Json
+          validacao: Json
+          versao: number
+        }
+        Insert: {
+          equipe: Json
+          escala_id: string
+          id?: string
+          inicio: string
+          publicado_em?: string
+          publicado_por: string
+          regras: Json
+          validacao: Json
+          versao: number
+        }
+        Update: {
+          equipe?: Json
+          escala_id?: string
+          id?: string
+          inicio?: string
+          publicado_em?: string
+          publicado_por?: string
+          regras?: Json
+          validacao?: Json
+          versao?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escalas_versoes_escala_id_fkey"
+            columns: ["escala_id"]
+            isOneToOne: false
+            referencedRelation: "escalas_semanas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       estoque_compatibilidades: {
         Row: {
           created_at: string
@@ -6523,6 +6660,25 @@ export type Database = {
       dre_gerencial: { Args: { p_from: string; p_to: string }; Returns: Json }
       equipe_externa_painel: { Args: never; Returns: Json }
       equipe_externa_tv: { Args: never; Returns: Json }
+      escalas_gravar: {
+        Args: {
+          p_acao: string
+          p_confirmado?: boolean
+          p_equipe?: Json
+          p_inicio: string
+          p_regras?: Json
+          p_revisao?: number
+        }
+        Returns: Json
+      }
+      escalas_ler: {
+        Args: { p_inicio: string; p_minha?: boolean }
+        Returns: Json
+      }
+      escalas_verificar: {
+        Args: { p_equipe: Json; p_regras: Json }
+        Returns: Json
+      }
       estoque_baixar: {
         Args: {
           p_item_id: string

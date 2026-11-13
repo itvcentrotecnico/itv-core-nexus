@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  CalendarDays,
   Boxes,
   ClipboardList,
   LayoutDashboard,
@@ -68,6 +69,13 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
+    title: 'Gestão de Equipe',
+    items: [
+      { moduleKey: 'escalas', label: 'Escalas e Jornadas', to: '/escalas', icon: CalendarDays },
+      { moduleKey: 'minha_escala', label: 'Minha Escala', to: '/minha-escala', icon: CalendarDays },
+    ],
+  },
+  {
     title: "Administração",
     items: [{ moduleKey: "admin", label: "Administração", to: "/admin", icon: Settings }],
   },
@@ -79,6 +87,8 @@ export const NAV_SECTIONS: NavSection[] = [
  * As rotas mais específicas vêm primeiro.
  */
 export const ROUTE_MODULES: { prefix: string; moduleKey: string }[] = [
+  { prefix: '/escalas', moduleKey: 'escalas' },
+  { prefix: '/minha-escala', moduleKey: 'minha_escala' },
   { prefix: "/gerencia-operacional/coletas", moduleKey: "coletas" },
   { prefix: "/gerencia-operacional/equipe-externa", moduleKey: "coletas" },
   { prefix: "/gerencia-operacional/comissoes", moduleKey: "comissoes" },

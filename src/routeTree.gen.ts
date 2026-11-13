@@ -21,10 +21,12 @@ import { Route as AuthenticatedColetasRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedComissaoEntregaRouteImport } from './routes/_authenticated/comissao-entrega'
 import { Route as AuthenticatedComissoesRouteImport } from './routes/_authenticated/comissoes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEscalasRouteImport } from './routes/_authenticated/escalas'
 import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedGerenciaOperacionalRouteImport } from './routes/_authenticated/gerencia-operacional'
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
+import { Route as AuthenticatedMinhaEscalaRouteImport } from './routes/_authenticated/minha-escala'
 import { Route as AuthenticatedOperacionalRouteImport } from './routes/_authenticated/operacional'
 import { Route as AuthenticatedPecasRouteImport } from './routes/_authenticated/pecas'
 import { Route as AuthenticatedProducaoRouteImport } from './routes/_authenticated/producao'
@@ -113,6 +115,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEscalasRoute = AuthenticatedEscalasRouteImport.update({
+  id: '/escalas',
+  path: '/escalas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
   id: '/estoque',
   path: '/estoque',
@@ -134,6 +141,12 @@ const AuthenticatedMetasRoute = AuthenticatedMetasRouteImport.update({
   path: '/metas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMinhaEscalaRoute =
+  AuthenticatedMinhaEscalaRouteImport.update({
+    id: '/minha-escala',
+    path: '/minha-escala',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOperacionalRoute =
   AuthenticatedOperacionalRouteImport.update({
     id: '/operacional',
@@ -291,10 +304,12 @@ export interface FileRoutesByFullPath {
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/escalas': typeof AuthenticatedEscalasRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/metas': typeof AuthenticatedMetasRoute
+  '/minha-escala': typeof AuthenticatedMinhaEscalaRoute
   '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
@@ -333,9 +348,11 @@ export interface FileRoutesByTo {
   '/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/comissoes': typeof AuthenticatedComissoesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/escalas': typeof AuthenticatedEscalasRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/metas': typeof AuthenticatedMetasRoute
+  '/minha-escala': typeof AuthenticatedMinhaEscalaRoute
   '/operacional': typeof AuthenticatedOperacionalRoute
   '/pecas': typeof AuthenticatedPecasRoute
   '/producao': typeof AuthenticatedProducaoRoute
@@ -376,10 +393,12 @@ export interface FileRoutesById {
   '/_authenticated/comissao-entrega': typeof AuthenticatedComissaoEntregaRoute
   '/_authenticated/comissoes': typeof AuthenticatedComissoesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/escalas': typeof AuthenticatedEscalasRoute
   '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/gerencia-operacional': typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
+  '/_authenticated/minha-escala': typeof AuthenticatedMinhaEscalaRoute
   '/_authenticated/operacional': typeof AuthenticatedOperacionalRoute
   '/_authenticated/pecas': typeof AuthenticatedPecasRoute
   '/_authenticated/producao': typeof AuthenticatedProducaoRoute
@@ -420,10 +439,12 @@ export interface FileRouteTypes {
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
+    | '/escalas'
     | '/estoque'
     | '/financeiro'
     | '/gerencia-operacional'
     | '/metas'
+    | '/minha-escala'
     | '/operacional'
     | '/pecas'
     | '/producao'
@@ -462,9 +483,11 @@ export interface FileRouteTypes {
     | '/comissao-entrega'
     | '/comissoes'
     | '/dashboard'
+    | '/escalas'
     | '/estoque'
     | '/financeiro'
     | '/metas'
+    | '/minha-escala'
     | '/operacional'
     | '/pecas'
     | '/producao'
@@ -504,10 +527,12 @@ export interface FileRouteTypes {
     | '/_authenticated/comissao-entrega'
     | '/_authenticated/comissoes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/escalas'
     | '/_authenticated/estoque'
     | '/_authenticated/financeiro'
     | '/_authenticated/gerencia-operacional'
     | '/_authenticated/metas'
+    | '/_authenticated/minha-escala'
     | '/_authenticated/operacional'
     | '/_authenticated/pecas'
     | '/_authenticated/producao'
@@ -631,6 +656,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/escalas': {
+      id: '/_authenticated/escalas'
+      path: '/escalas'
+      fullPath: '/escalas'
+      preLoaderRoute: typeof AuthenticatedEscalasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/estoque': {
       id: '/_authenticated/estoque'
       path: '/estoque'
@@ -657,6 +689,13 @@ declare module '@tanstack/react-router' {
       path: '/metas'
       fullPath: '/metas'
       preLoaderRoute: typeof AuthenticatedMetasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/minha-escala': {
+      id: '/_authenticated/minha-escala'
+      path: '/minha-escala'
+      fullPath: '/minha-escala'
+      preLoaderRoute: typeof AuthenticatedMinhaEscalaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/operacional': {
@@ -902,10 +941,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedComissaoEntregaRoute: typeof AuthenticatedComissaoEntregaRoute
   AuthenticatedComissoesRoute: typeof AuthenticatedComissoesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEscalasRoute: typeof AuthenticatedEscalasRoute
   AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedGerenciaOperacionalRoute: typeof AuthenticatedGerenciaOperacionalRouteWithChildren
   AuthenticatedMetasRoute: typeof AuthenticatedMetasRoute
+  AuthenticatedMinhaEscalaRoute: typeof AuthenticatedMinhaEscalaRoute
   AuthenticatedOperacionalRoute: typeof AuthenticatedOperacionalRoute
   AuthenticatedPecasRoute: typeof AuthenticatedPecasRoute
   AuthenticatedProducaoRoute: typeof AuthenticatedProducaoRoute
@@ -924,11 +965,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedComissaoEntregaRoute: AuthenticatedComissaoEntregaRoute,
   AuthenticatedComissoesRoute: AuthenticatedComissoesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEscalasRoute: AuthenticatedEscalasRoute,
   AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedGerenciaOperacionalRoute:
     AuthenticatedGerenciaOperacionalRouteWithChildren,
   AuthenticatedMetasRoute: AuthenticatedMetasRoute,
+  AuthenticatedMinhaEscalaRoute: AuthenticatedMinhaEscalaRoute,
   AuthenticatedOperacionalRoute: AuthenticatedOperacionalRoute,
   AuthenticatedPecasRoute: AuthenticatedPecasRoute,
   AuthenticatedProducaoRoute: AuthenticatedProducaoRoute,
