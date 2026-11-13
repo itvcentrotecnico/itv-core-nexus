@@ -4,6 +4,22 @@ export interface AvisoEscala {
   tipo: string;
   texto: string;
 }
+export interface AcessoEscala {
+  colaborador_id: string;
+  nome: string;
+  usuario: string | null;
+  vinculado: boolean;
+  ativo: boolean;
+  pode_consultar: boolean;
+}
+export function acessoPronto(a: AcessoEscala | undefined) {
+  return !!a && a.vinculado && a.ativo && a.pode_consultar;
+}
+export async function lerAcessosEscala(): Promise<AcessoEscala[]> {
+  const { data, error } = await supabase.rpc("escalas_acessos");
+  if (error) throw error;
+  return data as unknown as AcessoEscala[];
+}
 export interface ValidacaoEscala {
   erros: string[];
   alertas: AvisoEscala[];

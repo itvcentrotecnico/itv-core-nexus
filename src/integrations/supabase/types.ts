@@ -6660,6 +6660,7 @@ export type Database = {
       dre_gerencial: { Args: { p_from: string; p_to: string }; Returns: Json }
       equipe_externa_painel: { Args: never; Returns: Json }
       equipe_externa_tv: { Args: never; Returns: Json }
+      escalas_acessos: { Args: never; Returns: Json }
       escalas_gravar: {
         Args: {
           p_acao: string

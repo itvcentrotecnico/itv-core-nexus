@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { inputClass } from "@/lib/caixa";
 import { mensagemErro } from "@/lib/erros";
-import { lerEscala, gravarEscala, type SemanaEscala } from "@/lib/escalas";
+import { lerEscala, gravarEscala, lerAcessosEscala, acessoPronto, type SemanaEscala } from "@/lib/escalas";
 import {
   DIAS,
   adicionarDias,
@@ -133,6 +133,11 @@ export function EscalasPage() {
     queryFn: () => lerEscala(inicio),
     enabled: autorizado,
   });
+  const acessos = useQuery({
+    queryKey: ["escalas-acessos"],
+    queryFn: lerAcessosEscala,
+    enabled: autorizado,
+  });
   useEffect(() => {
     if (query.data) {
       setLocal(query.data.semana);
@@ -181,6 +186,9 @@ export function EscalasPage() {
     );
   const historica = query.data?.versoes.find((v) => v.id === versao);
   const equipe = historica?.equipe ?? local?.equipe ?? [];
+  const pendenciasAcesso = equipe.filter((p) =>
+    !acessoPronto(acessos.data?.find((a) => a.colaborador_id === p.colaborador_id)),
+  );
   const editavel = !!local && local.estado !== "publicada" && !historica;
   const valid = historica?.validacao ?? local?.validacao;
   function abrirNova() {
@@ -327,7 +335,7 @@ export function EscalasPage() {
                   Validar
                 </Button>
                 <Button
-                  disabled={busy || sujo || local.estado !== "validada"}
+                  disabled={busy || sujo || local.estado !== "validada" || !acessos.isSuccess || pendenciasAcesso.length > 0}
                   onClick={() => {
                     setConfirmado(false);
                     setPublicar(true);
@@ -366,6 +374,23 @@ export function EscalasPage() {
               </select>
             )}
           </div>
+          <section className="space-y-3 border-y border-border py-4">
+            <h2 className="font-display font-semibold">Cadastros e acessos da escala</h2>
+            {acessos.isPending && <p className="text-sm text-muted-foreground">Conferindo acessos…</p>}
+            {acessos.isError && <p role="alert" className="text-sm text-destructive">Não foi possível conferir os acessos. Publicação bloqueada.</p>}
+            <ul className="divide-y divide-border text-sm">
+              {(equipe.length ? equipe : query.data.colaboradores.filter((c) => c.selecionado).map((c) => ({ nome: c.nome, colaborador_id: c.id }))).map((p) => {
+                const a = acessos.data?.find((x) => x.colaborador_id === p.colaborador_id);
+                return <li key={p.colaborador_id} className="flex flex-wrap justify-between gap-2 py-2">
+                  <strong>{p.nome}</strong>
+                  <span className={acessoPronto(a) ? "text-primary" : "text-destructive"}>
+                    {!a ? "Conferência pendente" : !a.vinculado ? "Sem acesso vinculado" : !a.ativo ? "Acesso inativo" : !a.pode_consultar ? "Sem permissão para Minha Escala" : `Vinculado · ${a.usuario}`}
+                  </span>
+                </li>;
+              })}
+            </ul>
+            {pendenciasAcesso.length > 0 && <p role="alert" className="text-sm text-destructive">Publicação bloqueada: {pendenciasAcesso.map((p) => p.nome).join(", ")}.</p>}
+          </section>
           {!local ? (
             <div className="border-y border-border py-16 text-center">
               <CalendarDays className="mx-auto mb-3 size-8 text-primary" />
@@ -606,7 +631,7 @@ export function EscalasPage() {
             Conferi as metas, a cobertura e os possíveis alertas trabalhistas e autorizo a
             publicação.
           </label>
-          <Button disabled={!confirmado || busy} onClick={() => acao("publicar")}>
+          <Button disabled={!confirmado || busy || !acessos.isSuccess || pendenciasAcesso.length > 0} onClick={() => acao("publicar")}>
             Confirmar publicação
           </Button>
         </DialogContent>
